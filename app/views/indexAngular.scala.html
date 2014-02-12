@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html ng-app="customerApp">
+<head>
+	<title>Angular example</title>
+</head>
+<body>
+	<h1>Angular </h1>
+	
+	<div ng-controller="CustomersController">
+		search: <input type="text" ng-model="searchText"/>
+		{{ searchText }}
+		<br />
+		<h3>Customer</h3>
+		<table>
+			<tr ng-repeat="cust in customers | filter:searchText" >
+				<td>{{ cust.name }}</td>
+				<td>{{cust.total | currency}}</td>
+			</tr>
+		</table>
+		
+	</div>
+
+	
+	<script src="@routes.Assets.at("javascripts/angular.js")"></script>
+	<script>
+		var app = angular.module('customerApp', []);
+
+		
+					
+		
+		app.controller('CustomersController', function($scope) {
+			$scope.customers = [
+				{"id": 1, "name": "Ted", "total": 5.997},
+				{"id": 2, "name": "Michelle", "total": 2.030},
+				{"id": 3, "name": "Zed", "total": 506.056},
+				{"id": 4, "name": "Tina", "total": 234.234}
+		];
+
+		});
+	</script>
+</body>
+</html>
+
+
+
