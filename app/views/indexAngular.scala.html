@@ -1,43 +1,29 @@
 <!DOCTYPE html>
-<html ng-app="customerApp">
+<html ng-app="dntApp">
 <head>
 	<title>Angular example</title>
-</head>
+	<link rel="stylesheet" type="text/css" href=@routes.Assets.at("stylesheets/bootstrap.css")>
+	<link rel="stylesheet" type="text/css" href=@routes.Assets.at("stylesheets/daterangepicker-bs3.css") />
+</head >
 <body>
 	<h1>Angular </h1>
 	
-	<div ng-controller="CustomersController">
-		search: <input type="text" ng-model="searchText"/>
-		{{ searchText }}
-		<br />
-		<h3>Customer</h3>
-		<table>
-			<tr ng-repeat="cust in customers | filter:searchText" >
-				<td>{{ cust.name }}</td>
-				<td>{{cust.total | currency}}</td>
-			</tr>
-		</table>
-		
-	</div>
-
+	<div ng-view>
 	
+	</div>
+	
+	<script src="@routes.Assets.at("javascripts/jquery-1.9.0.min.js")"></script>
 	<script src="@routes.Assets.at("javascripts/angular.js")"></script>
-	<script>
-		var app = angular.module('customerApp', []);
-
-		
-					
-		
-		app.controller('CustomersController', function($scope) {
-			$scope.customers = [
-				{"id": 1, "name": "Ted", "total": 5.997},
-				{"id": 2, "name": "Michelle", "total": 2.030},
-				{"id": 3, "name": "Zed", "total": 506.056},
-				{"id": 4, "name": "Tina", "total": 234.234}
-		];
-
-		});
-	</script>
+	<script src="@routes.Assets.at("javascripts/bootstrap.js")"></script>
+	<script src="@routes.Assets.at("javascripts/angular-route.js")"></script>
+	
+	
+	
+	<script src="@routes.Assets.at("app/app.js")"></script>
+    <script src="@routes.Assets.at("app/controllers/controllers.js")"></script>
+    <script src="@routes.Assets.at("app/services/ordersService.js")"></script>
+    
+   
 </body>
 </html>
 

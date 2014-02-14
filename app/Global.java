@@ -13,9 +13,9 @@ public class Global extends GlobalSettings {
 		// Populate database with dummy data
 		if (Booking.find.findRowCount() == 0) {
 			String[] cabins = {"Helfjord", "Bergene", "Fjørlistølen", "Trollkapp" };
-			for ( int i = 0; i<20; i++) {
+			for ( int i = 0; i<40; i++) {
 				
-				new Booking(new Date(2014, 03, 23), (i+Math.round(Math.random()*2)) +"",new Date(2014, 04, 3 + i),new Date(2014, 04, 10 + i), cabins[i%cabins.length]).save();
+				new Booking(new Date(114, 03, 23), ((i%6)+Math.round(Math.random()*2)) +"",new Date(2014, 04, 3 + i),new Date(114, 04, 10 + i), cabins[i%cabins.length]).save();
 			}
 		}
 	}

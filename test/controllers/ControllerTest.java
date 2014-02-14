@@ -27,7 +27,7 @@ public class ControllerTest extends WithApplication {
 		end.setYear(start.getYear()+2);
 		Booking b = new Booking(timeOfBooking, "123456", start, end, "Heifjord");
 		b.save();
-		controllers.Application.cancelBooking(b.getId());
+		controllers.BookingController.cancelBooking(b.getId());
 		Booking b2 = Booking.find.where().eq("id", b.getId()).findUnique();
 		assertNull(b2);
 	}

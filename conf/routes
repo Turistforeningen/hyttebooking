@@ -7,10 +7,10 @@ GET     /                           controllers.Application.index()
 
 
 
-GET		/bookings/:id				controllers.Application.bookAtCabin(id: String)
-POST	/bookings					controllers.BookingController.submitBooking()
-DELETE	/bookings/:id				controllers.Application.cancelBooking(id: String)
-GET		/:id/bookings				controllers.Application.getOrderHistory(id: String)
+GET		/api/bookings/:id				controllers.Application.bookAtCabin(id: String)
+POST	/api/bookings/					controllers.BookingController.submitBooking()
+DELETE	/api/bookings/:id				controllers.BookingController.cancelBooking(id: String)
+GET		/api/:id/bookings				controllers.BookingController.getOrderHistory(id: String)
 
 
 # Map static resources from the /public folder to the /assets URL path
