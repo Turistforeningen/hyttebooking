@@ -4,90 +4,61 @@ import java.util.Date;
 
 import javax.persistence.*;
 
+import play.data.format.Formats;
+import play.data.validation.Constraints;
 import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
 
 /**
- * Draft of booking model class
- * 
- *
+ * Revision of booking model
+ * v.01 (Jama) Changes made:
+ * 	1. private properties changed to public, according to play this insanity is the usual MO
+ * 	2. added stricter constraints and formatting requirements to dates
+ * 	3. removed getters and setters due to point 1
  */
 @Entity
 public class Booking extends Model {
-	
-	@Required
-	@Id
-	private String id;
-	
-	private Date dateOfBooking;
-	
-	private Date dayOfBookingStart;
-	private Date dayOfBookingEnd;
-	
-	@Required
-	private String userId;
-	
-	private String transactionId;
-	
-	//temporarily
-	private String cabin;
-	
-	
 
-	public Booking(Date dateOfBooking,
-			String userId,
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	public Long id;
+	
+	@Constraints.Required
+	@Formats.DateTime(pattern="dd-MM-yyyy")
+	public Date dateFrom;
+
+	@Constraints.Required
+	@Formats.DateTime(pattern="dd-MM-yyyy")
+	public Date dateTo;
+
+	@Required
+	public String userId;
+
+	//do we need this? TODO
+	public String transactionId;
+
+
+	/** TEST **/
+	public Booking(String userId,
 			Date dayOfBookingStart,
 			Date dayOfBookingEnd,
-			String cabin
+			SmallCabin cabin
 			) {
-		this.dateOfBooking = dateOfBooking;
 		this.userId = userId;
 		this.cabin = cabin;
-		this.dayOfBookingEnd = dayOfBookingEnd;
-		this.dayOfBookingStart = dayOfBookingStart;
-		
-	}
-	
-	public Booking(Date dateOfBooking, String userId) {
-		this.dateOfBooking = dateOfBooking;
-		this.userId = userId;	
-	}
-	
-	 public String getId() {
-		return id;
-	}
+		this.dateTo = dayOfBookingEnd;
+		this.dateFrom = dayOfBookingStart;
 
-	public Date getDateOfBooking() {
-		return dateOfBooking;
 	}
-	
-	public Date getDayOfBookingStart() {
-		return this.dayOfBookingStart;
-	}
-	
-	public Date getDayOfBookingEnd() {
-		return this.dayOfBookingEnd;
-	}
-	
-	public String getUserId() {
-		return this.userId;
-	}
-	
-	public String getCabin() {
-		return cabin;
-	}
+	/** END TEST **/
 
-	public void setCabin(String cabin) {
-		this.cabin = cabin;
-	}
-	
-	public static Booking create(Booking booking, Long cabinId) {
-		booking.setCabin(cabinId +"");
-		booking.save();
-		return booking;
-		
-	}
+	/** Booking -> Cabin is many-to-one because there can be many bookings, but only one cabin
+	 per. **/
+	@ManyToOne
+	public SmallCabin cabin; //TODO change this to SmallCabin when implemented
+
 	public static Finder<String,Booking> find = new Finder<String,Booking>(
-		        String.class, Booking.class
-		    ); 
+			String.class, Booking.class
+			); 
 }
