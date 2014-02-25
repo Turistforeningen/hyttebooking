@@ -3,12 +3,14 @@
     <input type='text' ng-model="text" />
     <br/>
     <br/>
-    <div ng-repeat="order in orders | filter:text | orderBy:'id'" style="border:1px solid black; padding:1cm 1cm 1cm 1cm;" >
+    <div ng-repeat="order in orders | filter:text | orderBy:'dayOfBookingStart'" style="border:1px solid black; padding:1cm 1cm 1cm 1cm;" >
     
         <p> id: {{ order.id }} </p>
         <p> user: {{order.userId}}</p>
         <p> cabin: {{ order.cabin }}</p>
         <p> date ordered: {{ order.dateOfBooking | date }}</p>
+        <p> from: {{ order.dayOfBookingStart | date }}</p>
+        <p> till: {{ order.dayOfBookingEnd | date }}</p>
         <button ng-click="cancelOrder( order )"> Cancel booking </button>
         
     </div>
