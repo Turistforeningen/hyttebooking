@@ -10,8 +10,10 @@ GET     /                           controllers.Application.index()
 GET		/api/bookings/:id				controllers.Application.bookAtCabin(id: String)
 POST	/api/bookings/					controllers.BookingController.submitBooking()
 DELETE	/api/bookings/:id				controllers.BookingController.cancelBooking(id: String)
-GET		/api/:id/bookings				controllers.BookingController.getOrderHistory(id: String)
+GET		/api/bookings/				controllers.BookingController.getOrderHistory()
 
+POST    /login                      controllers.SecurityController.login()
+POST    /logout                     controllers.SecurityController.logout()
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

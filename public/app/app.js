@@ -1,13 +1,16 @@
-var app = angular.module('dntApp' ,['ngRoute']);
+var app = angular.module('dntApp' ,['ngRoute', 'ui.bootstrap', 'ngCookies', 'ngResource', 'ngSanitize']);
 
-app.config(function ($routeProvider, $locationProvider) {
+app.config(function ($routeProvider, $locationProvider, $httpProvider) {
+	
+	$httpProvider.responseInterceptors.push('httpInterceptor');
+	
 	$routeProvider
 	.when('/', {
 		controller: 'testController',
 		templateUrl: '/assets/app/partials/testView.html'
 		
 	})
-	.when('/orderHistory/:customerID', {
+	.when('/orderHistory/', {
 		
 		controller: 'orderController',
 		templateUrl: '/assets/app/partials/ordersView.html'
@@ -18,6 +21,12 @@ app.config(function ($routeProvider, $locationProvider) {
 		controller: 'bookingController',
 		templateUrl: '/assets/app/partials/bookingView.html'
 	})
+	.when('/login', {
+		
+		controller: 'authController',
+		templateUrl: '/assets/app/partials/authView.html'
+	})
+	
 	.otherwise({ redirectTo: '/'});
 	
 	
@@ -26,4 +35,8 @@ app.config(function ($routeProvider, $locationProvider) {
 	    $locationProvider.html5Mode(true);
 	  }*/
 	
+});
+
+app.run(function (api) {
+	  api.init();
 });

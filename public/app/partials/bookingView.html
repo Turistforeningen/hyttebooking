@@ -1,9 +1,17 @@
-<div class="bookingView">
+<div class="bookingView" ng-controller="bookingController">
+    <alert ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">{{alert.msg}}</alert>
     <h1>Booking</h1>
+    <form novalidate class="bookingForm">
+        <h2>Velge Antall personer</h2>
+        Persons: <input type="number" class="form-control" ng-model="booking.nrOfPersons" >
+        <h2>Velg datoer</h2>
+        To: <input type="daterange" class="form-control" ng-model="booking.dayOfBookingStart">
+        From: <input type="daterange" class="form-control" ng-model="booking.dayOfBookingEnd">
+        
+        <h2>submit</h2>
+        <button class="submit" ng-click="postBooking(booking)">Bestill</button>
+    </form>
     
-    <h2>Velge Antall personer</h2>
-    <input type="number" class="form-control" name="quantity" >
-    <h2>Velg datoer</h2>
-    <input type="daterange" class="form-control" ng-model="myDateRange">
-    <h2>submit</h2>
+    <pre>form = {{booking | json}}</pre>
 </div>
+
