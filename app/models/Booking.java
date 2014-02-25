@@ -11,10 +11,8 @@ import play.db.ebean.Model;
 
 /**
  * Revision of booking model
- * v.01 (Jama) Changes made:
- * 	1. private properties changed to public, according to play this insanity is the usual MO
- * 	2. added stricter constraints and formatting requirements to dates
- * 	3. removed getters and setters due to point 1
+ * v.02 (Jama) Changes made:
+ * 	1. Added @ManyToOne to Beds
  */
 @Entity
 public class Booking extends Model {
@@ -32,21 +30,18 @@ public class Booking extends Model {
 	@Formats.DateTime(pattern="dd-MM-yyyy")
 	public Date dateTo;
 
-	@Required
-	public String userId;
+	@OneToOne
+	public Guest guest;
 
-	//do we need this? TODO
-	public String transactionId;
-
+	@OneToOne
+	public Payment payment;
 
 	/** TEST **/
-	public Booking(String userId,
+	public Booking(Long userId,
 			Date dayOfBookingStart,
-			Date dayOfBookingEnd,
-			SmallCabin cabin
-			) {
-		this.userId = userId;
-		this.cabin = cabin;
+			Date dayOfBookingEnd) {
+		this.guest = new Guest(userId);
+		this.cabin = new SmallCabin(this);
 		this.dateTo = dayOfBookingEnd;
 		this.dateFrom = dayOfBookingStart;
 
@@ -57,6 +52,9 @@ public class Booking extends Model {
 	 per. **/
 	@ManyToOne
 	public SmallCabin cabin; //TODO change this to SmallCabin when implemented
+	
+	@ManyToOne
+	public Bed beds;
 
 	public static Finder<String,Booking> find = new Finder<String,Booking>(
 			String.class, Booking.class
