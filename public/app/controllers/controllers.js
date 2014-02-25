@@ -1,10 +1,20 @@
-app.controller('orderController', function ($scope,$routeParams, ordersService) {
+app.controller('orderController', function ($scope,$routeParams, $location, ordersService, api) {
+
+	$scope.getBookings = function () {
+		var success = function (data) {
+			$scope.orders = data;
+		};
+
+		var error = function () {
+			$scope.status = 'unable to load customer data' + error.message;
+		};
+		
+		api.getBookings().success(success).error(error);
+	};
 
 
-
-
-	$scope.getOrders = function(userId) {
-		ordersService.getOrders(userId)
+	$scope.getOrders = function() {
+		ordersService.getOrders()
 		.success(function (userOrders) {
 			$scope.orders = userOrders;
 		})
@@ -29,15 +39,15 @@ app.controller('orderController', function ($scope,$routeParams, ordersService) 
 
 	init();
 	function init() {
-		var userId = ($routeParams.customerID) ? parseInt($routeParams.customerID) : -1;
-		if (userId > -1) {
-			$scope.getOrders(userId);
-		} 
+		
+			$scope.getOrders();
+		
 	};
 });
 
 app.controller('testController', function ($scope) {
-
+	
+	  
     init();
 
     function init() {
@@ -46,8 +56,27 @@ app.controller('testController', function ($scope) {
 
 });
 
-app.controller('bookingController', function ($scope) {
+app.controller('bookingController', function ($scope, ordersService) {
+	
+	$scope.addAlert = function(type, msg) {
+		$scope.alerts = [{type: type, msg: msg}];
+		
+	};
 
+	$scope.closeAlert = function(index) {
+		$scope.alerts.splice(index, 1);
+	};
+	
+    $scope.postBooking = function(booking) {
+    	
+    	ordersService.postOrder(booking)
+		.success(function (success) {
+			$scope.addAlert('success', "det virket!");
+		})
+		.error(function (error) {
+			$scope.addAlert('danger', "virket ikke!");
+		});
+    };
     init();
     
     function init() {
@@ -55,3 +84,49 @@ app.controller('bookingController', function ($scope) {
     }
 
 });
+
+app.controller('authController', function ($log, $scope, $location, $cookieStore, authorization, api) {
+	
+	
+	
+	
+	$scope.login = function (credentials) {
+		
+		var success = function (data) {
+			
+			$scope.SignInText = credentials.emailAdress;
+			
+			var token = data.authToken;
+			api.init(token);
+			$cookieStore.put('token', token);
+			$location.path('/');
+		};
+
+		var error = function () {
+			
+		};
+		authorization.login(credentials).success(success).error(error);
+	};
+	
+$scope.logout = function () {
+		
+		var success = function (data) {
+			
+			$cookieStore.remove('token');
+			$location.path('/');
+		};
+
+		var error = function (error) {
+			$log.info(error);
+		};
+		authorization.logout().success(success).error(error);
+	};
+});
+
+function HeaderController($scope, $location, $log) 
+{ 
+    $scope.isActive = function (viewLocation) { 
+    	
+        return viewLocation === $location.path();
+    };
+}

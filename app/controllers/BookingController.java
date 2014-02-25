@@ -1,17 +1,22 @@
 package controllers;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import models.Booking;
+import models.User;
 import play.api.data.Form;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Results;
+import play.mvc.With;
 
-
+@With(SecurityController.class)
 public class BookingController extends Controller {
 	
 	
@@ -27,18 +32,41 @@ public class BookingController extends Controller {
 		return TODO;
 	}
 	
+	
 	public static Result submitBooking() {
 		//Validate user input
-		//Validate cabin booking date time period. 
-		//If error return fail
-		//If sucess -> return sucess, 
+		//Validate cabin booking date time period.
+		ObjectNode result = Json.newObject();
 		JsonNode json = request().body().asJson();
 		if(json == null) {
-			return badRequest("Expected Json data");
+			result.put("status", "KO");
+			result.put("message", "Expected Json");
+			return badRequest(result);
 		}
 		else {
-			System.out.println(json.asText());
-			return ok("Saved to database");
+			String nrPerson = json.get("nrOfPersons").asText();
+			String start = json.get("dayOfBookingStart").asText();
+			String end = json.get("dayOfBookingEnd").asText();
+			//validate request here
+			if(nrPerson 	!= null &&
+					start 	!= null &&
+					end 	!= null
+					) {
+				//TESTLINE
+				Booking booking = new Booking(Calendar.getInstance().getTime(),
+						SecurityController.getUser(), 
+						new Date(start),
+						new Date(end),
+						"Fjørlistølen");
+				booking.save();
+				result.put("status", "OK");
+				result.put("message", "booking saved");
+				return ok(result);
+			}
+			else {
+				return badRequest();
+			}
+			
 		}
 		
 	}
@@ -51,22 +79,25 @@ public class BookingController extends Controller {
     	//(Frontend should prevent this user error also from happening)
     	//Update database with new availability for given cabin.
     	Booking booking = Booking.find.where().eq("id", bookingID).findUnique();
-    	if(booking != null) {
-    		booking.delete();
-    		return ok(Json.toJson(booking));
-    	}
-    	else {
+    	if(booking == null) {
     		return notFound();
     	}
+    	if(booking.user.id != SecurityController.getUser().id) {
+    		return badRequest("No access");
+    	}
+    	
+    	
+    	booking.delete();
+    	return ok(Json.toJson(booking));
+    	
     }
     
     
-    public static Result getOrderHistory(String userID) {
-    	List<Booking> bookings = Booking.find.where().eq("userId", userID).findList();
-    	//How to get userID (solve login with DNT Connect?
-    	//How to handle unregistrered users?
+    public static Result getOrderHistory() {
     	
-    	//Method should return a template or Json, with current and past bookings.
+    	List<Booking> bookings = Booking.findByUser(SecurityController.getUser());
+    	
+    	
     	return Results.ok(Json.toJson(bookings));
     }
 }

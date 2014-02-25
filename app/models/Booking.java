@@ -1,8 +1,11 @@
 package models;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
@@ -24,33 +27,33 @@ public class Booking extends Model {
 	private Date dayOfBookingStart;
 	private Date dayOfBookingEnd;
 	
-	@Required
-	private String userId;
+	@ManyToOne
+	public User user;
 	
 	private String transactionId;
 	
 	//temporarily
 	private String cabin;
-	
+	private int nrOfPersons;
 	
 
 	public Booking(Date dateOfBooking,
-			String userId,
+			User userId,
 			Date dayOfBookingStart,
 			Date dayOfBookingEnd,
 			String cabin
 			) {
 		this.dateOfBooking = dateOfBooking;
-		this.userId = userId;
+		this.user = userId;
 		this.cabin = cabin;
 		this.dayOfBookingEnd = dayOfBookingEnd;
 		this.dayOfBookingStart = dayOfBookingStart;
 		
 	}
 	
-	public Booking(Date dateOfBooking, String userId) {
+	public Booking(Date dateOfBooking, User userId) {
 		this.dateOfBooking = dateOfBooking;
-		this.userId = userId;	
+		this.user = userId;	
 	}
 	
 	 public String getId() {
@@ -69,8 +72,8 @@ public class Booking extends Model {
 		return this.dayOfBookingEnd;
 	}
 	
-	public String getUserId() {
-		return this.userId;
+	public User getUserId() {
+		return this.user;
 	}
 	
 	public String getCabin() {
@@ -81,13 +84,23 @@ public class Booking extends Model {
 		this.cabin = cabin;
 	}
 	
+	public void setCabin(int persons) {
+		this.nrOfPersons = persons;
+	}
+	
 	public static Booking create(Booking booking, Long cabinId) {
 		booking.setCabin(cabinId +"");
 		booking.save();
 		return booking;
 		
 	}
+	
+	public static List<Booking> findByUser(User user) {
+		Finder<Long, Booking> finder = new Finder<Long, Booking>(Long.class, Booking.class);
+		return finder.where().eq("user", user).findList();
+	}
+
 	public static Finder<String,Booking> find = new Finder<String,Booking>(
-		        String.class, Booking.class
-		    ); 
+			String.class, Booking.class
+			); 
 }

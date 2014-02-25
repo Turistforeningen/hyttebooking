@@ -1,7 +1,10 @@
-app.service('ordersService', ['$http' , function ($http) {
+app.service('ordersService', function ($http, $log) {
 	
-    this.getOrders = function (id) {
-        var url = '/api/'+id+'/bookings';
+	
+    this.getOrders = function () {
+    	$log.info("lol");
+    	$
+        var url = '/api/bookings/';
         return $http.get(url);
        
     };
@@ -10,4 +13,10 @@ app.service('ordersService', ['$http' , function ($http) {
     	var url = '/api/bookings/' + id;
         return $http.delete(url);
     };
-}]);
+    
+    this.postOrder = function(data) {
+    	var url = '/api/bookings/'
+    	return $http.post(url, data);
+    }
+});
+
