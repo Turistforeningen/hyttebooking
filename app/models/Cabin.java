@@ -11,13 +11,9 @@ import play.db.ebean.Model;
  * @author Jama
  */
 @Entity
-@Inheritance
-@DiscriminatorColumn(name="CABIN_TYPE")
-@Table(name="CABIN")
+@Inheritance(strategy = InheritanceType.JOINED)
 public abstract class Cabin extends Model {
 
-	private static final long serialVersionUID = 1L;
-	
 	@Id
 	public Long id;
 	
