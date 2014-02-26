@@ -13,7 +13,7 @@ import play.data.validation.Constraints;
 import play.db.ebean.Model;
 
 @Entity
-public class Bed extends Model {
+public class Bed extends Model  {
 
 	@Id
 	public Long id;

@@ -1,5 +1,6 @@
 package models;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.*;
@@ -14,6 +15,12 @@ public class SmallCabin extends Cabin {
 	
 	public SmallCabin(Booking booking) {
 		this.bookings.add(booking);
+	}
+
+	@Override
+	public boolean isAvailable(Date date) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 	
 }
