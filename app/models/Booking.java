@@ -57,10 +57,10 @@ public class Booking extends Model {
 	/** Booking -> Cabin is many-to-one because there can be many bookings, but only one cabin
 	 per. **/
 	@ManyToOne
-	public SmallCabin cabin; //TODO change this to SmallCabin when implemented
+	public SmallCabin cabin;
 	
-	@ManyToOne
-	public Bed beds;
+	@ManyToMany
+	public List<Bed> beds;
 
 	public static Finder<String,Booking> find = new Finder<String,Booking>(
 			String.class, Booking.class

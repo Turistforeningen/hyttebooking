@@ -1,5 +1,7 @@
 package models;
 
+import java.util.List;
+
 import javax.persistence.*;
 
 import play.data.validation.Constraints;
@@ -9,5 +11,5 @@ public class LargeCabin extends Cabin {
 
 	@Constraints.Required
 	@OneToMany
-	public Bed bed;
+	public List<Bed> beds;
 }

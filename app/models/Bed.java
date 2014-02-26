@@ -1,7 +1,10 @@
 package models;
 
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.validation.Constraint;
@@ -19,6 +22,6 @@ public class Bed extends Model {
 	@ManyToOne
 	public LargeCabin largeCabin;
 	
-	@OneToMany
-	public Booking booking;
+	@ManyToMany
+	public List<Booking> bookings;
 }
