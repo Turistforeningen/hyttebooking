@@ -1,5 +1,7 @@
 package models;
 
+import java.util.List;
+
 import javax.persistence.*;
 
 import play.data.validation.Constraints;
@@ -8,10 +10,10 @@ import play.data.validation.Constraints;
 public class SmallCabin extends Cabin {
 
 	@OneToMany
-	public Booking booking;
+	public List<Booking> bookings;
 	
 	public SmallCabin(Booking booking) {
-		this.booking = booking;
+		this.bookings.add(booking);
 	}
 	
 }
