@@ -1,5 +1,7 @@
 package models;
 
+import java.util.Date;
+
 import javax.persistence.*;
 
 import play.db.ebean.Model;
@@ -18,4 +20,14 @@ public abstract class Cabin extends Model {
 	public Long id;
 	
 	public static Finder<Long, Cabin> find = new Finder<Long, Cabin>(Long.class, Cabin.class);
+	
+	/** Checks availability of cabin for given date. Use for SmallCabin **/
+	public boolean isAvailable(Date date) {
+		return false; //TODO unimplemented method
+	}
+	
+	/** Checks availability of cabin for given date, and number of beds specified. Used with LargeCabin **/
+	public boolean isAvailable(Date date, int numberOfBeds) {
+		return false; //TODO unimplemented method
+	}
 }

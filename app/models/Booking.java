@@ -34,7 +34,9 @@ public class Booking extends Model {
 	@Formats.DateTime(pattern="dd-MM-yyyy")
 	public Date dateTo;
 	
-	public Date dateOfOrder;
+	/** Time of order contains information about when the order took place in greater detail **/
+	public Long timeOfBooking;
+	
 	@ManyToOne
 	@JsonIgnore
 	public Guest guest;
@@ -42,11 +44,17 @@ public class Booking extends Model {
 	@OneToOne
 	public Payment payment;
 
+	@ManyToOne
+	public SmallCabin cabin;
+	
+	@ManyToMany
+	public List<Bed> beds;
+	
 	/** TEST **/
 	public Booking(Long userId,
 			Date dayOfBookingStart,
 			Date dayOfBookingEnd) {
-		this.dateOfOrder = Calendar.getInstance().getTime();
+		this.timeOfBooking = Calendar.getInstance().getTimeInMillis();
 		this.guest = Guest.find.byId(userId);
 		this.cabin = new SmallCabin(this);
 		this.dateTo = dayOfBookingEnd;
@@ -56,11 +64,6 @@ public class Booking extends Model {
 	/** END TEST **/
 	/** Booking -> Cabin is many-to-one because there can be many bookings, but only one cabin
 	 per. **/
-	@ManyToOne
-	public SmallCabin cabin;
-	
-	@ManyToMany
-	public List<Bed> beds;
 
 	public static Finder<String,Booking> find = new Finder<String,Booking>(
 			String.class, Booking.class
