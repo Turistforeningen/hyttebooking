@@ -62,8 +62,6 @@ public class Booking extends Model {
 
 	}
 	/** END TEST **/
-	/** Booking -> Cabin is many-to-one because there can be many bookings, but only one cabin
-	 per. **/
 
 	public static Finder<String,Booking> find = new Finder<String,Booking>(
 			String.class, Booking.class
