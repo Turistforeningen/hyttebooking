@@ -13,7 +13,7 @@ create table booking (
   id                        bigint not null,
   date_from                 timestamp,
   date_to                   timestamp,
-  date_of_order             timestamp,
+  time_of_booking           bigint,
   guest_id                  bigint,
   payment_id                bigint,
   cabin_id                  bigint,
