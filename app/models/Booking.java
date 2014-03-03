@@ -45,9 +45,11 @@ public class Booking extends Model {
 	public Payment payment;
 
 	@ManyToOne
+	@JsonIgnore
 	public SmallCabin cabin;
 	
 	@ManyToMany
+	@JsonIgnore
 	public List<Bed> beds;
 	
 	/** TEST **/
@@ -68,4 +70,7 @@ public class Booking extends Model {
 			String.class, Booking.class
 			); 
 	
+	public String toString() {
+		return "id: " + this.id + " cabin" + this.cabin.name;
+	}
 }
