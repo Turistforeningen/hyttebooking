@@ -53,10 +53,11 @@ public class Booking extends Model {
 	/** TEST **/
 	public Booking(Long userId,
 			Date dayOfBookingStart,
-			Date dayOfBookingEnd) {
+			Date dayOfBookingEnd,
+			Long cabinId) {
 		this.timeOfBooking = Calendar.getInstance().getTimeInMillis();
 		this.guest = Guest.find.byId(userId);
-		this.cabin = new SmallCabin(this);
+		this.cabin = (SmallCabin)Cabin.find.byId(cabinId);
 		this.dateTo = dayOfBookingEnd;
 		this.dateFrom = dayOfBookingStart;
 

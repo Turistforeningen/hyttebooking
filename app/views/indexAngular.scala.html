@@ -6,7 +6,7 @@
 	
 </head >
 <body>
-	<nav class="navbar navbar-default" >
+	<nav class="navbar navbar-default" role="navigation">
 		<div class="container-fluid">
 			<!-- Brand and toggle get grouped for better mobile display -->
 			<div class="navbar-header">
@@ -20,7 +20,7 @@
 			</div>
 
 			<!-- Collect the nav links, forms, and other content for toggling -->
-			<div class="collapse navbar-collapse"  ng-controller="HeaderController">
+			<div class="collapse navbar-collapse"  id="bs-example-navbar-collapse-1" ng-controller="HeaderController">
 				<ul class="nav navbar-nav">
 					<li ng-class="{ active: isActive('/')}"><a href="#/">home</a></li>
 					<li ng-class="{ active: isActive('/orderHistory/')}"><a href="#/orderHistory">orders</a></li>
@@ -29,11 +29,12 @@
 				<ul class="nav navbar-nav navbar-right "ng-controller="authController">
 					<li ><a href="#/login">{{ SignInText || 'sign in' }}</a></li>
 					<li ><a href="#/" ng-click="logout()">log out</a></li>
-					
+					</ul>
 			</div>
 			<!-- /.navbar-collapse -->
 		</div>
 		<!-- /.container-fluid -->
+
 	</nav>
 
 	<div ng-view>

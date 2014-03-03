@@ -19,6 +19,12 @@ public abstract class Cabin extends Model {
 	@Id
 	public Long id;
 	
+	public String name;
+	
+	public Cabin(String name) {
+	this.name = name;	
+	}
+	
 	public static Finder<Long, Cabin> find = new Finder<Long, Cabin>(Long.class, Cabin.class);
 	
 	/** Checks availability of cabin for given date. Use for SmallCabin **/

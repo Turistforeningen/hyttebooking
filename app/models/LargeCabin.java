@@ -13,6 +13,11 @@ public class LargeCabin extends Cabin {
 	@Constraints.Required
 	@OneToMany
 	public List<Bed> beds;
+	
+
+	public LargeCabin(String name) {
+		super(name);
+	}
 
 	@Override
 	public boolean isAvailable(Date date, int numberOfBeds) {

@@ -1,9 +1,10 @@
+/*
+ * Service with functions used to interface client with server.
+ */
 app.service('ordersService', function ($http, $log) {
 	
 	
     this.getOrders = function () {
-    	$log.info("lol");
-    	$
         var url = '/api/bookings/';
         return $http.get(url);
        

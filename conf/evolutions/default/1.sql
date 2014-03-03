@@ -23,6 +23,7 @@ create table booking (
 create table cabin (
   dtype                     varchar(10) not null,
   id                        bigint not null,
+  name                      varchar(255),
   constraint pk_cabin primary key (id))
 ;
 
