@@ -18,5 +18,6 @@ target
 tmp
 test-result
 server.pid
+conf/evolutions/default/
 *.iml
 *.eml
