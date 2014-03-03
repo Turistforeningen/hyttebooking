@@ -25,11 +25,12 @@ public class Global extends GlobalSettings {
 			user1.save();
 			User user2 = new User("user2@demo.com", "password", "Jane Doe");
 			user2.save();
+			
 		    User[] us = {user1, user2}; 
 		    new Guest(user1.id).save();
 		    new Guest(user2.id).save();
-		    
-		   Cabin[] cabins = {new SmallCabin("Helfjord"), new LargeCabin("Fjordlistølen")};
+		   //List<Bed> beds = {new Bed().save(), new Bed().save() };
+		   Cabin[] cabins = {new SmallCabin("Helfjord"), new SmallCabin("Fjordlistølen")};
 		   cabins[0].save();
 		   cabins[1].save();
 		   

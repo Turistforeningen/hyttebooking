@@ -8,6 +8,7 @@ import javax.persistence.*;
 import play.data.validation.Constraints;
 
 @Entity
+@DiscriminatorValue("LARGE_CABIN")
 public class LargeCabin extends Cabin {
 
 	@Constraints.Required
@@ -15,11 +16,12 @@ public class LargeCabin extends Cabin {
 	public List<Bed> beds;
 	
 
-	public LargeCabin(String name) {
+	public LargeCabin(String name, List<Bed> beds) {
 		super(name);
+		this.beds = beds;
 	}
 
-	@Override
+	
 	public boolean isAvailable(Date date, int numberOfBeds) {
 		// TODO Auto-generated method stub
 		return false;

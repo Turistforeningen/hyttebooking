@@ -8,6 +8,7 @@ import javax.persistence.*;
 import play.data.validation.Constraints;
 
 @Entity
+@DiscriminatorValue("SMALL_CABIN")
 public class SmallCabin extends Cabin {
 
 	@OneToMany
@@ -17,7 +18,7 @@ public class SmallCabin extends Cabin {
 		super(name);
 	}
 
-	@Override
+	
 	public boolean isAvailable(Date date) {
 		// TODO Auto-generated method stub
 		return false;
