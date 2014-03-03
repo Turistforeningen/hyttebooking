@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import models.Booking;
+import models.Cabin;
 import models.Guest;
 import models.User;
 import play.api.data.Form;
@@ -45,6 +46,7 @@ public class BookingController extends Controller {
 			return badRequest(result);
 		}
 		else {
+			Cabin tempCabin = Cabin.find.where().eq("name", "Helfjord").findUnique();
 			String nrPerson = json.get("nrOfPersons").asText();
 			String start = json.get("dayOfBookingStart").asText();
 			String end = json.get("dayOfBookingEnd").asText();
@@ -57,8 +59,8 @@ public class BookingController extends Controller {
 				Booking booking = new Booking(
 						SecurityController.getUser().id, 
 						new Date(start),
-						new Date(end)
-						);
+						new Date(end),
+						tempCabin.id);
 				booking.save();
 				result.put("status", "OK");
 				result.put("message", "booking saved");
