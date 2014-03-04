@@ -1,4 +1,8 @@
-app.controller('orderController', function ($scope,$routeParams, $location, ordersService, api) {
+/*
+ * Controller for the ordersView. Sends a get request for orderHistory to the server.
+ * Methods for getting and cancelling bookings.
+ */
+app.controller('orderController', function ($scope, $location, ordersService, api) {
 
 	$scope.getBookings = function () {
 		var success = function (data) {
@@ -45,6 +49,9 @@ app.controller('orderController', function ($scope,$routeParams, $location, orde
 	};
 });
 
+/*
+ * Controller for testView.
+ */
 app.controller('testController', function ($scope) {
 	
 	  
@@ -56,6 +63,11 @@ app.controller('testController', function ($scope) {
 
 });
 
+/*
+ * Controller for bookingView. Possible to add danger and sucess alert to the view
+ * by using the method addAlert. The method postBooking uses the ordersService to 
+ * post the booking to the server.
+ */
 app.controller('bookingController', function ($scope, ordersService) {
 	
 	$scope.addAlert = function(type, msg) {
@@ -85,6 +97,11 @@ app.controller('bookingController', function ($scope, ordersService) {
 
 });
 
+/*
+ * The authController is the controller of authView and is responsible for 
+ * sending user credentials to server and take care of a authentication token return by the server.
+ * 
+ */
 app.controller('authController', function ($log, $scope, $location, $cookieStore, authorization, api) {
 	
 	
@@ -123,6 +140,10 @@ $scope.logout = function () {
 	};
 });
 
+/*
+ * Small controller used by navbar in indexAngular.html to set 
+ * active tab.
+ */
 function HeaderController($scope, $location, $log) 
 { 
     $scope.isActive = function (viewLocation) { 

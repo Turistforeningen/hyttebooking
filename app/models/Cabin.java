@@ -13,21 +13,20 @@ import play.db.ebean.Model;
  * @author Jama
  */
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
+@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "DTYPE", discriminatorType = DiscriminatorType.STRING)
 public abstract class Cabin extends Model {
 
 	@Id
 	public Long id;
 	
+	public String name;
+	
+	public Cabin(String name) {
+	this.name = name;	
+	}
+	
 	public static Finder<Long, Cabin> find = new Finder<Long, Cabin>(Long.class, Cabin.class);
 	
-	/** Checks availability of cabin for given date. Use for SmallCabin **/
-	public boolean isAvailable(Date date) {
-		return false; //TODO unimplemented method
-	}
 	
-	/** Checks availability of cabin for given date, and number of beds specified. Used with LargeCabin **/
-	public boolean isAvailable(Date date, int numberOfBeds) {
-		return false; //TODO unimplemented method
-	}
 }

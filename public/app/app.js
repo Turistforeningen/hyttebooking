@@ -1,5 +1,10 @@
 var app = angular.module('dntApp' ,['ngRoute', 'ui.bootstrap', 'ngCookies', 'ngResource', 'ngSanitize']);
 
+/*
+ * Routes, routeinterceptor done below. Httpinterceptor, redirect to /login
+ * when a request returns unauthorized.
+ * 
+ */
 app.config(function ($routeProvider, $locationProvider, $httpProvider) {
 	
 	$httpProvider.responseInterceptors.push('httpInterceptor');
@@ -30,10 +35,6 @@ app.config(function ($routeProvider, $locationProvider, $httpProvider) {
 	.otherwise({ redirectTo: '/'});
 	
 	
-	//Does not remove # symbol if not supported by browser
-	/*if(window.history && window.history.pushState){
-	    $locationProvider.html5Mode(true);
-	  }*/
 	
 });
 

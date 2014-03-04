@@ -45,18 +45,21 @@ public class Booking extends Model {
 	public Payment payment;
 
 	@ManyToOne
+	@JsonIgnore
 	public SmallCabin cabin;
 	
 	@ManyToMany
+	@JsonIgnore
 	public List<Bed> beds;
 	
 	/** TEST **/
 	public Booking(Long userId,
 			Date dayOfBookingStart,
-			Date dayOfBookingEnd) {
+			Date dayOfBookingEnd,
+			Long cabinId) {
 		this.timeOfBooking = Calendar.getInstance().getTimeInMillis();
 		this.guest = Guest.find.byId(userId);
-		this.cabin = new SmallCabin(this);
+		this.cabin = (SmallCabin)Cabin.find.byId(cabinId);
 		this.dateTo = dayOfBookingEnd;
 		this.dateFrom = dayOfBookingStart;
 
@@ -67,4 +70,7 @@ public class Booking extends Model {
 			String.class, Booking.class
 			); 
 	
+	public String toString() {
+		return "id: " + this.id + " cabin" + this.cabin.name;
+	}
 }
