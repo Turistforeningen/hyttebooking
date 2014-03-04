@@ -83,10 +83,10 @@ app.controller('bookingController', function ($scope, ordersService) {
     	
     	ordersService.postOrder(booking)
 		.success(function (success) {
-			$scope.addAlert('success', "det virket!");
+			$scope.addAlert('success', success.message);
 		})
 		.error(function (error) {
-			$scope.addAlert('danger', "virket ikke!");
+			$scope.addAlert('danger', error.message);
 		});
     };
     init();
