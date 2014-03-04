@@ -7,7 +7,9 @@ import java.util.List;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import flexjson.JSONSerializer;
 import models.Booking;
+import models.Cabin;
 import models.Guest;
 import models.User;
 import play.api.data.Form;
@@ -23,12 +25,14 @@ public class BookingController extends Controller {
 	
 	public static Result getAvailabilityForTimePeriod() {
 		/* PROPOSAL
-		 * Input: startDate, Enddate, NrOfPerson (if partial booking allowed)
+		 * Input: startDate, Enddate, NrOfPerson, CabinID (if partial booking allowed)
 		 * 
 		 * When choosing a time period and persons availability for
 		 * each date should be returned as JSON to be dynamically
 		 * displayed on client 
 		 * 
+		 *returns a json string with a boolean for each date.
+		 *
 		 */
 		return TODO;
 	}
@@ -45,6 +49,7 @@ public class BookingController extends Controller {
 			return badRequest(result);
 		}
 		else {
+			Cabin tempCabin = Cabin.find.where().eq("name", "Helfjord").findUnique();
 			String nrPerson = json.get("nrOfPersons").asText();
 			String start = json.get("dayOfBookingStart").asText();
 			String end = json.get("dayOfBookingEnd").asText();
@@ -57,8 +62,8 @@ public class BookingController extends Controller {
 				Booking booking = new Booking(
 						SecurityController.getUser().id, 
 						new Date(start),
-						new Date(end)
-						);
+						new Date(end),
+						tempCabin.id);
 				booking.save();
 				result.put("status", "OK");
 				result.put("message", "booking saved");
@@ -95,10 +100,9 @@ public class BookingController extends Controller {
     
     
     public static Result getOrderHistory() {
-    	
-    	//List<Booking> bookings = Booking.findBookingByUser(SecurityController.getUser().id);
     	 Guest user = Guest.find.where().eq("id", SecurityController.getUser().id).findUnique();
     	 List<Booking> bookings = user.booking;
-    	return Results.ok(Json.toJson(bookings));
+    	 JSONSerializer orderDetailsSerializer = new JSONSerializer().include().exclude("*.class");
+    	return Results.ok(orderDetailsSerializer.serialize(bookings));
     }
 }

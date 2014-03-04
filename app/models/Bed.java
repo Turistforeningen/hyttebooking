@@ -24,4 +24,6 @@ public class Bed extends Model  {
 	
 	@ManyToMany
 	public List<Booking> bookings;
+	
+	
 }
