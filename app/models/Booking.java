@@ -27,11 +27,11 @@ public class Booking extends Model {
 	public Long id;
 	
 	@Constraints.Required
-	@Formats.DateTime(pattern="dd-MM-yyyy")
+	@Formats.DateTime(pattern="yyyy-MM-dd")
 	public Date dateFrom;
 
 	@Constraints.Required
-	@Formats.DateTime(pattern="dd-MM-yyyy")
+	@Formats.DateTime(pattern="yyyy-MM-dd")
 	public Date dateTo;
 	
 	/** Time of order contains information about when the order took place in greater detail **/

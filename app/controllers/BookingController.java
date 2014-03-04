@@ -4,6 +4,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.joda.time.DateTime;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -51,18 +53,27 @@ public class BookingController extends Controller {
 		else {
 			Cabin tempCabin = Cabin.find.where().eq("name", "Helfjord").findUnique();
 			String nrPerson = json.get("nrOfPersons").asText();
+			
 			String start = json.get("dayOfBookingStart").asText();
+			DateTime startDt = dateHelper(start);
+			System.out.println("Start dt: "+startDt);
 			String end = json.get("dayOfBookingEnd").asText();
+			DateTime endDt = dateHelper(end);
+			System.out.println("End dt: "+endDt);
+			
 			//validate request here
 			if(nrPerson 	!= null &&
-					start 	!= null &&
-					end 	!= null
+					startDt != null &&
+					endDt 	!= null &&
+					!startDt.isBeforeNow() &&
+					!endDt.isBeforeNow() &&
+					startDt.isBefore(endDt)
 					) {
 				//TESTLINE
 				Booking booking = new Booking(
 						SecurityController.getUser().id, 
-						new Date(start),
-						new Date(end),
+						startDt.toDate(),
+						endDt.toDate(),
 						tempCabin.id);
 				booking.save();
 				result.put("status", "OK");
@@ -70,11 +81,25 @@ public class BookingController extends Controller {
 				return ok(result);
 			}
 			else {
-				return badRequest();
+				result.put("status", "KO");
+				result.put("message", "date invalid");
+				return badRequest(result);
 			}
-			
 		}
+	}
+
+	/** Helper method for dateTime object from string "dd-MM-YYYY" **/
+	public static DateTime dateHelper(String date) {
 		
+		String[] d = date.split("-");
+		if(d.length < 3) return null;
+		DateTime dt = new DateTime(Integer.parseInt(d[0]), //int year
+				Integer.parseInt(d[1]), //int month
+				Integer.parseInt(d[2]), //int day
+				0, 						//int hour
+				0						//int minute
+				);
+		return dt;
 	}
 	
 	
