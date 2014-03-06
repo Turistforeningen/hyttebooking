@@ -73,8 +73,6 @@ public class LargeCabin extends Cabin {
 		//add support for removing a spesific bed
 		beds.remove(0);
 	}
-
-	/** Calendar display for given date, given numberOfBeds **/
 	public boolean isAvailable(Date date, int numberOfBeds) {
 		
 		int count = 0; //counts number of beds available for given date
