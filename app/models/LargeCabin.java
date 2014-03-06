@@ -15,15 +15,33 @@ import play.data.validation.Constraints;
 public class LargeCabin extends Cabin {
 
 	@Constraints.Required
-	@OneToMany
+	@OneToMany(mappedBy="largeCabin", cascade = CascadeType.ALL, orphanRemoval=true)
 	public List<Bed> beds;
 	
-
-	public LargeCabin(String name, List<Bed> beds) {
+	/**
+	 * 
+	 * @param name
+	 * @param nrOfBeds
+	 */
+	public LargeCabin(String name, int nrOfBeds) {
 		super(name);
-		this.beds = beds;
+		for(int i= 0; i<nrOfBeds; i++) {
+			addBed();
+		}
 	}
 	
+	/**
+	 * Admin method
+	 */
+	public void addBed() {
+		if (beds == null) {
+			beds = new ArrayList<Bed>();
+		}
+		Bed newBed = new Bed();
+		newBed.largeCabin = this;
+		beds.add(newBed);
+		newBed.save();
+	}
 	/**
 	 * Book a large cabin, supply number of beds and fromDate to toDate.
 	 * @param numberOfBeds
@@ -45,7 +63,16 @@ public class LargeCabin extends Cabin {
 		return availBeds; //TODO crop this to be size() == numberOfBeds
 	}
 	
-	/** Calendar display for given date, given numberOfBeds **/
+	/**
+	 * Admin method
+	 */
+	public void removeBed() {
+		if (beds.size() <= 1) {
+			return;
+		}
+		//add support for removing a spesific bed
+		beds.remove(0);
+	}
 	public boolean isAvailable(Date date, int numberOfBeds) {
 		
 		int count = 0; //counts number of beds available for given date
