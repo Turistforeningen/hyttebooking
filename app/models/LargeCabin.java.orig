@@ -28,10 +28,22 @@ public class LargeCabin extends Cabin {
 		for(int i= 0; i<nrOfBeds; i++) {
 			addBed();
 		}
+<<<<<<< HEAD
 	}
 	
 	/**
-<<<<<<< HEAD
+	 * Admin method
+	 */
+	public void addBed() {
+		if (beds == null) {
+			beds = new ArrayList<Bed>();
+		}
+		Bed newBed = new Bed();
+		newBed.largeCabin = this;
+		beds.add(newBed);
+		newBed.save();
+	}
+	/**
 	 * Book a large cabin, supply number of beds and fromDate to toDate.
 	 * @param numberOfBeds
 	 * @param fromDate
@@ -50,12 +62,15 @@ public class LargeCabin extends Cabin {
 		if(availBeds.size() < numberOfBeds)
 			return null;
 		return availBeds; //TODO crop this to be size() == numberOfBeds
+=======
+>>>>>>> 37c658267613e115c642c47951c4125b67060e34
 	}
 	
-	/** Calendar display for given date, given numberOfBeds **/
-=======
+	/**
 	 * Admin method
 	 */
+<<<<<<< HEAD
+=======
 	public void addBed() {
 		if (beds == null) {
 			beds = new ArrayList<Bed>();
@@ -69,6 +84,7 @@ public class LargeCabin extends Cabin {
 	/**
 	 * Admin method
 	 */
+>>>>>>> 37c658267613e115c642c47951c4125b67060e34
 	public void removeBed() {
 		if (beds.size() <= 1) {
 			return;
@@ -76,7 +92,11 @@ public class LargeCabin extends Cabin {
 		//add support for removing a spesific bed
 		beds.remove(0);
 	}
->>>>>>> fix dummy data, fixed orderHistory jsonString, written new database unittests, fix for manytomany annotation
+<<<<<<< HEAD
+
+	/** Calendar display for given date, given numberOfBeds **/
+=======
+>>>>>>> 37c658267613e115c642c47951c4125b67060e34
 	public boolean isAvailable(Date date, int numberOfBeds) {
 		
 		int count = 0; //counts number of beds available for given date

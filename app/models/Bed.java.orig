@@ -1,11 +1,11 @@
 package models;
 
+import java.util.ArrayList;
 <<<<<<< HEAD
 import java.text.SimpleDateFormat;
 import java.util.Date;
 =======
-import java.util.ArrayList;
->>>>>>> fix dummy data, fixed orderHistory jsonString, written new database unittests, fix for manytomany annotation
+>>>>>>> 37c658267613e115c642c47951c4125b67060e34
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -33,8 +33,26 @@ public class Bed extends Model  {
 	public LargeCabin largeCabin;
 <<<<<<< HEAD
 
-	@ManyToMany
-	public List<Booking> bookings;
+=======
+	
+>>>>>>> 37c658267613e115c642c47951c4125b67060e34
+	@ManyToMany( cascade = CascadeType.ALL)
+	public List<Booking> bookings = new ArrayList<Booking>();
+	
+	public void addBooking(Booking b) {
+		if (this.bookings == null) {
+			bookings = new ArrayList<Booking>();
+		}
+		bookings.add(b);
+	}
+	
+<<<<<<< HEAD
+	public void addBooking(Booking b) {
+		if (this.bookings == null) {
+			bookings = new ArrayList<Booking>();
+		}
+		bookings.add(b);
+}
 
 	public boolean isAvailable(DateTime fromDate, DateTime toDate) {
 		//if there exists a booking within fromDate and toDate, return false
@@ -51,6 +69,7 @@ public class Bed extends Model  {
 				return false;
 			}
 		}
+		
 
 		return true;
 	}
@@ -62,19 +81,8 @@ public class Bed extends Model  {
 		return false;
 	}
 =======
-	
-	@ManyToMany( cascade = CascadeType.ALL)
-	public List<Booking> bookings = new ArrayList<Booking>();
-	
-	public void addBooking(Booking b) {
-		if (this.bookings == null) {
-			bookings = new ArrayList<Booking>();
-		}
-		bookings.add(b);
-	}
-	
+>>>>>>> 37c658267613e115c642c47951c4125b67060e34
 	public static Finder<Long,Bed> find = new Finder<Long,Bed>(
 			Long.class, Bed.class
 			); 
->>>>>>> fix dummy data, fixed orderHistory jsonString, written new database unittests, fix for manytomany annotation
 }
