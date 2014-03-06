@@ -7,6 +7,8 @@ import models.*;
 
 import java.util.*;
 
+import org.hibernate.validator.constraints.Length;
+
 /**
  * Dummy generation test
  * v0.1 (Jama) Changes made:
@@ -21,26 +23,39 @@ public class Global extends GlobalSettings {
 		
 	    
 		if (User.find.findRowCount() == 0) {
-			User user1 = new User("olavvatne@gmail.com", "p", "John Doe");
+			User user1 = new User("q", "w", "John Doe");
 			user1.save();
 			User user2 = new User("user2@demo.com", "password", "Jane Doe");
 			user2.save();
 			
-		    User[] us = {user1, user2}; 
+		    User[] us = {user1, user2};
+		    int userSize = us.length;
 		    new Guest(user1.id).save();
 		    new Guest(user2.id).save();
-		   //List<Bed> beds = {new Bed().save(), new Bed().save() };
-		   Cabin[] cabins = {new SmallCabin("Helfjord"), new SmallCabin("Fjordlistølen")};
-		   cabins[0].save();
-		   cabins[1].save();
+		   LargeCabin lc = new LargeCabin("Fjordheim", 10);
+		   lc.save();
 		   
-			for ( int i = 0; i<40; i++) {
-				new Booking((long)i, new Date(), new Date(), cabins[i%2].id ).save();
+		   LargeCabin lc2 = new LargeCabin("Peterstun", 20);
+		   lc2.save();
+		   
+		   Cabin[] cabins = {lc, new SmallCabin("Helfjord"), new SmallCabin("Fjordlistølen"), lc2};
+		   
+		   cabins[1].save();
+		   cabins[2].save();
+		   
+		   	int cabinSize = cabins.length;
+			for ( int i = 0; i<20; i++) {
+				List<Bed> beds = null;
+				if(i%cabinSize ==0) {
+					beds = lc.beds;
+				}
+				if(i%cabinSize ==3) {
+					beds = lc2.beds.subList(0, 1+ (int)Math.floor((Math.random()*15)));
+					System.out.println(beds.size());
+				}
+				Booking b= new Booking((long)i%userSize, new Date(), new Date(), cabins[i%cabinSize].id, beds );
+				b.save();
 				
-				
-				
-				
-//models.Booking.Booking(String userId, Date dayOfBookingStart, Date dayOfBookingEnd, SmallCabin cabin)
 			}
 		}
 		
