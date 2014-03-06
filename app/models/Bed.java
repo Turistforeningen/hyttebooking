@@ -19,6 +19,7 @@ import play.data.validation.Constraints;
 import play.db.ebean.Model;
 import play.db.ebean.Model.Finder;
 
+//terje was here
 @Entity
 public class Bed extends Model  {
 
