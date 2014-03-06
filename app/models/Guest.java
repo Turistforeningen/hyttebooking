@@ -16,6 +16,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import play.db.ebean.Model;
 import play.db.ebean.Model.Finder;
 
+//tar magnus feil?
 @Entity
 public class Guest extends Model {
 
