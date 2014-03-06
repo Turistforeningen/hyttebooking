@@ -13,6 +13,7 @@ import flexjson.JSONSerializer;
 import models.Booking;
 import models.Cabin;
 import models.Guest;
+import models.LargeCabin;
 import models.User;
 import play.api.data.Form;
 import play.libs.Json;
@@ -74,7 +75,8 @@ public class BookingController extends Controller {
 						SecurityController.getUser().id, 
 						startDt.toDate(),
 						endDt.toDate(),
-						tempCabin.id);
+						tempCabin.id,
+						null);
 				booking.save();
 				result.put("status", "OK");
 				result.put("message", "booking saved");
@@ -127,7 +129,13 @@ public class BookingController extends Controller {
     public static Result getOrderHistory() {
     	 Guest user = Guest.find.where().eq("id", SecurityController.getUser().id).findUnique();
     	 List<Booking> bookings = user.booking;
-    	 JSONSerializer orderDetailsSerializer = new JSONSerializer().include().exclude("*.class");
+    	 System.out.println(bookings.size() + " This is users bookings");
+    	 for (Booking b: bookings) {
+    		 if(b.cabin == null) {
+    			 System.out.println("beds in controller " + b.beds.size());
+    		 }
+    	 }
+    	 JSONSerializer orderDetailsSerializer = new JSONSerializer().include().exclude("*.class", "beds");
     	return Results.ok(orderDetailsSerializer.serialize(bookings));
     }
 }
