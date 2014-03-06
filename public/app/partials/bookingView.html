@@ -4,14 +4,17 @@
     <form novalidate class="bookingForm">
         <h2>Velge Antall personer</h2>
         Persons: <input type="number" class="form-control" ng-model="booking.nrOfPersons" >
-        <h2>Velg datoer</h2>
-        To: <input type="daterange" class="form-control" ng-model="booking.dayOfBookingStart">
-        From: <input type="daterange" class="form-control" ng-model="booking.dayOfBookingEnd">
-        
+        <h2>Velg datoer (fra - til)</h2>
+        <!--From: <input type="daterange" class="form-control" ng-model="booking.dayOfBookingStart"> 
+        To: <input type="daterange" class="form-control" ng-model="booking.dayOfBookingEnd"> <br> 
+        {{booking.dayOfBookingStart}}<br> -->
+        <input type="daterange" ng-model="booking.dates" format="YYYY MM DD" separator="-"> {{booking.dates}}
         <h2>submit</h2>
         <button class="submit" ng-click="postBooking(booking)">Bestill</button>
     </form>
+	Startdato: {{start}} Sluttdato: {{slutt}}<br/>
     
-    <pre>form = {{booking | json}}</pre>
+	
+    <pre>form = {{booking | json}} booking - json</pre>
 </div>
 

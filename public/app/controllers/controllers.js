@@ -81,6 +81,15 @@ app.controller('bookingController', function ($scope, ordersService) {
 	
     $scope.postBooking = function(booking) {
     	
+		// Temporary code
+		//var startD = booking.dates.startDate;
+		//$scope.start = startD.substring(0, 10);
+		$scope.start = JSON.stringify(booking.dates.startDate).substring(1, 11);
+		$scope.slutt = JSON.stringify(booking.dates.endDate).substring(1, 11);
+		booking.dates.startDate=JSON.stringify(booking.dates.startDate).substring(1, 11);
+		booking.dates.endDate=JSON.stringify(booking.dates.endDate).substring(1, 11);
+		// End temporary code
+		
     	ordersService.postOrder(booking)
 		.success(function (success) {
 			$scope.addAlert('success', "det virket!");

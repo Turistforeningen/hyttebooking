@@ -1,4 +1,4 @@
-var app = angular.module('dntApp' ,['ngRoute', 'ui.bootstrap', 'ngCookies', 'ngResource', 'ngSanitize']);
+var app = angular.module('dntApp' ,['ngRoute', 'ui.bootstrap', 'ngCookies', 'ngResource', 'ngSanitize', 'ngBootstrap']);
 
 /*
  * Routes, routeinterceptor done below. Httpinterceptor, redirect to /login
