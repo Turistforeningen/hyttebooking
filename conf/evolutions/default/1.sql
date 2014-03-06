@@ -56,12 +56,6 @@ create table bed_booking (
   booking_id                     bigint not null,
   constraint pk_bed_booking primary key (bed_id, booking_id))
 ;
-
-create table booking_bed (
-  booking_id                     bigint not null,
-  bed_id                         bigint not null,
-  constraint pk_booking_bed primary key (booking_id, bed_id))
-;
 create sequence bed_seq;
 
 create sequence booking_seq;
@@ -89,10 +83,6 @@ alter table bed_booking add constraint fk_bed_booking_bed_01 foreign key (bed_id
 
 alter table bed_booking add constraint fk_bed_booking_booking_02 foreign key (booking_id) references booking (id) on delete restrict on update restrict;
 
-alter table booking_bed add constraint fk_booking_bed_booking_01 foreign key (booking_id) references booking (id) on delete restrict on update restrict;
-
-alter table booking_bed add constraint fk_booking_bed_bed_02 foreign key (bed_id) references bed (id) on delete restrict on update restrict;
-
 # --- !Downs
 
 SET REFERENTIAL_INTEGRITY FALSE;
@@ -102,8 +92,6 @@ drop table if exists bed;
 drop table if exists bed_booking;
 
 drop table if exists booking;
-
-drop table if exists booking_bed;
 
 drop table if exists cabin;
 
