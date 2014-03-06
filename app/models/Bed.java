@@ -29,6 +29,8 @@ public class Bed extends Model  {
 	@ManyToOne(cascade = CascadeType.ALL)
 	public LargeCabin largeCabin;
 
+	@ManyToMany( cascade = CascadeType.ALL)
+	public List<Booking> bookings = new ArrayList<Booking>();
 	
 	public void addBooking(Booking b) {
 		if (this.bookings == null) {
