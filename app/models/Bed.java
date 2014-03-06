@@ -19,7 +19,6 @@ import play.data.validation.Constraints;
 import play.db.ebean.Model;
 import play.db.ebean.Model.Finder;
 
-//terje was here
 @Entity
 public class Bed extends Model  {
 
@@ -70,7 +69,7 @@ public class Bed extends Model  {
 								fmt.format(fromDate2.toDate()).equals(fmt.format(toDate.toDate()))))) {
 			return false;
 		}
-		return false;
+		return true;
 	}
 
 	/** Used for calendar lookup of specific date **/
