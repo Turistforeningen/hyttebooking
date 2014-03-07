@@ -127,21 +127,26 @@ public class BookingController extends Controller {
     }
     
     /**
-     * Extract optional pageparamter to obtain page variable, and
+     * Extract optional page-paramter to obtain page variable, and
      * gets a page of the current user's (authenticated by securitycontroller),
-     * orderhistory. The bookings are serialized to a json string.
+     * order-history. The bookings are serialized to a json string.
      * @return Json with a page of orderHistory
      */
 	public static Result getOrderHistory() {
 		
-		int pageSize = 5;
+		int pageSize = 10;
 		int page = 0;
 		try {
 			page = Integer.parseInt(request().getQueryString("page"));
 		} catch (Exception e) {
 			page = 0;
 		}
-		
+		try {
+			pageSize = Integer.parseInt(request().getQueryString("size"));
+		} catch (Exception e) {
+			page = 10;
+		}
+		System.out.println(pageSize + " " + page + " hei der");
 		Page bookings = Booking.getBookingPageByUser(SecurityController.getUser(), page, pageSize);
 		JSONSerializer orderDetailsSerializer = new JSONSerializer().include("orders", "orders.cabin" ).exclude("*.class", "beds", "smallCabin");
 		return Results.ok(orderDetailsSerializer.serialize(bookings));
