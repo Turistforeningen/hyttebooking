@@ -141,6 +141,7 @@ public class BookingController extends Controller {
 		} catch (Exception e) {
 			page = 0;
 		}
+		
 		try {
 			pageSize = Integer.parseInt(request().getQueryString("size"));
 		} catch (Exception e) {
