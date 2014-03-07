@@ -15,7 +15,7 @@ app.config(function ($routeProvider, $locationProvider, $httpProvider) {
 		templateUrl: '/assets/app/partials/testView.html'
 		
 	})
-	.when('/orderHistory/', {
+	.when('/orderHistory', {
 		
 		controller: 'orderController',
 		templateUrl: '/assets/app/partials/ordersView.html'

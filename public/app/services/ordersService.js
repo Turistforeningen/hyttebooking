@@ -4,8 +4,8 @@
 app.service('ordersService', function ($http, $log) {
 	
 	
-    this.getOrders = function () {
-        var url = '/api/bookings/';
+    this.getOrders = function (page) {
+        var url = '/api/bookings?page=' + page;
         return $http.get(url);
        
     };
