@@ -27,7 +27,6 @@ public class UserController extends Controller {
 	 * - newAddress
 	 * - newCity
 	 * - newZipCode
-	 * 
 	 * @return
 	 */
 	public static Result changeDetail() {
@@ -46,14 +45,20 @@ public class UserController extends Controller {
 
 			String newName = json.get("newName").asText(); //TODO ensure its called newName
 			//TODO SECURITY //TODO tests
-			user.fullName = newName;
-			user.save();
-			
-			//TODO add the remaining fields
+			if(Security.Validation.isValidName(newName)) { //TODO add isValidXXX to remaining fields
+				user.fullName = newName;
+				user.save();
 
-			result.put("status", "OK");
-			result.put("message", "booking saved");
-			return ok(result);
+				//TODO add the remaining fields
+				result.put("status", "OK");
+				result.put("message", "booking saved");
+				return ok(result);
+			}
+			else {
+				result.put("status", "KO");
+				result.put("message", "Expected Json");
+				return badRequest(result);
+			}
 		}
 	}
 
