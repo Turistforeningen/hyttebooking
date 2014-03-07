@@ -19,4 +19,8 @@ public class Payment extends Model {
 	
 	@Constraints.Required
 	public Date date;
+	
+	/** User who authorised transaction **/
+	@Constraints.Required
+	public User user;	
 }

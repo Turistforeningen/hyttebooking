@@ -115,7 +115,7 @@ public class BookingController extends Controller {
     	if(booking == null) {
     		return notFound();
     	}
-    	if(booking.guest.id != SecurityController.getUser().id) {
+    	if(booking.payment.user.id != SecurityController.getUser().id) {
     		return badRequest("No access");
     	}
     	
