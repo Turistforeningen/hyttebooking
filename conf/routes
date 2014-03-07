@@ -10,7 +10,7 @@ GET     /                           controllers.Application.index()
 GET		/api/bookings/:id				controllers.Application.bookAtCabin(id: String)
 POST	/api/bookings/					controllers.BookingController.submitBooking()
 DELETE	/api/bookings/:id				controllers.BookingController.cancelBooking(id: String)
-GET		/api/bookings/				controllers.BookingController.getOrderHistory()
+GET		/api/bookings				controllers.BookingController.getOrderHistory()
 
 POST    /login                      controllers.SecurityController.login()
 POST    /logout                     controllers.SecurityController.logout()

@@ -2,11 +2,16 @@
  * Controller for the ordersView. Sends a get request for orderHistory to the server.
  * Methods for getting and cancelling bookings.
  */
-app.controller('orderController', function ($scope, $location, ordersService, api, $log) {
-
+app.controller('orderController', function ($scope, $location, $routeParams, ordersService, api, $log) {
+	$scope.currentPage = 1;
+	$scope.totalItems = 10;
+	
+	$scope.setPage = function(page) {
+		$scope.getOrders(page-1);
+	};
+	
 	$scope.getBookings = function () {
 		var success = function (data) {
-			$log.info("HEI HEI HEI HEI");
 			$scope.orders = data;
 		};
 
@@ -18,10 +23,11 @@ app.controller('orderController', function ($scope, $location, ordersService, ap
 	};
 
 
-	$scope.getOrders = function() {
-		ordersService.getOrders()
+	$scope.getOrders = function(page) {
+		ordersService.getOrders(page)
 		.success(function (userOrders) {
-			$scope.orders = userOrders;
+			$scope.orders = userOrders.orders;
+			$scope.totalItems = userOrders.totalItems;
 		})
 		.error(function (error) {
 			$scope.status = 'unable to load customer data' + error.message;
@@ -44,8 +50,15 @@ app.controller('orderController', function ($scope, $location, ordersService, ap
 
 	init();
 	function init() {
-		
-			$scope.getOrders();
+			var page = $routeParams.page;
+			if(page) {
+				$scope.currentPage = page;
+				$scope.getOrders(page-1);
+			}
+			else {
+				$scope.getOrders(0);
+			}
+			
 		
 	};
 });

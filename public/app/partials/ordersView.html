@@ -3,14 +3,18 @@
     <input type='text' ng-model="text" />
     <br/>
     <br/>
-    <div ng-repeat="order in orders | filter:text | orderBy:'dayOfBookingStart'" style="border:1px solid black; padding:1cm 1cm 1cm 1cm;" >
-    
-        <p> cabin: {{ order.cabin.name }}</p>
-        <p> date ordered: {{ order.timeOfBooking | date }}</p>
-        <p> from: {{ order.dateFrom | date }}</p>
-        <p> till: {{ order.dateTo | date }}</p>
-        <button ng-click="cancelOrder( order )"> Cancel booking </button>
-        <p ng-show-on="order.beds != null"> {{order.beds }} </p> 
-    </div>
+	
+	<div
+		ng-repeat="order in orders | filter:text | orderBy:'dayOfBookingStart'"
+		style="border: 1px solid black; padding: 1cm 1cm 1cm 1cm;">
+
+		<p>cabin: {{ order.cabin.name }}</p>
+		<p>date ordered: {{ order.timeOfBooking | date }}</p>
+		<p>from: {{ order.dateFrom | date }}</p>
+		<p>till: {{ order.dateTo | date }}</p>
+		<button ng-click="cancelOrder( order )">Cancel booking</button>
+		<p ng-show-on="order.beds != null">{{order.beds }}</p>
+	</div>
+	<pagination on-select-page="setPage(page)" total-items="totalItems" page="currentPage" items-per-page="5"></pagination>
 </div>
 <pre>{{orders}}</pre>
