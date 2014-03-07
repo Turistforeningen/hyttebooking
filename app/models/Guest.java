@@ -23,6 +23,8 @@ public class Guest extends Model {
 	@Id
 	public Long id;
 	
+	@ManyToOne
+	public Booking booking;
 	/** Boolean for if guest is member or not **/
 	@Constraints.Required
 	public boolean isMember;
