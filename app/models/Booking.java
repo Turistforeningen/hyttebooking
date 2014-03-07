@@ -33,10 +33,13 @@ public class Booking extends Model {
 	@Constraints.Required
 	@OneToMany(mappedBy="booking", cascade = CascadeType.ALL, orphanRemoval=true) //you were here a
 	public List<Guest> guests;
+	
+	@Constraints.Required
+	@ManyToOne
+	public User user;
 
 	@OneToOne
 	public Payment payment;
-	
 	
 	@ManyToOne
 	@JsonIgnore
@@ -67,7 +70,7 @@ public class Booking extends Model {
 			Long cabinId,
 			List<Bed> beds) {
 		this.timeOfBooking = Calendar.getInstance().getTimeInMillis();
-		this.payment.user = User.find.byId(userId);
+		this.user = User.find.byId(userId);
 		Cabin cabin = Cabin.find.byId(cabinId);
 		
 		if(cabin instanceof SmallCabin) {

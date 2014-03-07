@@ -127,8 +127,9 @@ public class BookingController extends Controller {
     
     
     public static Result getOrderHistory() {
-    	 Guest user = Guest.find.where().eq("id", SecurityController.getUser().id).findUnique();
-    	 List<Booking> bookings = user.booking;
+    	//jama change user.find.where().eq("id", SecurityController.getUser().id).findUnique(); Yell at me if something breaks
+    	 User user = SecurityController.getUser();
+    	 List<Booking> bookings = user.bookings;
     	 System.out.println(bookings.size() + " This is users bookings");
     	 for (Booking b: bookings) {
     		 if(b.cabin == null) {
