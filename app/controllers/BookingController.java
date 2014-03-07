@@ -1,5 +1,6 @@
 package controllers;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -14,6 +15,7 @@ import models.Booking;
 import models.Cabin;
 import models.Guest;
 import models.LargeCabin;
+import models.Page;
 import models.User;
 import play.api.data.Form;
 import play.libs.Json;
@@ -124,20 +126,24 @@ public class BookingController extends Controller {
     	
     }
     
-    /*
-     * 
+    /**
+     * Extract optional pageparamter to obtain page variable, and
+     * gets a page of the current user's (authenticated by securitycontroller),
+     * orderhistory. The bookings are serialized to a json string.
+     * @return Json with a page of orderHistory
      */
-    public static Result getOrderHistory() {
-    	//jama change user.find.where().eq("id", SecurityController.getUser().id).findUnique(); Yell at me if something breaks
-    	 User user = SecurityController.getUser();
-    	 List<Booking> bookings = user.bookings;
-    	 System.out.println(bookings.size() + " This is users bookings");
-    	 for (Booking b: bookings) {
-    		 if(b.cabin == null) {
-    			 System.out.println("beds in controller " + b.beds.size());
-    		 }
-    	 }
-    	 JSONSerializer orderDetailsSerializer = new JSONSerializer().include().exclude("*.class", "beds");
-    	return Results.ok(orderDetailsSerializer.serialize(bookings));
-    }
+	public static Result getOrderHistory() {
+		
+		int pageSize = 5;
+		int page = 0;
+		try {
+			page = Integer.parseInt(request().getQueryString("page"));
+		} catch (Exception e) {
+			page = 0;
+		}
+		
+		Page bookings = Booking.getBookingPageByUser(SecurityController.getUser(), page, pageSize);
+		JSONSerializer orderDetailsSerializer = new JSONSerializer().include("orders", "orders.cabin" ).exclude("*.class", "beds", "smallCabin");
+		return Results.ok(orderDetailsSerializer.serialize(bookings));
+	}
 }
