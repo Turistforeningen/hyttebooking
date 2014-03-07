@@ -44,7 +44,7 @@ public class Global extends GlobalSettings {
 		   cabins[2].save();
 		   
 		   	int cabinSize = cabins.length;
-			for ( int i = 0; i<20; i++) {
+			for ( int i = 0; i<100; i++) {
 				List<Bed> beds = null;
 				if(i%cabinSize ==0) {
 					beds = lc.beds;

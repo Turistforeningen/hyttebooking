@@ -16,7 +16,7 @@ create table booking (
   time_of_booking           bigint,
   user_id                   bigint,
   payment_id                bigint,
-  cabin_id                  bigint,
+  small_cabin_id            bigint,
   constraint pk_booking primary key (id))
 ;
 
@@ -82,8 +82,8 @@ alter table booking add constraint fk_booking_user_2 foreign key (user_id) refer
 create index ix_booking_user_2 on booking (user_id);
 alter table booking add constraint fk_booking_payment_3 foreign key (payment_id) references payment (id) on delete restrict on update restrict;
 create index ix_booking_payment_3 on booking (payment_id);
-alter table booking add constraint fk_booking_cabin_4 foreign key (cabin_id) references cabin (id) on delete restrict on update restrict;
-create index ix_booking_cabin_4 on booking (cabin_id);
+alter table booking add constraint fk_booking_smallCabin_4 foreign key (small_cabin_id) references cabin (id) on delete restrict on update restrict;
+create index ix_booking_smallCabin_4 on booking (small_cabin_id);
 alter table guest add constraint fk_guest_booking_5 foreign key (booking_id) references booking (id) on delete restrict on update restrict;
 create index ix_guest_booking_5 on guest (booking_id);
 
