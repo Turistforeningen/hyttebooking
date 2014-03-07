@@ -52,6 +52,11 @@ public class Booking extends Model {
 		beds.add(b);
 		
 	}
+	
+	/**
+	 * 
+	 * @return Cabin
+	 */
 	public Cabin getCabin() {
 		if(beds.size() != 0) {
 			System.out.println(beds.size());
@@ -99,5 +104,9 @@ public class Booking extends Model {
 	
 	public String toString() {
 		return "id: " + this.id + " cabin" + this.cabin.name;
+	}
+	
+	public static Booking getBookingByUser(Long userId) {
+		return null;
 	}
 }

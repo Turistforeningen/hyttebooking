@@ -54,7 +54,6 @@ public class BookingController extends Controller {
 		else {
 			Cabin tempCabin = Cabin.find.where().eq("name", "Helfjord").findUnique();
 			String nrPerson = json.get("nrOfPersons").asText();
-			
 			String start = json.get("dayOfBookingStart").asText();
 			DateTime startDt = dateHelper(start);
 			System.out.println("Start dt: "+startDt);
@@ -125,7 +124,9 @@ public class BookingController extends Controller {
     	
     }
     
-    
+    /*
+     * 
+     */
     public static Result getOrderHistory() {
     	//jama change user.find.where().eq("id", SecurityController.getUser().id).findUnique(); Yell at me if something breaks
     	 User user = SecurityController.getUser();
