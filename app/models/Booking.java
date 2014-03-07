@@ -13,15 +13,8 @@ import play.data.format.Formats;
 import play.data.validation.Constraints;
 import play.db.ebean.Model;
 
-/**
- * Revision of booking model
- * v.02 (Jama) Changes made:
- * 	1. Added @ManyToOne to Beds
- */
 @Entity
 public class Booking extends Model {
-
-	private static final long serialVersionUID = 1L;
 
 	@Id
 	public Long id;
@@ -34,16 +27,19 @@ public class Booking extends Model {
 	@Formats.DateTime(pattern="yyyy-MM-dd")
 	public Date dateTo;
 	
-	/** Time of order contains information about when the order took place in greater detail **/
+	/** Time of order contains information about when the booking took place as timestamp long **/
 	public Long timeOfBooking;
 	
+	@Constraints.Required
+	@OneToMany(mappedBy="booking", cascade = CascadeType.ALL, orphanRemoval=true) //you were here a
+	public List<Guest> guests;
+	
+	@Constraints.Required
 	@ManyToOne
-	@JsonIgnore
-	public Guest guest;
+	public User user;
 
 	@OneToOne
 	public Payment payment;
-	
 	
 	@ManyToOne
 	@JsonIgnore
@@ -66,6 +62,7 @@ public class Booking extends Model {
 			return cabin;
 		}
 	}
+	
 	/** TEST **/
 	public Booking(Long userId,
 			Date dayOfBookingStart,
@@ -73,7 +70,7 @@ public class Booking extends Model {
 			Long cabinId,
 			List<Bed> beds) {
 		this.timeOfBooking = Calendar.getInstance().getTimeInMillis();
-		this.guest = Guest.find.byId(userId);
+		this.user = User.find.byId(userId);
 		Cabin cabin = Cabin.find.byId(cabinId);
 		
 		if(cabin instanceof SmallCabin) {
