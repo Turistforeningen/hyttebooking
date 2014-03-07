@@ -19,6 +19,7 @@ import java.util.UUID;
 @Entity
 public class User extends Model {
 
+	/** assosier med sherpa id i DNT **/
     @Id
     public Long id;
 
