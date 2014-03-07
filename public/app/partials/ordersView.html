@@ -15,6 +15,11 @@
 		<button ng-click="cancelOrder( order )">Cancel booking</button>
 		<p ng-show-on="order.beds != null">{{order.beds }}</p>
 	</div>
-	<pagination on-select-page="setPage(page)" total-items="totalItems" page="currentPage" items-per-page="5"></pagination>
+	<pagination on-select-page="setPage(page)" total-items="totalItems" page="currentPage" items-per-page="itemsPerPage"></pagination>
+	<select ng-model="itemsPerPage" >
+		<option>10</option>
+		<option>20</option>
+		<option>50</option>
+	</select>
 </div>
 <pre>{{orders}}</pre>
