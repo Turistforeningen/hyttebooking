@@ -13,6 +13,7 @@ import javax.persistence.OneToOne;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import play.data.validation.Constraints;
 import play.db.ebean.Model;
 import play.db.ebean.Model.Finder;
 
@@ -21,6 +22,14 @@ public class Guest extends Model {
 
 	@Id
 	public Long id;
+	
+	/** Boolean for if guest is member or not **/
+	@Constraints.Required
+	public boolean isMember;
+	
+	/** The type of guest **/
+	@Constraints.Required
+	public GuestType guestType;
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "guest")
 	@JsonIgnore
