@@ -14,7 +14,7 @@ create table booking (
   date_from                 timestamp,
   date_to                   timestamp,
   time_of_booking           bigint,
-  guest_id                  bigint,
+  user_id                   bigint,
   payment_id                bigint,
   cabin_id                  bigint,
   constraint pk_booking primary key (id))
@@ -29,6 +29,10 @@ create table cabin (
 
 create table guest (
   id                        bigint not null,
+  booking_id                bigint,
+  is_member                 boolean,
+  guest_type                integer,
+  constraint ck_guest_guest_type check (guest_type in (0,1,2,3)),
   constraint pk_guest primary key (id))
 ;
 
@@ -45,6 +49,10 @@ create table user (
   email_address             varchar(256) not null,
   sha_password              varbinary(64) not null,
   full_name                 varchar(256) not null,
+  dob                       timestamp,
+  address                   varchar(255),
+  city                      varchar(255),
+  zip_code                  varchar(255),
   creation_date             timestamp not null,
   constraint uq_user_email_address unique (email_address),
   constraint pk_user primary key (id))
@@ -70,12 +78,14 @@ create sequence user_seq;
 
 alter table bed add constraint fk_bed_largeCabin_1 foreign key (large_cabin_id) references cabin (id) on delete restrict on update restrict;
 create index ix_bed_largeCabin_1 on bed (large_cabin_id);
-alter table booking add constraint fk_booking_guest_2 foreign key (guest_id) references guest (id) on delete restrict on update restrict;
-create index ix_booking_guest_2 on booking (guest_id);
+alter table booking add constraint fk_booking_user_2 foreign key (user_id) references user (id) on delete restrict on update restrict;
+create index ix_booking_user_2 on booking (user_id);
 alter table booking add constraint fk_booking_payment_3 foreign key (payment_id) references payment (id) on delete restrict on update restrict;
 create index ix_booking_payment_3 on booking (payment_id);
 alter table booking add constraint fk_booking_cabin_4 foreign key (cabin_id) references cabin (id) on delete restrict on update restrict;
 create index ix_booking_cabin_4 on booking (cabin_id);
+alter table guest add constraint fk_guest_booking_5 foreign key (booking_id) references booking (id) on delete restrict on update restrict;
+create index ix_guest_booking_5 on guest (booking_id);
 
 
 
