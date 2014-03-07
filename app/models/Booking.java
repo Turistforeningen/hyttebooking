@@ -43,7 +43,7 @@ public class Booking extends Model {
 	
 	@ManyToOne
 	@JsonIgnore
-	public SmallCabin cabin;
+	public SmallCabin smallCabin;
 	
 	@ManyToMany(mappedBy = "bookings",cascade = CascadeType.ALL)
 	public List<Bed> beds = new ArrayList<Bed>();
@@ -64,7 +64,7 @@ public class Booking extends Model {
 			return beds.get(0).largeCabin;
 		}
 		else {
-			return cabin;
+			return smallCabin;
 		}
 	}
 	
@@ -79,7 +79,7 @@ public class Booking extends Model {
 		Cabin cabin = Cabin.find.byId(cabinId);
 		
 		if(cabin instanceof SmallCabin) {
-			this.cabin = (SmallCabin)cabin;
+			this.smallCabin = (SmallCabin)cabin;
 		}
 		else {
 			//skal ikke legge til alle beds.
@@ -103,10 +103,32 @@ public class Booking extends Model {
 			); 
 	
 	public String toString() {
-		return "id: " + this.id + " cabin" + this.cabin.name;
+		return "id: " + this.id + " cabin" + this.smallCabin.name;
 	}
 	
-	public static Booking getBookingByUser(Long userId) {
-		return null;
+	
+	/**
+	 * Method finds all bookings submitted by a user, and returns a
+	 * subset of them defined by page and pageSize parameter.
+	 * @param user
+	 * @param page
+	 * @param pageSize
+	 * @return List of bookings submitted by user
+	 */
+	public static Page getBookingPageByUser(User user, int page, int pageSize) {
+		if(user != null) {
+			Page bookingPage = new Page();
+			 bookingPage.orders = find.where()
+			         .eq("user", user)
+			         .orderBy("timeOfBooking asc")
+			         .findPagingList(pageSize)
+			         .getPage(page).getList();
+			 bookingPage.totalItems = user.getNrOfBookings();
+			 return bookingPage;
+		}
+		return new Page();
 	}
+
 }
+
+

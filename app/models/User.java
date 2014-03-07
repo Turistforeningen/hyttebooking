@@ -105,7 +105,10 @@ public class User extends Model {
         this.fullName = fullName;
         this.creationDate = new Date();
     }
-
+    public int getNrOfBookings() {
+    	return this.bookings.size();
+    }
+    
     public static byte[] getSha512(String value) {
         try {
             return MessageDigest.getInstance("SHA-512").digest(value.getBytes("UTF-8"));
