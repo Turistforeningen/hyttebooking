@@ -27,6 +27,7 @@ public class UserController extends Controller {
 	 * - newAddress
 	 * - newCity
 	 * - newZipCode
+	 * 
 	 * @return
 	 */
 	public static Result changeDetail() {
