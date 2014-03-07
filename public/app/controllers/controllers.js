@@ -5,31 +5,23 @@
 app.controller('orderController', function ($scope, $location, $routeParams, ordersService, api, $log) {
 	$scope.currentPage = 1;
 	$scope.totalItems = 10;
+	$scope.itemsPerPage = 10;
 	
 	$scope.setPage = function(page) {
 		$scope.getOrders(page-1);
 	};
-	
-	$scope.getBookings = function () {
-		var success = function (data) {
-			$scope.orders = data;
-		};
-
-		var error = function () {
-			$scope.status = 'unable to load customer data' + error.message;
-		};
-		
-		api.getBookings().success(success).error(error);
-	};
 
 
 	$scope.getOrders = function(page) {
-		ordersService.getOrders(page)
+		$log.info($scope.itemsPerPage);
+		ordersService.getOrders(page, $scope.itemsPerPage)
 		.success(function (userOrders) {
 			$scope.orders = userOrders.orders;
 			$scope.totalItems = userOrders.totalItems;
+			
 		})
 		.error(function (error) {
+			$log.info("problem");
 			$scope.status = 'unable to load customer data' + error.message;
 		});
 	};
