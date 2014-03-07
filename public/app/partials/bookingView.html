@@ -1,31 +1,46 @@
-<div class="whole" style="background-color: #e4e4e4;">
-<div class="container" style="background-color: #ffffff;>
-	<div>
+<div class="whole" style="background-color: #e4e4e4">
+	<div class="container" style="background-color: #ffffff; border-bottom:20px solid yellow;">
+		<div class="row" style="background-color: #51e4cb; height: 400px">
+			<!--This is just the container where the cabin information will be-->
+		</div>
+
+		<div class="row">
+			<alert ng-repeat="alert in alerts" type="alert.type"
+				close="closeAlert($index)">{{alert.msg}}</alert>
+			<h2>Booking</h2>
+			
+			<div class="col-lg-3"
+				style="height: 350px;">
+				<h3>Velge Antall personer</h3>
+				Persons: <input type="number" class="form-control"
+					ng-model="booking.nrOfPersons"> <<<<<<< HEAD
+			</div>
+			
+			<div class="col-lg-6"
+				style="height: 350px; border-left: 1px solid #ccc; border-right: 1px solid #ccc;">
+				<h3>Velg datoer (fra - til)</h3>
+				<!--From: <input type="daterange" class="form-control" ng-model="booking.dayOfBookingStart"> 
+        		To: <input type="daterange" class="form-control" ng-model="booking.dayOfBookingEnd"> <br> 
+        		{{booking.dayOfBookingStart}}<br> -->
+				<input type="daterange" ng-model="booking.dates" format="YYYY MM DD"
+					separator="-"> {{booking.dates}} =======
+				<h3>Velg datoer</h3>
+				From: <input type="daterange" class="form-control"
+					ng-model="booking.dayOfBookingStart"> To: <input
+					type="daterange" class="form-control"
+					ng-model="booking.dayOfBookingEnd"> >>>>>>>
+				8fad460aee7e86d45842ee881b518d2bbe7c4554
+			</div>
+			
+			<div class="col-lg-3"
+				style="height: 350px">
+				<h3>submit</h3>
+				<button class="submit" ng-click="postBooking(booking)">Bestill</button>
+			</div>
+		</div>
+		<div class="row" style="background-color: #51e4cb; height: 400px">
+			<!--This is just an other information container-->
+		</div>
 	</div>
-	<div class="bookingView" ng-controller="bookingController">
-		<alert ng-repeat="alert in alerts" type="alert.type"
-			close="closeAlert($index)">{{alert.msg}}</alert>
-		<h1>Booking</h1>
-		<form novalidate class="bookingForm">
-			<h2>Velge Antall personer</h2>
-			Persons: <input type="number" class="form-control"
-				ng-model="booking.nrOfPersons"> <<<<<<< HEAD
-			<h2>Velg datoer (fra - til)</h2>
-			<!--From: <input type="daterange" class="form-control" ng-model="booking.dayOfBookingStart"> 
-        To: <input type="daterange" class="form-control" ng-model="booking.dayOfBookingEnd"> <br> 
-        {{booking.dayOfBookingStart}}<br> -->
-			<input type="daterange" ng-model="booking.dates" format="YYYY MM DD"
-				separator="-"> {{booking.dates}} =======
-			<h2>Velg datoer</h2>
-			From: <input type="daterange" class="form-control"
-				ng-model="booking.dayOfBookingStart"> To: <input
-				type="daterange" class="form-control"
-				ng-model="booking.dayOfBookingEnd"> >>>>>>>
-			8fad460aee7e86d45842ee881b518d2bbe7c4554
-			<h2>submit</h2>
-			<button class="submit" ng-click="postBooking(booking)">Bestill</button>
-		</form>
-		Startdato: {{start}} Sluttdato: {{slutt}}<br />
-		<pre>form = {{booking | json}} booking - json</pre>
-	</div>
+	<pre>form = {{booking | json}} booking - json</pre>
 </div>
