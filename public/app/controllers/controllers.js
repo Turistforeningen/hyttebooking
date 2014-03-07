@@ -2,10 +2,11 @@
  * Controller for the ordersView. Sends a get request for orderHistory to the server.
  * Methods for getting and cancelling bookings.
  */
-app.controller('orderController', function ($scope, $location, ordersService, api) {
+app.controller('orderController', function ($scope, $location, ordersService, api, $log) {
 
 	$scope.getBookings = function () {
 		var success = function (data) {
+			$log.info("HEI HEI HEI HEI");
 			$scope.orders = data;
 		};
 
