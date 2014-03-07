@@ -30,10 +30,6 @@ public class Guest extends Model {
 	/** The type of guest **/
 	@Constraints.Required
 	public GuestType guestType;
-	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "guest")
-	@JsonIgnore
-	public List<Booking> booking =new ArrayList<Booking>();
 
 	/** TODO REMOVE TEST **/
 	public Guest(long id) {

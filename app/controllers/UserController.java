@@ -18,10 +18,18 @@ import play.mvc.With;
 public class UserController extends Controller {
 
 	/**
-	 * Change the users firstName lastName
+	 * Change the users details 
+	 * Fields on site should be called:
+	 * - newName
+	 * - newDOB
+	 * - newEmail
+	 * - newPassword
+	 * - newAddress
+	 * - newCity
+	 * - newZipCode
 	 * @return
 	 */
-	public static Result changeName() {
+	public static Result changeDetail() {
 		ObjectNode result = Json.newObject();
 		JsonNode json = request().body().asJson();
 		if(json == null) {
@@ -30,54 +38,23 @@ public class UserController extends Controller {
 			return badRequest(result);
 		}
 		else {
-			User tempUser = User.findByEmailAddress(login.emailAddress);
-			String nrPerson = json.get("nrOfPersons").asText();
+			User user = SecurityController.getUser();
+			if (user == null) {
+				return unauthorized();
+			}
 
-			booking.save();
+			String newName = json.get("newName").asText(); //TODO ensure its called newName
+			//TODO SECURITY //TODO tests
+			user.fullName = newName;
+			user.save();
+			
+			//TODO add the remaining fields
+
 			result.put("status", "OK");
 			result.put("message", "booking saved");
 			return ok(result);
 		}
-	     if (user == null) {
-	            return unauthorized();
-		}
-		return null; //TODO
 	}
 
 
-	/**
-	 * Controller for changing users date of birth
-	 * @return 
-	 */
-	public static Result changeDOB() {
-
-		return null; //TODO
-	}
-
-	/**
-	 * Controller for changing address belonging to user
-	 * @return
-	 */
-	public static Result changeAddress() {
-
-		return null; //TODO
-	}
-
-	/**
-	 * Controller for changing email belonging to user
-	 * @return
-	 */
-	public static Result changeEmail() {
-
-		return null; //TODO
-	}
-
-	/**
-	 * Controller for changing password belong to user
-	 * @return
-	 */
-	public static Result changePassword() {
-
-		return null; //TODO
-	}
 }
