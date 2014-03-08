@@ -173,30 +173,6 @@ public class ModelsTest extends WithApplication{
 	
 	}
 	
-	@Test
-	public void CancelledBookingWillReleaseBedsItHolds() {
-	
-		LargeCabin cabin = new LargeCabin("test", 2);
-		cabin.save();
-		List<Bed> beds = new ArrayList<Bed>();
-		beds.add(cabin.beds.get(0));
-		long bid = beds.get(0).id;
-		Booking b = new Booking(new Long(1), DateTime.now().toDate(), DateTime.now().toDate(), cabin.id, beds);
-		b.save();
-		long id = b.id;
-		
-		
-		b = Booking.find.byId(id);
-		b.status = Booking.CANCELLED;
-		b.removeAllBeds();
-		b.update();
-		
-		
-		
-		assertNotNull(Bed.find.byId(bid));
-		Bed bed = Bed.find.byId(bid);
-		System.out.println(bed.bookings.get(0).user.id + "id to user");
-		assertNull(bed.bookings.get(0));
-	}
+
 	
 }
