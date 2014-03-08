@@ -8,6 +8,7 @@ import models.*;
 import java.util.*;
 
 import org.hibernate.validator.constraints.Length;
+import org.joda.time.DateTime;
 
 /**
  * Dummy generation test
@@ -30,8 +31,7 @@ public class Global extends GlobalSettings {
 			
 		    User[] us = {user1, user2};
 		    int userSize = us.length;
-		    new Guest(user1.id).save();
-		    new Guest(user2.id).save();
+		    
 		   LargeCabin lc = new LargeCabin("Fjordheim", 10);
 		   lc.save();
 		   
@@ -44,16 +44,23 @@ public class Global extends GlobalSettings {
 		   cabins[2].save();
 		   
 		   	int cabinSize = cabins.length;
-			for ( int i = 0; i<20; i++) {
+			for ( int i = 0; i<100; i++) {
 				List<Bed> beds = null;
 				if(i%cabinSize ==0) {
 					beds = lc.beds;
 				}
 				if(i%cabinSize ==3) {
 					beds = lc2.beds.subList(0, 1+ (int)Math.floor((Math.random()*15)));
-					System.out.println(beds.size());
 				}
-				Booking b= new Booking((long)i%userSize, new Date(), new Date(), cabins[i%cabinSize].id, beds );
+				//Booking 0-20 days in the future from today
+				int fromDays = (int)(Math.random()*20);
+				//booking 1 -5 days + fromdays in the future from today
+				int toDays = (int)(Math.random()*20)+ 1 +(int)(Math.random()*5);
+				Date fromDate = DateTime.now().plusDays(fromDays).toDate();
+				Date toDate = DateTime.now().plusDays(toDays).toDate();
+				
+				Booking b= new Booking((long)i%userSize, fromDate, toDate, cabins[i%cabinSize].id, beds );
+				Booking b= new Booking(new Long((long)i%userSize), fromDate, toDate, cabins[i%cabinSize].id, beds );
 				b.save();
 				
 			}

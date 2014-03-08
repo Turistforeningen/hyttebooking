@@ -10,7 +10,8 @@ import play.data.validation.Constraints;
 @Entity
 @DiscriminatorValue("SMALL_CABIN")
 public class SmallCabin extends Cabin {
-
+	
+	
 	@OneToMany
 	public List<Booking> bookings;
 	

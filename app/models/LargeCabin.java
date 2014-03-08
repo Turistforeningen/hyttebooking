@@ -13,7 +13,8 @@ import play.data.validation.Constraints;
 @Entity
 @DiscriminatorValue("LARGE_CABIN")
 public class LargeCabin extends Cabin {
-
+	
+	
 	@Constraints.Required
 	@OneToMany(mappedBy="largeCabin", cascade = CascadeType.ALL, orphanRemoval=true)
 	public List<Bed> beds;

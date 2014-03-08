@@ -9,6 +9,8 @@ import models.*;
 import org.junit.*;
 
 import static org.junit.Assert.*;
+import play.mvc.Http.Status;
+import play.mvc.Result;
 import play.test.WithApplication;
 import static play.test.Helpers.*;
 
@@ -22,5 +24,6 @@ public class ControllerTest extends WithApplication {
 	public void checkCancel() {
 		
 	}
+	
 	
 }
