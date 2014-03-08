@@ -1,6 +1,4 @@
 <div class="container">
-	<h1>ORDERS</h1>
-	<input type='text' ng-model="text" /> <br /> <br />
 	<div class="row">
 		<div class="col-md-12">
 			<pagination on-select-page="setPage(page)" total-items="totalItems"
@@ -9,19 +7,30 @@
 		</div>
 	</div>
 
-	<div class="row"
-		ng-repeat="order in orders | filter:text | orderBy:'dayOfBookingStart'"
-		>
-        <div class="col-md-12 well">
-        
-        <p>cabin: {{ order.cabin.name }}</p>
-        <p>date ordered: {{ order.timeOfBooking | date }}</p>
-        <p>from: {{ order.dateFrom | date }}</p>
-        <p>till: {{ order.dateTo | date }}</p>
-        <button ng-click="cancelOrder( order )">Cancel booking</button>
-        <p ng-show-on="order.beds != null">{{order.beds }}</p>
-        
-        </div>
+	<div class="row" ng-repeat="order in orders">
+		<div class="col-md-12 well">
+			<div class="row">
+				<div class="col-md-5">
+					<p>date ordered: {{ order.timeOfBooking | date }}</p>
+					<p>from: {{ order.dateFrom | date }}</p>
+					<p>till: {{ order.dateTo | date }}</p>
+				</div>
+				<div class="col-md-5">
+					<p>cabin: {{ order.cabin.name }}</p>
+					<p ng-show="order.nrOfBeds !=null">beds: {{order.nrOfBeds }}</p>
+				</div>
+				<div =class="col-md-2">
+				    <div ng-if="order.ableToCancel">
+				        <button class="btn btn-default" ng-click="cancelOrder( order )">
+				        Cancel booking</button>
+				    </div>
+				     <div ng-if="!order.ableToCancel">
+                        <p>To late to cancel</p>
+                    </div>
+					
+				</div>
+			</div>
+		</div>
 	</div>
 
 	<div class="row">
