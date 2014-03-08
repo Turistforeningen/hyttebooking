@@ -61,8 +61,8 @@ public class Booking extends Model {
 	}
 	
 	public void removeAllBeds() {
-		
 		beds.clear();
+		
 	}
 	
 	/**
