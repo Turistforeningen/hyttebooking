@@ -1,6 +1,8 @@
-package models;
+package utilities;
 
 import java.util.List;
+
+import models.Booking;
 /**
  * Helper object for json serializing
  * Includes the total size of booking, and

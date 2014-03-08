@@ -29,7 +29,7 @@ app.controller('orderController', function ($scope, $location, $routeParams, ord
 
 	$scope.cancelOrder = function (order) {
 		ordersService.cancelOrder(order.id)
-		.success(function () {
+		.success(function (data) {
 			var index = $scope.orders.indexOf(order)
 			$scope.orders.splice(index, 1);
 		})
