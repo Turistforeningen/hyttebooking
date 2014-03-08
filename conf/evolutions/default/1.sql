@@ -15,6 +15,7 @@ create table booking (
   date_to                   timestamp,
   time_of_booking           bigint,
   user_id                   bigint,
+  status                    integer,
   payment_id                bigint,
   small_cabin_id            bigint,
   constraint pk_booking primary key (id))
