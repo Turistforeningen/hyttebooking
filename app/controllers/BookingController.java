@@ -105,24 +105,34 @@ public class BookingController extends Controller {
 		return dt;
 	}
 	
-	
+	/**
+	 * Retrieves booking from database. If no booking match
+	 * bookingID metod return noFound.
+	 * Checks if authenticated user is owner of booking, if not
+	 * returns badrequest
+	 * 
+	 * Booking is cancelled by setting status of booking to cancelled,
+	 * not deleted from database.
+	 * 
+	 * @param bookingID
+	 * @return Result response
+	 */
 	public static Result cancelBooking(String bookingID) {
-    	//Perform business logic - cancel before x days etc
-    	//If cancel - refund through nets, fully or partially
-    	//If to late to cancel - return fail. 
-    	//(Frontend should prevent this user error also from happening)
-    	//Update database with new availability for given cabin.
     	Booking booking = Booking.find.where().eq("id", bookingID).findUnique();
     	if(booking == null) {
     		return notFound();
     	}
-    	if(booking.payment.user.id != SecurityController.getUser().id) {
+    	if(booking.user.id != SecurityController.getUser().id) {
     		return badRequest("No access");
     	}
     	
     	
-    	booking.delete();
-    	return ok(Json.toJson(booking));
+    	booking.status = Booking.CANCELLED;
+    	booking.beds = null;
+    	//repay customer through nets
+    	
+    	booking.save();
+    	return ok();
     	
     }
     
@@ -146,9 +156,10 @@ public class BookingController extends Controller {
 		} catch (Exception e) {
 			page = 10;
 		}
-		System.out.println(pageSize + " " + page + " hei der");
+		
 		Page bookings = Booking.getBookingPageByUser(SecurityController.getUser(), page, pageSize);
 		JSONSerializer orderDetailsSerializer = new JSONSerializer().include("orders", "orders.cabin" ).exclude("*.class", "beds", "smallCabin");
+		System.out.println("bookingamout " + bookings.orders.size());
 		return Results.ok(orderDetailsSerializer.serialize(bookings));
 	}
 }

@@ -7,6 +7,9 @@ import java.util.List;
 
 import javax.persistence.*;
 
+import com.avaje.ebean.Ebean;
+import com.avaje.ebean.Expr;
+import com.avaje.ebean.Expression;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import play.data.format.Formats;
@@ -15,7 +18,9 @@ import play.db.ebean.Model;
 
 @Entity
 public class Booking extends Model {
-
+	public static Integer CANCELLED = new Integer(2);
+	public static Integer PAID = new Integer(1);
+	public static Integer BOOKED = new Integer(0);
 	@Id
 	public Long id;
 	
@@ -37,7 +42,9 @@ public class Booking extends Model {
 	@Constraints.Required
 	@ManyToOne
 	public User user;
-
+	
+	public Integer status = new Integer(0);
+	
 	@OneToOne
 	public Payment payment;
 	
@@ -51,6 +58,11 @@ public class Booking extends Model {
 	public void addBed(Bed b) {
 		beds.add(b);
 		
+	}
+	
+	public void removeAllBeds() {
+		
+		beds.clear();
 	}
 	
 	/**
@@ -75,6 +87,7 @@ public class Booking extends Model {
 			Long cabinId,
 			List<Bed> beds) {
 		this.timeOfBooking = Calendar.getInstance().getTimeInMillis();
+		
 		this.user = User.find.byId(userId);
 		Cabin cabin = Cabin.find.byId(cabinId);
 		
@@ -85,9 +98,7 @@ public class Booking extends Model {
 			//skal ikke legge til alle beds.
 			
 			for(Bed bed: beds) {
-				addBed(bed);
-				
-				
+				addBed(bed);	
 			}
 			
 		}
@@ -97,13 +108,13 @@ public class Booking extends Model {
 
 	}
 	/** END TEST **/
-
+	
 	public static Finder<Long,Booking> find = new Finder<Long,Booking>(
 			Long.class, Booking.class
 			); 
 	
 	public String toString() {
-		return "id: " + this.id + " cabin" + this.smallCabin.name;
+		return "id: " + this.id + " cabin" + this.getCabin().name;
 	}
 	
 	
@@ -119,7 +130,7 @@ public class Booking extends Model {
 		if(user != null) {
 			Page bookingPage = new Page();
 			 bookingPage.orders = find.where()
-			         .eq("user", user)
+			         .and(Expr.eq("user", user), Expr.ne("status", CANCELLED))
 			         .orderBy("timeOfBooking asc")
 			         .findPagingList(pageSize)
 			         .getPage(page).getList();
