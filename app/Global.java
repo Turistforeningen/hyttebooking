@@ -56,11 +56,16 @@ public class Global extends GlobalSettings {
 				int fromDays = (int)(Math.random()*20);
 				//booking 1 -5 days + fromdays in the future from today
 				int toDays = (int)(Math.random()*20)+ 1 +(int)(Math.random()*5);
+				//bookingDate 1-20 days before fromdate
+				int bookingDays = (int)(Math.random()*20);
+				
 				Date fromDate = DateTime.now().plusDays(fromDays).toDate();
 				Date toDate = DateTime.now().plusDays(toDays).toDate();
+				Date bookingDate = DateTime.now().minusDays(bookingDays).toDate();
 				
-				Booking b= new Booking(new Long((long)i%userSize), fromDate, toDate, cabins[i%cabinSize].id, beds );
-				b.save();
+				Booking b= Booking.createBooking(new Long(1+(i%userSize)), fromDate, toDate, cabins[i%cabinSize].id, beds );
+				b.timeOfBooking = bookingDate.getTime();
+				b.update();
 				
 			}
 		}

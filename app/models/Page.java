@@ -9,6 +9,9 @@ import java.util.List;
  *
  */
 public class Page {
+	public static final int DEFAULT_PAGE_SIZE = 10;
+	public static final int DEFAULT_PAGE = 0;
+	
 	public Integer totalItems;
 	public List<Booking> orders;
 	

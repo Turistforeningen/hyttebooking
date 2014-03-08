@@ -60,19 +60,14 @@ public class Booking extends Model {
 		
 	}
 	
-	public void removeAllBeds() {
-		beds.clear();
-		
-	}
 	
 	/**
+	 * Will return a smallcabin or a bigcabin depending on booking type.
 	 * 
 	 * @return Cabin
 	 */
 	public Cabin getCabin() {
 		if(beds.size() != 0) {
-			System.out.println(beds.size());
-			System.out.println(beds.get(0).largeCabin);
 			return beds.get(0).largeCabin;
 		}
 		else {
@@ -80,34 +75,11 @@ public class Booking extends Model {
 		}
 	}
 	
-	/** TEST **/
-	public Booking(Long userId,
-			Date dayOfBookingStart,
-			Date dayOfBookingEnd,
-			Long cabinId,
-			List<Bed> beds) {
+	
+	public Booking() {
 		this.timeOfBooking = Calendar.getInstance().getTimeInMillis();
-		
-		this.user = User.find.byId(userId);
-		Cabin cabin = Cabin.find.byId(cabinId);
-		
-		if(cabin instanceof SmallCabin) {
-			this.smallCabin = (SmallCabin)cabin;
-		}
-		else {
-			//skal ikke legge til alle beds.
-			
-			for(Bed bed: beds) {
-				addBed(bed);	
-			}
-			
-		}
-		
-		this.dateTo = dayOfBookingEnd;
-		this.dateFrom = dayOfBookingStart;
-
 	}
-	/** END TEST **/
+	
 	
 	public static Finder<Long,Booking> find = new Finder<Long,Booking>(
 			Long.class, Booking.class
@@ -139,7 +111,43 @@ public class Booking extends Model {
 		}
 		return new Page();
 	}
+	
+	
+	/**
+	 * Returns a booking object.
+	 * @param bookingId - unique id of booking
+	 * @return Booking object
+	 */
+	public static Booking getBookingById(String bookingId) {
+		return Booking.find.where().eq("id", bookingId).findUnique();
+	}
+	
+	
+	public static Booking createBooking(Long userId, Date dateFrom, Date dateTo, 
+			Long cabinId,
+			List<Bed> beds) {
 
+		Booking b = new Booking();
+		b.user = User.find.byId(userId);
+		Cabin cabin = Cabin.find.byId(cabinId);
+
+		if(cabin instanceof SmallCabin) {
+			b.smallCabin = (SmallCabin)cabin;
+		}
+		else {
+
+			for(Bed bed: beds) {
+				b.addBed(bed);	
+			}
+
+		}
+
+		b.dateTo = dateFrom;
+		b.dateFrom = dateTo;
+		b.save();
+
+		return b;
+	}
 }
 
 

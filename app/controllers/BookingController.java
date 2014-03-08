@@ -72,13 +72,13 @@ public class BookingController extends Controller {
 					startDt.isBefore(endDt)
 					) {
 				//TESTLINE
-				Booking booking = new Booking(
+				Booking booking = Booking.createBooking(
 						SecurityController.getUser().id, 
 						startDt.toDate(),
 						endDt.toDate(),
 						tempCabin.id,
 						null);
-				booking.save();
+
 				result.put("status", "OK");
 				result.put("message", "booking saved");
 				return ok(result);
@@ -105,6 +105,7 @@ public class BookingController extends Controller {
 		return dt;
 	}
 	
+	
 	/**
 	 * Retrieves booking from database. If no booking match
 	 * bookingID metod return noFound.
@@ -117,25 +118,34 @@ public class BookingController extends Controller {
 	 * @param bookingID
 	 * @return Result response
 	 */
-	public static Result cancelBooking(String bookingID) {
-    	Booking booking = Booking.find.where().eq("id", bookingID).findUnique();
+	public static Result cancelBooking(String bookingId) {
+    	Booking booking = Booking.getBookingById(bookingId);
+    	ObjectNode result = Json.newObject();
+    	
     	if(booking == null) {
-    		return notFound();
+    		result.put("Status", "KO");
+    		result.put("message", "No such booking found");
+    		return notFound(result);
     	}
+    	
     	if(booking.user.id != SecurityController.getUser().id) {
-    		return badRequest("No access");
+    		result.put("Status", "KO");
+    		result.put("message", "No access");
+    		return badRequest(result);
     	}
     	
-    	
+    	//cancellogic to late to cancel?
     	booking.status = Booking.CANCELLED;
-    	booking.beds = null;
+    	
     	//repay customer through nets
     	
-    	booking.save();
-    	return ok();
-    	
+    	booking.update();
+    	result.put("Status", "OK");
+		result.put("message", "");
+    	return ok(result);
     }
     
+	
     /**
      * Extract optional page-paramter to obtain page variable, and
      * gets a page of the current user's (authenticated by securitycontroller),
@@ -144,22 +154,21 @@ public class BookingController extends Controller {
      */
 	public static Result getOrderHistory() {
 		
-		int pageSize = 10;
-		int page = 0;
+		int pageSize = Page.DEFAULT_PAGE_SIZE;
+		int page = Page.DEFAULT_PAGE;
 		try {
 			page = Integer.parseInt(request().getQueryString("page"));
 		} catch (Exception e) {
-			page = 0;
+			
 		}
 		try {
 			pageSize = Integer.parseInt(request().getQueryString("size"));
 		} catch (Exception e) {
-			page = 10;
+			
 		}
 		
 		Page bookings = Booking.getBookingPageByUser(SecurityController.getUser(), page, pageSize);
 		JSONSerializer orderDetailsSerializer = new JSONSerializer().include("orders", "orders.cabin" ).exclude("*.class", "beds", "smallCabin");
-		System.out.println("bookingamout " + bookings.orders.size());
 		return Results.ok(orderDetailsSerializer.serialize(bookings));
 	}
 }
