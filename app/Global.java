@@ -59,6 +59,7 @@ public class Global extends GlobalSettings {
 				Date fromDate = DateTime.now().plusDays(fromDays).toDate();
 				Date toDate = DateTime.now().plusDays(toDays).toDate();
 				
+				Booking b= new Booking((long)i%userSize, fromDate, toDate, cabins[i%cabinSize].id, beds );
 				Booking b= new Booking(new Long((long)i%userSize), fromDate, toDate, cabins[i%cabinSize].id, beds );
 				b.save();
 				
