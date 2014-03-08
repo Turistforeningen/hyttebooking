@@ -7,6 +7,8 @@ import java.util.List;
 
 import javax.persistence.*;
 
+import org.joda.time.DateTime;
+
 import com.avaje.ebean.Ebean;
 import com.avaje.ebean.Expr;
 import com.avaje.ebean.Expression;
@@ -75,7 +77,23 @@ public class Booking extends Model {
 		}
 	}
 	
+	public boolean isAbleToCancel() {
+		if(DateTime.now().plusDays(7).isAfter(this.dateTo.getTime())) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
 	
+	public String getNrOfBeds() {
+		if(beds.size() == 0) {
+			return null;
+		}
+		else {
+			return beds.size() +"";
+		}
+	}
 	public Booking() {
 		this.timeOfBooking = Calendar.getInstance().getTimeInMillis();
 	}
