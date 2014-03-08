@@ -15,7 +15,6 @@ import models.Booking;
 import models.Cabin;
 import models.Guest;
 import models.LargeCabin;
-import models.Page;
 import models.User;
 import play.api.data.Form;
 import play.libs.Json;
@@ -23,6 +22,7 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Results;
 import play.mvc.With;
+import utilities.Page;
 
 @With(SecurityController.class)
 public class BookingController extends Controller {
@@ -134,6 +134,11 @@ public class BookingController extends Controller {
     		return badRequest(result);
     	}
     	
+    	if(!booking.isAbleToCancel()) {
+    		result.put("Status", "KO");
+    		result.put("message", "To late to cancel");
+    		return badRequest(result);
+    	}
     	//cancellogic to late to cancel?
     	booking.status = Booking.CANCELLED;
     	

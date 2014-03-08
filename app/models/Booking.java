@@ -17,6 +17,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import play.data.format.Formats;
 import play.data.validation.Constraints;
 import play.db.ebean.Model;
+import utilities.Page;
 
 @Entity
 public class Booking extends Model {
@@ -77,7 +78,14 @@ public class Booking extends Model {
 		}
 	}
 	
+	/**
+	 * Determines if booking can be cancelled or not. Can be used
+	 * by both frontend (json serialized) and backend to verify a request to
+	 * cancel a booking.
+	 * @return boolean
+	 */
 	public boolean isAbleToCancel() {
+		//This login should probably be placed somewhere else?
 		if(DateTime.now().plusDays(7).isAfter(this.dateTo.getTime())) {
 			return true;
 		}
@@ -86,6 +94,11 @@ public class Booking extends Model {
 		}
 	}
 	
+	
+	/**
+	 * A getter which return number of beds booked in a largeCabin. Used by frontend (json serialized)
+	 * @return String - number of beds in order or cabin 
+	 */
 	public String getNrOfBeds() {
 		if(beds.size() == 0) {
 			return null;
