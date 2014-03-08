@@ -1,0 +1,68 @@
+<<<<<<< HEAD
+<div class="container">
+	<h1>ORDERS</h1>
+	<input type='text' ng-model="text" /> <br /> <br />
+	<div class="row">
+		<div class="col-md-12">
+			<pagination on-select-page="setPage(page)" total-items="totalItems"
+				page="currentPage" items-per-page="itemsPerPage"></pagination>
+
+		</div>
+	</div>
+
+	<div class="row"
+		ng-repeat="order in orders | filter:text | orderBy:'dayOfBookingStart'"
+		>
+        <div class="col-md-12 well">
+        
+        <p>cabin: {{ order.cabin.name }}</p>
+        <p>date ordered: {{ order.timeOfBooking | date }}</p>
+        <p>from: {{ order.dateFrom | date }}</p>
+        <p>till: {{ order.dateTo | date }}</p>
+        <button ng-click="cancelOrder( order )">Cancel booking</button>
+        <p ng-show-on="order.beds != null">{{order.beds }}</p>
+        
+        </div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-6">
+
+			<pagination on-select-page="setPage(page)" total-items="totalItems"
+				page="currentPage" items-per-page="itemsPerPage"></pagination>
+
+		</div>
+		<div class="col-md-3"></div>
+		<div class="col-md-3">
+			<div style="margin: 20px">
+				<select class="form-control" ng-model="itemsPerPage"
+					ng-change="getOrders(page)">
+					<option>10</option>
+					<option>20</option>
+					<option>50</option>
+				</select>
+			</div>
+		</div>
+	</div>
+=======
+<div class="testView">
+    <h1>ORDERS</h1>
+    <input type='text' ng-model="text" />
+    <br/>
+    <br/>
+	
+	<div
+		ng-repeat="order in orders | filter:text | orderBy:'dayOfBookingStart'"
+		style="border: 1px solid black; padding: 1cm 1cm 1cm 1cm;">
+
+		<p>cabin: {{ order.cabin.name }}</p>
+		<p>date ordered: {{ order.timeOfBooking | date }}</p>
+		<p>from: {{ order.dateFrom | date }}</p>
+		<p>till: {{ order.dateTo | date }}</p>
+		<button ng-click="cancelOrder( order )">Cancel booking</button>
+		<p ng-show-on="order.beds != null">{{order.beds }}</p>
+	</div>
+	<pagination on-select-page="setPage(page)" total-items="totalItems" page="currentPage" items-per-page="5"></pagination>
+>>>>>>> 6c1876492d0b238da43950faaaaa33bbfbaabfb0
+</div>
+<pre>{{orders}}</pre>

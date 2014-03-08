@@ -1,0 +1,28 @@
+/*
+ * Service with functions used to interface client with server.
+ */
+app.service('ordersService', function ($http, $log) {
+	
+	
+<<<<<<< HEAD
+    this.getOrders = function (page, pageSize) {
+        var url = '/api/bookings?page=' + page + "&size=" + pageSize;
+=======
+    this.getOrders = function (page) {
+        var url = '/api/bookings?page=' + page;
+>>>>>>> 6c1876492d0b238da43950faaaaa33bbfbaabfb0
+        return $http.get(url);
+       
+    };
+
+    this.cancelOrder = function (id) {
+    	var url = '/api/bookings/' + id;
+        return $http.delete(url);
+    };
+    
+    this.postOrder = function(data) {
+    	var url = '/api/bookings/'
+    	return $http.post(url, data);
+    }
+});
+
