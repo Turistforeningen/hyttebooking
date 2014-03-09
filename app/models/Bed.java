@@ -81,4 +81,10 @@ public class Bed extends Model  {
 	public static Finder<Long,Bed> find = new Finder<Long,Bed>(
 			Long.class, Bed.class
 			); 
+	
+	public void delete() {
+		this.largeCabin = null;
+		this.update();
+		super.delete();
+	}
 }

@@ -107,12 +107,12 @@ public class BookingController extends Controller {
 	
 	
 	/**
-	 * Retrieves booking from database. If no booking match
-	 * bookingID metod return noFound.
-	 * Checks if authenticated user is owner of booking, if not
-	 * returns badrequest
+	 * Retrieves booking from database. If no booking match with
+	 * bookingID method, return noFound.
+	 * Checks if authenticated user is owner of booking, if not,
+	 * returns bad request
 	 * 
-	 * Booking is cancelled by setting status of booking to cancelled,
+	 * Booking is cancelled by setting flag in booking to cancelled,
 	 * not deleted from database.
 	 * 
 	 * @param bookingID
@@ -152,7 +152,7 @@ public class BookingController extends Controller {
     
 	
     /**
-     * Extract optional page-paramter to obtain page variable, and
+     * Extract optional page-parameter to obtain page variable, and
      * gets a page of the current user's (authenticated by securitycontroller),
      * order-history. The bookings are serialized to a json string.
      * @return Json with a page of orderHistory

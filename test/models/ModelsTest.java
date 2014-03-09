@@ -34,8 +34,8 @@ public class ModelsTest extends WithApplication{
 		List<Bed> beds = cabin.beds;
 		int nr = beds.size();
 		long bId = beds.get(0).id;
-		Booking book = new Booking(new Long(1), new Date(), new Date(), id, beds);
-		book.save();
+		Booking book = Booking.createBooking(new Long(1), new Date(), new Date(), id, beds);
+		
 		long bookId = book.id;
 		book.delete();
 		
@@ -59,8 +59,8 @@ public class ModelsTest extends WithApplication{
 		List<Bed> beds = new ArrayList<Bed>();
 		beds.add(cabin.beds.get(0));
 		beds.add(cabin.beds.get(1));
-		Booking b1 = new Booking(new Long(1), new Date(), new Date(),cabin.id, beds);
-		b1.save();
+		Booking b1 = Booking.createBooking(new Long(1), new Date(), new Date(),cabin.id, beds);
+		
 		Long id = b1.id;
 		
 		b1 = Booking.find.byId(id);
@@ -110,9 +110,13 @@ public class ModelsTest extends WithApplication{
 		assertNotNull(cabin);
 		System.out.println(cabin.name);
 		long bedId = cabin.beds.get(0).id;
-		Bed b = cabin.beds.get(0);
+		Bed b = Bed.find.byId(bedId);
+		//two lines below makes sure that cabin is not deleted apparently.
+		b.largeCabin = null;
+		b.update();
+		//end
 		b.delete();
-		System.out.println(((LargeCabin)Cabin.find.byId(id)) + " : cabin should not be null");
+		
 		assertNotNull(Cabin.find.byId(id));
 		System.out.println((Bed.find.byId(bedId)) + " : bed is null");
 		assertNull(Bed.find.byId(bedId));
@@ -128,8 +132,8 @@ public class ModelsTest extends WithApplication{
 		Long id = cabin.id;
 		cabin = (LargeCabin)Cabin.find.byId(id);
 		List<Bed> beds = cabin.beds;
-		Booking book = new Booking(new Long(1), new Date(), new Date(), id, beds);
-		book.save();
+		Booking book = Booking.createBooking(new Long(1), new Date(), new Date(), id, beds);
+		
 		long bId = book.id;
 		beds.get(0).delete();
 		assertNotNull(Booking.find.byId(bId));
@@ -161,8 +165,8 @@ public class ModelsTest extends WithApplication{
 		sCabin.save();
 		User user = new User("q@t","w", "t");
 		user.save();
-		Booking b = new Booking(user.id, new Date(), new Date(), sCabin.id, null);
-		b.save();
+		Booking b = Booking.createBooking(user.id, new Date(), new Date(), sCabin.id, null);
+		
 		int bookingSizeForUser = Booking.find.where().eq("user", user).findList().size();
 		b.status = Booking.CANCELLED;
 		b.save();
