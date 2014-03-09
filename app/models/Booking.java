@@ -70,6 +70,7 @@ public class Booking extends Model {
 	 * @return Cabin
 	 */
 	public Cabin getCabin() {
+		System.out.println("Called");
 		if(beds.size() != 0) {
 			return beds.get(0).largeCabin;
 		}
