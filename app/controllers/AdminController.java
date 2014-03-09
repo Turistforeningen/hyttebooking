@@ -15,7 +15,7 @@ public class AdminController extends Controller {
 	
 	/**
 	 * Admin functionality
-	 * Must specify page and pageSize queryParameters in routeurl
+	 * Must specify page and pageSize queryParameters in route-url
 	 * 
 	 * @return Result containing cabins
 	 */
@@ -23,10 +23,8 @@ public class AdminController extends Controller {
 		int page = Page.pageHelper(request().getQueryString("page"));
 		int pageSize = Page.pageSizeHelper(request().getQueryString("size"));
 		
-		List<Cabin> cabins = Cabin.find.where()
-				.findPagingList(pageSize)
-		        .getPage(page).getList();
-		JSONSerializer cabinSerializer = new JSONSerializer().include().exclude("*.class");
+		Page<Cabin> cabins = Cabin.findAllCabins(page, pageSize); 
+		JSONSerializer cabinSerializer = new JSONSerializer().include("data").exclude("*.class");
 		
 		return ok(cabinSerializer.serialize(cabins));
 	}
@@ -41,10 +39,10 @@ public class AdminController extends Controller {
 		int page = Page.pageHelper(request().getQueryString("page"));
 		int pageSize = Page.pageSizeHelper(request().getQueryString("size"));
 		 
-		Page bookingsAtCabin = Cabin.findAllBookingsForCabin(id, page, pageSize);
+		Page<Booking> bookingsAtCabin = Cabin.findAllBookingsForCabin(id, page, pageSize);
 		JSONSerializer bookingSerializer = new JSONSerializer()
-		.include("orders", "orders.cabin" )
-		.exclude("*.class", "beds", "smallCabin");
+		.include("data" )
+		.exclude("*.class", "data.smallCabin", "data.cabin");
 		
 		return ok(bookingSerializer.serialize(bookingsAtCabin));
 	}

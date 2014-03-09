@@ -12,6 +12,8 @@ import org.joda.time.DateTime;
 import com.avaje.ebean.Ebean;
 import com.avaje.ebean.Expr;
 import com.avaje.ebean.Expression;
+
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import play.data.format.Formats;
@@ -52,7 +54,6 @@ public class Booking extends Model {
 	public Payment payment;
 	
 	@ManyToOne
-	@JsonIgnore
 	public SmallCabin smallCabin;
 	
 	@ManyToMany(mappedBy = "bookings",cascade = CascadeType.ALL)
@@ -130,10 +131,10 @@ public class Booking extends Model {
 	 * @param pageSize
 	 * @return List of bookings submitted by user
 	 */
-	public static Page getBookingPageByUser(User user, int page, int pageSize) {
+	public static Page<Booking> getBookingPageByUser(User user, int page, int pageSize) {
 		if(user != null) {
-			Page bookingPage = new Page();
-			 bookingPage.orders = find.where()
+			Page<Booking> bookingPage = new Page<Booking>();
+			 bookingPage.data = find.where()
 			         .and(Expr.eq("user", user), Expr.ne("status", CANCELLED))
 			         .orderBy("timeOfBooking asc")
 			         .findPagingList(pageSize)
@@ -141,7 +142,7 @@ public class Booking extends Model {
 			 bookingPage.totalItems = user.getNrOfBookings();
 			 return bookingPage;
 		}
-		return new Page();
+		return new Page<Booking>();
 	}
 	
 	

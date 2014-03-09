@@ -31,7 +31,10 @@ app.config(function ($routeProvider, $locationProvider, $httpProvider) {
 		controller: 'authController',
 		templateUrl: '/assets/app/partials/authView.html'
 	})
-	
+	.when('/admin', {
+		controller: 'adminViewController',
+		templateUrl: '/assets/app/partials/adminView.html'
+	})
 	.otherwise({ redirectTo: '/'});
 	
 	

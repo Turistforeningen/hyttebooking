@@ -87,4 +87,14 @@ public class LargeCabin extends Cabin {
 		else
 			return false; //TODO
 	}
+
+	@Override
+	public String getcabinType() {
+		return "large";
+	}
+
+	@Override
+	public String getNrOfBeds() {
+		return this.beds.size() +"";
+	}
 }
