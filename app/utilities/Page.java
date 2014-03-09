@@ -17,5 +17,19 @@ public class Page {
 	public Integer totalItems;
 	public List<Booking> orders;
 	
+	public static int pageHelper(String page) {
+		try {
+			return Integer.parseInt(page);
+		} catch (Exception e) {
+			return DEFAULT_PAGE;
+		}
+	}
 	
+	public static int pageSizeHelper(String pageSize) {
+		try {
+			return Integer.parseInt(pageSize);
+		} catch (Exception e) {
+			return DEFAULT_PAGE_SIZE;
+		}
+	}
 }
