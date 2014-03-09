@@ -29,23 +29,43 @@ public abstract class Cabin extends Model {
 	this.name = name;	
 	}
 	
+	/**
+	 * Get the number of active bookings for cabin.
+	 * Used primarily by flexjson serialization.
+	 * @return int - number of active bookings
+	 */
+	public int getNrBookings() {
+		if(this instanceof SmallCabin) {
+			//maybe active bookings.
+			return ((SmallCabin)this).bookings.size();
+		}
+		else {
+			return -1;
+		}
+	}
+	
+	public abstract String getcabinType();
+	
+	public abstract String getNrOfBeds();
+	
 	public static Finder<Long, Cabin> find = new Finder<Long, Cabin>(Long.class, Cabin.class);
 	
+	
 	/**
-	 * Returns a page of bookings for a given cabin. What bookings and the size of the list are
-	 * decided by page and pageSize arguments.
+	 * Returns a page of bookings for a given cabin. What subset of bookings and size
+	 * of list are decided by the page and pageSize arguments.
 	 * 
 	 * @param cabinId
 	 * @param page 
 	 * @param pageSize
 	 * @return
 	 */
-	public static Page findAllBookingsForCabin(Long cabinId, int page, int pageSize) {
+	public static Page<Booking> findAllBookingsForCabin(Long cabinId, int page, int pageSize) {
 		Cabin cabin = Cabin.find.byId(cabinId);
-		Page bookingPage = new Page();
+		Page<Booking> bookingPage = new Page<Booking>();
 		if(cabin instanceof SmallCabin) {
 			
-			bookingPage.orders = Booking.find.where()
+			bookingPage.data = Booking.find.where()
 					.eq("smallCabin", cabin)
 					.findPagingList(pageSize)
 			        .getPage(page).getList();
@@ -57,5 +77,14 @@ public abstract class Cabin extends Model {
 			return null;
 		}
 		return null;
+	}
+	
+	public static Page<Cabin> findAllCabins(int page, int pageSize) {
+		Page<Cabin> cabins = new Page<Cabin>();
+		cabins.data = Cabin.find.where()
+		.findPagingList(pageSize)
+        .getPage(page).getList();
+		cabins.totalItems = Cabin.find.findRowCount();
+		return cabins;
 	}
 }

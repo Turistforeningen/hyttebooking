@@ -163,8 +163,10 @@ public class BookingController extends Controller {
 		int pageSize = Page.pageSizeHelper(request().getQueryString("size"));
 		
 		
-		Page bookings = Booking.getBookingPageByUser(SecurityController.getUser(), page, pageSize);
-		JSONSerializer orderDetailsSerializer = new JSONSerializer().include("orders", "orders.cabin" ).exclude("*.class", "beds", "orders.smallCabin");
+		Page<Booking> bookings = Booking.getBookingPageByUser(SecurityController.getUser(), page, pageSize);
+		JSONSerializer orderDetailsSerializer = new JSONSerializer()
+				.include("data", "data.cabin" )
+				.exclude("*.class", "beds", "data.smallCabin", "data.cabin.type", "data.cabin.nrOfBeds", "data.cabin.nrBookings");
 		return Results.ok(orderDetailsSerializer.serialize(bookings));
 	}
 }
