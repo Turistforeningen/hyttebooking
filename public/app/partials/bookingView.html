@@ -103,12 +103,80 @@
 <!-- ////////////////////////////////////////////////// ORDER SUMMARY AND SUBMIT ///////////////////////////////////////////////// -->
 
 			<div class="col-lg-3" style="min-height: 300px">
-				<div style="height: 300px;">
+				<div style="height: 250px;">
 					<h4>Order summary should appear!</h4>
 				</div>
 				<div style="text-align: center;">
-					<button class="btn btn-primary submit"
-						ng-click="postBooking(booking)">Bestill</button>
+
+					<div ng-controller="ModalDemoCtrl">
+				<script type="text/ng-template" id="myModalContent.html">
+
+<div class="modal-body" style="border-bottom: 1px solid #ccc;">
+	<div style="text-align: right">
+		<button class="btn btn-danger" ng-click="cancel()">
+			<strong>X</strong>
+		</button>
+	</div>
+	<h4>Brukeropplysning</h4>
+	<div class="row">
+		<div class="col-lg-4">
+			<p>Fornavn</p>
+			<p>Etternavn</p>
+			<p>Fødselsdato</p>
+			<p>Adresse</p>
+			<p>Poststed</p>
+			<p>Postnummer</p>
+			<p>Epost</p>
+		</div>
+		<div class="col-lg-8">
+			<p>Ola</p>
+			<p>Nordmann</p>
+			<p>30.05.1989</p>
+			<p>Gateveien 3</p>
+			<p>Plassen</p>
+			<p>1234</p>
+			<p>ola.nordmann@mail.no</p>
+		</div>
+	</div>
+</div>
+<div class="modal-body" style="border-bottom: 1px solid #ccc;">
+	<h4>Bekreft reservasjon</h4>
+	<p>Les og bekreft kjøpsvilkår.</p>
+	<div class="checkbox">
+		<label> <input type="checkbox"> <i>Jeg har lest og
+				godkjenner Deres vilkår.</i>
+		</label>
+	</div>
+</div>
+<div class="modal-body">
+	<h4>Oversikt over kjøp</h4>
+	<div class="row">
+		<div class="col-lg-4">
+			<p>Voksen, medlem</p>
+			<p>Barn, ikke-medlem</p>
+			<p>Spedbarn</p>
+		</div>
+		<div class="col-lg-8">
+			<p>2</p>
+			<p>3</p>
+			<p>1</p>
+		</div>
+	</div>
+	<div class="row">
+		<br> <br>
+		<li ng-repeat="item in items"><a ng-click="selected.item = item">{{item}}</a></li>
+	</div>
+	<div style="text-align: right">
+		<button class="btn btn-primary" ng-click="ok()">Bekreft kjøp</button>
+	</div>
+</div>
+			
+    			</script>
+
+				<button class="btn btn-primary" ng-click="open()">Reserver</button>
+				<div ng-show="selected">Selection from a modal: {{ selected }}</div>
+			</div>
+						
 				</div>
 			</div>
 		</div>
