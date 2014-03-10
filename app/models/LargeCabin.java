@@ -8,6 +8,8 @@ import javax.persistence.*;
 
 import org.joda.time.DateTime;
 
+import com.avaje.ebean.Expr;
+
 import play.data.validation.Constraints;
 
 @Entity
@@ -96,5 +98,14 @@ public class LargeCabin extends Cabin {
 	@Override
 	public String getNrOfBeds() {
 		return this.beds.size() +"";
+	}
+
+	@Override
+	public int getNrActiveBookings() {
+		return Booking.find
+				.where()
+				.eq("beds.largeCabin", this)
+				.le("dateFrom", DateTime.now().toDate())
+				.findRowCount();
 	}
 }
