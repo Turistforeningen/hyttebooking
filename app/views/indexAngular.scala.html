@@ -4,8 +4,7 @@
 	<title>DNT</title>
 	<link rel="stylesheet" type="text/css" href=@routes.Assets.at("stylesheets/bootstrap.css")>
 	<link rel="stylesheet" type="text/css" href=@routes.Assets.at("stylesheets/main.css")>
-	<link rel="SHORTCUT ICON" href="/public/images/favicon.ico" />
-	
+	<link rel="SHORTCUT ICON" href="@routes.Assets.at("/images/favicon.ico")" />
 </head >
 <body>
 	<nav class="navbar navbar-default" role="navigation">
@@ -37,9 +36,7 @@
 			<!-- /.navbar-collapse -->
 		</div>
 		<!-- /.container-fluid -->
-
 	</nav>
-
 	<div ng-view>
 	
 	</div>
@@ -61,6 +58,7 @@
     <script src="@routes.Assets.at("app/controllers/controllers.js")"></script>
     <script src="@routes.Assets.at("app/controllers/adminController.js")"></script>
     <script src="@routes.Assets.at("app/controllers/modal.js")"></script>
+    <script src="@routes.Assets.at("app/controllers/accordion.js")"></script>
     <script src="@routes.Assets.at("app/services/ordersService.js")"></script>
     <script src="@routes.Assets.at("app/services/cabinService.js")"></script>
     <script src="@routes.Assets.at("app/services/authService.js")"></script>
