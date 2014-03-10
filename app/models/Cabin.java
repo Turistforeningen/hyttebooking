@@ -1,10 +1,13 @@
 package models;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.*;
 
 import play.db.ebean.Model;
+import utilities.Page;
+import views.html.play20.book;
 
 /**
  * Abstract superclass for SmallCabin and LargeCabin. This is taken straight from JPA inheritance
@@ -26,7 +29,62 @@ public abstract class Cabin extends Model {
 	this.name = name;	
 	}
 	
+	/**
+	 * Get the number of active bookings for cabin.
+	 * Used primarily by flexjson serialization.
+	 * @return int - number of active bookings
+	 */
+	public int getNrBookings() {
+		if(this instanceof SmallCabin) {
+			//maybe active bookings.
+			return ((SmallCabin)this).bookings.size();
+		}
+		else {
+			return -1;
+		}
+	}
+	
+	public abstract String getcabinType();
+	
+	public abstract String getNrOfBeds();
+	
 	public static Finder<Long, Cabin> find = new Finder<Long, Cabin>(Long.class, Cabin.class);
 	
 	
+	/**
+	 * Returns a page of bookings for a given cabin. What subset of bookings and size
+	 * of list are decided by the page and pageSize arguments.
+	 * 
+	 * @param cabinId
+	 * @param page 
+	 * @param pageSize
+	 * @return
+	 */
+	public static Page<Booking> findAllBookingsForCabin(Long cabinId, int page, int pageSize) {
+		Cabin cabin = Cabin.find.byId(cabinId);
+		Page<Booking> bookingPage = new Page<Booking>();
+		if(cabin instanceof SmallCabin) {
+			
+			bookingPage.data = Booking.find.where()
+					.eq("smallCabin", cabin)
+					.findPagingList(pageSize)
+			        .getPage(page).getList();
+			bookingPage.totalItems = new Integer(((SmallCabin)cabin).bookings.size());
+			return bookingPage;
+			
+		}
+		else if(cabin instanceof LargeCabin) {
+			return null;
+		}
+		return null;
+	}
+	
+	public static Page<Cabin> findAllCabins(int page, int pageSize) {
+		Page<Cabin> cabins = new Page<Cabin>();
+		cabins.data = Cabin.find.where()
+		.findPagingList(pageSize)
+        .getPage(page).getList();
+		cabins.totalItems = Cabin.find.findRowCount();
+		return cabins;
+	}
 }
