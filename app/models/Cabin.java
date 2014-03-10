@@ -5,6 +5,11 @@ import java.util.List;
 
 import javax.persistence.*;
 
+import org.joda.time.DateTime;
+
+import com.avaje.ebean.Expr;
+import com.avaje.ebean.Expression;
+
 import play.db.ebean.Model;
 import utilities.Page;
 import views.html.play20.book;
@@ -34,15 +39,7 @@ public abstract class Cabin extends Model {
 	 * Used primarily by flexjson serialization.
 	 * @return int - number of active bookings
 	 */
-	public int getNrBookings() {
-		if(this instanceof SmallCabin) {
-			//maybe active bookings.
-			return ((SmallCabin)this).bookings.size();
-		}
-		else {
-			return -1;
-		}
-	}
+	public abstract int getNrActiveBookings();
 	
 	public abstract String getcabinType();
 	
@@ -74,7 +71,12 @@ public abstract class Cabin extends Model {
 			
 		}
 		else if(cabin instanceof LargeCabin) {
-			return null;
+			bookingPage.data = Booking.find.where()
+					.eq("beds.largeCabin", cabin)
+					.findPagingList(pageSize)
+					.getPage(page).getList();
+			bookingPage.totalItems = new Integer(Booking.find.where().eq("beds.largeCabin", cabin).findRowCount());
+			return bookingPage;
 		}
 		return null;
 	}

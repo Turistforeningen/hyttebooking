@@ -35,6 +35,10 @@ app.config(function ($routeProvider, $locationProvider, $httpProvider) {
 		controller: 'adminViewController',
 		templateUrl: '/assets/app/partials/adminView.html'
 	})
+	.when('/admin/cabin/:id', {
+		controller: 'adminViewController',
+		templateUrl: '/assets/app/partials/adminView.html'
+	})
 	.otherwise({ redirectTo: '/'});
 	
 	
