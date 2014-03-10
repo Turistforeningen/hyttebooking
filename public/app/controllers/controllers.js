@@ -1,24 +1,27 @@
-app.controller('orderController', function ($scope,$routeParams, $location, ordersService, api) {
-
-	$scope.getBookings = function () {
-		var success = function (data) {
-			$scope.orders = data;
-		};
-
-		var error = function () {
-			$scope.status = 'unable to load customer data' + error.message;
-		};
-		
-		api.getBookings().success(success).error(error);
+/*
+ * Controller for the ordersView. Sends a get request for orderHistory to the server.
+ * Methods for getting and cancelling bookings.
+ */
+app.controller('orderController', function ($scope, $location, $routeParams, ordersService, api, $log) {
+	$scope.currentPage = 1;
+	$scope.totalItems = 10;
+	$scope.itemsPerPage = 10;
+	
+	$scope.setPage = function(page) {
+		$scope.getOrders(page-1);
 	};
 
 
-	$scope.getOrders = function() {
-		ordersService.getOrders()
+	$scope.getOrders = function(page) {
+		$log.info($scope.itemsPerPage);
+		ordersService.getOrders(page, $scope.itemsPerPage)
 		.success(function (userOrders) {
-			$scope.orders = userOrders;
+			$scope.orders = userOrders.data;
+			$scope.totalItems = userOrders.totalItems;
+			
 		})
 		.error(function (error) {
+			$log.info("problem");
 			$scope.status = 'unable to load customer data' + error.message;
 		});
 	};
@@ -26,7 +29,7 @@ app.controller('orderController', function ($scope,$routeParams, $location, orde
 
 	$scope.cancelOrder = function (order) {
 		ordersService.cancelOrder(order.id)
-		.success(function () {
+		.success(function (data) {
 			var index = $scope.orders.indexOf(order)
 			$scope.orders.splice(index, 1);
 		})
@@ -39,12 +42,22 @@ app.controller('orderController', function ($scope,$routeParams, $location, orde
 
 	init();
 	function init() {
-		
-			$scope.getOrders();
+			var page = $routeParams.page;
+			if(page) {
+				$scope.currentPage = page;
+				$scope.getOrders(page-1);
+			}
+			else {
+				$scope.getOrders(0);
+			}
+			
 		
 	};
 });
 
+/*
+ * Controller for testView.
+ */
 app.controller('testController', function ($scope) {
 	
 	  
@@ -56,6 +69,11 @@ app.controller('testController', function ($scope) {
 
 });
 
+/*
+ * Controller for bookingView. Possible to add danger and sucess alert to the view
+ * by using the method addAlert. The method postBooking uses the ordersService to 
+ * post the booking to the server.
+ */
 app.controller('bookingController', function ($scope, ordersService) {
 	
 	$scope.addAlert = function(type, msg) {
@@ -69,12 +87,21 @@ app.controller('bookingController', function ($scope, ordersService) {
 	
     $scope.postBooking = function(booking) {
     	
+		// Temporary code
+		//var startD = booking.dates.startDate;
+		//$scope.start = startD.substring(0, 10);
+		$scope.start = JSON.stringify(booking.dates.startDate).substring(1, 11);
+		$scope.slutt = JSON.stringify(booking.dates.endDate).substring(1, 11);
+		booking.dates.startDate=JSON.stringify(booking.dates.startDate).substring(1, 11);
+		booking.dates.endDate=JSON.stringify(booking.dates.endDate).substring(1, 11);
+		// End temporary code
+		
     	ordersService.postOrder(booking)
 		.success(function (success) {
-			$scope.addAlert('success', "det virket!");
+			$scope.addAlert('success', success.message);
 		})
 		.error(function (error) {
-			$scope.addAlert('danger', "virket ikke!");
+			$scope.addAlert('danger', error.message);
 		});
     };
     init();
@@ -85,6 +112,11 @@ app.controller('bookingController', function ($scope, ordersService) {
 
 });
 
+/*
+ * The authController is the controller of authView and is responsible for 
+ * sending user credentials to server and take care of a authentication token return by the server.
+ * 
+ */
 app.controller('authController', function ($log, $scope, $location, $cookieStore, authorization, api) {
 	
 	
@@ -123,6 +155,10 @@ $scope.logout = function () {
 	};
 });
 
+/*
+ * Small controller used by navbar in indexAngular.html to set 
+ * active tab.
+ */
 function HeaderController($scope, $location, $log) 
 { 
     $scope.isActive = function (viewLocation) { 

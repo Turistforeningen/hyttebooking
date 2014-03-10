@@ -13,21 +13,27 @@ create table booking (
   id                        bigint not null,
   date_from                 timestamp,
   date_to                   timestamp,
-  date_of_order             timestamp,
-  guest_id                  bigint,
+  time_of_booking           bigint,
+  user_id                   bigint,
+  status                    integer,
   payment_id                bigint,
-  cabin_id                  bigint,
+  small_cabin_id            bigint,
   constraint pk_booking primary key (id))
 ;
 
 create table cabin (
-  dtype                     varchar(10) not null,
+  DTYPE                     varchar(31) not null,
   id                        bigint not null,
+  name                      varchar(255),
   constraint pk_cabin primary key (id))
 ;
 
 create table guest (
   id                        bigint not null,
+  booking_id                bigint,
+  is_member                 boolean,
+  guest_type                integer,
+  constraint ck_guest_guest_type check (guest_type in (0,1,2,3)),
   constraint pk_guest primary key (id))
 ;
 
@@ -44,6 +50,10 @@ create table user (
   email_address             varchar(256) not null,
   sha_password              varbinary(64) not null,
   full_name                 varchar(256) not null,
+  dob                       timestamp,
+  address                   varchar(255),
+  city                      varchar(255),
+  zip_code                  varchar(255),
   creation_date             timestamp not null,
   constraint uq_user_email_address unique (email_address),
   constraint pk_user primary key (id))
@@ -54,12 +64,6 @@ create table bed_booking (
   bed_id                         bigint not null,
   booking_id                     bigint not null,
   constraint pk_bed_booking primary key (bed_id, booking_id))
-;
-
-create table booking_bed (
-  booking_id                     bigint not null,
-  bed_id                         bigint not null,
-  constraint pk_booking_bed primary key (booking_id, bed_id))
 ;
 create sequence bed_seq;
 
@@ -75,22 +79,20 @@ create sequence user_seq;
 
 alter table bed add constraint fk_bed_largeCabin_1 foreign key (large_cabin_id) references cabin (id) on delete restrict on update restrict;
 create index ix_bed_largeCabin_1 on bed (large_cabin_id);
-alter table booking add constraint fk_booking_guest_2 foreign key (guest_id) references guest (id) on delete restrict on update restrict;
-create index ix_booking_guest_2 on booking (guest_id);
+alter table booking add constraint fk_booking_user_2 foreign key (user_id) references user (id) on delete restrict on update restrict;
+create index ix_booking_user_2 on booking (user_id);
 alter table booking add constraint fk_booking_payment_3 foreign key (payment_id) references payment (id) on delete restrict on update restrict;
 create index ix_booking_payment_3 on booking (payment_id);
-alter table booking add constraint fk_booking_cabin_4 foreign key (cabin_id) references cabin (id) on delete restrict on update restrict;
-create index ix_booking_cabin_4 on booking (cabin_id);
+alter table booking add constraint fk_booking_smallCabin_4 foreign key (small_cabin_id) references cabin (id) on delete restrict on update restrict;
+create index ix_booking_smallCabin_4 on booking (small_cabin_id);
+alter table guest add constraint fk_guest_booking_5 foreign key (booking_id) references booking (id) on delete restrict on update restrict;
+create index ix_guest_booking_5 on guest (booking_id);
 
 
 
 alter table bed_booking add constraint fk_bed_booking_bed_01 foreign key (bed_id) references bed (id) on delete restrict on update restrict;
 
 alter table bed_booking add constraint fk_bed_booking_booking_02 foreign key (booking_id) references booking (id) on delete restrict on update restrict;
-
-alter table booking_bed add constraint fk_booking_bed_booking_01 foreign key (booking_id) references booking (id) on delete restrict on update restrict;
-
-alter table booking_bed add constraint fk_booking_bed_bed_02 foreign key (bed_id) references bed (id) on delete restrict on update restrict;
 
 # --- !Downs
 
@@ -101,8 +103,6 @@ drop table if exists bed;
 drop table if exists bed_booking;
 
 drop table if exists booking;
-
-drop table if exists booking_bed;
 
 drop table if exists cabin;
 

@@ -19,6 +19,7 @@ import java.util.UUID;
 @Entity
 public class User extends Model {
 
+	/** assosier med sherpa id i DNT **/
     @Id
     public Long id;
 
@@ -63,6 +64,19 @@ public class User extends Model {
     @Constraints.MaxLength(256)
     public String fullName;
 
+    @Constraints.Required
+    public Date dob;
+    
+    @Constraints.Required
+    public String address;
+    
+    @Constraints.Required
+    public String city;
+    
+    @Constraints.Required
+    @Constraints.MaxLength(4)
+    public String zipCode;
+    
     @Column(nullable = false)
     public Date creationDate;
 
@@ -77,11 +91,9 @@ public class User extends Model {
         save();
     }
     
-    
-    /*@OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-    @JsonIgnore
-    public List<Booking> bookings = new ArrayList<Booking>();*/
-    
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+	@JsonIgnore
+	public List<Booking> bookings = new ArrayList<Booking>();
     
     public User() {
         this.creationDate = new Date();
@@ -93,8 +105,10 @@ public class User extends Model {
         this.fullName = fullName;
         this.creationDate = new Date();
     }
-
-
+    public int getNrOfBookings() {
+    	return this.bookings.size();
+    }
+    
     public static byte[] getSha512(String value) {
         try {
             return MessageDigest.getInstance("SHA-512").digest(value.getBytes("UTF-8"));

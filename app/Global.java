@@ -7,6 +7,9 @@ import models.*;
 
 import java.util.*;
 
+import org.hibernate.validator.constraints.Length;
+import org.joda.time.DateTime;
+
 /**
  * Dummy generation test
  * v0.1 (Jama) Changes made:
@@ -20,22 +23,50 @@ public class Global extends GlobalSettings {
 		// Populate database with dummy data
 		
 	    
-		if (Booking.find.findRowCount() == 0) {
-			User user1 = new User("olavvatne@gmail.com", "p", "John Doe");
+		if (User.find.findRowCount() == 0) {
+			User user1 = new User("q", "w", "John Doe");
 			user1.save();
 			User user2 = new User("user2@demo.com", "password", "Jane Doe");
 			user2.save();
-		    User[] us = {user1, user2}; 
-		    new Guest(user1.id).save();
-		    new Guest(user2.id).save();
-			String[] cabins = {"Helfjord", "Bergene", "Fjørlistølen", "Trollkapp" };
-			for ( int i = 0; i<40; i++) {
-				new Booking((long)i, new Date(), new Date());
+			
+		    User[] us = {user1, user2};
+		    int userSize = us.length;
+		    
+		   LargeCabin lc = new LargeCabin("Fjordheim", 10);
+		   lc.save();
+		   
+		   LargeCabin lc2 = new LargeCabin("Peterstun", 20);
+		   lc2.save();
+		   
+		   Cabin[] cabins = {lc, new SmallCabin("Helfjord"), new SmallCabin("Fjordlistølen"), lc2};
+		   
+		   cabins[1].save();
+		   cabins[2].save();
+		   
+		   	int cabinSize = cabins.length;
+			for ( int i = 0; i<100; i++) {
+				List<Bed> beds = null;
+				if(i%cabinSize ==0) {
+					beds = lc.beds;
+				}
+				if(i%cabinSize ==3) {
+					beds = lc2.beds.subList(0, 1+ (int)Math.floor((Math.random()*15)));
+				}
+				//Booking 0-20 days in the future from today
+				int fromDays = (int)(Math.random()*20);
+				//booking 1 -5 days + fromdays in the future from today
+				int toDays = (int)(Math.random()*20)+ 1 +(int)(Math.random()*5);
+				//bookingDate 1-20 days before fromdate
+				int bookingDays = (int)(Math.random()*20);
 				
+				Date fromDate = DateTime.now().plusDays(fromDays).toDate();
+				Date toDate = DateTime.now().plusDays(toDays).toDate();
+				Date bookingDate = DateTime.now().minusDays(bookingDays).toDate();
 				
+				Booking b= Booking.createBooking(new Long(1+(i%userSize)), fromDate, toDate, cabins[i%cabinSize].id, beds );
+				b.timeOfBooking = bookingDate.getTime();
+				b.update();
 				
-				
-//models.Booking.Booking(String userId, Date dayOfBookingStart, Date dayOfBookingEnd, SmallCabin cabin)
 			}
 		}
 		

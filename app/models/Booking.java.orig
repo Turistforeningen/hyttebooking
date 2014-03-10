@@ -1,171 +1,153 @@
-<<<<<<< HEAD
 package models;
 
-import java.util.Date;
-
-import javax.persistence.*;
-
-import play.data.format.Formats;
-import play.data.validation.Constraints;
-import play.data.validation.Constraints.Required;
-import play.db.ebean.Model;
-
-/**
- * Revision of booking model
- * v.02 (Jama) Changes made:
- * 	1. Added @ManyToOne to Beds
- */
-@Entity
-public class Booking extends Model {
-
-	private static final long serialVersionUID = 1L;
-
-	@Id
-	public Long id;
-	
-	@Constraints.Required
-	@Formats.DateTime(pattern="dd-MM-yyyy")
-	public Date dateFrom;
-
-	@Constraints.Required
-	@Formats.DateTime(pattern="dd-MM-yyyy")
-	public Date dateTo;
-
-	@OneToOne
-	public Guest guest;
-
-	@OneToOne
-	public Payment payment;
-
-	/** TEST **/
-	public Booking(Long userId,
-			Date dayOfBookingStart,
-			Date dayOfBookingEnd) {
-		this.guest = new Guest(userId);
-		this.cabin = new SmallCabin(this);
-		this.dateTo = dayOfBookingEnd;
-		this.dateFrom = dayOfBookingStart;
-
-	}
-	/** END TEST **/
-
-	/** Booking -> Cabin is many-to-one because there can be many bookings, but only one cabin
-	 per. **/
-	@ManyToOne
-	public SmallCabin cabin; //TODO change this to SmallCabin when implemented
-	
-	@ManyToOne
-	public Bed beds;
-
-	public static Finder<String,Booking> find = new Finder<String,Booking>(
-			String.class, Booking.class
-			); 
-}
-=======
-package models;
-
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 import javax.persistence.*;
 
+import com.avaje.ebean.Ebean;
+import com.avaje.ebean.Expr;
+import com.avaje.ebean.Expression;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import play.data.validation.Constraints.Required;
+import play.data.format.Formats;
+import play.data.validation.Constraints;
 import play.db.ebean.Model;
 
-/**
- * Draft of booking model class
- * 
- *
- */
 @Entity
 public class Booking extends Model {
-	
-	@Required
+	public static Integer CANCELLED = new Integer(2);
+	public static Integer PAID = new Integer(1);
+	public static Integer BOOKED = new Integer(0);
 	@Id
-	private String id;
+	public Long id;
 	
-	private Date dateOfBooking;
+	@Constraints.Required
+	@Formats.DateTime(pattern="yyyy-MM-dd")
+	public Date dateFrom;
+
+	@Constraints.Required
+	@Formats.DateTime(pattern="yyyy-MM-dd")
+	public Date dateTo;
 	
-	private Date dayOfBookingStart;
-	private Date dayOfBookingEnd;
+	/** Time of order contains information about when the booking took place as timestamp long **/
+	public Long timeOfBooking;
 	
+	@Constraints.Required
+	@OneToMany(mappedBy="booking", cascade = CascadeType.ALL, orphanRemoval=true) //you were here a
+	public List<Guest> guests;
+	
+	@Constraints.Required
 	@ManyToOne
 	public User user;
 	
-	private String transactionId;
+	public Integer status = new Integer(0);
 	
-	//temporarily
-	private String cabin;
-	private int nrOfPersons;
+	@OneToOne
+	public Payment payment;
 	
-
-	public Booking(Date dateOfBooking,
-			User userId,
+	@ManyToOne
+	@JsonIgnore
+	public SmallCabin smallCabin;
+	
+	@ManyToMany(mappedBy = "bookings",cascade = CascadeType.ALL)
+	public List<Bed> beds = new ArrayList<Bed>();
+	
+	public void addBed(Bed b) {
+		beds.add(b);
+		
+	}
+	
+	public void removeAllBeds() {
+		
+		beds.clear();
+	}
+	
+	/**
+	 * 
+	 * @return Cabin
+	 */
+	public Cabin getCabin() {
+		if(beds.size() != 0) {
+			System.out.println(beds.size());
+			System.out.println(beds.get(0).largeCabin);
+			return beds.get(0).largeCabin;
+		}
+		else {
+			return smallCabin;
+		}
+	}
+	
+	/** TEST **/
+	public Booking(Long userId,
 			Date dayOfBookingStart,
 			Date dayOfBookingEnd,
-			String cabin
-			) {
-		this.dateOfBooking = dateOfBooking;
-		this.user = userId;
-		this.cabin = cabin;
-		this.dayOfBookingEnd = dayOfBookingEnd;
-		this.dayOfBookingStart = dayOfBookingStart;
+			Long cabinId,
+			List<Bed> beds) {
+		this.timeOfBooking = Calendar.getInstance().getTimeInMillis();
 		
-	}
-	
-	public Booking(Date dateOfBooking, User userId) {
-		this.dateOfBooking = dateOfBooking;
-		this.user = userId;	
-	}
-	
-	 public String getId() {
-		return id;
-	}
-
-	public Date getDateOfBooking() {
-		return dateOfBooking;
-	}
-	
-	public Date getDayOfBookingStart() {
-		return this.dayOfBookingStart;
-	}
-	
-	public Date getDayOfBookingEnd() {
-		return this.dayOfBookingEnd;
-	}
-	
-	public User getUserId() {
-		return this.user;
-	}
-	
-	public String getCabin() {
-		return cabin;
-	}
-
-	public void setCabin(String cabin) {
-		this.cabin = cabin;
-	}
-	
-	public void setCabin(int persons) {
-		this.nrOfPersons = persons;
-	}
-	
-	public static Booking create(Booking booking, Long cabinId) {
-		booking.setCabin(cabinId +"");
-		booking.save();
-		return booking;
+		this.user = User.find.byId(userId);
+		Cabin cabin = Cabin.find.byId(cabinId);
 		
-	}
-	
-	public static List<Booking> findByUser(User user) {
-		Finder<Long, Booking> finder = new Finder<Long, Booking>(Long.class, Booking.class);
-		return finder.where().eq("user", user).findList();
-	}
+		if(cabin instanceof SmallCabin) {
+			this.smallCabin = (SmallCabin)cabin;
+		}
+		else {
+			//skal ikke legge til alle beds.
+			
+			for(Bed bed: beds) {
+				addBed(bed);	
+			}
+			
+		}
+		
+		this.dateTo = dayOfBookingEnd;
+		this.dateFrom = dayOfBookingStart;
 
-	public static Finder<String,Booking> find = new Finder<String,Booking>(
-			String.class, Booking.class
+	}
+	/** END TEST **/
+	
+	public static Finder<Long,Booking> find = new Finder<Long,Booking>(
+			Long.class, Booking.class
 			); 
+	
+	public String toString() {
+<<<<<<< HEAD
+		return "id: " + this.id + " cabin" + this.getCabin().name;
+=======
+		return "id: " + this.id + " cabin" + this.smallCabin.name;
+>>>>>>> 74764eda3ad4a81df00c749516f002cc8dd5eeef
+	}
+	
+	
+	/**
+	 * Method finds all bookings submitted by a user, and returns a
+	 * subset of them defined by page and pageSize parameter.
+	 * @param user
+	 * @param page
+	 * @param pageSize
+	 * @return List of bookings submitted by user
+	 */
+	public static Page getBookingPageByUser(User user, int page, int pageSize) {
+		if(user != null) {
+			Page bookingPage = new Page();
+			 bookingPage.orders = find.where()
+<<<<<<< HEAD
+			         .and(Expr.eq("user", user), Expr.ne("status", CANCELLED))
+=======
+			         .eq("user", user)
+>>>>>>> 74764eda3ad4a81df00c749516f002cc8dd5eeef
+			         .orderBy("timeOfBooking asc")
+			         .findPagingList(pageSize)
+			         .getPage(page).getList();
+			 bookingPage.totalItems = user.getNrOfBookings();
+			 return bookingPage;
+		}
+		return new Page();
+	}
+
 }
->>>>>>> form
+
+

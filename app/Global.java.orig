@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import play.*;
 import play.libs.*;
 
@@ -7,6 +6,9 @@ import com.avaje.ebean.Ebean;
 import models.*;
 
 import java.util.*;
+
+import org.hibernate.validator.constraints.Length;
+import org.joda.time.DateTime;
 
 /**
  * Dummy generation test
@@ -19,47 +21,53 @@ public class Global extends GlobalSettings {
 	public void onStart(Application app) {
 
 		// Populate database with dummy data
-		if (Booking.find.findRowCount() == 0) {
-			for ( int i = 0; i<40; i++) {
-				new Booking((long)i, new Date(), new Date());
-				
-				
-				
-				
-//models.Booking.Booking(String userId, Date dayOfBookingStart, Date dayOfBookingEnd, SmallCabin cabin)
-			}
-		}
-		
-	}
-}
-=======
-import play.*;
-import play.libs.*;
-
-import com.avaje.ebean.Ebean;
-
-import models.*;
-
-import java.util.*;
-
-public class Global extends GlobalSettings {
-	@Override
-	public void onStart(Application app) {
-		// Populate database with dummy data
 		
 	    
-		if (Booking.find.findRowCount() == 0) {
-			User user1 = new User("olavvatne@gmail.com", "p", "John Doe");
+		if (User.find.findRowCount() == 0) {
+			User user1 = new User("q", "w", "John Doe");
 			user1.save();
 			User user2 = new User("user2@demo.com", "password", "Jane Doe");
 			user2.save();
-		    User[] us = {user1, user2}; 
-			String[] cabins = {"Helfjord", "Bergene", "Fjørlistølen", "Trollkapp" };
-			for ( int i = 0; i<40; i++) {
+			
+		    User[] us = {user1, user2};
+		    int userSize = us.length;
+		    
+		   LargeCabin lc = new LargeCabin("Fjordheim", 10);
+		   lc.save();
+		   
+		   LargeCabin lc2 = new LargeCabin("Peterstun", 20);
+		   lc2.save();
+		   
+		   Cabin[] cabins = {lc, new SmallCabin("Helfjord"), new SmallCabin("Fjordlistølen"), lc2};
+		   
+		   cabins[1].save();
+		   cabins[2].save();
+		   
+		   	int cabinSize = cabins.length;
+			for ( int i = 0; i<100; i++) {
+				List<Bed> beds = null;
+				if(i%cabinSize ==0) {
+					beds = lc.beds;
+				}
+				if(i%cabinSize ==3) {
+					beds = lc2.beds.subList(0, 1+ (int)Math.floor((Math.random()*15)));
+				}
+				//Booking 0-20 days in the future from today
+				int fromDays = (int)(Math.random()*20);
+				//booking 1 -5 days + fromdays in the future from today
+				int toDays = (int)(Math.random()*20)+ 1 +(int)(Math.random()*5);
+				Date fromDate = DateTime.now().plusDays(fromDays).toDate();
+				Date toDate = DateTime.now().plusDays(toDays).toDate();
 				
-				new Booking(new Date(114, 03, 23),  us[i%2],new Date(114, 04, 3 + i),new Date(114, 04, 10 + i), cabins[i%cabins.length]).save();
+<<<<<<< HEAD
+				Booking b= new Booking(new Long((long)i%userSize), fromDate, toDate, cabins[i%cabinSize].id, beds );
+=======
+				Booking b= new Booking((long)i%userSize, fromDate, toDate, cabins[i%cabinSize].id, beds );
+>>>>>>> 74764eda3ad4a81df00c749516f002cc8dd5eeef
+				b.save();
+				
 			}
 		}
+		
 	}
 }
->>>>>>> form

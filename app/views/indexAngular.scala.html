@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html ng-app="dntApp">
 <head>
-	<title>Angular example</title>
+	<title>DNT</title>
 	<link rel="stylesheet" type="text/css" href=@routes.Assets.at("stylesheets/bootstrap.css")>
+	<link rel="stylesheet" type="text/css" href=@routes.Assets.at("stylesheets/main.css")>
+	<link rel="SHORTCUT ICON" href="/public/images/favicon.ico" />
 	
 </head >
 <body>
-	<nav class="navbar navbar-default" >
-		<div class="container-fluid">
+	<nav class="navbar navbar-default" role="navigation">
+		<div class="container">
 			<!-- Brand and toggle get grouped for better mobile display -->
 			<div class="navbar-header">
 				<button type="button" class="navbar-toggle" data-toggle="collapse"
@@ -16,11 +18,12 @@
 						class="icon-bar"></span> <span class="icon-bar"></span> <span
 						class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand" href="#/">DNT</a>
+				<!-- <a class="navbar-brand" href="#/"></a> -->
+				<a href="#/"><img src="https://dl.dropboxusercontent.com/u/8913722/dntLogo_small.png"></a>
 			</div>
 
 			<!-- Collect the nav links, forms, and other content for toggling -->
-			<div class="collapse navbar-collapse"  ng-controller="HeaderController">
+			<div class="collapse navbar-collapse"  id="bs-example-navbar-collapse-1" ng-controller="HeaderController">
 				<ul class="nav navbar-nav">
 					<li ng-class="{ active: isActive('/')}"><a href="#/">home</a></li>
 					<li ng-class="{ active: isActive('/orderHistory/')}"><a href="#/orderHistory">orders</a></li>
@@ -29,11 +32,12 @@
 				<ul class="nav navbar-nav navbar-right "ng-controller="authController">
 					<li ><a href="#/login">{{ SignInText || 'sign in' }}</a></li>
 					<li ><a href="#/" ng-click="logout()">log out</a></li>
-					
+					</ul>
 			</div>
 			<!-- /.navbar-collapse -->
 		</div>
 		<!-- /.container-fluid -->
+
 	</nav>
 
 	<div ng-view>
@@ -45,16 +49,20 @@
 	<script src="@routes.Assets.at("javascripts/bootstrap.js")"></script>
 	<script src="@routes.Assets.at("javascripts/angular-route.js")"></script>
 	<script src="@routes.Assets.at("javascripts/angular-cookies.js")"></script>
-	<script src="@routes.Assets.at("javascripts/angular-cookies.js")"></script>
 	<script src="@routes.Assets.at("javascripts/angular-resource.js")"></script>
 	<script src="@routes.Assets.at("javascripts/angular-sanitize.js")"></script>
 	<script src="@routes.Assets.at("javascripts/ui-bootstrap-tpls-0.10.0.js")"></script>
 	
-	
+	<script src="@routes.Assets.at("javascripts/daterangepicker.js")"></script>
+	<script src="@routes.Assets.at("javascripts/moment.js")"></script>
+	<script src="@routes.Assets.at("javascripts/ng-bs-daterangepicker.js")"></script>
 	
 	<script src="@routes.Assets.at("app/app.js")"></script>
     <script src="@routes.Assets.at("app/controllers/controllers.js")"></script>
+    <script src="@routes.Assets.at("app/controllers/adminController.js")"></script>
+    <script src="@routes.Assets.at("app/controllers/modal.js")"></script>
     <script src="@routes.Assets.at("app/services/ordersService.js")"></script>
+    <script src="@routes.Assets.at("app/services/cabinService.js")"></script>
     <script src="@routes.Assets.at("app/services/authService.js")"></script>
     
    
