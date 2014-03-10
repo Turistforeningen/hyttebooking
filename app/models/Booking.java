@@ -88,7 +88,7 @@ public class Booking extends Model {
 	 */
 	public boolean isAbleToCancel() {
 		//This login should probably be placed somewhere else?
-		if(DateTime.now().plusDays(7).isAfter(this.dateTo.getTime())) {
+		if(DateTime.now().plusDays(7).isAfter(this.dateFrom.getTime())) {
 			return true;
 		}
 		else {
@@ -136,7 +136,7 @@ public class Booking extends Model {
 			Page<Booking> bookingPage = new Page<Booking>();
 			 bookingPage.data = find.where()
 			         .and(Expr.eq("user", user), Expr.ne("status", CANCELLED))
-			         .orderBy("timeOfBooking asc")
+			         .orderBy("dateFrom asc")
 			         .findPagingList(pageSize)
 			         .getPage(page).getList();
 			 bookingPage.totalItems = user.getNrOfBookings();
