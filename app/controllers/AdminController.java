@@ -38,7 +38,7 @@ public class AdminController extends Controller {
 	public static Result getCabinDetails(Long id) {
 		int page = Page.pageHelper(request().getQueryString("page"));
 		int pageSize = Page.pageSizeHelper(request().getQueryString("size"));
-		 
+		 System.out.println(pageSize + " ------------------");
 		Page<Booking> bookingsAtCabin = Cabin.findAllBookingsForCabin(id, page, pageSize);
 		JSONSerializer bookingSerializer = new JSONSerializer()
 		.include("data" )

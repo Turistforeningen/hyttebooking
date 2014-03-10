@@ -1,13 +1,24 @@
-app.controller('adminViewController', function ($scope, $location,  api, $log) {
+app.controller('adminViewController', function ($scope, $location,$routeParams,  api, $log) {
 	$scope.view = 0;
 	
 	$scope.$on('viewCabin', function(event, id) {
-		$scope.view = 1;
-		$scope.$broadcast('retrieveCabin', id);
+		$scope.setCabinView(id);
 	
 	});
 	
+	$scope.setCabinView = function(id) {
+		$log.info(id);
+		$scope.view = 1;
+		$scope.$broadcast('retrieveCabin', id);
+	};
 	
+	
+	init();
+	function init() {
+		if($routeParams.id) {
+			$scope.id = $routeParams.id;
+		}
+	};
 });
 
 app.controller('cabinTableController', function ($scope, $location, $routeParams, cabinService, api, $log) {
@@ -66,12 +77,15 @@ app.controller('cabinDetailsController', function ($scope, $location, $routePara
 	$scope.id;
 	
 	
+	
 	$scope.$on('retrieveCabin', function(event, id) {
 		$scope.id = id;
 		$scope.getCabinDetails(0, id);
+		 
 	});
 	
 	$scope.getCabinDetails = function(page, cabinId) {
+		$log.info("fgdfgdfg")
 		cabinService.getCabinDetails(page, $scope.itemsPerPage, cabinId)
 		.success(function (details) {
 			$scope.cabinDetails = details.data;
@@ -85,9 +99,13 @@ app.controller('cabinDetailsController', function ($scope, $location, $routePara
 	};
 
 	
-	init();
-	function init() {
-	};
+	$scope.init = function(id) {
+		if (id) {
+			 $scope.id = id;
+			 getCabinDetails(0, id);
+			
+		}
+	  };
 });
 
 
