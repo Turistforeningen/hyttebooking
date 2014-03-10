@@ -21,7 +21,9 @@
 				<td>{{booking.dateFrom | date}}</td>
 				<td>{{booking.dateTo | date}}</td>
 				<td>{{booking.nrOfBeds}}</td>
-
+                <td ng-if="booking.status == 0"><span class="label label-warning">booked</span></td>
+                 <td ng-if="booking.status == 1"><span class="label label-success">paid</span></td>
+                  <td ng-if="booking.status == 2"><span class="label label-danger">cancelled</span></td>
 			</tr>
 		</tbody>
 	</table>
@@ -30,6 +32,7 @@
 	<pagination on-select-page="setPage(page)" total-items="totalItems"
 		page="currentPage" items-per-page="itemsPerPage"></pagination>
 </div>
+
 <pre>
         {{cabinDetails}}
     </pre>
