@@ -1,56 +1,141 @@
-<div class="container">
-	<div class="row">
-		<div class="col-md-12">
-			<pagination on-select-page="setPage(page)" total-items="totalItems"
-				page="currentPage" items-per-page="itemsPerPage"></pagination>
 
+<div class="whole" style="background-color: #dbdbdb">
+	<div class="container" style="background-color: #ffffff;">
+
+
+		<!-- ////////////////////////////////////////////////////////// Profile ////////////////////////////////////////////////////////// -->
+
+		<h2>Brukeropplysninger</h2>
+		<div class="row">
+			<div class="col-lg-12" style="border-bottom: 1px solid #ccc;"row">
+				<div class="col-lg-5">
+					<div class="col-lg-4" style="font-weight: bold;">
+						<p>Fornavn</p>
+						<p>Etternavn</p>
+						<p>F¿dselsdato</p>
+						<p>Epost</p>
+					</div>
+					<div class="col-lg-8">
+						<p>Ola</p>
+						<p>Nordmann</p>
+						<p>30.05.1989</p>
+						<p>ola.nordmann@mail.no</p>
+					</div>
+				</div>
+				<div class="col-lg-5">
+					<div class="col-lg-4" style="font-weight: bold;"">
+						<p>Medlemsnummer</p>
+						<p>Adresse</p>
+						<p>Poststed</p>
+						<p>Postnummer</p>
+					</div>
+					<div class="col-lg-8">
+						<p>1234567</p>
+						<p>Gateveien 3</p>
+						<p>Plassen</p>
+						<p>1234</p>
+					</div>
+				</div>
+			</div>
 		</div>
-	</div>
 
-	<div class="row" ng-repeat="order in orders">
-		<div class="col-md-12 well">
-			<div class="row">
-				<div class="col-md-5">
-					<p>date ordered: {{ order.timeOfBooking | date }}</p>
-					<p>from: {{ order.dateFrom | date }}</p>
-					<p>till: {{ order.dateTo | date }}</p>
+
+		<!-- /////////////////////////////////////////////////////// Order history /////////////////////////////////////////////////////// -->
+
+		<h2>Bestillinger</h2>
+
+		<div class="row">
+			<div class="col-md-9">
+				<pagination on-select-page="setPage(page)" total-items="totalItems"
+					page="currentPage" items-per-page="itemsPerPage"></pagination>
+			</div>
+			<div class="col-md-3">
+				<div style="margin: 20px">
+					<select class="form-control" ng-model="itemsPerPage"
+						ng-change="getOrders(page)">
+						<option>10</option>
+						<option>20</option>
+						<option>50</option>
+					</select>
 				</div>
-				<div class="col-md-5">
-					<p>cabin: {{ order.cabin.name }}</p>
-					<p ng-show="order.nrOfBeds !=null">beds: {{order.nrOfBeds }}</p>
+			</div>
+		</div>
+
+		
+		<div class="row">
+			<div class="col-lg-1"></div>
+			<div class="col-lg-10">
+				<div class="row"
+					ng-repeat="order in orders | filter:text | orderBy:'dayOfBookingStart'">
+					<div class="col-md-12 well">
+						<div class="col-md-1">
+							<div class="row" style="height: 10px"></div>
+							<div class="row" style="background-color: #ffa2b6; height: 80px;">
+								<p>Cabin icon</p>
+							</div>
+						</div>
+						<div class="col-md-11">
+							<div class="row">
+								<div class="col-lg-12">
+									<h4>{{ order.cabin.name }}</h4>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-lg-4">
+									<p>
+										<strong>Reservert</strong>
+									</p>
+									<p>{{ order.dateFrom | date }} - {{ order.dateTo | date }}</p>
+								</div>
+								<div class="col-lg-2"">
+									<p>
+										<strong>Ordrenummer</strong>
+									</p>
+									<p>12345</p>
+								</div>
+								<div class="col-lg-2"">
+									<p>
+										<strong>Bestilt</strong>
+									</p>
+									<p>{{ order.timeOfBooking | date }}</p>
+								</div>
+								<div class="col-lg-2"">
+									<p>
+										<strong>Ordrebekreftelse</strong>
+									</p>
+									<p>Se kvittering</p>
+								</div>
+								<div class="col-lg-2" style="text-align: center;">
+									<div ng-if="order.ableToCancel">
+										<button class="btn btn-danger" ng-click="cancelOrder( order )">
+											Cancel booking</button>
+									</div>
+									<div ng-if="!order.ableToCancel">
+										<p><strong>To late to cancel</strong></p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
 				</div>
-				<div =class="col-md-2">
-				    <div ng-if="order.ableToCancel">
-				        <button class="btn btn-default" ng-click="cancelOrder( order )">
-				        Cancel booking</button>
-				    </div>
-				     <div ng-if="!order.ableToCancel">
-                        <p>To late to cancel</p>
-                    </div>
-					
+			</div>
+			<div class="col-lg-1"></div>
+		</div>
+		<div class="row">
+			<div class="col-md-9">
+				<pagination on-select-page="setPage(page)" total-items="totalItems"
+					page="currentPage" items-per-page="itemsPerPage"></pagination>
+			</div>
+			<div class="col-md-3">
+				<div style="margin: 20px">
+					<select class="form-control" ng-model="itemsPerPage"
+						ng-change="getOrders(page)">
+						<option>10</option>
+						<option>20</option>
+						<option>50</option>
+					</select>
 				</div>
 			</div>
 		</div>
 	</div>
-
-	<div class="row">
-		<div class="col-md-6">
-
-			<pagination on-select-page="setPage(page)" total-items="totalItems"
-				page="currentPage" items-per-page="itemsPerPage"></pagination>
-
-		</div>
-		<div class="col-md-3"></div>
-		<div class="col-md-3">
-			<div style="margin: 20px">
-				<select class="form-control" ng-model="itemsPerPage"
-					ng-change="getOrders(page)">
-					<option>10</option>
-					<option>20</option>
-					<option>50</option>
-				</select>
-			</div>
-		</div>
-	</div>
-</div>
-<pre>{{orders}}</pre>
+	<pre>{{orders}}</pre>
