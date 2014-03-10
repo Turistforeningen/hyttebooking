@@ -1,11 +1,11 @@
 <div class="whole" style="background-color: #dbdbdb">
 	<div class="container" style="background-color: #ffffff;">
-		<div class="row" style="background-color: #51e4cb; height: 400px">
+		<div class="row" style="position: center;">
 			<!--This is just the container where the cabin information will be-->
-			<img src="@routes.Assets.at("images/DNT_hytteprofil_top_small.jpg")" width="28" height="22" />
+			<img src="assets/images/DNT_hytteprofil_top_small.jpg" />
 		</div>
 
-		<div class="row"
+		<div class="row well"
 			style="border-bottom: 10px solid white; border-top: 5px solid white;">
 			<alert ng-repeat="alert in alerts" type="alert.type"
 				close="closeAlert($index)">{{alert.msg}}</alert>
@@ -13,8 +13,8 @@
 				<h2>Booking</h2>
 			</div>
 
-<!-- //////////////////////////////////////////////// DNT BOOKING SOLUTION - START//////////////////////////////////////////////// -->
-<!-- /////////////////////////////////////////////// Numbers of beds to be reserved ////////////////////////////////////////////// -->
+			<!-- //////////////////////////////////////////////// DNT BOOKING SOLUTION - START//////////////////////////////////////////////// -->
+			<!-- /////////////////////////////////////////////// Numbers of beds to be reserved ////////////////////////////////////////////// -->
 
 			<div class="col-lg-3" style="min-height: 300px;">
 				<div class="row">
@@ -59,6 +59,7 @@
 						</select>
 					</div>
 				</div>
+				<!-- /row -->
 				<div class="row">
 					<div class="col-lg-9">
 						<p>Spedbarn</p>
@@ -73,23 +74,81 @@
 						</select>
 					</div>
 				</div>
+				<!-- /row -->
 				<div class="row">
-					<div class="col-lg-12" style="padding-top:10px">
-						<p>Ikke medlem?</p>
+					<div class="row">
+						<div class="col-lg-12" style="padding-top: 10px">
+
+							<div ng-controller="AccordionDemoCtrl">
+								<accordion close-others="oneAtATime"> <accordion-group
+									heading="Ikke medlem?">
+								<div class="row">
+									<div class="col-lg-9">
+										<p>Voksen, ikke-medlem</p>
+									</div>
+									<div class="col-lg-3">
+										<select style="width: 50px">
+											<option value="one">1</option>
+											<option value="two">2</option>
+											<option value="three">3</option>
+											<option value="four">4</option>
+											<option value="five">5</option>
+										</select>
+									</div>
+								</div>
+								<!-- /row -->
+								<div class="row">
+									<div class="col-lg-9">
+										<p>Ungdom, ikke-medlem</p>
+									</div>
+									<div class="col-lg-3">
+										<select style="width: 50px">
+											<option value="one">1</option>
+											<option value="two">2</option>
+											<option value="three">3</option>
+											<option value="four">4</option>
+											<option value="five">5</option>
+										</select>
+									</div>
+								</div>
+								<!-- /row -->
+								<div class="row">
+									<div class="col-lg-9">
+										<p>Barn, ikke-medlem</p>
+									</div>
+									<div class="col-lg-3">
+										<select style="width: 50px">
+											<option value="one">1</option>
+											<option value="two">2</option>
+											<option value="three">3</option>
+											<option value="four">4</option>
+											<option value="five">5</option>
+										</select>
+									</div>
+								</div>
+								<!-- /row -->
+								</accordion-group> </accordion>
+							</div>
+
+						</div>
 					</div>
 				</div>
-				<input type="number" class="form-control"ng-model="booking.nrOfPersons">
-				<!-- Voksen, ikke-medlem <input type="number" class="form-control" ng-model="booking.nrOfPersons"> -->
+				<!--<input type="number" class="form-control"
+					ng-model="booking.nrOfPersons">
+				 Voksen, ikke-medlem <input type="number" class="form-control" ng-model="booking.nrOfPersons"> -->
 			</div>
+			<!-- col-lg-3 -->
 
 
-<!-- //////////////////////////////////////////////////// Date to be reserved //////////////////////////////////////////////////// -->
+			<!-- //////////////////////////////////////////////////// Date to be reserved //////////////////////////////////////////////////// -->
 
-			<div class="col-lg-6" style="min-height: 300px; border-left: 1px solid #ccc; border-right: 1px solid #ccc;">
+			<div class="col-lg-6"
+				style="min-height: 300px; border-left: 1px solid #ccc; border-right: 1px solid #ccc;">
 				<div class="col-lg-12">
 					<div class="row">
 						<div class="col-lg-6">
-							From: ¾¿Œ <input type="text" class="form-control" value="DD.MM.">
+							From: ¾¿Œ <input type="text" class="form-control"
+								value="DD.MM.">
 							<!-- From: <input type="daterange" class="form-control" ng-model="booking.dayOfBookingStart">  -->
 						</div>
 						<div class="col-lg-6">
@@ -101,7 +160,7 @@
 			</div>
 
 
-<!-- ////////////////////////////////////////////////// Order summary and submit ///////////////////////////////////////////////// -->
+			<!-- ////////////////////////////////////////////////// Order summary and submit ///////////////////////////////////////////////// -->
 
 			<div class="col-lg-3" style="min-height: 300px">
 				<div style="height: 250px;">
@@ -110,7 +169,7 @@
 				<div style="text-align: center;">
 
 					<div ng-controller="ModalDemoCtrl">
-				<script type="text/ng-template" id="myModalContent.html">
+						<script type="text/ng-template" id="myModalContent.html">
 
 <div class="modal-body" style="border-bottom: 1px solid #ccc;">
 	<div style="text-align: right">
@@ -174,17 +233,20 @@
 			
     			</script>
 
-				<button class="btn btn-primary" ng-click="open()">Reserver</button>
-				<div ng-show="selected">Selection from a modal: {{ selected }}</div>
-			</div>
-						
+						<button class="btn btn-primary" ng-click="open()">Reserver</button>
+						<div ng-show="selected">Selection from a modal: {{ selected
+							}}</div>
+					</div>
+
 				</div>
 			</div>
 		</div>
-<!-- ///////////////////////////////////////////////// DNT BOOKING SOLUTION - END ///////////////////////////////////////////////// -->
+		<!-- /row -->
+		<!-- ///////////////////////////////////////////////// DNT BOOKING SOLUTION - END ///////////////////////////////////////////////// -->
 
-		<div class="row" style="background-color: #51e4cb; height: 400px">
+		<div class="row" style="">
 			<!--This is just an other information container-->
+			<img src="assets/images/DNT_hytteprofil_bottom_small.jpg" />
 		</div>
 	</div>
 	<pre>form = {{booking | json}} booking - json</pre>
