@@ -1,0 +1,38 @@
+
+
+<div class="row">
+	<table class="table table-hover">
+		<thead>
+			<tr>
+				<th>id</th>
+				<th>name</th>
+				<th>type</th>
+				<th>beds</th>
+				<th># of active bookings</th>
+				<th>Options</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="cabin in cabins">
+				<td>{{cabin.id}}</td>
+				<td>{{cabin.name}}</td>
+				<td>{{cabin.cabinType}}</td>
+				<td>{{cabin.nrOfBeds}}</td>
+				<td>{{cabin.nrBookings}}</td>
+				<td>
+					<button class="btn btn-default" ng-click="viewCabin(cabin.id)">
+						View details</button>
+
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+</div>
+<div class="row" ng-if="totalItems > itemsPerPage">
+	<pagination on-select-page="setPage(page)" total-items="totalItems"
+		page="currentPage" items-per-page="itemsPerPage"></pagination>
+</div>
+<pre>
+    {{cabins}}
+</pre>

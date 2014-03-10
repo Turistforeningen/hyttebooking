@@ -24,5 +24,17 @@ public class SmallCabin extends Cabin {
 		// TODO Auto-generated method stub
 		return false;
 	}
+
+
+	@Override
+	public String getcabinType() {
+		return "small";
+	}
+
+
+	@Override
+	public String getNrOfBeds() {
+		return null;
+	}
 	
 }

@@ -16,7 +16,7 @@ app.controller('orderController', function ($scope, $location, $routeParams, ord
 		$log.info($scope.itemsPerPage);
 		ordersService.getOrders(page, $scope.itemsPerPage)
 		.success(function (userOrders) {
-			$scope.orders = userOrders.orders;
+			$scope.orders = userOrders.data;
 			$scope.totalItems = userOrders.totalItems;
 			
 		})

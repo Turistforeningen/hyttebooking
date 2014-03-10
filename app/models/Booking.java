@@ -12,6 +12,8 @@ import org.joda.time.DateTime;
 import com.avaje.ebean.Ebean;
 import com.avaje.ebean.Expr;
 import com.avaje.ebean.Expression;
+
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import play.data.format.Formats;
@@ -52,7 +54,6 @@ public class Booking extends Model {
 	public Payment payment;
 	
 	@ManyToOne
-	@JsonIgnore
 	public SmallCabin smallCabin;
 	
 	@ManyToMany(mappedBy = "bookings",cascade = CascadeType.ALL)
@@ -70,6 +71,7 @@ public class Booking extends Model {
 	 * @return Cabin
 	 */
 	public Cabin getCabin() {
+		System.out.println("Called");
 		if(beds.size() != 0) {
 			return beds.get(0).largeCabin;
 		}
@@ -86,7 +88,7 @@ public class Booking extends Model {
 	 */
 	public boolean isAbleToCancel() {
 		//This login should probably be placed somewhere else?
-		if(DateTime.now().plusDays(7).isAfter(this.dateTo.getTime())) {
+		if(DateTime.now().plusDays(7).isAfter(this.dateFrom.getTime())) {
 			return true;
 		}
 		else {
@@ -129,18 +131,18 @@ public class Booking extends Model {
 	 * @param pageSize
 	 * @return List of bookings submitted by user
 	 */
-	public static Page getBookingPageByUser(User user, int page, int pageSize) {
+	public static Page<Booking> getBookingPageByUser(User user, int page, int pageSize) {
 		if(user != null) {
-			Page bookingPage = new Page();
-			 bookingPage.orders = find.where()
+			Page<Booking> bookingPage = new Page<Booking>();
+			 bookingPage.data = find.where()
 			         .and(Expr.eq("user", user), Expr.ne("status", CANCELLED))
-			         .orderBy("timeOfBooking asc")
+			         .orderBy("dateFrom asc")
 			         .findPagingList(pageSize)
 			         .getPage(page).getList();
 			 bookingPage.totalItems = user.getNrOfBookings();
 			 return bookingPage;
 		}
-		return new Page();
+		return new Page<Booking>();
 	}
 	
 	
