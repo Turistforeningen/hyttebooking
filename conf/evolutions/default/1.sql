@@ -53,6 +53,7 @@ create table user (
   dob                       timestamp,
   address                   varchar(255),
   city                      varchar(255),
+  admin                     boolean,
   zip_code                  varchar(255),
   creation_date             timestamp not null,
   constraint uq_user_email_address unique (email_address),
