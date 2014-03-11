@@ -24,9 +24,15 @@
 			<!-- Collect the nav links, forms, and other content for toggling -->
 			<div class="collapse navbar-collapse"  id="bs-example-navbar-collapse-1" ng-controller="headerController">
 				<ul class="nav navbar-nav">
+<<<<<<< HEAD
+					<li ng-class="{ active: isActive('/')}"><a href="#/">Hjem</a></li>
+					<li ng-class="{ active: isActive('/booking/')}"><a href="#/booking">Booking</a></li>
+					<li ng-class="{ active: isActive('/orderHistory/')}"><a href="#/orderHistory">Bestillinger</a></li>
+=======
 					<li ng-class="{ active: isActive('/')}"><a href="#/">home</a></li>
 					<li ng-class="{ active: isActive('/orderHistory')}"><a
 						href="#/orderHistory">orders</a></li>
+>>>>>>> add dropdown to navbar. Conditionally shows sign in or username based on loggedIn or not
 
 				</ul>
 				<ul class="nav navbar-nav navbar-right">
