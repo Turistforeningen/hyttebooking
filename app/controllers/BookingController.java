@@ -65,10 +65,12 @@ public class BookingController extends Controller {
 					//Use JSONSerializer TODO
 					for(Booking b: bookings) {
 						DateTime count = startDate;
-						while(count.isBefore(endDate) || count.equals(endDate)) {
+						for(int i = 0; i<utilities.DateHelper.daysBetween(startDate, endDate); i++) {
 							boolean busy = utilities.DateHelper.withinDate(count, new DateTime(b.dateFrom), new DateTime(b.dateTo));
 							if(busy) {
-								dateAvailable.
+								
+								
+								//count how many days between 
 							}
 							count = count.plusDays(1);
 						}

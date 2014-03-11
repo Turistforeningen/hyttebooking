@@ -3,6 +3,7 @@ package utilities;
 import java.text.SimpleDateFormat;
 
 import org.joda.time.DateTime;
+import org.joda.time.Days;
 
 public class DateHelper {
 
@@ -47,6 +48,12 @@ public class DateHelper {
 	 */
 	public static boolean withinDate(DateTime point, DateTime fromDate, DateTime toDate) {
 		return ( (point.isAfter(fromDate) && point.isBefore(toDate)) || point.equals(fromDate) || point.equals(toDate));
+	}
+
+	public static int daysBetween(DateTime startDate, DateTime endDate) {
+		// TODO Auto-generated method stub
+		Days d = Days.daysBetween(startDate, endDate);
+		return d.size();
 	}
 
 }
