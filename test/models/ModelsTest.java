@@ -210,4 +210,16 @@ public class ModelsTest extends WithApplication{
 		assertFalse(utilities.DateHelper.withinDate(p4, a, b));
 		assertFalse(utilities.DateHelper.withinDate(p5, a, b));
 	}
+	
+	@Test
+	public void TestDaysBetween() {
+		int diff = 5;
+		
+		DateTime a = new DateTime().now();
+		DateTime b = new DateTime().now().plusDays(diff);
+
+		System.out.println(a);
+		System.out.println(b);
+		assertEquals(5, utilities.DateHelper.daysBetween(a, b));
+	}
 }
