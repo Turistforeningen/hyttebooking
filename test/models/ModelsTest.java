@@ -177,6 +177,37 @@ public class ModelsTest extends WithApplication{
 	
 	}
 	
-
+	/** Tests that findAllBookingsForCabinGivenDate in Cabin returns correct lists within given daterange **/
+	@Test
+	public void TestFindAllBookingsForCabinGivenDate() {
+		SmallCabin sCabin = new SmallCabin("ErBookinglistHytte");
+		sCabin.save();
+		User user = new User("q@t","w", "t");
+		user.save();
+		Booking b = Booking.createBooking(user.id, DateTime.now().toDate(), DateTime.now().plusDays(5).toDate(), sCabin.id, null);
+		
+		List<Booking> bookingsShouldBeEmpty = sCabin.findAllBookingsForCabinGivenDate(sCabin.id, DateTime.now().plusWeeks(1), DateTime.now().plusWeeks(2));
+		List<Booking> bookingsNotEmpty = sCabin.findAllBookingsForCabinGivenDate(sCabin.id, DateTime.now().plusDays(5), DateTime.now().plusDays(15));
+				
+		assertTrue(bookingsShouldBeEmpty.isEmpty());
+		assertFalse(bookingsNotEmpty.isEmpty()); 
+	}
 	
+	@Test
+	public void TestWithinDate() {
+		DateTime a = new DateTime().now();
+		DateTime b = new DateTime().now().plus(5);
+		
+		DateTime p1 = new DateTime().now().plus(2); //within = true
+		DateTime p2 = new DateTime().now().plus(5); //within = true
+		DateTime p3 = new DateTime().now(); //within = true
+		DateTime p4 = new DateTime().now().plus(6); //within = false
+		DateTime p5 = new DateTime().now().minus(1); //within = false
+		
+		assertTrue(utilities.DateHelper.withinDate(p1, a, b));
+		assertTrue(utilities.DateHelper.withinDate(p2, a, b));
+		assertTrue(utilities.DateHelper.withinDate(p3, a, b));
+		assertFalse(utilities.DateHelper.withinDate(p4, a, b));
+		assertFalse(utilities.DateHelper.withinDate(p5, a, b));
+	}
 }

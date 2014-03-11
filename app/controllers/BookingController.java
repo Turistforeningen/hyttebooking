@@ -15,6 +15,7 @@ import models.Booking;
 import models.Cabin;
 import models.Guest;
 import models.LargeCabin;
+import models.SmallCabin;
 import models.User;
 import play.api.data.Form;
 import play.libs.Json;
@@ -39,6 +40,54 @@ public class BookingController extends Controller {
 		 *returns a json string with a boolean for each date.
 		 *
 		 */
+		ObjectNode result = Json.newObject();
+		JsonNode json = request().body().asJson();
+		if(json == null) {
+			result.put("status", "KO");
+			result.put("message", "Expected Json");
+			return badRequest(result);
+		}
+		else {
+			//startDate, endDate, nrOfPerson, cabinId
+			DateTime startDate = utilities.DateHelper.toDt(json.get("startDate").asText()); //must be format YYYY-MM-DD standard ISO date
+			DateTime endDate = utilities.DateHelper.toDt(json.get("endDate").asText()); //must be format YYYY-MM-DD standard ISO date
+			int nrOfPerson = json.get("nrOfPerson").asInt();
+			long cabinId = json.get("cabinId").asLong(); 
+			ArrayList<Boolean> dateAvailable = new ArrayList<Boolean>();
+			
+			Cabin cabin = Cabin.find.byId(cabinId);
+			if(cabin instanceof LargeCabin) {
+				//TODO implement
+			} else if(cabin instanceof SmallCabin) {
+				List<Booking> bookings = cabin.findAllBookingsForCabinGivenDate(cabinId, startDate, endDate);
+				
+				if(!bookings.isEmpty()) {
+					//Use JSONSerializer TODO
+					for(Booking b: bookings) {
+						DateTime count = startDate;
+						for(int i = 0; i<utilities.DateHelper.daysBetween(startDate, endDate); i++) {
+							boolean busy = utilities.DateHelper.withinDate(count, new DateTime(b.dateFrom), new DateTime(b.dateTo));
+							if(busy) {
+								
+								
+								//count how many days between 
+							}
+							count = count.plusDays(1);
+						}
+					}
+					
+					
+					//return TODO
+				} else {
+					//Either something is wrong or the entire given daterange shows available for given cabin
+					
+					//return TODO
+				}
+				
+				
+			}
+		}
+		
 		return TODO;
 	}
 	
@@ -57,10 +106,10 @@ public class BookingController extends Controller {
 			Cabin tempCabin = Cabin.find.where().eq("name", "Helfjord").findUnique();
 			String nrPerson = json.get("nrOfPersons").asText();
 			String start = json.get("dayOfBookingStart").asText();
-			DateTime startDt = dateHelper(start);
+			DateTime startDt = utilities.DateHelper.toDt(start);
 			System.out.println("Start dt: "+startDt);
 			String end = json.get("dayOfBookingEnd").asText();
-			DateTime endDt = dateHelper(end);
+			DateTime endDt = utilities.DateHelper.toDt(end);
 			System.out.println("End dt: "+endDt);
 			
 			//validate request here
@@ -91,19 +140,7 @@ public class BookingController extends Controller {
 		}
 	}
 
-	/** Helper method for dateTime object from string "dd-MM-YYYY" **/
-	public static DateTime dateHelper(String date) {
-		
-		String[] d = date.split("-");
-		if(d.length < 3) return null;
-		DateTime dt = new DateTime(Integer.parseInt(d[0]), //int year
-				Integer.parseInt(d[1]), //int month
-				Integer.parseInt(d[2]), //int day
-				0, 						//int hour
-				0						//int minute
-				);
-		return dt;
-	}
+
 	
 	
 	/**
