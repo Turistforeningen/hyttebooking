@@ -1,5 +1,6 @@
 package models;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -79,6 +80,22 @@ public abstract class Cabin extends Model {
 			return bookingPage;
 		}
 		return null;
+	}
+	
+	/**
+	 * Returns all bookings from startDate to endDate (used in dynamic calendar display)
+	 * @param page
+	 * @param pageSize
+	 * @return
+	 */
+	public static List<Booking> findAllBookingsForCabinGivenDate(long cabinId, DateTime startDate, DateTime endDate)
+	{
+		Cabin cabin = Cabin.find.byId(cabinId);
+		List<Booking> bookings = new ArrayList<Booking>();
+		
+		//find booking that belongs to cabin and where booking startDate OR endDate is within parameter startDate or endDate
+		
+		return null; //TODO
 	}
 	
 	public static Page<Cabin> findAllCabins(int page, int pageSize) {

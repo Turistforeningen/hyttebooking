@@ -39,6 +39,32 @@ public class BookingController extends Controller {
 		 *returns a json string with a boolean for each date.
 		 *
 		 */
+		ObjectNode result = Json.newObject();
+		JsonNode json = request().body().asJson();
+		if(json == null) {
+			result.put("status", "KO");
+			result.put("message", "Expected Json");
+			return badRequest(result);
+		}
+		else {
+			//startDate, endDate, nrOfPerson, cabinId
+			DateTime startDate = utilities.DateHelper.toDt(json.get("startDate").asText()); //must be format YYYY-MM-DD standard ISO date
+			DateTime endDate = utilities.DateHelper.toDt(json.get("endDate").asText()); //must be format YYYY-MM-DD standard ISO date
+			int nrOfPerson = json.get("nrOfPerson").asInt();
+			int cabinId = json.get("cabinId").asInt(); 
+			
+			
+			/* TODO remove for reference
+			Cabin tempCabin = Cabin.find.where().eq("name", "Helfjord").findUnique();
+			String nrPerson = json.get("nrOfPersons").asText();
+			String start = json.get("dayOfBookingStart").asText();
+			DateTime startDt = dateHelper(start);
+			System.out.println("Start dt: "+startDt);
+			String end = json.get("dayOfBookingEnd").asText();
+			DateTime endDt = dateHelper(end);
+			System.out.println("End dt: "+endDt);*/
+		}
+		
 		return TODO;
 	}
 	
@@ -57,10 +83,10 @@ public class BookingController extends Controller {
 			Cabin tempCabin = Cabin.find.where().eq("name", "Helfjord").findUnique();
 			String nrPerson = json.get("nrOfPersons").asText();
 			String start = json.get("dayOfBookingStart").asText();
-			DateTime startDt = dateHelper(start);
+			DateTime startDt = utilities.DateHelper.toDt(start);
 			System.out.println("Start dt: "+startDt);
 			String end = json.get("dayOfBookingEnd").asText();
-			DateTime endDt = dateHelper(end);
+			DateTime endDt = utilities.DateHelper.toDt(end);
 			System.out.println("End dt: "+endDt);
 			
 			//validate request here
@@ -91,19 +117,7 @@ public class BookingController extends Controller {
 		}
 	}
 
-	/** Helper method for dateTime object from string "dd-MM-YYYY" **/
-	public static DateTime dateHelper(String date) {
-		
-		String[] d = date.split("-");
-		if(d.length < 3) return null;
-		DateTime dt = new DateTime(Integer.parseInt(d[0]), //int year
-				Integer.parseInt(d[1]), //int month
-				Integer.parseInt(d[2]), //int day
-				0, 						//int hour
-				0						//int minute
-				);
-		return dt;
-	}
+
 	
 	
 	/**

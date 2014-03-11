@@ -46,29 +46,11 @@ public class Bed extends Model  {
 			DateTime fromDate2 = new DateTime(booking.dateFrom);
 			DateTime toDate2 = new DateTime(booking.dateTo);
 
-			if(isOverlap(fromDate, toDate, fromDate2, toDate2))
+			if(utilities.DateHelper.isOverlap(fromDate, toDate, fromDate2, toDate2))
 				return false;
 		}
 		
 
-		return true;
-	}
-
-	/**
-	 * Checks if two date ranges overlap. If any of the dates are the same it is regarded as overlap
-	 * If there is a need to change so that toDate and fromDate2 (or vice versa) can overlap, then
-	 * remove the .equals OR lines at the end
-	 * @return true if dates overlap
-	 */
-	private boolean isOverlap(DateTime fromDate, DateTime toDate,
-			DateTime fromDate2, DateTime toDate2) {
-		SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMdd");
-		if((fromDate.isBefore(toDate2) && fromDate2.isBefore(toDate) ||
-				((fmt.format(fromDate.toDate()).equals(fmt.format(fromDate2.toDate())) && 
-						(fmt.format(fromDate.toDate()).equals(fmt.format(toDate2.toDate())))) || 
-								fmt.format(fromDate2.toDate()).equals(fmt.format(toDate.toDate()))))) {
-			return false;
-		}
 		return true;
 	}
 
