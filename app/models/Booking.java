@@ -89,10 +89,10 @@ public class Booking extends Model {
 	public boolean isAbleToCancel() {
 		//This login should probably be placed somewhere else?
 		if(DateTime.now().plusDays(7).isAfter(this.dateFrom.getTime())) {
-			return true;
+			return false;
 		}
 		else {
-			return false;
+			return true;
 		}
 	}
 	
