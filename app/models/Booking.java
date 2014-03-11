@@ -175,8 +175,8 @@ public class Booking extends Model {
 
 		}
 
-		b.dateTo = dateFrom;
-		b.dateFrom = dateTo;
+		b.dateTo = dateTo;
+		b.dateFrom = dateFrom;
 		b.save();
 
 		return b;

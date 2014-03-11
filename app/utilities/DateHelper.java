@@ -33,9 +33,9 @@ public class DateHelper {
 				((fmt.format(fromDate.toDate()).equals(fmt.format(fromDate2.toDate())) && 
 						(fmt.format(fromDate.toDate()).equals(fmt.format(toDate2.toDate())))) || 
 								fmt.format(fromDate2.toDate()).equals(fmt.format(toDate.toDate()))))) {
-			return false;
+			return true;
 		}
-		return true;
+		return false;
 	}
 
 }
