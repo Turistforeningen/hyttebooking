@@ -6,7 +6,7 @@ app.controller('orderController', function ($scope, $location, $routeParams, ord
 	$scope.currentPage = 1;
 	$scope.totalItems = 10;
 	$scope.itemsPerPage = 10;
-	
+	$scope.lang= {oe: 'fødselsdag'};
 	$scope.setPage = function(page) {
 		$scope.getOrders(page-1);
 	};
