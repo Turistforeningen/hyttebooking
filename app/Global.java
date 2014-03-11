@@ -53,9 +53,16 @@ public class Global extends GlobalSettings {
 					beds = lc2.beds.subList(0, 1+ (int)Math.floor((Math.random()*15)));
 				}
 				//Booking -20 to 20 days in the future from today
-				int fromDays = -20 +(int)(Math.random()*20);
+				int fromDays = -20 +(int)(Math.random()*40);
 				//booking 1 -5 days + fromdays in the future from today
-				int toDays = fromDays+ 1 +(int)(Math.random()*5);
+				int toDays;
+				if(fromDays > 0) {
+					toDays = fromDays+ 1 +(int)(Math.random()*5);
+				}
+				else {
+					toDays =1 +(int)(Math.random()*5);
+				}
+				
 				//bookingDate 1-20 days before fromdate
 				int bookingDays = fromDays +(int)(Math.random()*20);
 				
