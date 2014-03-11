@@ -53,7 +53,7 @@ public class DateHelper {
 	public static int daysBetween(DateTime startDate, DateTime endDate) {
 		// TODO Auto-generated method stub
 		Days d = Days.daysBetween(startDate, endDate);
-		return d.size();
+		return d.getDays();
 	}
 
 }
