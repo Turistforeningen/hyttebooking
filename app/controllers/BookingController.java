@@ -15,6 +15,7 @@ import models.Booking;
 import models.Cabin;
 import models.Guest;
 import models.LargeCabin;
+import models.SmallCabin;
 import models.User;
 import play.api.data.Form;
 import play.libs.Json;
@@ -51,18 +52,38 @@ public class BookingController extends Controller {
 			DateTime startDate = utilities.DateHelper.toDt(json.get("startDate").asText()); //must be format YYYY-MM-DD standard ISO date
 			DateTime endDate = utilities.DateHelper.toDt(json.get("endDate").asText()); //must be format YYYY-MM-DD standard ISO date
 			int nrOfPerson = json.get("nrOfPerson").asInt();
-			int cabinId = json.get("cabinId").asInt(); 
+			long cabinId = json.get("cabinId").asLong(); 
+			ArrayList<Boolean> dateAvailable = new ArrayList<Boolean>();
 			
-			
-			/* TODO remove for reference
-			Cabin tempCabin = Cabin.find.where().eq("name", "Helfjord").findUnique();
-			String nrPerson = json.get("nrOfPersons").asText();
-			String start = json.get("dayOfBookingStart").asText();
-			DateTime startDt = dateHelper(start);
-			System.out.println("Start dt: "+startDt);
-			String end = json.get("dayOfBookingEnd").asText();
-			DateTime endDt = dateHelper(end);
-			System.out.println("End dt: "+endDt);*/
+			Cabin cabin = Cabin.find.byId(cabinId);
+			if(cabin instanceof LargeCabin) {
+				//TODO implement
+			} else if(cabin instanceof SmallCabin) {
+				List<Booking> bookings = cabin.findAllBookingsForCabinGivenDate(cabinId, startDate, endDate);
+				
+				if(!bookings.isEmpty()) {
+					//Use JSONSerializer TODO
+					for(Booking b: bookings) {
+						DateTime count = startDate;
+						while(count.isBefore(endDate) || count.equals(endDate)) {
+							boolean busy = utilities.DateHelper.withinDate(count, new DateTime(b.dateFrom), new DateTime(b.dateTo));
+							if(busy) {
+								dateAvailable.
+							}
+							count = count.plusDays(1);
+						}
+					}
+					
+					
+					//return TODO
+				} else {
+					//Either something is wrong or the entire given daterange shows available for given cabin
+					
+					//return TODO
+				}
+				
+				
+			}
 		}
 		
 		return TODO;

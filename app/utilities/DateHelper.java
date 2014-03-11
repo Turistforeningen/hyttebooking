@@ -37,5 +37,16 @@ public class DateHelper {
 		}
 		return false;
 	}
+	
+	/**
+	 * Checks if a date is within a range
+	 * @param point The point between the two ranges
+	 * @param fromDate 
+	 * @param toDate
+	 * @return true if point is within range fromDate, toDate
+	 */
+	public static boolean withinDate(DateTime point, DateTime fromDate, DateTime toDate) {
+		return ( (point.isAfter(fromDate) && point.isBefore(toDate)) || point.equals(fromDate) || point.equals(toDate));
+	}
 
 }
