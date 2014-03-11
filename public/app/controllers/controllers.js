@@ -6,7 +6,6 @@ app.controller('orderController', function ($scope, $location, $routeParams, ord
 	$scope.currentPage = 1;
 	$scope.totalItems = 10;
 	$scope.itemsPerPage = 10;
-	$scope.lang= {oe: 'fødselsdag'};
 	$scope.setPage = function(page) {
 		$scope.getOrders(page-1);
 	};
@@ -120,13 +119,14 @@ app.controller('bookingController', function ($scope, ordersService) {
 app.controller('authController', function ($log, $scope, $location, $cookieStore, authorization, api) {
 	
 	
-	
+	$scope.signInText;
 	
 	$scope.login = function (credentials) {
-		
+		$log.info(credentials);
+		$log.info(credentials.emailAdress);
 		var success = function (data) {
 			
-			$scope.SignInText = credentials.emailAdress;
+			$scope.signInText = credentials.emailAdress;
 			
 			var token = data.authToken;
 			api.init(token);
