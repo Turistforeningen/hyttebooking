@@ -107,7 +107,7 @@ public abstract class Cabin extends Model {
 		}
 		
 		List<Booking> rBookings = new ArrayList<Booking>();
-		for(Booking b: bookings) { //we only want dates that overlap within given range
+		for(Booking b: bookings) {
 			if(utilities.DateHelper.isOverlap(new DateTime(b.dateFrom), new DateTime(b.dateTo), startDate, endDate))
 					rBookings.add(b);
 		}
