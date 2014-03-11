@@ -177,6 +177,19 @@ public class ModelsTest extends WithApplication{
 	
 	}
 	
-
-	
+	/** Tests that findAllBookingsForCabinGivenDate in Cabin returns correct lists within given daterange **/
+	@Test
+	public void TestFindAllBookingsForCabinGivenDate() {
+		SmallCabin sCabin = new SmallCabin("ErBookinglistHytte");
+		sCabin.save();
+		User user = new User("q@t","w", "t");
+		user.save();
+		Booking b = Booking.createBooking(user.id, DateTime.now().toDate(), DateTime.now().plusDays(5).toDate(), sCabin.id, null);
+		
+		List<Booking> bookingsShouldBeEmpty = sCabin.findAllBookingsForCabinGivenDate(sCabin.id, DateTime.now().plusWeeks(1), DateTime.now().plusWeeks(2));
+		List<Booking> bookingsNotEmpty = sCabin.findAllBookingsForCabinGivenDate(sCabin.id, DateTime.now().plusDays(5), DateTime.now().plusDays(15));
+				
+		assertTrue(bookingsShouldBeEmpty.isEmpty());
+		assertFalse(bookingsNotEmpty.isEmpty()); 
+	}
 }
