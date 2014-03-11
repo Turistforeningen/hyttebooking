@@ -119,15 +119,11 @@ app.controller('bookingController', function ($scope, ordersService) {
 app.controller('authController', function ($log, $scope, $location, $cookieStore, authorization, api) {
 	
 	
-	$scope.signInText;
 	
 	$scope.login = function (credentials) {
-		$log.info(credentials);
-		$log.info(credentials.emailAdress);
 		var success = function (data) {
 			
-			$scope.signInText = credentials.emailAdress;
-			
+			$scope.$emit('event:loggingIn', credentials.emailAdress);
 			var token = data.authToken;
 			api.init(token);
 			$cookieStore.put('token', token);
@@ -159,10 +155,17 @@ $scope.logout = function () {
  * Small controller used by navbar in indexAngular.html to set 
  * active tab.
  */
-function HeaderController($scope, $location, $log) 
+app.controller('headerController' ,function ($scope,$rootScope, $location, $log) 
 { 
+	$scope.loggedIn = false;
+	$scope.name;
+	$rootScope.$on('event:loggingIn', function(event, data) {
+		$log.info(data + "  " + data + "   dfsdfsdf");
+		$scope.loggedIn = true;
+		$scope.name = data;
+	});
     $scope.isActive = function (viewLocation) { 
     	
         return viewLocation === $location.path();
     };
-}
+});
