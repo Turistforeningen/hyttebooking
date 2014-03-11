@@ -116,9 +116,12 @@ app.controller('bookingController', function ($scope, ordersService) {
  * sending user credentials to server and take care of a authentication token return by the server.
  * 
  */
-app.controller('authController', function ($log, $scope, $location, $cookieStore, authorization, api) {
+app.controller('authController', function ($log, $rootScope, $scope, $location, $cookieStore, authorization, api) {
 	
-	
+	$rootScope.$on('event:loggingOut', function(event, data) {
+		$scope.logout();
+		 
+	});
 	
 	$scope.login = function (credentials) {
 		var success = function (data) {
@@ -127,6 +130,7 @@ app.controller('authController', function ($log, $scope, $location, $cookieStore
 			var token = data.authToken;
 			api.init(token);
 			$cookieStore.put('token', token);
+			$cookieStore.put('name', credentials.emailAdress)
 			$location.path('/');
 		};
 
@@ -136,11 +140,12 @@ app.controller('authController', function ($log, $scope, $location, $cookieStore
 		authorization.login(credentials).success(success).error(error);
 	};
 	
-$scope.logout = function () {
-		
+	$scope.logout = function () {
+
 		var success = function (data) {
-			
+
 			$cookieStore.remove('token');
+			$cookieStore.remove('name');
 			$location.path('/');
 		};
 
@@ -151,21 +156,41 @@ $scope.logout = function () {
 	};
 });
 
+
 /*
- * Small controller used by navbar in indexAngular.html to set 
- * active tab.
+ * Controller used by navbar in indexAngular.html to set 
+ * active tab, and to decide what to show in navbar
  */
-app.controller('headerController' ,function ($scope,$rootScope, $location, $log) 
+app.controller('headerController' ,function ($scope,$rootScope, $location, $cookieStore,$log) 
 { 
 	$scope.loggedIn = false;
 	$scope.name;
+	
 	$rootScope.$on('event:loggingIn', function(event, data) {
 		$log.info(data + "  " + data + "   dfsdfsdf");
 		$scope.loggedIn = true;
 		$scope.name = data;
 	});
+	
+	
+	$scope.logoutAction = function() {
+		$scope.name ="";
+		$scope.loggedIn = false;
+		$rootScope.$broadcast('event:loggingOut', null);
+	};
+	
+	
     $scope.isActive = function (viewLocation) { 
-    	
         return viewLocation === $location.path();
     };
+    
+    
+    init();
+    function init() {
+    	var name = $cookieStore.get('name');
+    	if(name) {
+    		$scope.name = name;
+    		$scope.loggedIn = true;
+    	}
+    }
 });

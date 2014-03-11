@@ -105,7 +105,8 @@ public class LargeCabin extends Cabin {
 		return Booking.find
 				.where()
 				.eq("beds.largeCabin", this)
-				.le("dateFrom", DateTime.now().toDate())
+				.gt("dateFrom", DateTime.now().toDate())
+				.ne("status", Booking.CANCELLED)
 				.findRowCount();
 	}
 }

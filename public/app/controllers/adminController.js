@@ -1,3 +1,7 @@
+/*
+ * Controller for admin view. Responsible for showing global
+ * statistics, adding cabins and overview of cabins.
+ */
 app.controller('adminViewController', function ($scope, $location,$routeParams,  api, $log) {
 	$scope.view = 0;
 	
@@ -21,6 +25,10 @@ app.controller('adminViewController', function ($scope, $location,$routeParams, 
 	};
 });
 
+/*
+ * Table controller for overview of cabins. Resposible
+ * for populating table with cabins.
+ */
 app.controller('cabinTableController', function ($scope, $location, $routeParams, cabinService, api, $log) {
 	$scope.currentPage = 1;
 	$scope.totalItems = 10;
@@ -46,9 +54,11 @@ app.controller('cabinTableController', function ($scope, $location, $routeParams
 		});
 	};
 
+	
 	$scope.viewCabin = function( cabinId ) {
 		$scope.$emit('viewCabin', cabinId);
 	};
+	
 	
 	init();
 	function init() {
@@ -60,22 +70,23 @@ app.controller('cabinTableController', function ($scope, $location, $routeParams
 			else {
 				$scope.getCabins(0);
 			}
-			
-		
 	};
 });
 
+/*
+ * Table controller for overview of bookings for a given cabin 
+ */
 app.controller('cabinDetailsController', function ($scope, $location, $routeParams, cabinService, api, $log) {
 	$scope.currentPage = 1;
 	$scope.totalItems = 10;
 	$scope.itemsPerPage = 10;
 	$scope.error = "";
+	$scope.id;
+	
 	
 	$scope.setPage = function(page) {
 		$scope.getCabinDetails(page-1, $scope.id);
 	};
-	$scope.id;
-	
 	
 	
 	$scope.$on('retrieveCabin', function(event, id) {
@@ -83,6 +94,7 @@ app.controller('cabinDetailsController', function ($scope, $location, $routePara
 		$scope.getCabinDetails(0, id);
 		 
 	});
+	
 	
 	$scope.getCabinDetails = function(page, cabinId) {
 		$log.info("fgdfgdfg")
