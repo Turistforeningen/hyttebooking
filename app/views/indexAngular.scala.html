@@ -22,16 +22,23 @@
 			</div>
 
 			<!-- Collect the nav links, forms, and other content for toggling -->
-			<div class="collapse navbar-collapse"  id="bs-example-navbar-collapse-1" ng-controller="HeaderController">
+			<div class="collapse navbar-collapse"  id="bs-example-navbar-collapse-1" ng-controller="headerController">
 				<ul class="nav navbar-nav">
 					<li ng-class="{ active: isActive('/')}"><a href="#/">home</a></li>
-					<li ng-class="{ active: isActive('/orderHistory/')}"><a href="#/orderHistory">orders</a></li>
+					<li ng-class="{ active: isActive('/orderHistory')}"><a
+						href="#/orderHistory">orders</a></li>
 
 				</ul>
-				<ul class="nav navbar-nav navbar-right "ng-controller="authController">
-					<li ><a href="#/login">{{ signInText || 'sign in' }}</a></li>
-					<li ><a href="#/" ng-click="logout()">log out</a></li>
-					</ul>
+				<ul class="nav navbar-nav navbar-right">
+					<li ng-show="!loggedIn"><a href="#/login">sign in</a></li>
+					<li ng-show="loggedIn" class="dropdown"><a href="#" class="dropdown-toggle"
+						data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span> {{name}} <b class="caret"></b></a>
+						<ul class="dropdown-menu">
+							<li><a href="#">Separated link</a></li>
+							<li class="divider"></li>
+							<li><a href="#">Sign out</a></li>
+						</ul></li>
+				</ul>
 			</div>
 			<!-- /.navbar-collapse -->
 		</div>
