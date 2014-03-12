@@ -7,7 +7,7 @@ import org.joda.time.Days;
 
 public class DateHelper {
 
-	/** Helper method for dateTime object from string "dd-MM-YYYY" **/
+	/** takes string "dd-MM-YYYY" and return DateTime object corresponding to it **/
 	public static DateTime toDt(String date) {
 		
 		String[] d = date.split("-");
@@ -50,10 +50,15 @@ public class DateHelper {
 		return ( (point.isAfter(fromDate) && point.isBefore(toDate)) || point.equals(fromDate) || point.equals(toDate));
 	}
 
-	public static int daysBetween(DateTime startDate, DateTime endDate) {
-		// TODO Auto-generated method stub
-		Days d = Days.daysBetween(startDate, endDate);
-		return d.getDays();
+	/**
+	 * Assume that startDate is 0, find difference in days for date a and b
+	 */
+	public static int[] getIndex(DateTime startDate, DateTime a,
+			DateTime b) {
+		int[] ret = new int[2];
+		ret[0] = Days.daysBetween(startDate, a).getDays();
+		ret[1] = Days.daysBetween(startDate, b).getDays();
+		return ret;
 	}
 
 }

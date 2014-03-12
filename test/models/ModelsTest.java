@@ -212,14 +212,20 @@ public class ModelsTest extends WithApplication{
 	}
 	
 	@Test
-	public void TestDaysBetween() {
-		int diff = 5;
+	public void TestGetIndex() {
+		DateTime start = new DateTime().now(); //this is 0
 		
-		DateTime a = new DateTime().now();
-		DateTime b = new DateTime().now().plusDays(diff);
+		DateTime a = new DateTime().now().plusDays(1); // +1
+		DateTime b = new DateTime().now().minusDays(1); // -1
+		DateTime c = new DateTime().now(); // 0
 
-		System.out.println(a);
-		System.out.println(b);
-		assertEquals(5, utilities.DateHelper.daysBetween(a, b));
+		assertEquals(1, utilities.DateHelper.getIndex(start, a, b)[0]);
+		assertEquals(-1, utilities.DateHelper.getIndex(start, a, b)[1]);
+		assertEquals(0, utilities.DateHelper.getIndex(start, a, c)[1]);
+	}
+	
+	@Test
+	public void TestGetAvailabilityForTimePeriod() {
+		//TODO test
 	}
 }
