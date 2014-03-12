@@ -36,18 +36,55 @@
 	</div>
 </div>
 <div class="row" ng-controller="cabinFormController">
-    <button ng-click="showCabinForm()">Add Cabin</button>
-    <div ng-show="show">
-        <input type="text" class="form-control" placeholder="id" ng-model="newCabin.id">
-        <input type="text" class="form-control" placeholder="name" ng-model="newCabin.name">
-        <checkbox ng-change="newCabin.type">
-        <input type="number" class="form-control" placeholder="beds" ng-model="newCabin.beds">
-        <button type="submit" ng-click="addCabin(newCabin)">Add</button>
-    </div>
+	<div class="row">
+		<button ng-click="showCabinForm()">Add Cabin</button>
+	</div>
+	<div ng-show="show">
+		<div class="row">
+			<div class="col-md-8">
+				<label for="cabinId">Dnt cabin Id</label> <input id="cabinId"
+					type="text" class="form-control" placeholder="id"
+					ng-model="newCabin.id">
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-4">
+				<label for="cabinName">cabin name</label> <input id="cabinName"
+					type="text" class="form-control" placeholder="name"
+					ng-model="newCabin.name">
+			</div>
+			<div class="col-md-4">
+				<label for="beds">Number of beds in cabin</label> <input id="beds"
+					type="number" class="form-control" placeholder="beds"
+					ng-model="newCabin.beds">
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-8">
+				<div class="radio">
+					<label> <input type="radio" name="cabinType" id="type1"
+						value="SmallCabin" checked ng-model="newCabin.type"> small
+						cabin -Only booked as a whole
+					</label>
+				</div>
+
+				<div class="radio">
+					<label> <input type="radio" name="cabinType" id="type2"
+						value="LargeCabin" ng-model="newCabin.type"> large cabin
+						-Booked by beds
+					</label>
+				</div>
+			</div>
+		</div>
+		<div class="form-group"></div>
+		<button type="submit" ng-click="addCabin(newCabin)">Add</button>
+	</div>
+	<pre>
+    {{newCabin}}
+</pre>
+	
 </div>
-    
-    
-</div>
+
 <pre>
     {{cabins}}
 </pre>

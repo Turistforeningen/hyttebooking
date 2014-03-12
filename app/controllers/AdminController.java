@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import models.Booking;
 import models.Cabin;
 import models.LargeCabin;
+import models.SmallCabin;
 import models.User;
 import flexjson.JSONSerializer;
 import play.mvc.Controller;
@@ -63,8 +64,21 @@ public class AdminController extends Controller {
 	
 	public static Result submitCabin() {
 		JsonNode json = request().body().asJson();
-		LargeCabin cabin = new LargeCabin(json.get("name").asText(), json.get("beds").asInt());
-		cabin.save();
-		return ok();
+		
+		String type = json.get("type").asText();
+		if(type.equals("SmallCabin")) {
+			SmallCabin cabin = new SmallCabin(json.get("name").asText());
+			//make convenience methods here, and if id should be set,
+			//it must not crash with id of other cabins.
+			cabin.save();
+			return ok();
+		}
+		else if(type.equals("LargeCabin")) {
+			LargeCabin cabin = new LargeCabin(json.get("name").asText(), json.get("beds").asInt());
+			cabin.save();
+			return ok();
+		}
+		return badRequest();
+		
 	}
 }
