@@ -129,7 +129,8 @@ app.controller('bookingController', function ($scope, ordersService, $log, $rout
     function init() {
        var id = $routeParams.id;
        var type =$routeParams.type;
-       if(id) {
+       if(id && type) {
+    	   $scope.cabinType = type;
     	   $scope.booking.cabinId = id;
     	   
        }
