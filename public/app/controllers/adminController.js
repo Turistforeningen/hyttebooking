@@ -59,6 +59,7 @@ app.controller('cabinTableController', function ($scope, $location, $routeParams
 		$scope.$emit('viewCabin', cabinId);
 	};
 	
+
 	
 	init();
 	function init() {
@@ -120,4 +121,21 @@ app.controller('cabinDetailsController', function ($scope, $location, $routePara
 	  };
 });
 
-
+app.controller('cabinFormController', function ($scope, $location, $routeParams, cabinService, api, $log) {
+	$scope.show = false;
+	
+	$scope.addCabin = function(newCabin) {
+		cabinService.postCabin(newCabin)
+		.success(function (data) {
+			$log.info("posted");
+		})
+		.error(function (error) {
+			$log.info("not posted");
+		});
+	};
+	
+	
+	$scope.showCabinForm = function() {
+		$scope.show = !$scope.show
+	};
+});

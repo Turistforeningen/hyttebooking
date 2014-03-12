@@ -29,9 +29,24 @@
 	</table>
 
 </div>
-<div class="row" ng-if="totalItems > itemsPerPage">
-	<pagination on-select-page="setPage(page)" total-items="totalItems"
-		page="currentPage" items-per-page="itemsPerPage"></pagination>
+<div class="row">
+	<div class="row" ng-if="totalItems > itemsPerPage">
+		<pagination on-select-page="setPage(page)" total-items="totalItems"
+			page="currentPage" items-per-page="itemsPerPage"></pagination>
+	</div>
+</div>
+<div class="row" ng-controller="cabinFormController">
+    <button ng-click="showCabinForm()">Add Cabin</button>
+    <div ng-show="show">
+        <input type="text" class="form-control" placeholder="id" ng-model="newCabin.id">
+        <input type="text" class="form-control" placeholder="name" ng-model="newCabin.name">
+        <checkbox ng-change="newCabin.type">
+        <input type="number" class="form-control" placeholder="beds" ng-model="newCabin.beds">
+        <button type="submit" ng-click="addCabin(newCabin)">Add</button>
+    </div>
+</div>
+    
+    
 </div>
 <pre>
     {{cabins}}

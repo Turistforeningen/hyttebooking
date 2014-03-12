@@ -2,8 +2,11 @@ package controllers;
 
 import java.util.List;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 import models.Booking;
 import models.Cabin;
+import models.LargeCabin;
 import models.User;
 import flexjson.JSONSerializer;
 import play.mvc.Controller;
@@ -15,7 +18,8 @@ import utilities.Page;
 public class AdminController extends Controller {
 	
 	/**
-	 * Admin functionality
+	 * Controller method can only be accessed by users with
+	 * admin privileges. Returns a list with cabins in booking sys
 	 * Must specify page and pageSize queryParameters in route-url
 	 * 
 	 * @return Result containing cabins
@@ -36,7 +40,8 @@ public class AdminController extends Controller {
 	
 	
 	/**
-	 * 
+	 * Controller method can only be accessed by users with
+	 * admin privileges. Finds all bookings for a given cabin
 	 * @param id - cabinId
 	 * @return Result containing bookings for a given cabin
 	 */
@@ -54,5 +59,12 @@ public class AdminController extends Controller {
 		.exclude("*.class", "data.smallCabin", "data.cabin");
 		
 		return ok(bookingSerializer.serialize(bookingsAtCabin));
+	}
+	
+	public static Result submitCabin() {
+		JsonNode json = request().body().asJson();
+		LargeCabin cabin = new LargeCabin(json.get("name").asText(), json.get("beds").asInt());
+		cabin.save();
+		return ok();
 	}
 }
