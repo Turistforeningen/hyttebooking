@@ -2,6 +2,7 @@ package controllers;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -53,44 +54,43 @@ public class BookingController extends Controller {
 			DateTime endDate = utilities.DateHelper.toDt(json.get("endDate").asText()); //must be format YYYY-MM-DD standard ISO date
 			int nrOfPerson = json.get("nrOfPerson").asInt();
 			long cabinId = json.get("cabinId").asLong(); 
-			ArrayList<Boolean> dateAvailable = new ArrayList<Boolean>();
+			//dynamic programming, will fill this boolean according too all bookings
+			boolean[] bookedDays = new boolean[utilities.DateHelper.daysBetween(startDate, endDate)];
 			
 			Cabin cabin = Cabin.find.byId(cabinId);
 			if(cabin instanceof LargeCabin) {
 				//TODO implement
+				//a bit different from smallCabin. Will implement later @author jama
 			} else if(cabin instanceof SmallCabin) {
 				List<Booking> bookings = cabin.findAllBookingsForCabinGivenDate(cabinId, startDate, endDate);
 				
 				if(!bookings.isEmpty()) {
 					//Use JSONSerializer TODO
 					for(Booking b: bookings) {
-						DateTime count = startDate;
-						for(int i = 0; i<utilities.DateHelper.daysBetween(startDate, endDate); i++) {
-							boolean busy = utilities.DateHelper.withinDate(count, new DateTime(b.dateFrom), new DateTime(b.dateTo));
-							if(busy) {
-								
-								
-								//count how many days between 
-							}
-							count = count.plusDays(1);
-						}
+						//for each booking
+						
+						//find index b.fromDate corresponds to in availableDays array, call it fromIndex
+						//set true from fromIndex to b.toDate's toIndex
+						//TODO
 					}
+					//return bookedDays as json TODO
+				} else { //Either something is wrong or the entire given daterange shows available for given cabin
 					
 					
-					//return TODO
-				} else {
-					//Either something is wrong or the entire given daterange shows available for given cabin
-					
-					//return TODO
+					//return bookedDays as json TODO
 				}
-				
-				
 			}
 		}
-		
 		return TODO;
 	}
 	
+	private static List addBooleanBlock(int daysBetween) {
+		ArrayList<Boolean> arr = new ArrayList<Boolean>();
+		for(int i = 0; i<daysBetween; i++)
+			arr.add(true);
+		
+		return arr;
+	}
 	
 	public static Result submitBooking() {
 		//Validate user input
@@ -140,9 +140,6 @@ public class BookingController extends Controller {
 		}
 	}
 
-
-	
-	
 	/**
 	 * Retrieves booking from database. If no booking match with
 	 * bookingID method, return noFound.
@@ -187,7 +184,6 @@ public class BookingController extends Controller {
     	return ok(result);
     }
     
-	
     /**
      * Extract optional page-parameter to obtain page variable, and
      * gets a page of the current user's (authenticated by securitycontroller),
