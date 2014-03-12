@@ -3,18 +3,19 @@
  * Methods for getting and cancelling bookings.
  */
 app.controller('orderController', function ($scope, $location, $routeParams, ordersService, api, $log) {
-	$scope.currentPage = 1;
+	$scope.currentPage =1;
 	$scope.totalItems = 10;
 	$scope.itemsPerPage = 10;
-	$scope.setPage = function(page) {
-		$scope.getOrders(page-1);
+	
+	$scope.setPage = function(pageNo) {
+		$scope.getOrders(pageNo-1);
 	};
-
-
+	
 	$scope.getOrders = function(page) {
-		$log.info($scope.itemsPerPage);
+		
 		ordersService.getOrders(page, $scope.itemsPerPage)
 		.success(function (userOrders) {
+			$scope.currentPage = page +1;
 			$scope.orders = userOrders.data;
 			$scope.totalItems = userOrders.totalItems;
 			
@@ -38,20 +39,17 @@ app.controller('orderController', function ($scope, $location, $routeParams, ord
 	};
 
 
-
-	init();
+	
 	function init() {
-			var page = $routeParams.page;
-			if(page) {
-				$scope.currentPage = page;
-				$scope.getOrders(page-1);
+			var pageNo = parseInt($routeParams.page);
+			if(pageNo) {
+				$scope.getOrders(pageNo-1)
 			}
 			else {
 				$scope.getOrders(0);
-			}
-			
-		
+			}	
 	};
+	init();
 });
 
 /*
@@ -93,13 +91,12 @@ app.controller('bookingController', function ($scope, ordersService, $log, $rout
 		
 	};
 	
-	$scope.range = function(isSet) {
+	$scope.range = function(value) {
 		var bedsLeft = $scope.bedsLeft();
 		var end = bedsLeft;
-		if((isSet != null || isSet>0) && end<=isSet) {
-			end = isSet + bedsLeft;
+		if((value != null || value>0) && end<=value) {
+			end = value + bedsLeft;
 		}
-		
 		
 	    var result = [];
 	    for (var i = 0; i <= end; i++) {
@@ -108,17 +105,24 @@ app.controller('bookingController', function ($scope, ordersService, $log, $rout
 	    
 	    return result;
 	};
-	
-    $scope.postBooking = function(booking) {
+	$scope.$on('event:booking', function(event) { 
 		
-    	ordersService.postOrder(booking)
+        $scope.postBooking();            
+    });
+	
+    $scope.postBooking = function() {
+    	
+		$scope.booking.beds =$scope.bedsLeft() +"";
+		$scope.booking.Person = $scope.person;
+    	ordersService.postOrder($scope.booking)
 		.success(function (success) {
-			
+			$log.info("Det virket" + success.message);
 		})
 		.error(function (error) {
-			
+			$log.info("Det virket ikke. " + error.message);
 		});
     };
+    
     
     init();
     function init() {
