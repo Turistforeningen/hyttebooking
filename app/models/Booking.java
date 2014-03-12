@@ -132,6 +132,7 @@ public class Booking extends Model {
 	 * @return List of bookings submitted by user
 	 */
 	public static Page<Booking> getBookingPageByUser(User user, int page, int pageSize) {
+		System.out.println(page + " " + pageSize);
 		if(user != null) {
 			Page<Booking> bookingPage = new Page<Booking>();
 			 bookingPage.data = find.where()
