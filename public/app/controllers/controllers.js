@@ -73,41 +73,60 @@ app.controller('testController', function ($scope) {
  * by using the method addAlert. The method postBooking uses the ordersService to 
  * post the booking to the server.
  */
-app.controller('bookingController', function ($scope, ordersService) {
+app.controller('bookingController', function ($scope, ordersService, $log, $routeParams) {
 	
-	$scope.addAlert = function(type, msg) {
-		$scope.alerts = [{type: type, msg: msg}];
+	$scope.booking ={};
+	$scope.person = {};
+	$scope.beds = 20;
+	
+	$scope.bedsLeft = function() {
+		var left = $scope.beds;
+		angular.forEach($scope.person, function(value, key) {
+			left = left -value;
+		});
+		if(left>0) {
+			return left;
+		}
+		else {
+			return 0;
+		}
 		
 	};
-
-	$scope.closeAlert = function(index) {
-		$scope.alerts.splice(index, 1);
+	
+	$scope.range = function(isSet) {
+		var bedsLeft = $scope.bedsLeft();
+		var end = bedsLeft;
+		if((isSet != null || isSet>0) && end<=isSet) {
+			end = isSet + bedsLeft;
+		}
+		
+		
+	    var result = [];
+	    for (var i = 0; i <= end; i++) {
+	        result.push(i);
+	    }
+	    
+	    return result;
 	};
 	
     $scope.postBooking = function(booking) {
-    	
-		// Temporary code
-		//var startD = booking.dates.startDate;
-		//$scope.start = startD.substring(0, 10);
-		$scope.start = JSON.stringify(booking.dates.startDate).substring(1, 11);
-		$scope.slutt = JSON.stringify(booking.dates.endDate).substring(1, 11);
-		booking.dates.startDate=JSON.stringify(booking.dates.startDate).substring(1, 11);
-		booking.dates.endDate=JSON.stringify(booking.dates.endDate).substring(1, 11);
-		// End temporary code
 		
     	ordersService.postOrder(booking)
 		.success(function (success) {
-			$scope.addAlert('success', success.message);
+			
 		})
 		.error(function (error) {
-			$scope.addAlert('danger', error.message);
+			
 		});
     };
-    init();
     
+    init();
     function init() {
-       
-    }
+       var id = $routeParams.id;
+       if(id) {
+    	   $scope.booking.cabinId = id;
+       }
+    };
 
 });
 
