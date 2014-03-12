@@ -94,8 +94,6 @@ public class BookingController extends Controller {
 	}
 	
 	public static Result submitBooking() {
-		//Validate user input
-		//Validate cabin booking date time period.
 		ObjectNode result = Json.newObject();
 		JsonNode json = request().body().asJson();
 		if(json == null) {
@@ -128,11 +126,6 @@ public class BookingController extends Controller {
 				!startDt.isBefore(endDt)
 				) 
 		{
-			System.out.println(startDt == null);
-			System.out.println(endDt 	== null);
-			System.out.println(startDt.isBeforeNow());
-			System.out.println(endDt.isBeforeNow());
-			System.out.println(!startDt.isBefore(endDt));
 			result.put("status", "KO");
 			result.put("message", "date invalid");
 			return badRequest(result);
