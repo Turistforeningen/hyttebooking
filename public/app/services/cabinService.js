@@ -10,5 +10,9 @@ app.service('cabinService', function ($http, $log) {
         var url = '/api/cabins/' + id+'?page=' + page + "&size=" + pageSize;
         return $http.get(url);  
     };
-
+    
+    this.postCabin = function (newCabin) {
+        var url = '/api/cabins';
+        return $http.post(url, newCabin);  
+    };
 });

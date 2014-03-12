@@ -28,6 +28,9 @@ public class Global extends GlobalSettings {
 			user1.save();
 			User user2 = new User("user2@demo.com", "password", "Jane Doe");
 			user2.save();
+			User admin = new User("admin", "p", "admin");
+			admin.admin = true;
+			admin.save();
 			
 		    User[] us = {user1, user2};
 		    int userSize = us.length;
