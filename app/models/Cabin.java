@@ -74,6 +74,7 @@ public abstract class Cabin extends Model {
 		else if(cabin instanceof LargeCabin) {
 			bookingPage.data = Booking.find.where()
 					.eq("beds.largeCabin", cabin)
+					.order("timeOfBooking desc")
 					.findPagingList(pageSize)
 					.getPage(page).getList();
 			bookingPage.totalItems = new Integer(Booking.find.where().eq("beds.largeCabin", cabin).findRowCount());

@@ -17,6 +17,9 @@
 			<!-- /////////////////////////////////////////////// Numbers of beds to be reserved ////////////////////////////////////////////// -->
 
 			<div class="col-lg-3 col-md-3" style="min-height: 315px;">
+			     <div ng-if="cabinType=='large'">
+			    
+			     
 				<div class="row">
 					<div class="row" style="height: 16px"></div> <!-- Just pushing the text down a bit -->
 					<div class="col-lg-9 col-md-9">
@@ -102,6 +105,17 @@
 					<!-- /row -->
 				</div>
 				<!-- /row -->
+				</div>
+				<div ng-if="cabinType=='small'">
+				<div class="row" >
+				<div class="row" style="height: 16px"></div> <!-- Just pushing the text down a bit -->
+				<div class="col-lg-9 col-md-9">
+				        <p>Liten hytte</p>
+                        <p>Reserver hele hytta fra</p>
+                    </div>
+				    
+				</div>
+				</div>
 			</div>
 			<!-- /col-lg-3 -->
 
@@ -159,7 +173,7 @@
 							<div class="col-lg-12">
 								<div class="col-lg-12" style="font-weight: bold">
 									<div class="col-lg-6" style="height: 50px;">
-										<p>Totalt bel¿p</p>
+										<p>Totalt belï¿½p</p>
 									</div>
 									<div class="col-lg-6" style="text-align: right;">
 										<p>950 NOK</p>
@@ -240,7 +254,7 @@
 							<div class="col-lg-12">
 								<div class="col-lg-12" style="font-weight: bold">
 									<div class="col-lg-3">
-										<p>Totalt bel¿p</p>
+										<p>Totalt belï¿½p</p>
 									</div>
 									<div class="col-lg-3" style="text-align: right;">
 										<p>950 NOK</p>
