@@ -120,17 +120,32 @@ public class BookingController extends Controller {
 		System.out.println("End dt: "+endDt);
 
 		//validate request here
-		if(nrPerson 	!= null &&
-				startDt != null &&
-				endDt 	!= null &&
-				!startDt.isBeforeNow() &&
-				!endDt.isBeforeNow() &&
-				startDt.isBefore(endDt)
-				) {
+		if(
+				startDt == null ||
+				endDt 	== null ||
+				startDt.isBeforeNow() ||
+				endDt.isBeforeNow() ||
+				!startDt.isBefore(endDt)
+				) 
+		{
+			System.out.println(startDt == null);
+			System.out.println(endDt 	== null);
+			System.out.println(startDt.isBeforeNow());
+			System.out.println(endDt.isBeforeNow());
+			System.out.println(!startDt.isBefore(endDt));
+			result.put("status", "KO");
+			result.put("message", "date invalid");
+			return badRequest(result);
+		}
 			
 			List<Bed> beds = null;
 			if (cabin instanceof LargeCabin) {
-				//find beds
+				beds = ((LargeCabin) cabin).book(Integer.parseInt(nrPerson), startDt, endDt);
+				if(beds == null) {
+					result.put("status", "KO");
+					result.put("message", "no available beds");
+					return badRequest(result);
+				}
 			}
 			
 			Booking booking = Booking.createBooking(
@@ -143,12 +158,6 @@ public class BookingController extends Controller {
 			result.put("status", "OK");
 			result.put("message", "booking saved");
 			return ok(result);
-		}
-		else {
-			result.put("status", "KO");
-			result.put("message", "date invalid");
-			return badRequest(result);
-		}
 
 	}
 

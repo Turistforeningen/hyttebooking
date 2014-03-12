@@ -12,7 +12,7 @@ app.controller('orderController', function ($scope, $location, $routeParams, ord
 	};
 	
 	$scope.getOrders = function(page) {
-		$log.info($scope.itemsPerPage +"henter");
+		
 		ordersService.getOrders(page, $scope.itemsPerPage)
 		.success(function (userOrders) {
 			$scope.currentPage = page +1;
@@ -116,7 +116,7 @@ app.controller('bookingController', function ($scope, ordersService, $log, $rout
 		$scope.booking.Person = $scope.person;
     	ordersService.postOrder($scope.booking)
 		.success(function (success) {
-			$log.info("Det virket");
+			$log.info("Det virket" + success.message);
 		})
 		.error(function (error) {
 			$log.info("Det virket ikke. " + error.message);
