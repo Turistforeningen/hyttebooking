@@ -29,7 +29,7 @@ public class Guest extends Model {
 	@Constraints.Required
 	public boolean isMember;
 	
-	/** The type of guest **/
+	/** The type of guest - contains membership, price,  **/
 	@Constraints.Required
 	public GuestType guestType;
 
