@@ -21,7 +21,7 @@ app.config(function ($routeProvider, $locationProvider, $httpProvider) {
 		templateUrl: '/assets/app/partials/ordersView.html'
 			
 	})
-	.when('/booking', {
+	.when('/booking/:id', {
 		
 		controller: 'bookingController',
 		templateUrl: '/assets/app/partials/bookingView.html'

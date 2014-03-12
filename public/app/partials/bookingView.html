@@ -16,114 +16,72 @@
 			<!-- //////////////////////////////////////////////// DNT BOOKING SOLUTION - START//////////////////////////////////////////////// -->
 			<!-- /////////////////////////////////////////////// Numbers of beds to be reserved ////////////////////////////////////////////// -->
 
-			<div class="col-lg-3" style="min-height: 300px;">
+			<div class="col-lg-3 col-md-3" style="min-height: 300px;">
 				<div class="row">
-					<div class="col-lg-9">
+					<div class="col-lg-9 col-md-9">
 						<p>Voksen, medlem</p>
 					</div>
-					<div class="col-lg-3">
-						<select style="width: 50px">
-							<option value="one">1</option>
-							<option value="two">2</option>
-							<option value="three">3</option>
-							<option value="four">4</option>
-							<option value="five">5</option>
-						</select>
+					<div class="col-lg-3 col-md-3">
+						<select class="selectNumber" ng-model="person.adultM" ng-options="adultM for adultM in range(person.adultM)"></select>
 					</div>
 				</div>
 				<div class="row">
-					<div class="col-lg-9">
+					<div class="col-lg-9 col-md-9">
 						<p>Ungdom, medlem</p>
 					</div>
-					<div class="col-lg-3">
-						<select style="width: 50px">
-							<option value="one">1</option>
-							<option value="two">2</option>
-							<option value="three">3</option>
-							<option value="four">4</option>
-							<option value="five">5</option>
-						</select>
+					<div class="col-lg-3 col-md-3">
+						<select class="selectNumber" ng-model="person.youthM" ng-options="youthM for youthM in range(person.youthM)"></select>
 					</div>
 				</div>
 				<div class="row">
-					<div class="col-lg-9">
+					<div class="col-lg-9 col-md-9">
 						<p>Barn, medlem</p>
 					</div>
-					<div class="col-lg-3">
-						<select style="width: 50px">
-							<option value="one">1</option>
-							<option value="two">2</option>
-							<option value="three">3</option>
-							<option value="four">4</option>
-							<option value="five">5</option>
-						</select>
+					<div class="col-lg-3 col-md-3">
+						<select class="selectNumber" ng-model="person.childM" ng-options="childM for childM in range(person.childM)"></select> 
 					</div>
 				</div>
 				<!-- /row -->
 				<div class="row">
-					<div class="col-lg-9">
+					<div class="col-lg-9 col-md-9">
 						<p>Spedbarn</p>
 					</div>
-					<div class="col-lg-3">
-						<select style="width: 50px">
-							<option value="one">1</option>
-							<option value="two">2</option>
-							<option value="three">3</option>
-							<option value="four">4</option>
-							<option value="five">5</option>
-						</select>
+					<div class="col-lg-3 col-md-3">
+						<select class="selectNumber" ng-model="person.baby" ng-options="baby for baby in range(person.baby)"></select> 
 					</div>
 				</div>
 				<!-- /row -->
 				<div class="row">
 					<div class="row">
-						<div class="col-lg-12" style="padding-top: 10px">
+						<div class="col-lg-12 col-md-12" style="padding-top: 10px">
 
 							<div ng-controller="AccordionDemoCtrl">
 								<accordion close-others="oneAtATime"> <accordion-group
 									heading="Ikke medlem?">
 								<div class="row">
-									<div class="col-lg-9">
+									<div class="col-lg-9 col-md-9">
 										<p>Voksen, ikke-medlem</p>
 									</div>
-									<div class="col-lg-3">
-										<select style="width: 50px">
-											<option value="one">1</option>
-											<option value="two">2</option>
-											<option value="three">3</option>
-											<option value="four">4</option>
-											<option value="five">5</option>
-										</select>
+									<div class="col-lg-3 col-md-3">
+										<select class="selectNumber" ng-model="person.adult" ng-options="adult for adult in range(person.adult)"></select> 
 									</div>
 								</div>
 								<!-- /row -->
 								<div class="row">
-									<div class="col-lg-9">
+									<div class="col-lg-9 col-md-9">
 										<p>Ungdom, ikke-medlem</p>
 									</div>
-									<div class="col-lg-3">
-										<select style="width: 50px">
-											<option value="one">1</option>
-											<option value="two">2</option>
-											<option value="three">3</option>
-											<option value="four">4</option>
-											<option value="five">5</option>
-										</select>
+									<div class="col-lg-3 col-md-3">
+										<select class="selectNumber" ng-model="person.youth" ng-options="youth for youth in range(person.youth)"></select>
 									</div>
 								</div>
 								<!-- /row -->
 								<div class="row">
-									<div class="col-lg-9">
+									<div class="col-lg-9 col-md-9">
 										<p>Barn, ikke-medlem</p>
 									</div>
-									<div class="col-lg-3">
-										<select style="width: 50px">
-											<option value="one">1</option>
-											<option value="two">2</option>
-											<option value="three">3</option>
-											<option value="four">4</option>
-											<option value="five">5</option>
-										</select>
+									<div class="col-lg-3 col-md-3">
+										<select class="selectNumber" ng-model="person.child" ng-options="child for child in range(person.child)"></select>
 									</div>
 								</div>
 								<!-- /row -->
@@ -133,9 +91,6 @@
 						</div>
 					</div>
 				</div>
-				<!--<input type="number" class="form-control"
-					ng-model="booking.nrOfPersons">
-				 Voksen, ikke-medlem <input type="number" class="form-control" ng-model="booking.nrOfPersons"> -->
 			</div>
 			<!-- col-lg-3 -->
 
@@ -144,16 +99,16 @@
 
 			<div class="col-lg-6"
 				style="min-height: 300px; border-left: 1px solid #ccc; border-right: 1px solid #ccc;">
-				<div class="col-lg-12">
+				<div class="col-lg-12 col-md-12">
 					<div class="row">
-						<div class="col-lg-6">
-							From: <input type="text" class="form-control"
-								value="DD.MM.ÅÅÅÅ">
-							<!-- From: <input type="daterange" class="form-control" ng-model="booking.dayOfBookingStart">  -->
+						<div class="col-lg-6 col-md-6">
+							From: <input type="text" ng-model="booking.dateFrom" class="form-control"
+								placeholder="DD.MM.ÅÅÅÅ">
+							
 						</div>
-						<div class="col-lg-6">
-							To: <input type="text" class="form-control" value="DD.MM.ÅÅÅÅ">
-							<!-- To: <input type="daterange" class="form-control" ng-model="booking.dayOfBookingEnd">  -->
+						<div class="col-lg-6 col-md-6">
+							To: <input type="text" ng-model="booking.dateTo" class="form-control" placeholder="DD.MM.ÅÅÅÅ">
+							
 						</div>
 					</div>
 				</div>
@@ -244,10 +199,11 @@
 		<!-- /row -->
 		<!-- ///////////////////////////////////////////////// DNT BOOKING SOLUTION - END ///////////////////////////////////////////////// -->
 
-		<div class="row" style="">
+		<div class="row">
 			<!--This is just an other information container-->
 			<img src="assets/images/DNT_hytteprofil_bottom_small.jpg" />
 		</div>
 	</div>
-	<pre>form = {{booking | json}} booking - json</pre>
+	<pre>{{booking}}</pre>
+	<pre>{{person}}</pre>
 </div>
