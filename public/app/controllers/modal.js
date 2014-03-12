@@ -26,7 +26,7 @@ var ModalDemoCtrl = function ($scope, $modal, $log) {
 // Please note that $modalInstance represents a modal window (instance) dependency.
 // It is not the same as the $modal service used above.
 
-var ModalInstanceCtrl = function ($scope, $modalInstance, items) {
+var ModalInstanceCtrl = function ($scope,$rootScope, $modalInstance,$log, items) {
 
   $scope.items = items;
   $scope.selected = {
@@ -34,6 +34,8 @@ var ModalInstanceCtrl = function ($scope, $modalInstance, items) {
   };
 
   $scope.ok = function () {
+	$log.info("lol");
+	 $rootScope.$broadcast('event:booking');
     $modalInstance.close($scope.selected.item);
   };
 
