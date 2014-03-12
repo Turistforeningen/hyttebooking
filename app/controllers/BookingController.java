@@ -7,6 +7,8 @@ import java.util.Date;
 import java.util.List;
 
 import org.joda.time.DateTime;
+import org.joda.time.Days;
+import org.json.JSONArray;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -31,16 +33,6 @@ public class BookingController extends Controller {
 	
 	
 	public static Result getAvailabilityForTimePeriod() {
-		/* PROPOSAL
-		 * Input: startDate, Enddate, NrOfPerson, CabinID (if partial booking allowed)
-		 * 
-		 * When choosing a time period and persons availability for
-		 * each date should be returned as JSON to be dynamically
-		 * displayed on client 
-		 * 
-		 *returns a json string with a boolean for each date.
-		 *
-		 */
 		ObjectNode result = Json.newObject();
 		JsonNode json = request().body().asJson();
 		if(json == null) {
@@ -54,34 +46,41 @@ public class BookingController extends Controller {
 			DateTime endDate = utilities.DateHelper.toDt(json.get("endDate").asText()); //must be format YYYY-MM-DD standard ISO date
 			int nrOfPerson = json.get("nrOfPerson").asInt();
 			long cabinId = json.get("cabinId").asLong(); 
+			
 			//dynamic programming, will fill this boolean according too all bookings
-			boolean[] bookedDays = new boolean[utilities.DateHelper.daysBetween(startDate, endDate)];
+			boolean[] bookedDays = new boolean[Days.daysBetween(startDate, endDate).getDays()];
+			JSONSerializer serializer = new JSONSerializer();
 			
 			Cabin cabin = Cabin.find.byId(cabinId);
 			if(cabin instanceof LargeCabin) {
 				//TODO implement
 				//a bit different from smallCabin. Will implement later @author jama
+				return TODO;
 			} else if(cabin instanceof SmallCabin) {
 				List<Booking> bookings = cabin.findAllBookingsForCabinGivenDate(cabinId, startDate, endDate);
 				
 				if(!bookings.isEmpty()) {
-					//Use JSONSerializer TODO
 					for(Booking b: bookings) {
-						//for each booking
-						
-						//find index b.fromDate corresponds to in availableDays array, call it fromIndex
-						//set true from fromIndex to b.toDate's toIndex
-						//TODO
+						//for each booking set bookedDays[i] = true for range startDate-endDate
+						int[] indices = utilities.DateHelper.getIndex(startDate, new DateTime(b.dateFrom), new DateTime(b.dateTo)); /** indices[0] startIndex in bookedDays, [1] is endIndex **/
+						if(indices[0] < 0) //if b.dateFrom precedes startDate, skip to startDate 
+							indices[0] = 0;
+						for(int i = indices[0]; i<indices[1]; i++){
+							bookedDays[i] = true; //TODO test
+						}
 					}
-					//return bookedDays as json TODO
+					result.put("bookedDays", serializer.serialize(bookedDays));
+					return ok(result);
 				} else { //Either something is wrong or the entire given daterange shows available for given cabin
-					
-					
-					//return bookedDays as json TODO
+					result.put("bookedDays", serializer.serialize(bookedDays));
+					return ok(result);	
 				}
+			} else {
+				result.put("status", "KO");
+				result.put("message", "date invalid");
+				return badRequest(result);
 			}
 		}
-		return TODO;
 	}
 	
 	private static List addBooleanBlock(int daysBetween) {
