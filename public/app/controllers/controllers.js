@@ -112,7 +112,8 @@ app.controller('bookingController', function ($scope, ordersService, $log, $rout
 	
     $scope.postBooking = function() {
     	
-		$scope.booking.beds =$scope.bedsLeft() +"";
+		$scope.booking.beds =($scope.beds-$scope.bedsLeft()) + "";
+		$log.info($scope.booking.beds);
 		$scope.booking.Person = $scope.person;
     	ordersService.postOrder($scope.booking)
 		.success(function (success) {
@@ -127,8 +128,10 @@ app.controller('bookingController', function ($scope, ordersService, $log, $rout
     init();
     function init() {
        var id = $routeParams.id;
+       var type =$routeParams.type;
        if(id) {
     	   $scope.booking.cabinId = id;
+    	   
        }
     };
 
