@@ -63,6 +63,11 @@ public class AdminController extends Controller {
 	}
 	
 	public static Result submitCabin() {
+		
+		if (!SecurityController.getUser().admin) {
+			return unauthorized();
+		}
+		
 		JsonNode json = request().body().asJson();
 		
 		String type = json.get("type").asText();
