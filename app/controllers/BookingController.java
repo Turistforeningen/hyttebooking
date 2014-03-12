@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import flexjson.JSONSerializer;
+import models.Bed;
 import models.Booking;
 import models.Cabin;
 import models.Guest;
@@ -102,44 +103,56 @@ public class BookingController extends Controller {
 			result.put("message", "Expected Json");
 			return badRequest(result);
 		}
-		else {
-			Cabin tempCabin = Cabin.find.where().eq("name", "Helfjord").findUnique();
-			String nrPerson = json.get("nrOfPersons").asText();
-			String start = json.get("dayOfBookingStart").asText();
-			DateTime startDt = utilities.DateHelper.toDt(start);
-			System.out.println("Start dt: "+startDt);
-			String end = json.get("dayOfBookingEnd").asText();
-			DateTime endDt = utilities.DateHelper.toDt(end);
-			System.out.println("End dt: "+endDt);
-			
-			//validate request here
-			if(nrPerson 	!= null &&
-					startDt != null &&
-					endDt 	!= null &&
-					!startDt.isBeforeNow() &&
-					!endDt.isBeforeNow() &&
-					startDt.isBefore(endDt)
-					) {
-				//TESTLINE
-				Booking booking = Booking.createBooking(
-						SecurityController.getUser().id, 
-						startDt.toDate(),
-						endDt.toDate(),
-						tempCabin.id,
-						null);
-
-				result.put("status", "OK");
-				result.put("message", "booking saved");
-				return ok(result);
-			}
-			else {
-				result.put("status", "KO");
-				result.put("message", "date invalid");
-				return badRequest(result);
-			}
+		
+		Cabin cabin = Cabin.find.byId(json.get("cabinId").asLong());
+		if(cabin == null) {
+			result.put("status", "KO");
+			result.put("message", "cant book at this cabin");
 		}
+		
+		String nrPerson = json.get("beds").asText();
+		String start = json.get("dateFrom").asText();
+		System.out.println(json.get("dateFrom").asText());
+		DateTime startDt = utilities.DateHelper.toDt(start);
+		System.out.println("Start dt: "+startDt);
+		String end = json.get("dateTo").asText();
+		DateTime endDt = utilities.DateHelper.toDt(end);
+		System.out.println("End dt: "+endDt);
+
+		//validate request here
+		if(nrPerson 	!= null &&
+				startDt != null &&
+				endDt 	!= null &&
+				!startDt.isBeforeNow() &&
+				!endDt.isBeforeNow() &&
+				startDt.isBefore(endDt)
+				) {
+			
+			List<Bed> beds = null;
+			if (cabin instanceof LargeCabin) {
+				//find beds
+			}
+			
+			Booking booking = Booking.createBooking(
+					SecurityController.getUser().id, 
+					startDt.toDate(),
+					endDt.toDate(),
+					cabin.id,
+					beds);
+
+			result.put("status", "OK");
+			result.put("message", "booking saved");
+			return ok(result);
+		}
+		else {
+			result.put("status", "KO");
+			result.put("message", "date invalid");
+			return badRequest(result);
+		}
+
 	}
 
+	
 	/**
 	 * Retrieves booking from database. If no booking match with
 	 * bookingID method, return noFound.

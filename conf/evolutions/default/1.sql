@@ -32,8 +32,6 @@ create table guest (
   id                        bigint not null,
   booking_id                bigint,
   is_member                 boolean,
-  guest_type                integer,
-  constraint ck_guest_guest_type check (guest_type in (0,1,2,3)),
   constraint pk_guest primary key (id))
 ;
 
