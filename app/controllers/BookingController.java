@@ -48,7 +48,7 @@ public class BookingController extends Controller {
 			long cabinId = json.get("cabinId").asLong(); 
 			
 			//dynamic programming, will fill this boolean according too all bookings
-			boolean[] bookedDays = new boolean[Days.daysBetween(startDate, endDate).getDays()];
+			boolean[] bookedDays = new boolean[Math.abs(Days.daysBetween(startDate, endDate).getDays())];
 			JSONSerializer serializer = new JSONSerializer();
 			
 			Cabin cabin = Cabin.find.byId(cabinId);

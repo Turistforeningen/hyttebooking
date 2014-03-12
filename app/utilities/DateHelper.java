@@ -7,7 +7,7 @@ import org.joda.time.Days;
 
 public class DateHelper {
 
-	/** Helper method for dateTime object from string "dd-MM-YYYY" **/
+	/** takes string "dd-MM-YYYY" and return DateTime object corresponding to it **/
 	public static DateTime toDt(String date) {
 		
 		String[] d = date.split("-");
@@ -60,6 +60,5 @@ public class DateHelper {
 		ret[1] = Days.daysBetween(startDate, b).getDays();
 		return ret;
 	}
-
 
 }
