@@ -111,7 +111,7 @@ angular.module('dntBookingModule')
         	$scope.calculatePrice = function() {
         		var totalPrice = 0;
         		angular.forEach($scope.personType, function(value, key) {
-        			totalPrice +=(value.nr * value.price);
+        			totalPrice +=(value.nr * value.price*$scope.days);
         			
         		});
         		$scope.price = totalPrice;
@@ -131,10 +131,12 @@ angular.module('dntBookingModule')
         			$scope.days = 1;
         		}
         		else {
-        			$log.info(d2);
-        			$scope.days = days;
+        			$log.info(days);
+        			//ceiling will fail if a booking span serveral years.
+        			//days method not 100% accurate, but close.
+        			$scope.days = Math.ceil(days);
         		}
-        		
+        		$scope.calculatePrice();
         		}
         	};
         	
