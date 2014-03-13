@@ -2,296 +2,115 @@
 	<div class="container" style="background-color: #ffffff;">
 		<div class="row" style="position: center;">
 			<!--This is just the container where the cabin information will be-->
-			<img src="assets/images/DNT_hytteprofil_top_small.jpg" />
+			<img class="img-responsive" src="assets/images/DNT_hytteprofil_top_small.jpg" />
 		</div>
-
+<!-- //////////////////////////////////////////////// DNT BOOKING SOLUTION - START//////////////////////////////////////////////// -->
+<!-- /////////////////////////////////////////////// Numbers of beds to be reserved ////////////////////////////////////////////// -->
 		<div class="row"
 			style="height: 400px; background-color: #f5f5f5; padding-bottom: 15px solid white; border-bottom: 1px solid #ccc; border-top: 1px solid #ccc;">
-			<alert ng-repeat="alert in alerts" type="alert.type"
-				close="closeAlert($index)">{{alert.msg}}</alert>
-			<div class="col-lg-12">
-				<h2>Booking</h2>
-			</div>
-
-			<!-- //////////////////////////////////////////////// DNT BOOKING SOLUTION - START//////////////////////////////////////////////// -->
-			<!-- /////////////////////////////////////////////// Numbers of beds to be reserved ////////////////////////////////////////////// -->
-
-			<div class="col-lg-3 col-md-3" style="min-height: 315px;">
-			     <div ng-if="cabinType=='large'">
-			    
-			     
+			<div class="col-lg-12 col-md-12">
 				<div class="row">
-					<div class="row" style="height: 16px"></div> <!-- Just pushing the text down a bit -->
-					<div class="col-lg-9 col-md-9">
-						<p>Voksen, medlem</p>
-					</div>
-					<div class="col-lg-3 col-md-3">
-						<select class="selectNumber" ng-model="person.adultM"
-							ng-options="adultM for adultM in range(person.adultM)"></select>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-lg-9 col-md-9">
-						<p>Ungdom, medlem</p>
-					</div>
-					<div class="col-lg-3 col-md-3">
-						<select class="selectNumber" ng-model="person.youthM"
-							ng-options="youthM for youthM in range(person.youthM)"></select>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-lg-9 col-md-9">
-						<p>Barn, medlem</p>
-					</div>
-					<div class="col-lg-3 col-md-3">
-						<select class="selectNumber" ng-model="person.childM"
-							ng-options="childM for childM in range(person.childM)"></select>
-					</div>
-				</div>
-				<!-- /row -->
-				<div class="row">
-					<div class="col-lg-9 col-md-9">
-						<p>Spedbarn</p>
-					</div>
-					<div class="col-lg-3 col-md-3">
-						<select class="selectNumber" ng-model="person.baby"
-							ng-options="baby for baby in range(person.baby)"></select>
-					</div>
-				</div>
-				<!-- /row -->
-				<div class="row">
-					<div class="row">
-						<div class="col-lg-12 col-md-12" style="padding-top: 10px">
-
-							<div ng-controller="AccordionDemoCtrl">
-								<accordion close-others="oneAtATime"> <accordion-group
-									style="border:none; background-color: transparent; box-shadow: inset 0 0px;"
-									heading="Ikke medlem?">
-								<div class="row">
-									<div class="col-lg-9 col-md-9">
-										<p>Voksen, ikke-medlem</p>
-									</div>
-									<div class="col-lg-3 col-md-3">
-										<select class="selectNumber" ng-model="person.adult"
-											ng-options="adult for adult in range(person.adult)"></select>
-									</div>
-								</div>
-								<!-- /row -->
-								<div class="row">
-									<div class="col-lg-9 col-md-9">
-										<p>Ungdom, ikke-medlem</p>
-									</div>
-									<div class="col-lg-3 col-md-3">
-										<select class="selectNumber" ng-model="person.youth"
-											ng-options="youth for youth in range(person.youth)"></select>
-									</div>
-								</div>
-								<!-- /row -->
-								<div class="row">
-									<div class="col-lg-9 col-md-9">
-										<p>Barn, ikke-medlem</p>
-									</div>
-									<div class="col-lg-3 col-md-3">
-										<select class="selectNumber" ng-model="person.child"
-											ng-options="child for child in range(person.child)"></select>
-									</div>
-								</div>
-								<!-- /row --> </accordion-group> </accordion>
-							</div>
-							<!-- /AccordionDemoCtrl -->
-						</div>
-						<!-- /col-lg-12 col-md-12 -->
-					</div>
-					<!-- /row -->
-				</div>
-				<!-- /row -->
-				</div>
-				<div ng-if="cabinType=='small'">
-				<div class="row" >
-				<div class="row" style="height: 16px"></div> <!-- Just pushing the text down a bit -->
-				<div class="col-lg-9 col-md-9">
-				        <p>Liten hytte</p>
-                        <p>Reserver hele hytta fra</p>
-                    </div>
-				    
-				</div>
-				</div>
-			</div>
-			<!-- /col-lg-3 -->
-
-
-			<!-- //////////////////////////////////////////////////// Date to be reserved //////////////////////////////////////////////////// -->
-
-			<div class="col-lg-6"
-				style="min-height: 315px; border-left: 1px solid #ccc; border-right: 1px solid #ccc;">
 				<div class="col-lg-12 col-md-12">
-					<div class="row">
-						<div class="col-lg-6 col-md-6">
-							<strong>Fra:</strong> <input type="text"
-								ng-model="booking.dateFrom" class="form-control"
-								placeholder="DD.MM.ÅÅÅÅ">
-
-						</div>
-						<div class="col-lg-6 col-md-6">
-							<strong>Til:</strong> <input type="text"
-								ng-model="booking.dateTo" class="form-control"
-								placeholder="DD.MM.ÅÅÅÅ">
-
-						</div>
+					<h2>Booking</h2>
 					</div>
 				</div>
-			</div>
-
-
-			<!-- ////////////////////////////////////////////////// Order summary and submit ///////////////////////////////////////////////// -->
-
-			<div class="col-lg-3" style="min-height: 315px">
 				<div class="row">
-					<div class="row" style="min-height: 210px;">
-						<div class="row">
-							<div class="col-lg-12">
-								<div class="col-lg-12">
-									<div class="row" style="height: 16px"></div> <!-- Just pushing the text down a bit -->
-									<div class="col-lg-6">
-										<p>Voksen, medlem</p>
-										<p>Barn, medlem</p>
-									</div>
-									<div class="col-lg-2">
-										<p>x2</p>
-										<p>x1</p>
-									</div>
-									<div class="col-lg-4" style="text-align: right;">
-										<p>700 NOK</p>
-										<p>250 NOK</p>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="row">
-						<div class="row">
-							<div class="col-lg-12">
-								<div class="col-lg-12" style="font-weight: bold">
-									<div class="col-lg-6" style="height: 50px;">
-										<p>Totalt bel�p</p>
-									</div>
-									<div class="col-lg-6" style="text-align: right;">
-										<p>950 NOK</p>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div style="text-align: center;">
-					<div ng-controller="ModalDemoCtrl">
-						<script type="text/ng-template" id="myModalContent.html">
+					<div class="col-lg-3 col-md-3">
 
-<div class="modal-body" style="border-bottom: 1px solid #ccc;">
-	<div style="text-align: right">
-		<button class="btn btn-danger" ng-click="cancel()">
-			<strong>X</strong>
-		</button>
-	</div>
-	<h4>Brukeropplysninger</h4>
-	<div class="row">
-		<div class="col-lg-4">
-			<p>Fornavn</p>
-			<p>Etternavn</p>
-			<p>F¿dselsdato</p>
-			<p>Adresse</p>
-			<p>Poststed</p>
-			<p>Postnummer</p>
-			<p>Epost</p>
-		</div>
-		<div class="col-lg-8">
-			<p>Ola</p>
-			<p>Nordmann</p>
-			<p>30.05.1989</p>
-			<p>Gateveien 3</p>
-			<p>Plassen</p>
-			<p>1234</p>
-			<p>ola.nordmann@mail.no</p>
-		</div>
-	</div>
-</div>
-<div class="modal-body" style="border-bottom: 1px solid #ccc;">
-	<h4>Bekreft reservasjon</h4>
-	<p>Les og bekreft kjøpsvilkår.</p>
-	<div class="checkbox">
-		<label> <input type="checkbox"> <i>Jeg har lest og
-				godkjenner Deres vilkår.</i>
-		</label>
-	</div>
-</div>
-<div class="modal-body">
-	<h4>Oversikt over kjøp</h4>
-	<div class="row">
-					<div class="row">
-						<div class="row">
-							<div class="col-lg-12">
-								<div class="col-lg-12">
-									<div class="row" style="height: 16px"></div> <!-- Just pushing the text down a bit -->
-									<div class="col-lg-3">
-										<p>Voksen, medlem</p>
-										<p>Barn, medlem</p>
-									</div>
-									<div class="col-lg-1">
-										<p>x2</p>
-										<p>x1</p>
-									</div>
-									<div class="col-lg-2" style="text-align: right;">
-										<p>700 NOK</p>
-										<p>250 NOK</p>
-									</div>
-									<div class="col-lg-6"></div>
+						<div ng-if="cabinType=='large'">
+
+							<div class="row">
+								<div class="col-lg-12 col-md-12">
+									<dnt-selector person-types="personType" hide-type-index="4"
+										number-of-beds="beds"></dnt-selector>
 								</div>
+
+							</div>
+							<!-- /row -->
+						</div><!-- /ng-if -->
+						<div ng-if="cabinType=='small'">
+							<div class="row">
+								<div class="row" style="height: 16px"></div>
+								<!-- Just pushing the text down a bit -->
+								<div class="col-lg-9 col-md-9">
+									<p>Liten hytte</p>
+									<p>Reserver hele hytta fra</p>
+								</div>
+
+							</div>
+						</div><!-- /ng-if -->
+					</div><!-- /col -->
+
+					
+
+
+
+
+<!-- //////////////////////////////////////////////////// Date to be reserved //////////////////////////////////////////////////// -->
+
+					<div class="col-lg-6 col-md-6"
+						style="min-height: 315px; border-left: 1px solid #ccc; border-right: 1px solid #ccc;">
+						
+							<div class="row">
+								<div class="col-lg-6 col-md-6">
+									<strong>Fra:</strong> <input type="text"
+										ng-model="booking.dateFrom" class="form-control"
+										placeholder="ÅÅÅÅ-MM-DD" datepicker-popup="yyyy-MM-dd">
+                                    
+								</div>
+								<div class="col-lg-6 col-md-6">
+									<strong>Til:</strong> <input type="text"
+										ng-model="booking.dateTo" class="form-control"
+										placeholder="ÅÅÅÅ-MM-DD" datepicker-popup="yyyy-MM-dd">
+
+								</div>
+							</div><!-- /row -->
+						<div class="row">
+							<div class="col-lg-6 col-md-6">	
+									<div class="well well-sm" ng-model="booking.dateFrom">
+										<datepicker min="now" show-weeks="showWeeks"></datepicker>
+									</div>
+							</div>
+							<div class="col-lg-6 col-md-6">  
+                                    <div class="well well-sm" ng-model="booking.dateTo">
+                                        <datepicker min="booking.dateFrom" show-weeks="showWeeks"></datepicker>
+                                    </div>
+                            </div>
+						</div>
+						<!-- /col -->
+                    </div>
+
+<!-- ////////////////////////////////////////////////// Order summary and submit ///////////////////////////////////////////////// -->
+
+					<div class="col-lg-3 col-md-3" >
+						<div class="row">
+							<div class="col-lg-12 col-md-12">
+								<dnt-price-viewer person-types="personType" from-date="booking.dateFrom" to-date="booking.dateTo"></dnt-price-viewer>
 							</div>
 						</div>
-					</div>
-					<div class="row">
-						<div class="row">
-							<div class="col-lg-12">
-								<div class="col-lg-12" style="font-weight: bold">
-									<div class="col-lg-3">
-										<p>Totalt bel�p</p>
-									</div>
-									<div class="col-lg-3" style="text-align: right;">
-										<p>950 NOK</p>
-									</div>
-								<div class="col-lg-6"></div>
-								</div>
+
+						<div class="row" style="text-align: center;">
+							<div ng-controller="ModalDemoCtrl">
+
+
+								<button class="btn btn-primary" ng-click="open()">Reserver</button>
+								<div ng-show="selected">Selection from a modal: {{
+									selected }}</div>
 							</div>
-						</div>
-					</div>
-				</div>
-	<div class="row">
-		<br> <br>
-		<li ng-repeat="item in items"><a ng-click="selected.item = item">{{item}}</a></li>
-	</div>
-	<div style="text-align: right">
-		<button class="btn btn-primary" ng-click="ok()">Bekreft kjøp</button>
-	</div>
-</div>
-			
-    			</script>
-
-						<button class="btn btn-primary" ng-click="open()">Reserver</button>
-						<div ng-show="selected">Selection from a modal: {{ selected
-							}}</div>
-					</div>
-
-				</div>
-			</div>
-		</div>
-		<!-- /row -->
+						</div><!-- /row -->
+					</div><!-- /col -->
+				</div><!-- /row -->
+			</div><!-- /col -->
+		</div><!-- /row -->
+		
 		<!-- ///////////////////////////////////////////////// DNT BOOKING SOLUTION - END ///////////////////////////////////////////////// -->
+
 
 		<div class="row">
 			<!--This is just an other information container-->
-			<img src="assets/images/DNT_hytteprofil_bottom_small.jpg" />
+			<img class="img-responsive" src="assets/images/DNT_hytteprofil_bottom_small.jpg" />
 		</div>
-	</div>
+	</div><!-- /container -->
 	<pre>{{booking}}</pre>
-	<pre>{{person}}</pre>
+	<pre>{{personType}}</pre>
 </div>
