@@ -68,6 +68,12 @@ angular.module('dntBookingModule', [])
         
         link: function(scope, elem, attrs) {
         	scope.setPerson(scope.data);
+        	scope.$watch('data', function(newValue, oldValue) {
+                if (newValue)
+                    scope.setPerson(newValue);
+                	
+            });
+        	
         }
     };
 });
@@ -146,8 +152,11 @@ angular.module('dntBookingModule')
         	scope.setPersonType(scope.data);
         	scope.$watch('data', function(newValue, oldValue) {
                 if (newValue)
+                	scope.setPersonType(newValue);
                     scope.calculatePrice();
             }, true);
+        	
+        	
         	
         	scope.$watch('fromDate', function(newValue, oldValue) {
                 if (newValue)
