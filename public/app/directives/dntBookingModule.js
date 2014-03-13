@@ -76,7 +76,9 @@ angular.module('dntBookingModule')
     return {
         restrict: 'AE',
         
-        scope: {'data': '=personTypes'
+        scope: {'data': '=personTypes',
+        	'fromDate': '=',
+        	'toDate' : '='
         	
         },
         
@@ -87,7 +89,8 @@ angular.module('dntBookingModule')
         '<tr ng-repeat="person in personType" ng-show="person.nr>0">'+
         '<td>{{person.type}}</td>'+
         '<td>x{{person.nr}}</td>' +
-        '<td>{{person.nr * person.price}}</td>'+
+        '<td>{{days}}</td>'+
+        '<td>{{person.nr * person.price * days}}</td>'+
         '</tr></table>'+
         '</div>'+
         '<div class=row><div class="col-lg-7 col-md-7"><p><strong>Totalt beløp</strong></p></div>'+
@@ -95,6 +98,9 @@ angular.module('dntBookingModule')
        
         controller: function($scope, $log) {
         	$scope.personType = {};
+        	$scope.days =1;
+        	$scope.fromDate;
+        	$scope.toDate;
         	
         	$scope.setPersonType = function(person) {
         		$scope.personType = person;
@@ -108,8 +114,28 @@ angular.module('dntBookingModule')
         			totalPrice +=(value.nr * value.price);
         			
         		});
-        		$log.info(totalPrice);
         		$scope.price = totalPrice;
+        	};
+        	
+        	$scope.newDateRange = function() {
+        		if($scope.fromDate  && $scope.toDate) {
+        			
+        		var d1 = new Date($scope.fromDate);
+        		var d2 = new Date($scope.toDate);
+        		var miliseconds = d2-d1;
+        		var seconds = miliseconds/1000;
+        		var minutes = seconds/60;
+        		var hours = minutes/60;
+        		var days = hours/24;
+        		if(days <0 || isNaN(d1.getTime()) || isNaN(d2.getTime()) ) {
+        			$scope.days = 1;
+        		}
+        		else {
+        			$log.info(d2);
+        			$scope.days = days;
+        		}
+        		
+        		}
         	};
         	
         },
@@ -120,6 +146,16 @@ angular.module('dntBookingModule')
                 if (newValue)
                     scope.calculatePrice();
             }, true);
+        	
+        	scope.$watch('fromDate', function(newValue, oldValue) {
+                if (newValue)
+                    scope.newDateRange();
+            });
+        	
+        	scope.$watch('toDate', function(newValue, oldValue) {
+                if (newValue)
+                    scope.newDateRange();
+            });
         }
     };
 });
