@@ -10,13 +10,13 @@ angular.module('dntBookingModule', [])
         
         template: 
         ' <div class="row" ng-repeat="per in person.slice(0, hider)">'+
-        '<div class="col-lg-9 col-md-9"><p>{{per.type}}<p></div>'+
-        '<div class="col-lg-3 col-md-3"><select class="selectNumber" ng-model="per.nr"'+
+        '<div class="col-lg-9 col-md-8"><p>{{per.type}}<p></div>'+
+        '<div class="col-lg-3 col-md-4"><select class="selectNumber" ng-model="per.nr"'+
         'ng-options="pe for pe in range(per.nr)"></select></div></div>'+
         '<div class="row"><div class="col-lg-12 col-md-12"><a ng-click="toggleHide()">Ikke medlem?</a></div></div>'+
         ' <div class="row" ng-hide="hide" ng-repeat="per in person.slice(hider)">'+
-        '<div class="col-lg-9 col-md-9"><p>{{per.type}}<p></div>'+
-        '<div class="col-lg-3 col-md-3"><select class="selectNumber" ng-model="per.nr"'+
+        '<div class="col-lg-9 col-md-8"><p>{{per.type}}<p></div>'+
+        '<div class="col-lg-3 col-md-4"><select class="selectNumber" ng-model="per.nr"'+
         'ng-options="pe for pe in range(per.nr)"></select></div></div>',
         
         controller: function($scope, $log) {
@@ -81,7 +81,7 @@ angular.module('dntBookingModule')
         },
         
         template:
-        '<div class="row" style="min-height: 230px;">' +
+        '<div class="row" style="min-height: 250px;">' +
         
         '<table class="table table-condensed">' +
         '<tr ng-repeat="person in personType" ng-show="person.nr>0">'+
