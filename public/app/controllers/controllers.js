@@ -80,15 +80,7 @@ app.controller('testController', function ($scope) {
  * post the booking to the server.
  */
 app.controller('bookingController', function ($scope, ordersService, $log, $routeParams) {
-	$scope.personType = [
-	                     {"nr": 0, "type":"voksen medlem", "price": 300},
-	                     {"nr": 0, "type":"ungdom medlem", "price": 150},
-	                     {"nr": 0, "type":"barn medlem", "price": 100},
-	                     {"nr": 0, "type":"spedbarn" ,"price": 0},
-	                     {"nr": 0, "type":"voksen", "price": 400},
-	                     {"nr": 0, "type":"ungdom","price": 200},
-	                     {"nr": 0, "type":"barn", "price": 150}
-	                     ];
+	$scope.personType;
 	
 	$scope.booking ={};
 	$scope.beds = 20;
@@ -122,6 +114,15 @@ app.controller('bookingController', function ($scope, ordersService, $log, $rout
 		});
     };
     
+    $scope.getPrices = function(id) {
+    	ordersService.getPrices(id)
+    	.success(function (data) {
+    		$scope.personType = data;
+    	})
+    	.error(function(error) {
+    		$log.info("");
+    	});
+    };
     
     init();
     function init() {
@@ -131,6 +132,7 @@ app.controller('bookingController', function ($scope, ordersService, $log, $rout
        if(id && type) {
     	   $scope.cabinType = type;
     	   $scope.booking.cabinId = id;
+    	   $scope.personType =$scope.getPrices(id);
     	   if(type=='large' && beds != null) {
     		   $scope.beds = beds;
     	   }
