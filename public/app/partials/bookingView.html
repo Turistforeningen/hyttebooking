@@ -2,98 +2,104 @@
 	<div class="container" style="background-color: #ffffff;">
 		<div class="row" style="position: center;">
 			<!--This is just the container where the cabin information will be-->
-			<img src="assets/images/DNT_hytteprofil_top_small.jpg" />
+			<img class="img-responsive" src="assets/images/DNT_hytteprofil_top_small.jpg" />
 		</div>
-
+<!-- //////////////////////////////////////////////// DNT BOOKING SOLUTION - START//////////////////////////////////////////////// -->
+<!-- /////////////////////////////////////////////// Numbers of beds to be reserved ////////////////////////////////////////////// -->
 		<div class="row"
 			style="height: 400px; background-color: #f5f5f5; padding-bottom: 15px solid white; border-bottom: 1px solid #ccc; border-top: 1px solid #ccc;">
-			<alert ng-repeat="alert in alerts" type="alert.type"
-				close="closeAlert($index)">{{alert.msg}}</alert>
-			<div class="col-lg-12">
-				<h2>Booking</h2>
-			</div>
-
-			<!-- //////////////////////////////////////////////// DNT BOOKING SOLUTION - START//////////////////////////////////////////////// -->
-			<!-- /////////////////////////////////////////////// Numbers of beds to be reserved ////////////////////////////////////////////// -->
-
-			<div class="col-lg-3 col-md-3" style="min-height: 315px;">
-			     <div ng-if="cabinType=='large'">
-			    
-			     
+			<div class="col-lg-12 col-md-12">
 				<div class="row">
-				    <div class="col-lg-12 col-md-12">
-				    <dnt-selector person-types="personType" hide-type-index="4" number-of-beds="beds" ></dnt-selector>
-					</div>
-				
-				</div>
-				<!-- /row -->
-				</div>
-				<div ng-if="cabinType=='small'">
-				<div class="row" >
-				<div class="row" style="height: 16px"></div> <!-- Just pushing the text down a bit -->
-				<div class="col-lg-9 col-md-9">
-				        <p>Liten hytte</p>
-                        <p>Reserver hele hytta fra</p>
-                    </div>
-				    
-				</div>
-				</div>
-			</div>
-			<!-- /col-lg-3 -->
-
-
-			<!-- //////////////////////////////////////////////////// Date to be reserved //////////////////////////////////////////////////// -->
-
-			<div class="col-lg-6"
-				style="min-height: 315px; border-left: 1px solid #ccc; border-right: 1px solid #ccc;">
 				<div class="col-lg-12 col-md-12">
-					<div class="row">
-						<div class="col-lg-6 col-md-6">
-							<strong>Fra:</strong> <input type="text"
-								ng-model="booking.dateFrom" class="form-control"
-								placeholder="DD.MM.ÅÅÅÅ">
-
-						</div>
-						<div class="col-lg-6 col-md-6">
-							<strong>Til:</strong> <input type="text"
-								ng-model="booking.dateTo" class="form-control"
-								placeholder="DD.MM.ÅÅÅÅ">
-
-						</div>
+					<h2>Booking</h2>
 					</div>
 				</div>
-			</div>
-
-
-			<!-- ////////////////////////////////////////////////// Order summary and submit ///////////////////////////////////////////////// -->
-
-			<div class="col-lg-3" style="min-height: 315px">
 				<div class="row">
-				    <div class="col-lg-12 col-md-12">
-					<dnt-price-viewer person-types="personType" )></dnt-price-viewer>
-				    </div>
-				</div>		
-				
-				<div class="row" style="text-align: center;">
-					<div ng-controller="ModalDemoCtrl">
+					<div class="col-lg-3 col-md-3">
+
+						<div ng-if="cabinType=='large'">
+
+							<div class="row">
+								<div class="col-lg-12 col-md-12">
+									<dnt-selector person-types="personType" hide-type-index="4"
+										number-of-beds="beds"></dnt-selector>
+								</div>
+
+							</div>
+							<!-- /row -->
+						</div><!-- /ng-if -->
+						<div ng-if="cabinType=='small'">
+							<div class="row">
+								<div class="row" style="height: 16px"></div>
+								<!-- Just pushing the text down a bit -->
+								<div class="col-lg-9 col-md-9">
+									<p>Liten hytte</p>
+									<p>Reserver hele hytta fra</p>
+								</div>
+
+							</div>
+						</div><!-- /ng-if -->
+					</div><!-- /col -->
+
+					
+
+
+
+
+<!-- //////////////////////////////////////////////////// Date to be reserved //////////////////////////////////////////////////// -->
+
+					<div class="col-lg-6 col-md-6"
+						style="min-height: 315px; border-left: 1px solid #ccc; border-right: 1px solid #ccc;">
 						
+							<div class="row">
+								<div class="col-lg-6 col-md-6">
+									<strong>Fra:</strong> <input type="text"
+										ng-model="booking.dateFrom" class="form-control"
+										placeholder="DD.MM.ÅÅÅÅ">
 
-						<button class="btn btn-primary" ng-click="open()">Reserver</button>
-						<div ng-show="selected">Selection from a modal: {{ selected
-							}}</div>
-					</div>
+								</div>
+								<div class="col-lg-6 col-md-6">
+									<strong>Til:</strong> <input type="text"
+										ng-model="booking.dateTo" class="form-control"
+										placeholder="DD.MM.ÅÅÅÅ">
 
-				</div>
-			</div>
-		</div>
-		<!-- /row -->
+								</div>
+							</div><!-- /row -->
+						
+					</div><!-- /col -->
+
+
+<!-- ////////////////////////////////////////////////// Order summary and submit ///////////////////////////////////////////////// -->
+
+					<div class="col-lg-3 col-md-3" >
+						<div class="row">
+							<div class="col-lg-12 col-md-12">
+								<dnt-price-viewer person-types="personType")></dnt-price-viewer>
+							</div>
+						</div>
+
+						<div class="row" style="text-align: center;">
+							<div ng-controller="ModalDemoCtrl">
+
+
+								<button class="btn btn-primary" ng-click="open()">Reserver</button>
+								<div ng-show="selected">Selection from a modal: {{
+									selected }}</div>
+							</div>
+						</div><!-- /row -->
+					</div><!-- /col -->
+				</div><!-- /row -->
+			</div><!-- /col -->
+		</div><!-- /row -->
+		
 		<!-- ///////////////////////////////////////////////// DNT BOOKING SOLUTION - END ///////////////////////////////////////////////// -->
+
 
 		<div class="row">
 			<!--This is just an other information container-->
-			<img src="assets/images/DNT_hytteprofil_bottom_small.jpg" />
+			<img class="img-responsive" src="assets/images/DNT_hytteprofil_bottom_small.jpg" />
 		</div>
-	</div>
+	</div><!-- /container -->
 	<pre>{{booking}}</pre>
 	<pre>{{personType}}</pre>
 </div>

@@ -126,9 +126,13 @@ app.controller('bookingController', function ($scope, ordersService, $log, $rout
     function init() {
        var id = $routeParams.id;
        var type =$routeParams.type;
+       var beds = $routeParams.beds;
        if(id && type) {
     	   $scope.cabinType = type;
     	   $scope.booking.cabinId = id;
+    	   if(type=='large' && beds != null) {
+    		   $scope.beds = beds;
+    	   }
     	   
        }
     };
