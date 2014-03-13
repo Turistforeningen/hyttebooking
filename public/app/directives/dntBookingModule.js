@@ -77,14 +77,21 @@ angular.module('dntBookingModule')
         restrict: 'AE',
         
         scope: {'data': '=personTypes'
-        		
+        	
         },
         
-        template: 
-        ' <div class="row" ng-repeat="person in personType">'+
-        '<div class="col-lg-12 col-md-12" ng-show="person.nr>0">'+
-        '<p>{{person.type}}  x{{person.nr}}  {{person.nr * person.price}}</p>'+
-        '</div></div>',
+        template:
+        '<div class="row" style="min-height: 230px;">' +
+        
+        '<table class="table table-condensed">' +
+        '<tr ng-repeat="person in personType" ng-show="person.nr>0">'+
+        '<td>{{person.type}}</td>'+
+        '<td>x{{person.nr}}</td>' +
+        '<td>{{person.nr * person.price}}</td>'+
+        '</tr></table>'+
+        '</div>'+
+        '<div class=row><div class="col-lg-7 col-md-7"><p><strong>Totalt beløp</strong></p></div>'+
+        '<div class="col-lg-5 col-md-5"><p><strong>{{price}} NOK</strong></p></div></div>',
        
         controller: function($scope, $log) {
         	$scope.personType = {};
@@ -95,12 +102,24 @@ angular.module('dntBookingModule')
         	$scope.getPerson = function(person) {
         		return $scope.person;
         	};
-        	
+        	$scope.calculatePrice = function() {
+        		var totalPrice = 0;
+        		angular.forEach($scope.personType, function(value, key) {
+        			totalPrice +=(value.nr * value.price);
+        			
+        		});
+        		$log.info(totalPrice);
+        		$scope.price = totalPrice;
+        	};
         	
         },
         
         link: function(scope, elem, attrs) {
         	scope.setPersonType(scope.data);
+        	scope.$watch('data', function(newValue, oldValue) {
+                if (newValue)
+                    scope.calculatePrice();
+            }, true);
         }
     };
 });
