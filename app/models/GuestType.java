@@ -18,6 +18,7 @@ import play.db.ebean.Model;
  * E.g. Cabin.GuestType.price * Guests = 280 * 1 = 280,-
  * @author Jama
  */
+@Deprecated /** Use LargeCabin.priceMatrix **/
 public class GuestType extends Model {
 
 	@Id
@@ -34,6 +35,5 @@ public class GuestType extends Model {
 	
 	@Constraints.Required
 	public double price; /** The price for this type **/
-	
 	
 }
