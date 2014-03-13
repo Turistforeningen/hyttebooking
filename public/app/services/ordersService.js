@@ -18,6 +18,11 @@ app.service('ordersService', function ($http, $log) {
     this.postOrder = function(data) {
     	var url = '/api/bookings/'
     	return $http.post(url, data);
-    }
+    };
+    
+    this.getPrices = function (id) {
+    	var url = '/api/cabins/' + id +'/prices';
+        return $http.get(url);
+    };
 });
 
