@@ -8,7 +8,6 @@ import javax.persistence.*;
 
 import org.joda.time.DateTime;
 
-import com.avaje.ebean.Expr;
 
 import play.data.validation.Constraints;
 
@@ -21,9 +20,9 @@ public class LargeCabin extends Cabin {
 	@OneToMany(mappedBy="largeCabin", cascade = CascadeType.ALL, orphanRemoval=true)
 	public List<Bed> beds;
 	
-	@ManyToOne
-	/** TODO add Constraints.Required right here**/
+	//@ManyToOne
 	public PriceMatrix prices; 
+	/** TODO add Constraints.Required right here**/
 	
 	/**
 	 * 
