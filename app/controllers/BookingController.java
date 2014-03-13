@@ -32,7 +32,10 @@ import utilities.Page;
 @With(SecurityController.class)
 public class BookingController extends Controller {
 	
-	
+	/**
+	 * TODO document this
+	 * @return
+	 */
 	public static Result getAvailabilityForTimePeriod() {
 		ObjectNode result = Json.newObject();
 		JsonNode json = request().body().asJson();
@@ -48,7 +51,7 @@ public class BookingController extends Controller {
 			int nrOfPerson = json.get("nrOfPerson").asInt();
 			long cabinId = json.get("cabinId").asLong(); 
 			
-			//dynamic programming, will fill this boolean according too all bookings
+			//bookedDays[n] = true if and only if date is booked i.e. not available
 			boolean[] bookedDays = new boolean[Math.abs(Days.daysBetween(startDate, endDate).getDays())];
 			JSONSerializer serializer = new JSONSerializer();
 			
@@ -82,14 +85,6 @@ public class BookingController extends Controller {
 				return badRequest(result);
 			}
 		}
-	}
-	
-	private static List addBooleanBlock(int daysBetween) {
-		ArrayList<Boolean> arr = new ArrayList<Boolean>();
-		for(int i = 0; i<daysBetween; i++)
-			arr.add(true);
-		
-		return arr;
 	}
 	
 	public static Result submitBooking() {
@@ -147,6 +142,7 @@ public class BookingController extends Controller {
 					cabin.id,
 					beds);
 
+			//TODO should be some sort of check here that booking != null
 			result.put("status", "OK");
 			result.put("message", "booking saved");
 			return ok(result);
