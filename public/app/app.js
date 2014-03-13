@@ -39,6 +39,10 @@ app.config(function ($routeProvider, $locationProvider, $httpProvider) {
 		controller: 'adminViewController',
 		templateUrl: '/assets/app/partials/adminView.html'
 	})
+	.when('/calendar', {
+		controller: 'bookingController',
+		templateUrl: '/assets/app/partials/calendar.html'
+	})
 	.otherwise({ redirectTo: '/'});
 	
 	
