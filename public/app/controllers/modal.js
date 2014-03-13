@@ -34,7 +34,6 @@ var ModalInstanceCtrl = function ($scope,$rootScope, $modalInstance,$log, items)
   };
 
   $scope.ok = function () {
-	$log.info("lol");
 	 $rootScope.$broadcast('event:booking');
     $modalInstance.close($scope.selected.item);
   };
