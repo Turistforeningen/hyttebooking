@@ -1,5 +1,6 @@
 package controllers;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -8,6 +9,7 @@ import java.util.List;
 
 import org.joda.time.DateTime;
 import org.joda.time.Days;
+
 
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -198,6 +200,49 @@ public class BookingController extends Controller {
     	return ok(result);
     }
     
+	public static Result getPriceForCabin(Long id) {
+		
+		class ListItem implements Serializable {
+            public int nr;
+            public String type;
+            public int price;
+            
+            public ListItem(int nr, String type, int price) {
+            	this.nr = nr;
+            	this.type = type;
+            	this.price = price;
+            }
+        }
+		
+		Cabin cabin = Cabin.find.byId(id);
+		if(cabin == null) {
+			return Results.badRequest();
+		}
+		
+		List<ListItem> list = new ArrayList<ListItem>();
+		if(cabin instanceof LargeCabin) {
+			list.add(new ListItem(0, "Voksen, medlem", 300));
+			list.add(new ListItem(0, "Ungdom, medlem", 150));
+			list.add(new ListItem(0, "Barn, medlem", 100));
+			list.add(new ListItem(0, "Spedbarn", 0));
+			list.add(new ListItem(0, "Voksen", 400));
+			list.add(new ListItem(0, "ungdom", 200));
+			list.add(new ListItem(0, "barn", 150));
+			JSONSerializer priceSerializer = new JSONSerializer()
+			.include()
+			.exclude("*.class");
+			return Results.ok(priceSerializer.serialize(list));
+		}
+		else {
+			list.add(new ListItem(1, "Hele", 1000));
+			JSONSerializer priceSerializer = new JSONSerializer()
+			.include()
+			.exclude("*.class");
+			return Results.ok(priceSerializer.serialize(list));
+		}
+		
+	}
+	
     /**
      * Extract optional page-parameter to obtain page variable, and
      * gets a page of the current user's (authenticated by securitycontroller),
