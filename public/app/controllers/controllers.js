@@ -56,13 +56,21 @@ app.controller('orderController', function ($scope, $location, $routeParams, ord
  * Controller for testView.
  */
 app.controller('testController', function ($scope) {
-	
+	$scope.personType = [
+	                     {"nr": 0, "type":"voksen, medlem"},
+	                     {"nr": 0, "type":"ungdom, medlem"},
+	                     {"nr": 0, "type":"barn, medlem"},
+	                     {"nr": 0, "type":"spedbarn"},
+	                     {"nr": 0, "type":"voksen"},
+	                     {"nr": 0, "type":"ungdom"},
+	                     {"nr": 0, "type":"barn"}
+	                     ];
 	  
     init();
 
     function init() {
        
-    }
+    };
 
 });
 
@@ -72,39 +80,27 @@ app.controller('testController', function ($scope) {
  * post the booking to the server.
  */
 app.controller('bookingController', function ($scope, ordersService, $log, $routeParams) {
+	$scope.personType = [
+	                     {"nr": 0, "type":"voksen medlem", "price": 300},
+	                     {"nr": 0, "type":"ungdom medlem", "price": 150},
+	                     {"nr": 0, "type":"barn medlem", "price": 100},
+	                     {"nr": 0, "type":"spedbarn" ,"price": 0},
+	                     {"nr": 0, "type":"voksen", "price": 400},
+	                     {"nr": 0, "type":"ungdom","price": 200},
+	                     {"nr": 0, "type":"barn", "price": 150}
+	                     ];
 	
 	$scope.booking ={};
-	$scope.person = {};
 	$scope.beds = 20;
 	
-	$scope.bedsLeft = function() {
-		var left = $scope.beds;
-		angular.forEach($scope.person, function(value, key) {
-			left = left -value;
+	$scope.bedsTotal = function() {
+		var total  =0;
+		angular.forEach($scope.personType, function(value, key) {
+			total += value.nr;
 		});
-		if(left>0) {
-			return left;
-		}
-		else {
-			return 0;
-		}
-		
+		return total;	
 	};
 	
-	$scope.range = function(value) {
-		var bedsLeft = $scope.bedsLeft();
-		var end = bedsLeft;
-		if((value != null || value>0) && end<=value) {
-			end = value + bedsLeft;
-		}
-		
-	    var result = [];
-	    for (var i = 0; i <= end; i++) {
-	        result.push(i);
-	    }
-	    
-	    return result;
-	};
 	$scope.$on('event:booking', function(event) { 
 		
         $scope.postBooking();            
@@ -112,9 +108,9 @@ app.controller('bookingController', function ($scope, ordersService, $log, $rout
 	
     $scope.postBooking = function() {
     	
-		$scope.booking.beds =($scope.beds-$scope.bedsLeft()) + "";
+		$scope.booking.beds =($scope.bedsTotal()) + "";
 		$log.info($scope.booking.beds);
-		$scope.booking.Person = $scope.person;
+		$scope.booking.Person = $scope.personType;
     	ordersService.postOrder($scope.booking)
 		.success(function (success) {
 			$log.info("Det virket" + success.message);

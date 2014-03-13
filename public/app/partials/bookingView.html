@@ -21,88 +21,10 @@
 			    
 			     
 				<div class="row">
-					<div class="row" style="height: 16px"></div> <!-- Just pushing the text down a bit -->
-					<div class="col-lg-9 col-md-9">
-						<p>Voksen, medlem</p>
+				    <div class="col-lg-12 col-md-12">
+				    <dnt-selector person-types="personType" hide-type-index="4" number-of-beds="beds" ></dnt-selector>
 					</div>
-					<div class="col-lg-3 col-md-3">
-						<select class="selectNumber" ng-model="person.adultM"
-							ng-options="adultM for adultM in range(person.adultM)"></select>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-lg-9 col-md-9">
-						<p>Ungdom, medlem</p>
-					</div>
-					<div class="col-lg-3 col-md-3">
-						<select class="selectNumber" ng-model="person.youthM"
-							ng-options="youthM for youthM in range(person.youthM)"></select>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-lg-9 col-md-9">
-						<p>Barn, medlem</p>
-					</div>
-					<div class="col-lg-3 col-md-3">
-						<select class="selectNumber" ng-model="person.childM"
-							ng-options="childM for childM in range(person.childM)"></select>
-					</div>
-				</div>
-				<!-- /row -->
-				<div class="row">
-					<div class="col-lg-9 col-md-9">
-						<p>Spedbarn</p>
-					</div>
-					<div class="col-lg-3 col-md-3">
-						<select class="selectNumber" ng-model="person.baby"
-							ng-options="baby for baby in range(person.baby)"></select>
-					</div>
-				</div>
-				<!-- /row -->
-				<div class="row">
-					<div class="row">
-						<div class="col-lg-12 col-md-12" style="padding-top: 10px">
-
-							<div ng-controller="AccordionDemoCtrl">
-								<accordion close-others="oneAtATime"> <accordion-group
-									style="border:none; background-color: transparent; box-shadow: inset 0 0px;"
-									heading="Ikke medlem?">
-								<div class="row">
-									<div class="col-lg-9 col-md-9">
-										<p>Voksen, ikke-medlem</p>
-									</div>
-									<div class="col-lg-3 col-md-3">
-										<select class="selectNumber" ng-model="person.adult"
-											ng-options="adult for adult in range(person.adult)"></select>
-									</div>
-								</div>
-								<!-- /row -->
-								<div class="row">
-									<div class="col-lg-9 col-md-9">
-										<p>Ungdom, ikke-medlem</p>
-									</div>
-									<div class="col-lg-3 col-md-3">
-										<select class="selectNumber" ng-model="person.youth"
-											ng-options="youth for youth in range(person.youth)"></select>
-									</div>
-								</div>
-								<!-- /row -->
-								<div class="row">
-									<div class="col-lg-9 col-md-9">
-										<p>Barn, ikke-medlem</p>
-									</div>
-									<div class="col-lg-3 col-md-3">
-										<select class="selectNumber" ng-model="person.child"
-											ng-options="child for child in range(person.child)"></select>
-									</div>
-								</div>
-								<!-- /row --> </accordion-group> </accordion>
-							</div>
-							<!-- /AccordionDemoCtrl -->
-						</div>
-						<!-- /col-lg-12 col-md-12 -->
-					</div>
-					<!-- /row -->
+				
 				</div>
 				<!-- /row -->
 				</div>
@@ -151,19 +73,7 @@
 						<div class="row">
 							<div class="col-lg-12">
 								<div class="col-lg-12">
-									<div class="row" style="height: 16px"></div> <!-- Just pushing the text down a bit -->
-									<div class="col-lg-6">
-										<p>Voksen, medlem</p>
-										<p>Barn, medlem</p>
-									</div>
-									<div class="col-lg-2">
-										<p>x2</p>
-										<p>x1</p>
-									</div>
-									<div class="col-lg-4" style="text-align: right;">
-										<p>700 NOK</p>
-										<p>250 NOK</p>
-									</div>
+									<dnt-price-viewer person-types="personType"></dnt-price-viewer>
 								</div>
 							</div>
 						</div>
@@ -293,5 +203,5 @@
 		</div>
 	</div>
 	<pre>{{booking}}</pre>
-	<pre>{{person}}</pre>
+	<pre>{{personType}}</pre>
 </div>
