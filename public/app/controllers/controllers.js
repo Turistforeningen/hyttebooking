@@ -92,6 +92,7 @@ app.controller('bookingController', function ($scope, ordersService, $log, $rout
 	
 	$scope.booking ={};
 	$scope.beds = 20;
+	$scope.price = 0;
 	
 	$scope.bedsTotal = function() {
 		var total  =0;
