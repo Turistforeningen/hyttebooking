@@ -66,7 +66,8 @@ public class LargeCabin extends Cabin {
 		
 		if(availBeds.size() < numberOfBeds)
 			return null;
-		return availBeds; //TODO crop this to be size() == numberOfBeds
+		availBeds = (ArrayList<Bed>) availBeds.subList(0, numberOfBeds-1);
+		return availBeds; 
 	}
 	
 	/**

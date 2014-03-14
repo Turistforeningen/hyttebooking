@@ -223,9 +223,4 @@ public class ModelsTest extends WithApplication{
 		assertEquals(-1, utilities.DateHelper.getIndex(start, a, b)[1]);
 		assertEquals(0, utilities.DateHelper.getIndex(start, a, c)[1]);
 	}
-	
-	@Test
-	public void TestGetAvailabilityForTimePeriod() {
-		//TODO test
-	}
 }
