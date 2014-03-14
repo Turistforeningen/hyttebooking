@@ -60,7 +60,7 @@ public class BookingController extends Controller {
 			Cabin cabin = Cabin.find.byId(cabinId);
 			if(cabin instanceof LargeCabin) {
 				//TODO implement
-				//a bit different from smallCabin. Will implement later @author jama
+				// use LargeCabin.book method
 				return TODO;
 			} else if(cabin instanceof SmallCabin) {
 				List<Booking> bookings = cabin.findAllBookingsForCabinGivenDate(cabinId, startDate, endDate);
