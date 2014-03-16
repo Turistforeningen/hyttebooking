@@ -12,6 +12,7 @@ import org.joda.time.Days;
 
 
 
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -54,7 +55,8 @@ public class BookingController extends Controller {
 			long cabinId = json.get("cabinId").asLong(); 
 			
 			//bookedDays[n] = true if and only if date is booked i.e. not available
-			boolean[] bookedDays = new boolean[Math.abs(Days.daysBetween(startDate, endDate).getDays())];
+			boolean[] smallCBookedDays = new boolean[Math.abs(Days.daysBetween(startDate, endDate).getDays())+1];
+			int[] largeCBookedDays = new int[Math.abs(Days.daysBetween(startDate, endDate).getDays())+1];
 			JSONSerializer serializer = new JSONSerializer();
 			
 			Cabin cabin = Cabin.find.byId(cabinId);
@@ -71,14 +73,14 @@ public class BookingController extends Controller {
 						int[] indices = utilities.DateHelper.getIndex(startDate, new DateTime(b.dateFrom), new DateTime(b.dateTo)); /** indices[0] startIndex in bookedDays, [1] is endIndex **/
 						if(indices[0] < 0) //if b.dateFrom precedes startDate, skip to startDate 
 							indices[0] = 0;
-						for(int i = indices[0]; i<indices[1]; i++){
-							bookedDays[i] = true; //TODO test
+						for(int i = indices[0]; i<=indices[1]; i++){
+							smallCBookedDays[i] = true; //TODO test
 						}
 					}
-					result.put("bookedDays", serializer.serialize(bookedDays));
+					result.put("bookedDays", serializer.serialize(smallCBookedDays));
 					return ok(result);
 				} else { //Either something is wrong or the entire given daterange shows available for given cabin
-					result.put("bookedDays", serializer.serialize(bookedDays));
+					result.put("bookedDays", serializer.serialize(smallCBookedDays));
 					return ok(result);	
 				}
 			} else {
