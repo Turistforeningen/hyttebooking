@@ -29,10 +29,6 @@ public class Guest extends Model {
 	@Constraints.Required
 	public boolean isMember;
 	
-	/** The type of guest - contains membership, price,  **/
-	@Constraints.Required
-	public GuestType guestType;
-
 	/** TODO REMOVE TEST **/
 	public Guest(long id) {
 		this.id = id;
