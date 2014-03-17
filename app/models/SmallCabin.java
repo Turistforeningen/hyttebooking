@@ -15,6 +15,10 @@ import play.data.validation.Constraints;
 @DiscriminatorValue("SMALL_CABIN")
 public class SmallCabin extends Cabin {
 	
+	@Constraints.Required
+	public double memberPrice;
+	@Constraints.Required
+	public double nonMemberPrice;
 	
 	@OneToMany
 	public List<Booking> bookings;
