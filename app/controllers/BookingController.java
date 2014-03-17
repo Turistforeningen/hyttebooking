@@ -203,6 +203,7 @@ public class BookingController extends Controller {
 	 * memberPrice and nonMemberPrice
 	 */
 	public static Result getPriceForCabin(Long id) {
+		/*
 		ObjectNode result = Json.newObject();
 
 		Cabin cabin = Cabin.find.byId(id);
@@ -222,9 +223,10 @@ public class BookingController extends Controller {
 			result.put("message", "To late to cancel");
 			return badRequest(result);
 		}
+		*/
 
 
-		/** DELETE AFTER debugging getPriceForCabin
+		/** DELETE AFTER debugging getPriceForCabin **/
 		class ListItem implements Serializable {
             public int nr;
             public String type;
@@ -263,7 +265,7 @@ public class BookingController extends Controller {
 			.exclude("*.class");
 			return Results.ok(priceSerializer.serialize(list));
 		}
-		 **/
+		 /***/
 	}
 
 	/**
