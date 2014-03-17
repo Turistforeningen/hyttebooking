@@ -7,7 +7,7 @@
 <!-- //////////////////////////////////////////////// DNT BOOKING SOLUTION - START//////////////////////////////////////////////// -->
 <!-- /////////////////////////////////////////////// Numbers of beds to be reserved ////////////////////////////////////////////// -->
 		<div class="row"
-			style="height: 400px; background-color: #f5f5f5; padding-bottom: 15px solid white; border-bottom: 1px solid #ccc; border-top: 1px solid #ccc;">
+			style="min-height: 400px; background-color: #f5f5f5; padding-bottom: 15px solid white; border-bottom: 1px solid #ccc; border-top: 1px solid #ccc;">
 			<div class="col-lg-12 col-md-12">
 				<div class="row">
 				<div class="col-lg-12 col-md-12">
@@ -16,15 +16,12 @@
 				</div>
 				<div class="row">
 					<div class="col-lg-3 col-md-3">
-
 						<div ng-if="cabinType=='large'">
-
 							<div class="row">
 								<div class="col-lg-12 col-md-12">
 									<dnt-selector person-types="personType" hide-type-index="4"
 										number-of-beds="beds"></dnt-selector>
 								</div>
-
 							</div>
 							<!-- /row -->
 						</div><!-- /ng-if -->
@@ -33,10 +30,9 @@
 								<div class="row" style="height: 16px"></div>
 								<!-- Just pushing the text down a bit -->
 								<div class="col-lg-9 col-md-9">
-									<p>Liten hytte</p>
+									<p><i>Denne hytten regnes som en liten hytte. Det innebærer at en ikke kan reservere senger, men må reservere hele hytta.</i></p>
 									<p>Reserver hele hytta fra</p>
 								</div>
-
 							</div>
 						</div><!-- /ng-if -->
 					</div><!-- /col -->
@@ -49,17 +45,17 @@
 <!-- //////////////////////////////////////////////////// Date to be reserved //////////////////////////////////////////////////// -->
 
 					<div class="col-lg-6 col-md-6"
-						style="min-height: 315px; border-left: 1px solid #ccc; border-right: 1px solid #ccc;">
+						style="min-height: 345px; border-left: 1px solid #ccc; border-right: 1px solid #ccc;">
 						
 							<div class="row">
 								<div class="col-lg-6 col-md-6">
-									<strong>Fra:</strong> <input type="text"
+									<strong>Ankomst:</strong> <input type="text"
 										ng-model="booking.dateFrom" class="form-control"
 										placeholder="ÅÅÅÅ-MM-DD" datepicker-popup="yyyy-MM-dd">
                                     
 								</div>
 								<div class="col-lg-6 col-md-6">
-									<strong>Til:</strong> <input type="text"
+									<strong>Avreise:</strong> <input type="text"
 										ng-model="booking.dateTo" class="form-control"
 										placeholder="ÅÅÅÅ-MM-DD" datepicker-popup="yyyy-MM-dd">
 
@@ -89,7 +85,7 @@
 							</div>
 						</div>
 
-						<div class="row" style="text-align: center;">
+						<div class="row" style="height: 50px; text-align: center;">
 							<div ng-controller="ModalDemoCtrl" ng-init="personType">
 
 
