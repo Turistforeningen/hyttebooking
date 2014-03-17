@@ -34,7 +34,7 @@ import utilities.Page;
 
 @With(SecurityController.class)
 public class BookingController extends Controller {
-	
+
 	/**
 	 * TODO document this
 	 * @return
@@ -53,12 +53,12 @@ public class BookingController extends Controller {
 			DateTime endDate = utilities.DateHelper.toDt(json.get("endDate").asText()); //must be format YYYY-MM-DD standard ISO date
 			int nrOfPerson = json.get("nrOfPerson").asInt();
 			long cabinId = json.get("cabinId").asLong(); 
-			
+
 			//bookedDays[n] = true if and only if date is booked i.e. not available
 			boolean[] smallCBookedDays = new boolean[Math.abs(Days.daysBetween(startDate, endDate).getDays())+1];
 			int[] largeCBookedDays = new int[Math.abs(Days.daysBetween(startDate, endDate).getDays())+1];
 			JSONSerializer serializer = new JSONSerializer();
-			
+
 			Cabin cabin = Cabin.find.byId(cabinId);
 			if(cabin instanceof LargeCabin) {
 				//TODO implement
@@ -66,7 +66,7 @@ public class BookingController extends Controller {
 				return TODO;
 			} else if(cabin instanceof SmallCabin) {
 				List<Booking> bookings = cabin.findAllBookingsForCabinGivenDate(cabinId, startDate, endDate);
-				
+
 				if(!bookings.isEmpty()) {
 					for(Booking b: bookings) {
 						//for each booking set bookedDays[i] = true for range startDate-endDate
@@ -90,7 +90,7 @@ public class BookingController extends Controller {
 			}
 		}
 	}
-	
+
 	public static Result submitBooking() {
 		ObjectNode result = Json.newObject();
 		JsonNode json = request().body().asJson();
@@ -99,13 +99,13 @@ public class BookingController extends Controller {
 			result.put("message", "Expected Json");
 			return badRequest(result);
 		}
-		
+
 		Cabin cabin = Cabin.find.byId(json.get("cabinId").asLong());
 		if(cabin == null) {
 			result.put("status", "KO");
 			result.put("message", "cant book at this cabin");
 		}
-		
+
 		String nrPerson = json.get("beds").asText();
 		String start = json.get("dateFrom").asText();
 		System.out.println(json.get("dateFrom").asText());
@@ -128,32 +128,32 @@ public class BookingController extends Controller {
 			result.put("message", "date invalid");
 			return badRequest(result);
 		}
-			
-			List<Bed> beds = null;
-			if (cabin instanceof LargeCabin) {
-				beds = ((LargeCabin) cabin).book(Integer.parseInt(nrPerson), startDt, endDt);
-				if(beds == null) {
-					result.put("status", "KO");
-					result.put("message", "no available beds");
-					return badRequest(result);
-				}
-			}
-			
-			Booking booking = Booking.createBooking(
-					SecurityController.getUser().id, 
-					startDt.toDate(),
-					endDt.toDate(),
-					cabin.id,
-					beds);
 
-			//TODO should be some sort of check here that booking != null
-			result.put("status", "OK");
-			result.put("message", "booking saved");
-			return ok(result);
+		List<Bed> beds = null;
+		if (cabin instanceof LargeCabin) {
+			beds = ((LargeCabin) cabin).book(Integer.parseInt(nrPerson), startDt, endDt);
+			if(beds == null) {
+				result.put("status", "KO");
+				result.put("message", "no available beds");
+				return badRequest(result);
+			}
+		}
+
+		Booking booking = Booking.createBooking(
+				SecurityController.getUser().id, 
+				startDt.toDate(),
+				endDt.toDate(),
+				cabin.id,
+				beds);
+
+		//TODO should be some sort of check here that booking != null
+		result.put("status", "OK");
+		result.put("message", "booking saved");
+		return ok(result);
 
 	}
 
-	
+
 	/**
 	 * Retrieves booking from database. If no booking match with
 	 * bookingID method, return noFound.
@@ -167,56 +167,81 @@ public class BookingController extends Controller {
 	 * @return Result response
 	 */
 	public static Result cancelBooking(String bookingId) {
-    	Booking booking = Booking.getBookingById(bookingId);
-    	ObjectNode result = Json.newObject();
-    	
-    	if(booking == null) {
-    		result.put("Status", "KO");
-    		result.put("message", "No such booking found");
-    		return notFound(result);
-    	}
-    	
-    	if(booking.user.id != SecurityController.getUser().id) {
-    		result.put("Status", "KO");
-    		result.put("message", "No access");
-    		return badRequest(result);
-    	}
-    	
-    	if(!booking.isAbleToCancel()) {
-    		result.put("Status", "KO");
-    		result.put("message", "To late to cancel");
-    		return badRequest(result);
-    	}
-    	//cancellogic to late to cancel?
-    	booking.status = Booking.CANCELLED;
-    	
-    	//repay customer through nets
-    	
-    	booking.update();
-    	result.put("Status", "OK");
+		Booking booking = Booking.getBookingById(bookingId);
+		ObjectNode result = Json.newObject();
+
+		if(booking == null) {
+			result.put("Status", "KO");
+			result.put("message", "No such booking found");
+			return notFound(result);
+		}
+
+		if(booking.user.id != SecurityController.getUser().id) {
+			result.put("Status", "KO");
+			result.put("message", "No access");
+			return badRequest(result);
+		}
+
+		if(!booking.isAbleToCancel()) {
+			result.put("Status", "KO");
+			result.put("message", "To late to cancel");
+			return badRequest(result);
+		}
+		//cancellogic to late to cancel?
+		booking.status = Booking.CANCELLED;
+
+		//repay customer through nets
+
+		booking.update();
+		result.put("Status", "OK");
 		result.put("message", "");
-    	return ok(result);
-    }
-    
+		return ok(result);
+	}
+
+	/** 
+	 * Gets priceMatrix from LargeCabin and serializes it. If smallCabin returns 
+	 * memberPrice and nonMemberPrice
+	 */
 	public static Result getPriceForCabin(Long id) {
-		
+		ObjectNode result = Json.newObject();
+
+		Cabin cabin = Cabin.find.byId(id);
+
+		if(cabin instanceof LargeCabin) {
+			JSONSerializer priceSerializer = new JSONSerializer()
+			.include()
+			.exclude("*.class");
+			return Results.ok(priceSerializer.serialize(((LargeCabin) cabin).priceMatrix));
+		} else if(cabin instanceof SmallCabin) {
+			JSONSerializer priceSerializer = new JSONSerializer()
+			.include()
+			.exclude("*.class");
+			return TODO; //TODO 
+		} else {
+			result.put("Status", "KO");
+			result.put("message", "To late to cancel");
+			return badRequest(result);
+		}
+
+
+		/** DELETE AFTER debugging getPriceForCabin
 		class ListItem implements Serializable {
             public int nr;
             public String type;
             public int price;
-            
+
             public ListItem(int nr, String type, int price) {
             	this.nr = nr;
             	this.type = type;
             	this.price = price;
             }
         }
-		
+
 		Cabin cabin = Cabin.find.byId(id);
 		if(cabin == null) {
 			return Results.badRequest();
 		}
-		
+
 		List<ListItem> list = new ArrayList<ListItem>();
 		if(cabin instanceof LargeCabin) {
 			list.add(new ListItem(0, "Voksen, medlem", 300));
@@ -238,25 +263,26 @@ public class BookingController extends Controller {
 			.exclude("*.class");
 			return Results.ok(priceSerializer.serialize(list));
 		}
-		
+		 **/
 	}
-	
-    /**
-     * Extract optional page-parameter to obtain page variable, and
-     * gets a page of the current user's (authenticated by securitycontroller),
-     * order-history. The bookings are serialized to a json string.
-     * @return Json with a page of orderHistory
-     */
+
+	/**
+	 * Extract optional page-parameter to obtain page variable, and
+	 * gets a page of the current user's (authenticated by securitycontroller),
+	 * order-history. The bookings are serialized to a json string.
+	 * @return Json with a page of orderHistory
+	 */
 	public static Result getOrderHistory() {
-		
+
 		int page = Page.pageHelper(request().getQueryString("page"));
 		int pageSize = Page.pageSizeHelper(request().getQueryString("size"));
-		
-		
+
+
 		Page<Booking> bookings = Booking.getBookingPageByUser(SecurityController.getUser(), page, pageSize);
 		JSONSerializer orderDetailsSerializer = new JSONSerializer()
-				.include("data", "data.cabin" )
-				.exclude("*.class", "beds", "data.smallCabin", "data.cabin.type", "data.cabin.nrOfBeds", "data.cabin.nrBookings");
+		.include("data", "data.cabin" )
+		.exclude("*.class", "beds", "data.smallCabin", "data.cabin.type", "data.cabin.nrOfBeds", "data.cabin.nrBookings");
 		return Results.ok(orderDetailsSerializer.serialize(bookings));
 	}
+
 }
