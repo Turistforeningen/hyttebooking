@@ -73,6 +73,8 @@ public class User extends Model {
     @Constraints.Required
     public String city;
     
+    public Boolean admin= false;
+    
     @Constraints.Required
     @Constraints.MaxLength(4)
     public String zipCode;
@@ -140,5 +142,5 @@ public class User extends Model {
         // todo: verify this query is correct.  Does it need an "and" statement?
         return find.where().eq("emailAddress", emailAddress.toLowerCase()).eq("shaPassword", getSha512(password)).findUnique();
     }
-
+    
 }

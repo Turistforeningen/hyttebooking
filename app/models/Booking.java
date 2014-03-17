@@ -89,10 +89,10 @@ public class Booking extends Model {
 	public boolean isAbleToCancel() {
 		//This login should probably be placed somewhere else?
 		if(DateTime.now().plusDays(7).isAfter(this.dateFrom.getTime())) {
-			return true;
+			return false;
 		}
 		else {
-			return false;
+			return true;
 		}
 	}
 	
@@ -132,6 +132,7 @@ public class Booking extends Model {
 	 * @return List of bookings submitted by user
 	 */
 	public static Page<Booking> getBookingPageByUser(User user, int page, int pageSize) {
+		System.out.println(page + " " + pageSize);
 		if(user != null) {
 			Page<Booking> bookingPage = new Page<Booking>();
 			 bookingPage.data = find.where()
@@ -175,8 +176,8 @@ public class Booking extends Model {
 
 		}
 
-		b.dateTo = dateFrom;
-		b.dateFrom = dateTo;
+		b.dateTo = dateTo;
+		b.dateFrom = dateFrom;
 		b.save();
 
 		return b;

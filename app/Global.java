@@ -28,6 +28,9 @@ public class Global extends GlobalSettings {
 			user1.save();
 			User user2 = new User("user2@demo.com", "password", "Jane Doe");
 			user2.save();
+			User admin = new User("admin", "p", "admin");
+			admin.admin = true;
+			admin.save();
 			
 		    User[] us = {user1, user2};
 		    int userSize = us.length;
@@ -52,12 +55,19 @@ public class Global extends GlobalSettings {
 				if(i%cabinSize ==3) {
 					beds = lc2.beds.subList(0, 1+ (int)Math.floor((Math.random()*15)));
 				}
-				//Booking 0-20 days in the future from today
-				int fromDays = (int)(Math.random()*20);
+				//Booking -20 to 20 days in the future from today
+				int fromDays = -20 +(int)(Math.random()*40);
 				//booking 1 -5 days + fromdays in the future from today
-				int toDays = (int)(Math.random()*20)+ 1 +(int)(Math.random()*5);
+				int toDays;
+				if(fromDays > 0) {
+					toDays = fromDays+ 1 +(int)(Math.random()*5);
+				}
+				else {
+					toDays =1 +(int)(Math.random()*5);
+				}
+				
 				//bookingDate 1-20 days before fromdate
-				int bookingDays = (int)(Math.random()*20);
+				int bookingDays = fromDays +(int)(Math.random()*20);
 				
 				Date fromDate = DateTime.now().plusDays(fromDays).toDate();
 				Date toDate = DateTime.now().plusDays(toDays).toDate();

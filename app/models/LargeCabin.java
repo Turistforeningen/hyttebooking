@@ -8,6 +8,7 @@ import javax.persistence.*;
 
 import org.joda.time.DateTime;
 
+
 import play.data.validation.Constraints;
 
 @Entity
@@ -18,6 +19,10 @@ public class LargeCabin extends Cabin {
 	@Constraints.Required
 	@OneToMany(mappedBy="largeCabin", cascade = CascadeType.ALL, orphanRemoval=true)
 	public List<Bed> beds;
+	
+	//@ManyToOne
+	public PriceMatrix prices; 
+	/** TODO add Constraints.Required right here**/
 	
 	/**
 	 * 
@@ -50,7 +55,7 @@ public class LargeCabin extends Cabin {
 	 * @param toDate
 	 * @return null if availBeds.size() < numberOfBeds, else availBeds 
 	 */
-	public ArrayList<Bed> book(int numberOfBeds, DateTime fromDate, DateTime toDate) {
+	public List<Bed> book(int numberOfBeds, DateTime fromDate, DateTime toDate) {
 		
 		ArrayList<Bed> availBeds = new ArrayList<Bed>(); /** Consider using auto-sorted collection **/
 		for(Bed b: beds)
@@ -61,7 +66,7 @@ public class LargeCabin extends Cabin {
 		
 		if(availBeds.size() < numberOfBeds)
 			return null;
-		return availBeds; //TODO crop this to be size() == numberOfBeds
+		return availBeds.subList(0, numberOfBeds-1);
 	}
 	
 	/**
@@ -96,5 +101,15 @@ public class LargeCabin extends Cabin {
 	@Override
 	public String getNrOfBeds() {
 		return this.beds.size() +"";
+	}
+
+	@Override
+	public int getNrActiveBookings() {
+		return Booking.find
+				.where()
+				.eq("beds.largeCabin", this)
+				.gt("dateFrom", DateTime.now().toDate())
+				.ne("status", Booking.CANCELLED)
+				.findRowCount();
 	}
 }

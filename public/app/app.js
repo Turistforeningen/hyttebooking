@@ -1,4 +1,4 @@
-var app = angular.module('dntApp' ,['ngRoute', 'ui.bootstrap', 'ngCookies', 'ngResource', 'ngSanitize', 'ngBootstrap']);
+var app = angular.module('dntApp' ,['ngRoute', 'ui.bootstrap', 'ngCookies', 'ngResource', 'ngSanitize', 'ngBootstrap', 'dntBookingModule']);
 
 /*
  * Routes, routeinterceptor done below. Httpinterceptor, redirect to /login
@@ -21,7 +21,7 @@ app.config(function ($routeProvider, $locationProvider, $httpProvider) {
 		templateUrl: '/assets/app/partials/ordersView.html'
 			
 	})
-	.when('/booking', {
+	.when('/booking/:id', {
 		
 		controller: 'bookingController',
 		templateUrl: '/assets/app/partials/bookingView.html'
@@ -34,6 +34,14 @@ app.config(function ($routeProvider, $locationProvider, $httpProvider) {
 	.when('/admin', {
 		controller: 'adminViewController',
 		templateUrl: '/assets/app/partials/adminView.html'
+	})
+	.when('/admin/cabin/:id', {
+		controller: 'adminViewController',
+		templateUrl: '/assets/app/partials/adminView.html'
+	})
+	.when('/calendar', {
+		controller: 'bookingController',
+		templateUrl: '/assets/app/partials/calendar.html'
 	})
 	.otherwise({ redirectTo: '/'});
 	

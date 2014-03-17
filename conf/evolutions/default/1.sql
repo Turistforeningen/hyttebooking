@@ -32,8 +32,6 @@ create table guest (
   id                        bigint not null,
   booking_id                bigint,
   is_member                 boolean,
-  guest_type                integer,
-  constraint ck_guest_guest_type check (guest_type in (0,1,2,3)),
   constraint pk_guest primary key (id))
 ;
 
@@ -53,6 +51,7 @@ create table user (
   dob                       timestamp,
   address                   varchar(255),
   city                      varchar(255),
+  admin                     boolean,
   zip_code                  varchar(255),
   creation_date             timestamp not null,
   constraint uq_user_email_address unique (email_address),

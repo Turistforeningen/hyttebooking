@@ -5,6 +5,10 @@ import java.util.List;
 
 import javax.persistence.*;
 
+import org.joda.time.DateTime;
+
+import com.avaje.ebean.Expr;
+
 import play.data.validation.Constraints;
 
 @Entity
@@ -36,5 +40,15 @@ public class SmallCabin extends Cabin {
 	public String getNrOfBeds() {
 		return null;
 	}
-	
+
+
+	@Override
+	public int getNrActiveBookings() {
+		return Booking.find
+				.where()
+				.eq("smallCabin", this)
+				.gt("dateFrom", DateTime.now().toDate())
+				.ne("status", Booking.CANCELLED)
+				.findRowCount();
+	}	
 }
