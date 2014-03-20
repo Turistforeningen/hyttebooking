@@ -1,12 +1,14 @@
 angular.module('plunker', ['ui.bootstrap']);
-var ModalDemoCtrl = function ($scope, $modal, $log) {
+var ModalController = function ($scope, $modal, $log) {
 
   $scope.items = ['item1', 'item2', 'item3'];
 
-  $scope.open = function () {
+  $scope.open = function (url) {
+	  
+	  
 
     var modalInstance = $modal.open({
-      templateUrl: '/assets/app/partials/bookingModal.html',
+      templateUrl: url,
       controller: ModalInstanceCtrl,
       resolve: {
         items: function () {
