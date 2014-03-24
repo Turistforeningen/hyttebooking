@@ -4,6 +4,10 @@ package controllers;
 
 	
 
+
+import org.w3c.dom.Document;
+
+
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import models.Booking;
@@ -20,6 +24,7 @@ public class PaymentController extends Controller {
 	private static final String SECRET_MERCHANT = play.Play.application().configuration().getString("application.merchantKey");
 	private static final String NETS_REGISTER = "https://epayment-test.bbs.no/Netaxept/Register.aspx";
 	private static final String MERCHANT_ID = play.Play.application().configuration().getString("application.merchantId");
+	private static final String REDIRECT_URL = "https://epayment-test.bbs.no/Terminal/default.aspx";
 	/**
 	 * The register controller method are used for starting a payment using Netaxept.
 	 * The purpose of the register call is to send all the data needed to complete a transaction to Netaxept servers.
@@ -51,7 +56,11 @@ public class PaymentController extends Controller {
 				.get().map(
 				new Function<WS.Response, Result>() {
 					public Result apply(WS.Response response) {
-						return ok(response.getBody());
+						String trans = response.asXml().getElementsByTagName("TransactionId").item(0).getTextContent();
+						ObjectNode result = Json.newObject();
+						result.put("TransactionId", trans);
+						result.put("redirectUrl",REDIRECT_URL + "?merchantId=" + MERCHANT_ID  +"?transactionId="+trans);
+						return ok(result);
 					}
 				}
 		);
