@@ -1,10 +1,10 @@
-<div class="modal-body" style="border-bottom: 1px solid #ccc;">
+<div class="modal-body">
 	<div class="row">
 		<div class="col-lg-12" ng-hide="checked">
 			<div class="row">
 				<div class="col-lg-12" style="text-align: right">
 					<button class="btn btn-success" ng-click="cancel()">
-						<strong><span class="glyphicon glyphicon-ok"></span></strong>
+						<span class="glyphicon glyphicon-ok"></span>
 					</button>
 				</div>
 			</div>
@@ -25,7 +25,7 @@
 			<div class="row">
 				<div class="col-lg-12" style="text-align: right">
 					<button class="btn btn-danger" ng-click="cancel()">
-						<strong><span class="glyphicon glyphicon-remove"></span></strong>
+						<span class="glyphicon glyphicon-remove"></span>
 					</button>
 				</div>
 			</div>
@@ -34,7 +34,8 @@
 					<h3>Obs! Noe gikk galt med reservasjonen.</h3>
 					<p>
 						<span class="glyphicon glyphicon-info-sign"
-							style="font-size: 20px"></span><i> Prøv igjen. Dersom problemet er vedvarende, kontakt DNT.
+							style="font-size: 20px"></span><i> Prøv igjen. Dersom problemet er vedvarende, <a
+							ng-click="closeModal" href="http://www.turistforeningen.no/kontakt/">vennligst ta kontakt</a> med DNT.
 						</i>
 					</p>
 				</div>
