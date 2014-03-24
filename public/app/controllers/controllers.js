@@ -55,16 +55,10 @@ app.controller('orderController', function ($scope, $location, $routeParams, ord
 /*
  * Controller for testView.
  */
-app.controller('testController', function ($scope) {
-	$scope.personType = [
-	                     {"nr": 0, "type":"voksen, medlem"},
-	                     {"nr": 0, "type":"ungdom, medlem"},
-	                     {"nr": 0, "type":"barn, medlem"},
-	                     {"nr": 0, "type":"spedbarn"},
-	                     {"nr": 0, "type":"voksen"},
-	                     {"nr": 0, "type":"ungdom"},
-	                     {"nr": 0, "type":"barn"}
-	                     ];
+app.controller('testController', function ($scope, $window) {
+	$scope.testExternalView =function() {
+		$window.location.href ="http://www.vg.no";
+	};
 	  
     init();
 
@@ -75,7 +69,33 @@ app.controller('testController', function ($scope) {
 });
 
 /*
- * Controller for bookingView. Possible to add danger and sucess alert to the view
+ * Controller for 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+View. Possible to add danger and sucess alert to the view
  * by using the method addAlert. The method postBooking uses the ordersService to 
  * post the booking to the server.
  */

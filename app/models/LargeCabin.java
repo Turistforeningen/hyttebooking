@@ -21,7 +21,7 @@ public class LargeCabin extends Cabin {
 	@OneToMany(mappedBy="largeCabin", cascade = CascadeType.ALL, orphanRemoval=true)
 	public List<Bed> beds;
 	
-	@ManyToMany
+	//@ManyToMany
 	public List<Price> priceMatrix; 
 	/** TODO add Constraints.Required right here**/
 	
