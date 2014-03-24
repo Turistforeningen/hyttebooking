@@ -1,6 +1,11 @@
 package controllers;
 
 
+
+	
+
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import models.Booking;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -8,10 +13,13 @@ import play.mvc.SimpleResult;
 import static play.libs.F.Function;
 import static play.libs.F.Promise;
 import play.libs.F;
+import play.libs.Json;
 import play.libs.WS;
 
 public class PaymentController extends Controller {
-	
+	private static final String SECRET_MERCHANT = play.Play.application().configuration().getString("application.merchantKey");
+	private static final String NETS_REGISTER = "https://epayment-test.bbs.no/Netaxept/Register.aspx";
+	private static final String MERCHANT_ID = play.Play.application().configuration().getString("application.merchantId");
 	/**
 	 * The register controller method are used for starting a payment using Netaxept.
 	 * The purpose of the register call is to send all the data needed to complete a transaction to Netaxept servers.
@@ -28,15 +36,19 @@ public class PaymentController extends Controller {
 			return Promise.pure((Result) notFound("notfound"));
 		}
 		
-		if(b.user != SecurityController.getUser()) {
+		/*if(b.user != SecurityController.getUser()) {
 			return Promise.pure((Result) notFound("This is not your booking"));
-		}
+		}*/
 		
 		
-		String url = "https://epayment-test.bbs.no/Netaxept/Register.aspx?MerchantId=319102&token=secret&orderNumber=10011&amount=200&CurrencyCode=NOK"+
-			"&redirectUrl=localhost:9000/";
-		
-		final Promise<Result> resultPromise = WS.url(url).get().map(
+		final Promise<Result> resultPromise = WS.url(NETS_REGISTER)
+				.setQueryParameter("merchantId", MERCHANT_ID)
+				.setQueryParameter("token", SECRET_MERCHANT)
+				.setQueryParameter("orderNumber", "123456")
+				.setQueryParameter("amount", "1000")
+				.setQueryParameter("CurrencyCode", "NOK")
+				.setQueryParameter("redirectUrl", "http://localhost:9000")
+				.get().map(
 				new Function<WS.Response, Result>() {
 					public Result apply(WS.Response response) {
 						return ok(response.getBody());
