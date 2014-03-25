@@ -24,5 +24,10 @@ app.service('ordersService', function ($http, $log) {
     	var url = '/api/cabins/' + id +'/prices';
         return $http.get(url);
     };
+    
+    this.startPayment = function(id) {
+    	var url = '/api/bookings/' + id +'/payment';
+        return $http.get(url);
+    }
 });
 

@@ -149,6 +149,7 @@ public class BookingController extends Controller {
 		//TODO should be some sort of check here that booking != null
 		result.put("status", "OK");
 		result.put("message", "booking saved");
+		result.put("id", booking.id);
 		return ok(result);
 
 	}
@@ -195,6 +196,7 @@ public class BookingController extends Controller {
 		booking.update();
 		result.put("Status", "OK");
 		result.put("message", "");
+		
 		return ok(result);
 	}
 
