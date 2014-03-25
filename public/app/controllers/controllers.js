@@ -99,7 +99,7 @@ View. Possible to add danger and sucess alert to the view
  * by using the method addAlert. The method postBooking uses the ordersService to 
  * post the booking to the server.
  */
-app.controller('bookingController', function ($scope, ordersService, $log, $routeParams) {
+app.controller('bookingController', function ($scope, ordersService, $log, $routeParams, $window) {
 	$scope.personType;
 	
 	$scope.booking ={};
@@ -117,7 +117,8 @@ app.controller('bookingController', function ($scope, ordersService, $log, $rout
 	
 	$scope.$on('event:booking', function(event) { 
 		
-        $scope.postBooking();            
+        $scope.postBooking(); 
+  
     });
 	
     $scope.postBooking = function() {
@@ -125,15 +126,30 @@ app.controller('bookingController', function ($scope, ordersService, $log, $rout
 		$scope.booking.beds =($scope.bedsTotal()) + "";
 		$log.info($scope.booking.beds);
 		$scope.booking.Person = $scope.personType;
+		$scope.booking.dateFrom = "2014-09-18";
+		$scope.booking.dateTo = "2014-09-22";
     	ordersService.postOrder($scope.booking)
-		.success(function (success) {
-			$log.info("Det virket" + success.message);
+		.success(function (data) {
+			$scope.pay(data.id);
+			$log.info("Det virket" + data.message);
 		})
 		.error(function (error) {
 			$log.info("Det virket ikke. " + error.message);
+			
 		});
     };
     
+    $scope.pay = function(bookingId) {
+    	ordersService.startPayment(bookingId)
+    	.success(function(data) {
+    		$log.info(data.redirectUrl);
+    		$window.location.href =data.redirectUrl;
+    	})
+    	.error(function(error) {
+    		
+    	});
+    	
+    }
     $scope.getPrices = function(id) {
     	ordersService.getPrices(id)
     	.success(function (data) {
@@ -156,7 +172,9 @@ app.controller('bookingController', function ($scope, ordersService, $log, $rout
     	   if(type=='large' && beds != null) {
     		   $scope.beds = beds;
     	   }
-    	   
+    	 if($routeParams.responseCode) {
+    		 //skal det gjøres noe
+    	 }
        }
     };
 
