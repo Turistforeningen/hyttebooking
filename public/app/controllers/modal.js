@@ -1,5 +1,5 @@
 angular.module('plunker', ['ui.bootstrap']);
-var ModalController = function ($scope, $modal, $log) {
+var ModalController = function ($rootScope, $scope, $modal, $log) {
 
   $scope.items = ['item1', 'item2', 'item3'];
 
@@ -23,6 +23,20 @@ var ModalController = function ($scope, $modal, $log) {
       $log.info('Modal dismissed at: ' + new Date());
     });
   };
+  
+  $scope.$watch('paid', function() {
+	  if($scope.paid !=0) {
+		  if($scope.paid ==1) {
+			  $scope.checked = true;  
+		  }
+		  else {
+			   $scope.checked = false;   
+		  }
+		  $scope.open('/assets/app/partials/statusModal.html');
+	  }
+	  
+  });
+
 };
 
 // Please note that $modalInstance represents a modal window (instance) dependency.

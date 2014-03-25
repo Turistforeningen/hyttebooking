@@ -99,9 +99,9 @@ View. Possible to add danger and sucess alert to the view
  * by using the method addAlert. The method postBooking uses the ordersService to 
  * post the booking to the server.
  */
-app.controller('bookingController', function ($scope, ordersService, $log, $routeParams, $window) {
+app.controller('bookingController', function ($rootScope, $scope, ordersService, $log, $routeParams, $window) {
 	$scope.personType;
-	
+	$scope.paid = 0;
 	$scope.booking ={};
 	$scope.beds = 20;
 	$scope.price = 0;
@@ -160,6 +160,16 @@ app.controller('bookingController', function ($scope, ordersService, $log, $rout
     	});
     };
     
+    $scope.authenticatePayment = function(responseCode, transactionId) {
+    	ordersService.authenticatePayment(transactionId, responseCode)
+    	.success(function(data) {
+    		$info.log("it worked!");
+    	})
+    	.error(function(error) {
+    		
+    	});
+    }
+    
     init();
     function init() {
        var id = $routeParams.id;
@@ -173,7 +183,18 @@ app.controller('bookingController', function ($scope, ordersService, $log, $rout
     		   $scope.beds = beds;
     	   }
     	 if($routeParams.responseCode) {
-    		 //skal det gjøres noe
+    		 if($routeParams.responseCode == 'OK') {
+    			 $scope.paid = 1;
+    			 $scope.authenticatePayment($routeParams.transactionId, $routeParams.responseCode);
+    		 }
+    		 else {
+    			 $scope.paid =2;
+    			 $scope.authenticatePayment($routeParams.transactionId, $routeParams.responseCode);
+    		 }
+    		
+    		
+    		 
+    		
     	 }
        }
     };
