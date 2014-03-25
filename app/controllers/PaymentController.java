@@ -52,14 +52,15 @@ public class PaymentController extends Controller {
 				.setQueryParameter("orderNumber", "123456")
 				.setQueryParameter("amount", "1000")
 				.setQueryParameter("CurrencyCode", "NOK")
-				.setQueryParameter("redirectUrl", "http://localhost:9000")
+				.setQueryParameter("redirectUrl", "http://localhost:9000/#/booking/1?type=large&beds=10")
 				.get().map(
 				new Function<WS.Response, Result>() {
 					public Result apply(WS.Response response) {
 						String trans = response.asXml().getElementsByTagName("TransactionId").item(0).getTextContent();
 						ObjectNode result = Json.newObject();
 						result.put("TransactionId", trans);
-						result.put("redirectUrl",REDIRECT_URL + "?merchantId=" + MERCHANT_ID  +"?transactionId="+trans);
+						result.put("redirectUrl",REDIRECT_URL + "?merchantId=" + MERCHANT_ID  +"&transactionId="+trans);
+						System.out.println(REDIRECT_URL + "?merchantId=" + MERCHANT_ID  +"?transactionId="+trans);
 						return ok(result);
 					}
 				}
@@ -74,7 +75,7 @@ public class PaymentController extends Controller {
 	 * @param paymentId id of payment returned by nets.
 	 * @return Result with information about success/failure of payment
 	 */
-	public static Promise<Result> authenticatePayment(Long paymentId) {
+	public static Promise<Result> authenticatePayment(String paymentId) {
 		//problem: need to know payment id- 
 		String url = "";
 
