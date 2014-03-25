@@ -29,5 +29,11 @@ app.service('ordersService', function ($http, $log) {
     	var url = '/api/bookings/' + id +'/payment';
         return $http.get(url);
     }
+    
+    this.authenticatePayment = function(paymentId, response) {
+    	var url = '/api/payment/authenticate';
+    	var data = {"responseCode" :response, "transactionId" : paymentId};
+        return $http.post(url, data);
+    }
 });
 
