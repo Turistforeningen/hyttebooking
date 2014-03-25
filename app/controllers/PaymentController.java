@@ -25,6 +25,8 @@ public class PaymentController extends Controller {
 	private static final String NETS_REGISTER = "https://epayment-test.bbs.no/Netaxept/Register.aspx";
 	private static final String MERCHANT_ID = play.Play.application().configuration().getString("application.merchantId");
 	private static final String REDIRECT_URL = "https://epayment-test.bbs.no/Terminal/default.aspx";
+	
+	
 	/**
 	 * The register controller method are used for starting a payment using Netaxept.
 	 * The purpose of the register call is to send all the data needed to complete a transaction to Netaxept servers.
@@ -60,7 +62,6 @@ public class PaymentController extends Controller {
 						ObjectNode result = Json.newObject();
 						result.put("TransactionId", trans);
 						result.put("redirectUrl",REDIRECT_URL + "?merchantId=" + MERCHANT_ID  +"&transactionId="+trans);
-						System.out.println(REDIRECT_URL + "?merchantId=" + MERCHANT_ID  +"?transactionId="+trans);
 						return ok(result);
 					}
 				}
@@ -75,8 +76,8 @@ public class PaymentController extends Controller {
 	 * @param paymentId id of payment returned by nets.
 	 * @return Result with information about success/failure of payment
 	 */
-	public static Promise<Result> authenticatePayment(String paymentId) {
-		//problem: need to know payment id- 
+	public static Promise<Result> authenticatePayment() {
+		
 		String url = "";
 
 		final Promise<Result> resultPromise = WS.url(url).get().map(
