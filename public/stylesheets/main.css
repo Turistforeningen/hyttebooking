@@ -2,3 +2,26 @@
 .selectNumber {
 	min-width:50px;
 }
+
+html{
+	height: 100%;
+}
+
+body{
+	background-color: #dbdbdb;
+	height: 100%;
+}
+
+.whole{
+	background-color: #ffffff;
+	min-height: 100%;
+}
+
+.modCenterText{
+	text-align: center;
+}
+
+.modTestMainView{
+	background-color: #ffffff;
+	width: 100%;
+}
