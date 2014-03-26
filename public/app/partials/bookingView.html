@@ -1,122 +1,139 @@
-<div class="whole" style="background-color: #dbdbdb">
-	<div class="container" style="background-color: #ffffff;">
-		<div class="row" style="position: center;">
-			<!--This is just the container where the cabin information will be-->
-			<img class="img-responsive" src="assets/images/DNT_hytteprofil_top_small.jpg" />
-		</div>
+<div class="container whole">
+	<div class="row" style="position: center;">
+		<!--This is just the container where the cabin information will be-->
+		<img class="img-responsive"
+			src="assets/images/DNT_hytteprofil_top_small.jpg" />
+	</div>
 
-<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-<!-- //////////////////////////////////////////////// DNT BOOKING SOLUTION - START//////////////////////////////////////////////// -->
-		<div class="row"
-			style="min-height: 400px; background-color: #f5f5f5; padding-bottom: 15px solid white; border-bottom: 1px solid #ccc; border-top: 1px solid #ccc;">
-			
-			<div class="col-lg-12 col-md-12">
-			
-			
-<!-- /////////////////////////////////////////////// Numbers of beds to be reserved ////////////////////////////////////////////// -->
-				<div class="row">
+	<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+	<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+	<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+	<!-- //////////////////////////////////////////////// DNT BOOKING SOLUTION - START///////////////////////////////////////////////// -->
+	<div class="row"
+		style="min-height: 400px; background-color: #f5f5f5; padding-bottom: 15px solid white; border-bottom: 1px solid #ccc; border-top: 1px solid #ccc;">
+
+		<div class="col-lg-12 col-md-12">
+
+
+			<!-- /////////////////////////////////////////////// Numbers of beds to be reserved ////////////////////////////////////////////// -->
+			<div class="row">
 				<div class="col-lg-12 col-md-12">
 					<h2>Booking</h2>
-					</div>
 				</div>
-				<div class="row">
-					<div class="col-lg-3 col-md-3">
-						<div ng-if="cabinType=='large'">
-							<div class="row">
-								<div class="col-lg-12 col-md-12">
-									<dnt-selector person-types="personType" hide-type-index="4"
-										number-of-beds="beds"></dnt-selector>
-								</div>
-							</div>
-							<!-- /row -->
-						</div><!-- /ng-if -->
-						<div ng-if="cabinType=='small'">
-							<div class="row">
-								<div class="row" style="height: 16px"></div>
-								<!-- Just pushing the text down a bit -->
-								<div class="col-lg-9 col-md-9">
-									<p><i>Denne hytten regnes som en liten hytte. Det innebærer at en ikke kan reservere senger, men må reservere hele hytta.</p>
-									<p>Dersom du har spørsmål vedrørende reservering av denne hytta, kontakt DNT.</i></p>
-								</div>
-							</div>
-						</div><!-- /ng-if -->
-					</div><!-- /col -->
-
-
-<!-- //////////////////////////////////////////////////// Date to be reserved //////////////////////////////////////////////////// -->
-
-					<div class="col-lg-6 col-md-6"
-						style="min-height: 345px; border-left: 1px solid #ccc; border-right: 1px solid #ccc;">
-						
-							<div class="row">
-								<div class="col-lg-6 col-md-6">
-									<strong>Ankomst:</strong> <input type="text"
-										ng-model="booking.dateFrom" class="form-control"
-										placeholder="ÅÅÅÅ-MM-DD" datepicker-popup="yyyy-MM-dd">
-                                    
-								</div>
-								<div class="col-lg-6 col-md-6">
-									<strong>Avreise:</strong> <input type="text"
-										ng-model="booking.dateTo" class="form-control"
-										placeholder="ÅÅÅÅ-MM-DD" datepicker-popup="yyyy-MM-dd">
-
-								</div>
-							</div><!-- /row -->
-						<div class="row">
-							<div class="col-lg-6 col-md-6">	
-									<div class="well well-sm" ng-model="booking.dateFrom">
-										<datepicker min="now" show-weeks="showWeeks"></datepicker>
-									</div>
-							</div>
-							<div class="col-lg-6 col-md-6">  
-                                    <div class="well well-sm" ng-model="booking.dateTo">
-                                        <datepicker min="booking.dateFrom" show-weeks="showWeeks"></datepicker>
-                                    </div>
-                            </div>
-						</div>
-						<!-- /col -->
-                    </div>
-
-
-<!-- ////////////////////////////////////////////////// Order summary and submit ///////////////////////////////////////////////// -->
-
-					<div class="col-lg-3 col-md-3" >
+			</div>
+			<div class="row">
+				<div class="col-lg-3 col-md-3">
+					<div ng-if="cabinType=='large'">
 						<div class="row">
 							<div class="col-lg-12 col-md-12">
-								<dnt-price-viewer person-types="personType" from-date="booking.dateFrom" to-date="booking.dateTo"></dnt-price-viewer>
+								<dnt-selector person-types="personType" hide-type-index="4"
+									number-of-beds="beds"></dnt-selector>
 							</div>
 						</div>
-
-						<div class="row" style="height: 50px; text-align: center;">
-							<div ng-controller="ModalController" ng-init="personType">
-
-                                
-								<button class="btn btn-primary" ng-click="open('/assets/app/partials/bookingModal.html')">Reserver</button>
-								<div ng-show="selected">Selection from a modal: {{
-									selected }}</div>
+						<!-- /row -->
+					</div>
+					<!-- /ng-if -->
+					<div ng-if="cabinType=='small'">
+						<div class="row">
+							<div class="row" style="height: 16px"></div>
+							<!-- Just pushing the text down a bit -->
+							<div class="col-lg-9 col-md-9">
+								<p>
+									<i>Denne hytten regnes som en liten hytte. Det innebærer at
+										en ikke kan reservere senger, men må reservere hele hytta.
+								</p>
+								<p>
+									Dersom du har spørsmål vedrørende reservering av denne hytta,
+									kontakt DNT.</i>
+								</p>
 							</div>
-						</div><!-- /row -->
-					</div><!-- /col -->
-				</div><!-- /row -->
-				
-				
-<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-			</div><!-- /col -->
-		</div><!-- /row -->
-		
+						</div>
+					</div>
+					<!-- /ng-if -->
+				</div>
+				<!-- /col -->
 
-<!-- ///////////////////////////////////////////////// DNT BOOKING SOLUTION - END ///////////////////////////////////////////////// -->	
-<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 
-		<div class="row">
-			<!--This is just an other information container-->
-			<img class="img-responsive" src="assets/images/DNT_hytteprofil_bottom_small.jpg" />
+				<!-- //////////////////////////////////////////////////// Date to be reserved //////////////////////////////////////////////////// -->
+
+				<div class="col-lg-6 col-md-6"
+					style="min-height: 345px; border-left: 1px solid #ccc; border-right: 1px solid #ccc;">
+
+					<div class="row">
+						<div class="col-lg-6 col-md-6">
+							<strong>Ankomst:</strong> <input type="text"
+								ng-model="booking.dateFrom" class="form-control"
+								placeholder="ÅÅÅÅ-MM-DD" datepicker-popup="yyyy-MM-dd">
+
+						</div>
+						<div class="col-lg-6 col-md-6">
+							<strong>Avreise:</strong> <input type="text"
+								ng-model="booking.dateTo" class="form-control"
+								placeholder="ÅÅÅÅ-MM-DD" datepicker-popup="yyyy-MM-dd">
+
+						</div>
+					</div>
+					<!-- /row -->
+					<div class="row">
+						<div class="col-lg-6 col-md-6">
+							<div class="well well-sm" ng-model="booking.dateFrom">
+								<datepicker min="now" show-weeks="showWeeks"></datepicker>
+							</div>
+						</div>
+						<div class="col-lg-6 col-md-6">
+							<div class="well well-sm" ng-model="booking.dateTo">
+								<datepicker min="booking.dateFrom" show-weeks="showWeeks"></datepicker>
+							</div>
+						</div>
+					</div>
+					<!-- /col -->
+				</div>
+
+
+				<!-- ////////////////////////////////////////////////// Order summary and submit ///////////////////////////////////////////////// -->
+
+				<div class="col-lg-3 col-md-3">
+					<div class="row">
+						<div class="col-lg-12 col-md-12">
+							<dnt-price-viewer person-types="personType"
+								from-date="booking.dateFrom" to-date="booking.dateTo"></dnt-price-viewer>
+						</div>
+					</div>
+
+					<div class="row" style="height: 50px; text-align: center;">
+						<div ng-controller="ModalController" ng-init="personType">
+
+							<button class="btn btn-primary"
+								ng-click="open('/assets/app/partials/bookingModal.html')">Reserver</button>
+							<div ng-show="selected">Selection from a modal: {{ selected
+								}}</div>
+						</div>
+					</div>
+					<!-- /row -->
+				</div>
+				<!-- /col -->
+			</div>
+			<!-- /row -->
+
+
+			<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 		</div>
-	</div><!-- /container -->
-	<pre>{{booking}}</pre>
-	<pre>{{personType}}</pre>
+		<!-- /col -->
+	</div>
+	<!-- /row -->
+
+
+	<!-- ///////////////////////////////////////////////// DNT BOOKING SOLUTION - END ///////////////////////////////////////////////// -->
+	<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+	<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+	<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
+	<div class="row">
+		<!--This is just an other information container-->
+		<img class="img-responsive"
+			src="assets/images/DNT_hytteprofil_bottom_small.jpg" />
+	</div>
 </div>
+<!-- /container -->
+<pre>{{booking}}</pre>
+<pre>{{personType}}</pre>

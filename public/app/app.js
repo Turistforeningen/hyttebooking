@@ -43,6 +43,10 @@ app.config(function ($routeProvider, $locationProvider, $httpProvider) {
 		controller: 'bookingController',
 		templateUrl: '/assets/app/partials/calendar.html'
 	})
+	.when('/termsAndConditions', {
+		controller: '',
+		templateUrl: '/assets/app/partials/termsAndConditions.html'
+	})
 	.otherwise({ redirectTo: '/'});
 	
 	
