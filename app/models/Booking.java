@@ -182,6 +182,8 @@ public class Booking extends Model {
 
 		return b;
 	}
+	
+	
 }
 
 
