@@ -8,6 +8,8 @@ package controllers;
 import org.w3c.dom.Document;
 
 
+
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import models.Booking;
@@ -23,6 +25,7 @@ import play.libs.WS;
 public class PaymentController extends Controller {
 	private static final String SECRET_MERCHANT = play.Play.application().configuration().getString("application.merchantKey");
 	private static final String NETS_REGISTER = "https://epayment-test.bbs.no/Netaxept/Register.aspx";
+	private static final String NETS_PROCESS = "https://epayment-test.bbs.no/Netaxept/Process.aspx";
 	private static final String MERCHANT_ID = play.Play.application().configuration().getString("application.merchantId");
 	private static final String REDIRECT_URL = "https://epayment-test.bbs.no/Terminal/default.aspx";
 	
@@ -38,11 +41,12 @@ public class PaymentController extends Controller {
 	 */
 	public static Promise<Result> registerPayment(Long bookingId) {
 		
-		Booking b = Booking.getBookingById(bookingId+ "");
+		final Booking b = Booking.getBookingById(bookingId+ "");
 		if(b == null || b.status == Booking.BOOKED) {
 			return Promise.pure((Result) notFound("notfound"));
 		}
 		
+		System.out.println(b.payment.getAmount() + "amount om my lordie");
 		/*if(b.user != SecurityController.getUser()) {
 			return Promise.pure((Result) notFound("This is not your booking"));
 		}*/
@@ -51,14 +55,16 @@ public class PaymentController extends Controller {
 		final Promise<Result> resultPromise = WS.url(NETS_REGISTER)
 				.setQueryParameter("merchantId", MERCHANT_ID)
 				.setQueryParameter("token", SECRET_MERCHANT)
-				.setQueryParameter("orderNumber", "123456")
-				.setQueryParameter("amount", "1000")
+				.setQueryParameter("orderNumber", b.id+"")
+				.setQueryParameter("amount", b.payment.getAmount())
 				.setQueryParameter("CurrencyCode", "NOK")
 				.setQueryParameter("redirectUrl", "http://localhost:9000/#/booking/1?type=large&beds=10")
 				.get().map(
 				new Function<WS.Response, Result>() {
 					public Result apply(WS.Response response) {
+						System.out.println(response.getBody());
 						String trans = response.asXml().getElementsByTagName("TransactionId").item(0).getTextContent();
+						b.payment.setTransactionId(trans);
 						ObjectNode result = Json.newObject();
 						result.put("TransactionId", trans);
 						result.put("redirectUrl",REDIRECT_URL + "?merchantId=" + MERCHANT_ID  +"&transactionId="+trans);
@@ -77,13 +83,30 @@ public class PaymentController extends Controller {
 	 * @return Result with information about success/failure of payment
 	 */
 	public static Promise<Result> authenticatePayment() {
+		JsonNode json = request().body().asJson();
+		if(json == null) {
+			return Promise.pure((Result)badRequest());
+		}
 		
-		String url = "";
-
-		final Promise<Result> resultPromise = WS.url(url).get().map(
+		String transactionId = json.get("transactionId").asText();
+		if(transactionId == null) {
+			return Promise.pure((Result)badRequest()); 
+		}
+		String responseCode = json.get("response").asText();
+		if(!responseCode.equals("OK")) {
+			return Promise.pure((Result)badRequest(responseCode)); 
+		}
+		
+		//async  call to netAxcept
+		final Promise<Result> resultPromise = WS.url(NETS_PROCESS)
+				.setQueryParameter("merchantId", MERCHANT_ID)
+				.setQueryParameter("token", SECRET_MERCHANT)
+				.setQueryParameter("transactionId", transactionId)
+				.setQueryParameter("operation", "AUTH")
+				.get().map(
 				new Function<WS.Response, Result>() {
 					public Result apply(WS.Response response) {
-						return ok("status of payment. Went through?");
+						return ok(response.getBody());
 					}
 				}
 				);
