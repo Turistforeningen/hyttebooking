@@ -27,12 +27,13 @@ var ModalController = function ($rootScope, $scope, $modal, $log) {
   $scope.$watch('paid', function() {
 	  if($scope.paid !=0) {
 		  if($scope.paid ==1) {
-			  $scope.checked = true;  
+			 $log.info($scope.paid);
+			  $scope.open('/assets/app/partials/statusModalSuccess.html');
 		  }
 		  else {
-			   $scope.checked = false;   
+			  $scope.open('/assets/app/partials/statusModalError.html');
 		  }
-		  $scope.open('/assets/app/partials/statusModal.html');
+		 
 	  }
 	  
   });

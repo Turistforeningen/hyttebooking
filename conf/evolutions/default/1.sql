@@ -41,6 +41,7 @@ create table payment (
   id                        bigint not null,
   amount                    double,
   date                      date,
+  transaction_id            varchar(255),
   constraint pk_payment primary key (id))
 ;
 

@@ -160,12 +160,14 @@ app.controller('bookingController', function ($rootScope, $scope, ordersService,
     	});
     };
     
-    $scope.authenticatePayment = function(responseCode, transactionId) {
+    $scope.authenticatePayment = function(transactionId, responseCode) {
     	ordersService.authenticatePayment(transactionId, responseCode)
     	.success(function(data) {
-    		$info.log("it worked!");
+    		
+    		$scope.paid = 1;
     	})
     	.error(function(error) {
+    		$scope.paid = 2;
     		
     	});
     }
@@ -184,11 +186,10 @@ app.controller('bookingController', function ($rootScope, $scope, ordersService,
     	   }
     	 if($routeParams.responseCode) {
     		 if($routeParams.responseCode == 'OK') {
-    			 $scope.paid = 1;
     			 $scope.authenticatePayment($routeParams.transactionId, $routeParams.responseCode);
     		 }
     		 else {
-    			 $scope.paid =2;
+    			 
     			 $scope.authenticatePayment($routeParams.transactionId, $routeParams.responseCode);
     		 }
     		

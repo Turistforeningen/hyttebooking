@@ -13,6 +13,7 @@ import org.joda.time.Days;
 
 
 
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -22,6 +23,7 @@ import models.Booking;
 import models.Cabin;
 import models.Guest;
 import models.LargeCabin;
+import models.Payment;
 import models.SmallCabin;
 import models.User;
 import play.api.data.Form;
@@ -138,14 +140,14 @@ public class BookingController extends Controller {
 				return badRequest(result);
 			}
 		}
-
+		
 		Booking booking = Booking.createBooking(
 				SecurityController.getUser().id, 
 				startDt.toDate(),
 				endDt.toDate(),
 				cabin.id,
 				beds);
-
+		Payment.createPaymentForBooking(SecurityController.getUser(), booking, 100);
 		//TODO should be some sort of check here that booking != null
 		result.put("status", "OK");
 		result.put("message", "booking saved");
