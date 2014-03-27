@@ -10,6 +10,7 @@ import org.joda.time.DateTime;
 
 
 
+
 import play.data.validation.Constraints;
 
 @Entity
@@ -117,5 +118,10 @@ public class LargeCabin extends Cabin {
 	public void addPrice(Long id, String guestType, String ageRange, double nonMemberPrice, double memberPrice) {
 		Price price = new Price(id, guestType, ageRange, nonMemberPrice, memberPrice);
 		priceMatrix.add(price);
+	}
+
+	@Override
+	public String getCabinUrl() {
+		return this.id + "?type=large&beds=" + this.getNrOfBeds();
 	}
 }

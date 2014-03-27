@@ -16,6 +16,7 @@ import static org.junit.Assert.*;
 import play.Logger;
 import play.mvc.Result;
 import play.test.WithApplication;
+import utilities.Page;
 import static play.test.Helpers.*;
 
 public class ModelsTest extends WithApplication{
@@ -222,5 +223,53 @@ public class ModelsTest extends WithApplication{
 		assertEquals(1, utilities.DateHelper.getIndex(start, a, b)[0]);
 		assertEquals(-1, utilities.DateHelper.getIndex(start, a, b)[1]);
 		assertEquals(0, utilities.DateHelper.getIndex(start, a, c)[1]);
+	}
+	
+	@Test
+	public void TestMakeServeralBookingsForDifferentCabins() {
+		
+		User user1 = new User("tt", "ww", "John Doe");
+		user1.save();
+		
+		LargeCabin lc1 = new LargeCabin("fh", 10);
+		   lc1.save();
+		   
+		   LargeCabin lc2 = new LargeCabin("pt", 20);
+		   lc2.save();
+
+		   Cabin[] cabins = {lc1, lc2};
+		   
+		   
+		   	int cabinSize = cabins.length;
+			for ( int i = 0; i<6; i++) {
+				List<Bed> beds = null;
+				Cabin currentCabin = cabins[i%cabinSize];
+				
+			
+				
+				Date fromDate = DateTime.now().plusDays(2).toDate();
+				Date toDate = DateTime.now().plusDays(4).toDate();
+				
+				if(currentCabin instanceof LargeCabin) {
+					beds = ((LargeCabin)currentCabin).beds;
+					
+				}
+				else {
+					beds =null;
+				}
+				
+				Booking b= Booking.createBooking(user1.id, fromDate, toDate, currentCabin.id, beds );
+				
+				
+			}
+			
+			Page<Booking> bookings = Booking.getBookingPageByUser(user1, 0, 6);
+			System.out.println(bookings.data.size());
+			for(Booking b : bookings.data) {
+				System.out.println(b.getCabin().name + "-----------------------");
+				assertNotNull(b.getCabin().name);
+			}
+			
+			//Conclusion: b.update in Booking addBed a bad idea.
 	}
 }

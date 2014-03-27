@@ -36,8 +36,12 @@ public class PaymentController extends Controller {
 	 * A call is made to Netaxept that registers a transaction and a transaction id are returned if contact is established.
 	 * This transaction id is stored in the database, and a redirect url to a Netaxept payment site is returned to the user.
 	 * 
+	 * A deliveryDate date string are sent to nets that tells when to capture the amount payed.
+	 * 
+	 * http://www.betalingsterminal.no/Netthandel-forside/Teknisk-veiledning/API/Register/
+	 * 
 	 * @param bookingId - id of booking 
-	 * @return Response containing redirect url for payment.
+	 * @return Response - contains redirect url for user payment.
 	 */
 	public static Promise<Result> registerPayment(Long bookingId) {
 		
@@ -45,12 +49,10 @@ public class PaymentController extends Controller {
 		if(b == null || b.status == Booking.BOOKED) {
 			return Promise.pure((Result) notFound("notfound"));
 		}
-		
-		System.out.println(b.payment.getAmount() + "amount om my lordie");
+		System.out.println(b.getDeliveryDate());
 		/*if(b.user != SecurityController.getUser()) {
-			return Promise.pure((Result) notFound("This is not your booking"));
+		return Promise.pure((Result) notFound("This is not your booking"));
 		}*/
-		
 		
 		final Promise<Result> resultPromise = WS.url(NETS_REGISTER)
 				.setQueryParameter("merchantId", MERCHANT_ID)
@@ -58,13 +60,15 @@ public class PaymentController extends Controller {
 				.setQueryParameter("orderNumber", b.id+"")
 				.setQueryParameter("amount", b.payment.getAmount())
 				.setQueryParameter("CurrencyCode", "NOK")
-				.setQueryParameter("redirectUrl", "http://localhost:9000/#/booking/1?type=large&beds=10")
+				.setQueryParameter("redirectUrl", "http://localhost:9000/#/booking/" + b.getCabin().getCabinUrl())
+				.setQueryParameter("deliveryDate", b.getDeliveryDate())
 				.get().map(
 				new Function<WS.Response, Result>() {
 					public Result apply(WS.Response response) {
 						System.out.println(response.getBody());
 						String trans = response.asXml().getElementsByTagName("TransactionId").item(0).getTextContent();
 						b.payment.setTransactionId(trans);
+						
 						ObjectNode result = Json.newObject();
 						result.put("TransactionId", trans);
 						result.put("redirectUrl",REDIRECT_URL + "?merchantId=" + MERCHANT_ID  +"&transactionId="+trans);
@@ -74,6 +78,7 @@ public class PaymentController extends Controller {
 		);
 		return resultPromise;
 	}
+	
 	
 	/**
 	 * authenticatePayment should be called after user has filled in payment form at Netaxcept and redirected back
@@ -92,7 +97,8 @@ public class PaymentController extends Controller {
 		if(transactionId == null) {
 			return Promise.pure((Result)badRequest()); 
 		}
-		String responseCode = json.get("response").asText();
+		
+		String responseCode = json.get("responseCode").asText();
 		if(!responseCode.equals("OK")) {
 			return Promise.pure((Result)badRequest(responseCode)); 
 		}
@@ -114,40 +120,30 @@ public class PaymentController extends Controller {
 	}
 	
 	
-	/**
-	 * Method will capture amount reserved with paymentId. The method calls nets and payment are 
-	 * withdrawn from customers card. 
-	 * @param paymentId
-	 * @return
-	 */
-	public static Promise<Result> capturePayment(Long paymentId) {
-		
-		String url = "";
-
-		final Promise<Result> resultPromise = WS.url(url).get().map(
-				new Function<WS.Response, Result>() {
-					public Result apply(WS.Response response) {
-						return ok("captured payment?");
-					}
-				}
-				);
-		return resultPromise;
-	}
 	
 	/**
-	 * Before payment has been captured, a user can cancel a booking. The cancelPayment should call nets and annul the reserved amount
-	 * for the booking. 
+	 * Before set cancellation date, a user can cancel a booking. The cancelPayment should call nets and annul the reserved amount
+	 * on users card, or credit user if payment is already captured.
+	 * Depending on whether the payment has been captured or not, the amount can be annulled 
+	 * or credited. 
+	 * See http://www.betalingsterminal.no/Netthandel-forside/Teknisk-veiledning/Flow-Outline/
 	 * @param paymentId
-	 * @return
+	 * @return boolean telling if operation was successful.
 	 */
-public static Promise<Result> cancelPayment(Long paymentId) {
+public static Promise<Boolean> cancelPayment(String transactionId) {
 		
-		String url = "";
+		//Temp: Assume a payment that is cancelled has not yet been captured
 
-		final Promise<Result> resultPromise = WS.url(url).get().map(
-				new Function<WS.Response, Result>() {
-					public Result apply(WS.Response response) {
-						return ok("anulled payment?");
+		final Promise<Boolean> resultPromise = WS.url(NETS_PROCESS)
+				.setQueryParameter("merchantId", MERCHANT_ID)
+				.setQueryParameter("token", SECRET_MERCHANT)
+				.setQueryParameter("transactionId", transactionId)
+				.setQueryParameter("operation", "ANNUL")
+				.get().map(
+				new Function<WS.Response, Boolean>() {
+					public Boolean apply(WS.Response response) {
+						System.out.println(response.getBody());
+						return true;
 					}
 				}
 				);
