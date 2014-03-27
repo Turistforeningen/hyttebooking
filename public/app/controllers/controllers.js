@@ -115,6 +115,14 @@ app.controller('bookingController', function ($rootScope, $scope, ordersService,
 		return total;	
 	};
 	
+	$scope.$watch('booking.dateTo', function(){
+		$scope.dateTo = "" + $scope.booking.dateTo.getDate() + "/" + ($scope.booking.dateTo.getMonth() + 1) + " " + $scope.booking.dateTo.getFullYear();
+	});
+	
+	$scope.$watch('booking.dateFrom', function(){
+		$scope.dateFrom = "" + $scope.booking.dateFrom.getDate() + "/" + ($scope.booking.dateFrom.getMonth() + 1) + " " + $scope.booking.dateFrom.getFullYear();
+	});
+	
 	$scope.$on('event:booking', function(event) { 
 		
         $scope.postBooking(); 
@@ -126,8 +134,8 @@ app.controller('bookingController', function ($rootScope, $scope, ordersService,
 		$scope.booking.beds =($scope.bedsTotal()) + "";
 		$log.info($scope.booking.beds);
 		$scope.booking.Person = $scope.personType;
-		$scope.booking.dateFrom = "2014-09-18";
-		$scope.booking.dateTo = "2014-09-22";
+		//$scope.booking.dateFrom = "2014-09-18";
+		//$scope.booking.dateTo = "2014-09-22";
     	ordersService.postOrder($scope.booking)
 		.success(function (data) {
 			$scope.pay(data.id);

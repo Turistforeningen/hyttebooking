@@ -56,6 +56,8 @@
 
 				<!-- //////////////////////////////////////////////////// Date to be reserved //////////////////////////////////////////////////// -->
 
+
+				<!-- 
 				<div class="col-lg-6 col-md-6"
 					style="min-height: 345px; border-left: 1px solid #ccc; border-right: 1px solid #ccc;">
 
@@ -73,6 +75,26 @@
 
 						</div>
 					</div>
+					-->
+					
+					<div class="col-lg-6 col-md-6"
+					style="min-height: 345px; border-left: 1px solid #ccc; border-right: 1px solid #ccc;">
+
+					<div class="row">
+						<div class="col-lg-6 col-md-6">
+							<strong>Ankomst:</strong> 
+							<p>{{dateFrom}}</p>
+
+						</div>
+						<div class="col-lg-6 col-md-6">
+							<strong>Avreise:</strong> 
+							<p>{{dateTo}}</p>
+						</div>
+					</div>
+					
+					
+					
+					
 					<!-- /row -->
 					<div class="row">
 						<div class="col-lg-6 col-md-6">
@@ -135,5 +157,6 @@
 	</div>
 </div>
 <!-- /container -->
-<pre>{{booking}}</pre>
-<pre>{{personType}}</pre>
+
+<pre>{{booking | json}}</pre>
+<pre>{{personType | json}}</pre>
