@@ -4,6 +4,7 @@
 		<img class="img-responsive"
 			src="assets/images/DNT_hytteprofil_top_small.jpg" />
 	</div>
+	<!-- /row -->
 
 	<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 	<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
@@ -16,10 +17,24 @@
 
 			<!-- /////////////////////////////////////////////// Numbers of beds to be reserved ////////////////////////////////////////////// -->
 			<div class="row">
-				<div class="col-lg-12 col-md-12">
+				<div class="col-lg-11 col-md-11">
 					<h2>Booking</h2>
 				</div>
+				<!-- /col -->
+				<div class="col-lg-1 col-md-1 tooltip-demo" style="height: 63px">
+					<a
+						title="Bookingen foregår over tre steg fra venstre mot høyre; <br><br>
+					Velg antall personer i kategorier bookingen gjelder for.<br><br>
+					Velg dato for ankomst og avreise.<br><br>Se oversikt over reservasjon før du går
+					til neste steg av reservasjonen ved å trykke Reserver."
+						data-html="true" rel="tooltip" href=""><i
+						class="fa fa-info-circle fa-2x fa-info-circle-position"
+						style="text-align: right"></i></a>
+				</div>
+				<!-- /col -->
 			</div>
+			<!-- /row -->
+
 			<div class="row">
 				<div class="col-lg-3 col-md-3">
 					<div ng-if="cabinType=='large'">
@@ -28,24 +43,46 @@
 								<dnt-selector person-types="personType" hide-type-index="4"
 									number-of-beds="beds"></dnt-selector>
 							</div>
+							<!-- /col -->
 						</div>
+
+						<!-- This is just a test, but it is actually working! -->
+						<div class="row">
+							<div class="col-lg-12">
+								<div ng-controller="CollapseDemoCtrl">
+									<a ng-click="isCollapsed = !isCollapsed">Ikke medlem?</a>
+									<div collapse="isCollapsed">
+										<div>
+											<p>justatest</p>
+											<p>justatest</p>
+											<p>justatest</p>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
 						<!-- /row -->
 					</div>
+
 					<!-- /ng-if -->
 					<div ng-if="cabinType=='small'">
 						<div class="row">
-							<div class="row spaceLine"></div><!-- Just pushing the text down a bit -->
+							<div class="row spaceLine"></div>
+							<!-- Just pushing the text down a bit -->
 							<div class="col-lg-9 col-md-9">
 								<p>
 									<i>Denne hytten regnes som en liten hytte. Det innebærer at
-										en ikke kan reservere senger, men må reservere hele hytta.
+										en ikke kan reservere senger, men må reservere hele hytta. 
 								</p>
 								<p>
 									Dersom du har spørsmål vedrørende reservering av denne hytta,
 									kontakt DNT.</i>
 								</p>
 							</div>
+							<!-- /col -->
 						</div>
+						<!-- /row -->
 					</div>
 					<!-- /ng-if -->
 				</div>
@@ -53,7 +90,7 @@
 
 
 				<!-- //////////////////////////////////////////////////// Date to be reserved //////////////////////////////////////////////////// -->
-<!-- 
+				<!-- 
 				<div class="col-lg-6 col-md-6 calenderDivStyle">
 					<div class="row">
 						<div class="col-lg-6 col-md-6">
@@ -70,40 +107,40 @@
 						</div>
 					</div>
 					-->
-					
-					<div class="col-lg-6 col-md-6"
-					style="min-height: 345px; border-left: 1px solid #ccc; border-right: 1px solid #ccc;">
 
+
+				<div class="col-lg-6 col-md-6 calenderDivStyle">
 					<div class="row">
 						<div class="col-lg-6 col-md-6">
-							<strong>Ankomst:</strong> 
-							<p>{{dateFrom}}</p>
-
+							<strong>Ankomst:</strong>&nbsp;{{dateFrom}}
 						</div>
+						<!-- /col -->
 						<div class="col-lg-6 col-md-6">
-							<strong>Avreise:</strong> 
-							<p>{{dateTo}}</p>
+							<strong>Avreise:</strong>&nbsp;{{dateTo}}
 						</div>
+						<!-- /col -->
 					</div>
-					
-					
-					
-					
 					<!-- /row -->
+
 					<div class="row">
 						<div class="col-lg-6 col-md-6">
 							<div class="well well-sm" ng-model="booking.dateFrom">
 								<datepicker min="now" show-weeks="showWeeks"></datepicker>
 							</div>
+							<!-- /well -->
 						</div>
+						<!-- /col -->
 						<div class="col-lg-6 col-md-6">
 							<div class="well well-sm" ng-model="booking.dateTo">
 								<datepicker min="booking.dateFrom" show-weeks="showWeeks"></datepicker>
 							</div>
+							<!-- /well -->
 						</div>
+						<!-- /col -->
 					</div>
-					<!-- /col -->
+					<!-- /row -->
 				</div>
+				<!-- /col -->
 
 
 				<!-- ////////////////////////////////////////////////// Order summary and submit ///////////////////////////////////////////////// -->
@@ -111,10 +148,15 @@
 				<div class="col-lg-3 col-md-3">
 					<div class="row">
 						<div class="col-lg-12 col-md-12">
-							<dnt-price-viewer person-types="personType"
-								from-date="booking.dateFrom" to-date="booking.dateTo"></dnt-price-viewer>
+							<div class="col-lg-12 col-md-12">
+								<dnt-price-viewer person-types="personType"
+									from-date="booking.dateFrom" to-date="booking.dateTo"></dnt-price-viewer>
+							</div>
+							<!-- /col -->
 						</div>
+						<!-- /col -->
 					</div>
+					<!-- /row -->
 
 					<div class="row reserverButtomDivStyle">
 						<div ng-controller="ModalController" ng-init="personType">
@@ -124,6 +166,7 @@
 							<div ng-show="selected">Selection from a modal: {{ selected
 								}}</div>
 						</div>
+						<!-- /ng-controller -->
 					</div>
 					<!-- /row -->
 				</div>
@@ -149,6 +192,7 @@
 		<img class="img-responsive"
 			src="assets/images/DNT_hytteprofil_bottom_small.jpg" />
 	</div>
+	<!-- /row -->
 </div>
 <!-- /container -->
 
