@@ -20,15 +20,12 @@
 						class="icon-bar"></span>
 				</button>
 				<!-- <a class="navbar-brand" href="#/"></a> -->
-				<a href="#/"><img src="https://dl.dropboxusercontent.com/u/8913722/dntLogo_small.png"></a>
+				<a href="#/"><img src="assets/images/dntLogo_small.png"></a>
 			</div>
 
 			<!-- Collect the nav links, forms, and other content for toggling -->
 			<div class="collapse navbar-collapse"  id="bs-example-navbar-collapse-1" ng-controller="headerController">
-				<ul class="nav navbar-nav">
-					<!-- <li ng-class="{ active: isActive('/')}"><a href="#/">home</a></li>  -->
-
-				</ul>
+				<ul class="nav navbar-nav"></ul>
 				<ul class="nav navbar-nav navbar-right">
 					<li ng-show="!loggedIn"><a href="#/login">sign in</a></li>
 					<li ng-show="loggedIn" class="dropdown"><a href="#" class="dropdown-toggle"
@@ -67,7 +64,11 @@
     <script src="@routes.Assets.at("app/controllers/controllers.js")"></script>
     <script src="@routes.Assets.at("app/directives/dntBookingModule.js")"></script>
     <script src="@routes.Assets.at("app/controllers/adminController.js")"></script>
+    
     <script src="@routes.Assets.at("app/controllers/modal.js")"></script>
+    <script src="@routes.Assets.at("app/controllers/tooltip.js")"></script>
+    <script src="@routes.Assets.at("app/controllers/collapse.js")"></script>
+    
     <script src="@routes.Assets.at("app/controllers/accordion.js")"></script>
     <script src="@routes.Assets.at("app/services/ordersService.js")"></script>
     <script src="@routes.Assets.at("app/services/cabinService.js")"></script>
