@@ -14,6 +14,7 @@ import org.joda.time.Days;
 
 
 
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -33,6 +34,7 @@ import play.mvc.Result;
 import play.mvc.Results;
 import play.mvc.With;
 import utilities.Page;
+import utilities.PriceHelper;
 
 @With(SecurityController.class)
 public class BookingController extends Controller {
@@ -95,7 +97,9 @@ public class BookingController extends Controller {
 
 	public static Result submitBooking() {
 		ObjectNode result = Json.newObject();
+		
 		JsonNode json = request().body().asJson();
+		
 		if(json == null) {
 			result.put("status", "KO");
 			result.put("message", "Expected Json");
@@ -115,12 +119,14 @@ public class BookingController extends Controller {
 		System.out.println("Start dt: "+startDt);
 		String end = json.get("dateTo").asText();
 		DateTime endDt = utilities.DateHelper.toDt(end);
+		JsonNode guests = json.get("guests");
 		System.out.println("End dt: "+endDt);
 
 		//validate request here
 		if(
 				startDt == null ||
 				endDt 	== null ||
+				guests == null ||
 				startDt.isBeforeNow() ||
 				endDt.isBeforeNow() ||
 				!startDt.isBefore(endDt)
@@ -147,7 +153,8 @@ public class BookingController extends Controller {
 				endDt.toDate(),
 				cabin.id,
 				beds);
-		Payment.createPaymentForBooking(SecurityController.getUser(), booking, 100);
+		double amount = PriceHelper.calculateAmount(guests, Days.daysBetween(startDt, endDt).getDays());
+		Payment.createPaymentForBooking(SecurityController.getUser(), booking, amount);
 		//TODO should be some sort of check here that booking != null
 		result.put("status", "OK");
 		result.put("message", "booking saved");
@@ -192,8 +199,8 @@ public class BookingController extends Controller {
 		}
 		//cancellogic to late to cancel?
 		booking.status = Booking.CANCELLED;
-
-		//repay customer through nets
+		PaymentController.cancelPayment(booking.payment.transactionId);
+		
 
 		booking.update();
 		result.put("Status", "OK");

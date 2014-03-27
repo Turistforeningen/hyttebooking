@@ -54,5 +54,12 @@ public class SmallCabin extends Cabin {
 				.gt("dateFrom", DateTime.now().toDate())
 				.ne("status", Booking.CANCELLED)
 				.findRowCount();
+	}
+
+
+	@Override
+	public String getCabinUrl() {
+		// TODO Auto-generated method stub
+		return this.id + "?type=small&beds=hele";
 	}	
 }

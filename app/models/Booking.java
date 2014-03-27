@@ -61,6 +61,7 @@ public class Booking extends Model {
 	
 	public void addBed(Bed b) {
 		beds.add(b);
+		b.update();
 		
 	}
 	
@@ -71,7 +72,6 @@ public class Booking extends Model {
 	 * @return Cabin
 	 */
 	public Cabin getCabin() {
-		System.out.println("Called");
 		if(beds.size() != 0) {
 			return beds.get(0).largeCabin;
 		}
@@ -169,7 +169,6 @@ public class Booking extends Model {
 			b.smallCabin = (SmallCabin)cabin;
 		}
 		else {
-
 			for(Bed bed: beds) {
 				b.addBed(bed);	
 			}
