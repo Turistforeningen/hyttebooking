@@ -17,6 +17,11 @@ body{
 	min-height: 100%;
 }
 
+.fa-info-circle{
+	color: #428bca;
+}
+
+
 .modCenterText{
 	text-align: center;
 }
