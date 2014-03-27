@@ -153,6 +153,7 @@ public class BookingController extends Controller {
 				endDt.toDate(),
 				cabin.id,
 				beds);
+		
 		double amount = PriceHelper.calculateAmount(guests, Days.daysBetween(startDt, endDt).getDays());
 		Payment.createPaymentForBooking(SecurityController.getUser(), booking, amount);
 		//TODO should be some sort of check here that booking != null
@@ -292,9 +293,11 @@ public class BookingController extends Controller {
 
 
 		Page<Booking> bookings = Booking.getBookingPageByUser(SecurityController.getUser(), page, pageSize);
+		
 		JSONSerializer orderDetailsSerializer = new JSONSerializer()
 		.include("data", "data.cabin" )
-		.exclude("*.class", "beds", "data.smallCabin", "data.cabin.type", "data.cabin.nrOfBeds", "data.cabin.nrBookings");
+		.exclude("*.class", "data.beds", "data.user", "data.smallCabin", "data.cabin.type", "data.cabin.nrOfBeds", "data.cabin.nrBookings"
+				, "data.cabin.cabinUrl", "data.cabin.nrOfBookings", "data.deliveryDate");
 		return Results.ok(orderDetailsSerializer.serialize(bookings));
 	}
 

@@ -17,7 +17,7 @@ import org.joda.time.DateTime;
  * with model (since cabins have no name [debatable])
  */
 public class Global extends GlobalSettings {
-	public final static int NR_OF_DUMMY_BOOKINGS = 10;
+	public final static int NR_OF_DUMMY_BOOKINGS = 2;
 	public final static int BOOKING_DATE_RANGE = 40;
 	@Override
 	public void onStart(Application app) {
@@ -25,10 +25,10 @@ public class Global extends GlobalSettings {
 		// Populate database with dummy data
 		
 	    
-		if (User.find.findRowCount() == 0) {
+		if (User.find.findRowCount() == 0 && !app.isTest()) {
 			User user1 = new User("q", "w", "John Doe");
 			user1.save();
-			User user2 = new User("user2@demo.com", "password", "Jane Doe");
+			User user2 = new User("w", "p", "Jane Doe");
 			user2.save();
 			User admin = new User("admin", "p", "admin");
 			admin.admin = true;
@@ -37,26 +37,26 @@ public class Global extends GlobalSettings {
 		    User[] us = {user1, user2};
 		    int userSize = us.length;
 		    
-		   LargeCabin lc = new LargeCabin("Fjordheim", 10);
-		   lc.save();
+		   LargeCabin lc1 = new LargeCabin("Fjordheim", 10);
+		   lc1.save();
 		   
 		   LargeCabin lc2 = new LargeCabin("Peterstun", 20);
 		   lc2.save();
 		   
-		   Cabin[] cabins = {lc, new SmallCabin("Helfjord"), new SmallCabin("Fjordlistølen"), lc2};
+		   SmallCabin sc1 = new SmallCabin("Helfjord");
+		   sc1.save();
 		   
-		   cabins[1].save();
-		   cabins[2].save();
+		   SmallCabin sc2 = new SmallCabin("Fjordlistølen");
+		   sc2.save();
+		   
+		   Cabin[] cabins = {lc1,sc1 ,sc2 , lc2};
+		   
 		   
 		   	int cabinSize = cabins.length;
 			for ( int i = 0; i<NR_OF_DUMMY_BOOKINGS; i++) {
-				List<Bed> beds = null;
-				if(i%cabinSize ==0) {
-					beds = lc.beds;
-				}
-				if(i%cabinSize ==3) {
-					beds = lc2.beds.subList(0, 1+ (int)Math.floor((Math.random()*15)));
-				}
+				Random r = new Random();
+				
+				
 				//Booking -20 to 20 days in the future from today
 				int fromDays = -BOOKING_DATE_RANGE/2 +(int)(Math.random()*BOOKING_DATE_RANGE);
 				//booking 1 -5 days + fromdays in the future from today
@@ -75,10 +75,22 @@ public class Global extends GlobalSettings {
 				Date toDate = DateTime.now().plusDays(toDays).toDate();
 				Date bookingDate = DateTime.now().minusDays(bookingDays).toDate();
 				
-				Booking b= Booking.createBooking(new Long(1+(i%userSize)), fromDate, toDate, cabins[i%cabinSize].id, beds );
+				List<Bed> beds = null;
+				Cabin currentCabin = cabins[r.nextInt(cabinSize)];
+				
+				if(currentCabin instanceof LargeCabin) {
+					beds = ((LargeCabin)currentCabin).beds;
+					
+				}
+				else {
+					beds =null;
+				}
+				
+				Booking b= Booking.createBooking(us[i%userSize].id, fromDate, toDate, currentCabin.id, beds );
 				b.timeOfBooking = bookingDate.getTime();
 				b.update();
 				
+			
 			}
 		}
 		
