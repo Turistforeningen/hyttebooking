@@ -115,12 +115,16 @@ app.controller('bookingController', function ($rootScope, $scope, ordersService,
 		return total;	
 	};
 	
+	/** Track changes from the datepicker calendars and display the from/to dates **/
 	$scope.$watch('booking.dateTo', function(){
 		$scope.dateTo = "" + $scope.booking.dateTo.getDate() + "/" + ($scope.booking.dateTo.getMonth() + 1) + " " + $scope.booking.dateTo.getFullYear();
 	});
 	
 	$scope.$watch('booking.dateFrom', function(){
 		$scope.dateFrom = "" + $scope.booking.dateFrom.getDate() + "/" + ($scope.booking.dateFrom.getMonth() + 1) + " " + $scope.booking.dateFrom.getFullYear();
+		if ($scope.booking.dateTo < $scope.booking.dateFrom){
+			$scope.booking.dateTo = $scope.booking.dateFrom;
+		}
 	});
 	
 	$scope.$on('event:booking', function(event) { 
