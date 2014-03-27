@@ -19,6 +19,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import play.data.format.Formats;
 import play.data.validation.Constraints;
 import play.db.ebean.Model;
+import utilities.DateHelper;
 import utilities.Page;
 
 @Entity
@@ -96,7 +97,13 @@ public class Booking extends Model {
 		}
 	}
 	
-	
+	/**
+	 * The date a booking is regarded as delivered, and payment from user expected.
+	 * @return date of delivery
+	 */
+	public String getDeliveryDate() {
+		return DateHelper.dtToYYYYMMDDString(new DateTime(this.dateFrom.getTime()));
+	}
 	/**
 	 * A getter which return number of beds booked in a largeCabin. Used by frontend (json serialized)
 	 * @return String - number of beds in order or cabin 
