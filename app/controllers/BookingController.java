@@ -115,10 +115,10 @@ public class BookingController extends Controller {
 		String nrPerson = json.get("beds").asText();
 		String start = json.get("dateFrom").asText();
 		System.out.println(json.get("dateFrom").asText());
-		DateTime startDt = utilities.DateHelper.toDt(start);
+		DateTime startDt = utilities.DateHelper.stringtoDt(start);
 		System.out.println("Start dt: "+startDt);
 		String end = json.get("dateTo").asText();
-		DateTime endDt = utilities.DateHelper.toDt(end);
+		DateTime endDt = utilities.DateHelper.stringtoDt(end);
 		JsonNode guests = json.get("guests");
 		System.out.println("End dt: "+endDt);
 

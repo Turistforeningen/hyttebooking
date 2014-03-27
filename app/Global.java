@@ -17,6 +17,8 @@ import org.joda.time.DateTime;
  * with model (since cabins have no name [debatable])
  */
 public class Global extends GlobalSettings {
+	public final static int NR_OF_DUMMY_BOOKINGS = 10;
+	public final static int BOOKING_DATE_RANGE = 40;
 	@Override
 	public void onStart(Application app) {
 
@@ -47,7 +49,7 @@ public class Global extends GlobalSettings {
 		   cabins[2].save();
 		   
 		   	int cabinSize = cabins.length;
-			for ( int i = 0; i<100; i++) {
+			for ( int i = 0; i<NR_OF_DUMMY_BOOKINGS; i++) {
 				List<Bed> beds = null;
 				if(i%cabinSize ==0) {
 					beds = lc.beds;
@@ -56,7 +58,7 @@ public class Global extends GlobalSettings {
 					beds = lc2.beds.subList(0, 1+ (int)Math.floor((Math.random()*15)));
 				}
 				//Booking -20 to 20 days in the future from today
-				int fromDays = -20 +(int)(Math.random()*40);
+				int fromDays = -BOOKING_DATE_RANGE/2 +(int)(Math.random()*BOOKING_DATE_RANGE);
 				//booking 1 -5 days + fromdays in the future from today
 				int toDays;
 				if(fromDays > 0) {
@@ -67,7 +69,7 @@ public class Global extends GlobalSettings {
 				}
 				
 				//bookingDate 1-20 days before fromdate
-				int bookingDays = fromDays +(int)(Math.random()*20);
+				int bookingDays = fromDays +(int)(Math.random()*BOOKING_DATE_RANGE/2);
 				
 				Date fromDate = DateTime.now().plusDays(fromDays).toDate();
 				Date toDate = DateTime.now().plusDays(toDays).toDate();
