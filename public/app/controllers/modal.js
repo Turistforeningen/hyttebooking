@@ -10,6 +10,7 @@ var ModalController = function ($rootScope, $scope, $modal, $log) {
     var modalInstance = $modal.open({
       templateUrl: url,
       controller: ModalInstanceCtrl,
+      scope: $scope, // sets the modal scope to the parent scope
       resolve: {
         items: function () {
           return $scope.items;
