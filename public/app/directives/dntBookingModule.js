@@ -1,4 +1,4 @@
-angular.module('dntBookingModule', [])
+angular.module('dntBookingModule', ['ui.bootstrap'])
 .directive('dntSelector', function() {
     return {
         restrict: 'AE',
@@ -9,29 +9,6 @@ angular.module('dntBookingModule', [])
         },
         
         template: 
-        
-        /*
-        The code below is working but should be replaced. Still not deleted, since it is actually working
-        */
-        '<div class="row" ng-repeat="per in person.slice(0, hider)">'+
-        	'<div class="col-lg-9 col-md-8"><p>{{per.type}}</p></div>'+
-        	'<div class="col-lg-3 col-md-4"><select class="selectNumber" ng-model="per.nr"'+
-        	'ng-options="pe for pe in range(per.nr)"></select></div></div>'+
-        		'<div class="row"><div class="col-lg-12 col-md-12">' +
-        			'<a ng-click="toggleHide()">Ikke medlem?</a>'+
-        		'</div>'+
-        	'</div>'+
-        	'<div class="row" ng-hide="hide" ng-repeat="per in person.slice(hider)">'+
-        	'<div class="col-lg-9 col-md-8"><p>{{per.type}}</p></div>'+
-        	'<div class="col-lg-3 col-md-4"><select class="selectNumber" ng-model="per.nr"'+
-        	'ng-options="pe for pe in range(per.nr)"></select></div>'+
-        '</div>'+
-        
-        
-        
-        /*
-        The code below is suppose to work, but it is not
-        */
         '<div class="row" ng-repeat="per in person.slice(0, hider)">'+
 			'<div class="col-lg-9 col-md-8">'+
 				'<p>{{per.type}}</p>'+
@@ -42,29 +19,30 @@ angular.module('dntBookingModule', [])
 		'</div>'+
 		'<div class="row">'+
 			'<div class="col-lg-12 col-md-12">'+
-				'<div ng-controller="CollapseDemoCtrl">'+
-					'<a ng-click="isCollapsed = !isCollapsed">Ikke medlem?</a>'+
+				
+					'<a ng-click="toggleCollapsed()">Ikke medlem?</a>'+
 					'<div collapse="isCollapsed">'+
-						'<div class="row" ng-hide="hide" ng-repeat="per in person.slice(hider)">'+
+						'<div class="row" ng-repeat="per in person.slice(hider)">'+
 							'<div class="col-lg-9 col-md-8">'+
 								'<p>{{per.type}}</p>'+
-								'<p>Testparagraf</p>'+
+								
 							'</div>'+
 							'<div class="col-lg-3 col-md-4">'+
 								'<select class="selectNumber" ng-model="per.nr" ng-options="pe for pe in range(per.nr)"></select>'+
 							'</div>'+
 						'</div>'+
 					'</div>'+
-				'</div>'+
+			
 			'</div>'+
 		'</div>',
         
         controller: function($scope, $log) {
         	$scope.person = {};
-        	$scope.hide = true;
+        	$scope.isCollapsed = true;
         	
-        	$scope.toggleHide = function() {
-        		$scope.hide = !$scope.hide;
+        	$scope.toggleCollapsed = function() {
+        		$scope.isCollapsed = !$scope.isCollapsed;
+        		//When a user shuts down this collapse all entries inside collapse should be erased here
         	}
         	$scope.setPerson = function(person) {
         		$scope.person = person;
