@@ -14,9 +14,17 @@ body{
 	height: 100%;
 }
 
+.container { 
+    height: 100%;
+}
+
+.fill { 
+    min-height: 100%;
+    height: 100%;
+}
+
 .whole{
 	background-color: #ffffff;
-	min-height: 100%;
 }
 
 /*-----------Glyphicon mods-----------*/
@@ -80,4 +88,10 @@ body{
 .reserverButtomDivStyle{
 	height: 50px;
 	text-align: center;
+}
+
+.vcenter{
+	display: inline-block;
+    vertical-align: middle;
+    float: none;
 }
