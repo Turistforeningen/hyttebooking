@@ -49,10 +49,29 @@ body{
     left: 30px;
 }
 
+.fa-question-circle{
+	color: #428bca;
+}
+
+.fa-question-circle-position {
+    position: relative;
+}
+ 
+.fa-question-circle-position:before {
+
+    position: absolute;
+    top: 10px;
+    left: 30px;
+}
+
+
 /*-----------Text mods-----------*/
 
 .modCenterText{
 	text-align: center;
+}
+.modRightText{
+	text-align: right;
 }
 .modBoldText{
 	font-weight: bold;
