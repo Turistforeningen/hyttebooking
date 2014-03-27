@@ -20,8 +20,36 @@ body{
 .modCenterText{
 	text-align: center;
 }
+.modBoldText{
+	font-weight: bold;
+}
 
 .modTestMainView{
 	background-color: #ffffff;
 	width: 100%;
+}
+
+.bookingBanner{
+	min-height: 400px;
+	background-color: #f5f5f5;
+	padding-bottom: 15px solid white;
+	border-bottom: 1px solid #ccc;
+	border-top: 1px solid #ccc;
+}
+
+.spaceLineSmall{
+	height: 15px;
+}
+.spaceLineBig{
+	height: 30px;
+}
+
+.calenderDivStyle{
+	min-height: 345px;
+	border-left: 1px solid #ccc;
+	border-right: 1px solid #ccc;
+}
+.reserverButtomDivStyle{
+	height: 50px;
+	text-align: center;
 }
