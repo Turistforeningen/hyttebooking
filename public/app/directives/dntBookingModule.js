@@ -10,24 +10,25 @@ angular.module('dntBookingModule', ['ui.bootstrap'])
         
         template: 
         '<div class="row" ng-repeat="per in person.slice(0, hider)">'+
-			'<div class="col-lg-9 col-md-8">'+
+			'<div class="col-lg-8 col-md-8">'+
 				'<p>{{per.type}}</p>'+
 			'</div>'+
-			'<div class="col-lg-3 col-md-4">'+
+			'<div class="col-lg-4 col-md-4 modRightText">'+
 				'<select class="selectNumber" ng-model="per.nr" ng-options="pe for pe in range(per.nr)"></select>'+
 			'</div>'+
 		'</div>'+
 		'<div class="row">'+
 			'<div class="col-lg-12 col-md-12">'+
-				
-					'<a ng-click="toggleCollapsed()">Ikke medlem?</a>'+
+					'<br>'+
+					'<a ng-click="toggleCollapsed()" href="">Ikke medlem?</a>'+
+					'<br><br>'+
 					'<div collapse="isCollapsed">'+
 						'<div class="row" ng-repeat="per in person.slice(hider)">'+
-							'<div class="col-lg-9 col-md-8">'+
+							'<div class="col-lg-8 col-md-8">'+
 								'<p>{{per.type}}</p>'+
 								
 							'</div>'+
-							'<div class="col-lg-3 col-md-4">'+
+							'<div class="col-lg-4 col-md-4 modRightText">'+
 								'<select class="selectNumber" ng-model="per.nr" ng-options="pe for pe in range(per.nr)"></select>'+
 							'</div>'+
 						'</div>'+
