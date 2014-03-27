@@ -1,5 +1,5 @@
-<div class="container whole">
-	<div class="row" style="position: center;">
+<div class="container whole fill">
+	<div class="row">
 		<!--This is just the container where the cabin information will be-->
 		<img class="img-responsive"
 			src="assets/images/DNT_hytteprofil_top_small.jpg" />
@@ -68,7 +68,7 @@
 					<!-- /ng-if -->
 					<div ng-if="cabinType=='small'">
 						<div class="row">
-							<div class="row spaceLine"></div>
+							<div class="row spaceLineSmall"></div>
 							<!-- Just pushing the text down a bit -->
 							<div class="col-lg-9 col-md-9">
 								<p>
@@ -193,8 +193,9 @@
 			src="assets/images/DNT_hytteprofil_bottom_small.jpg" />
 	</div>
 	<!-- /row -->
-</div>
-<!-- /container -->
+
 
 <pre>{{booking | json}}</pre>
 <pre>{{personType | json}}</pre>
+</div>
+<!-- /container -->
