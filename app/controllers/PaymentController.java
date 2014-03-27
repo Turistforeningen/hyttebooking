@@ -36,18 +36,20 @@ public class PaymentController extends Controller {
 	 * A call is made to Netaxept that registers a transaction and a transaction id are returned if contact is established.
 	 * This transaction id is stored in the database, and a redirect url to a Netaxept payment site is returned to the user.
 	 * 
+	 * A deliveryDate date string are sent to nets that tells when to capture the amount payed.
+	 * 
+	 * http://www.betalingsterminal.no/Netthandel-forside/Teknisk-veiledning/API/Register/
+	 * 
 	 * @param bookingId - id of booking 
-	 * @return Response containing redirect url for payment.
+	 * @return Response - contains redirect url for user payment.
 	 */
 	public static Promise<Result> registerPayment(Long bookingId) {
-		
-		
 		
 		final Booking b = Booking.getBookingById(bookingId+ "");
 		if(b == null || b.status == Booking.BOOKED) {
 			return Promise.pure((Result) notFound("notfound"));
 		}
-		
+		System.out.println(b.getDeliveryDate());
 		/*if(b.user != SecurityController.getUser()) {
 		return Promise.pure((Result) notFound("This is not your booking"));
 		}*/
@@ -59,10 +61,11 @@ public class PaymentController extends Controller {
 				.setQueryParameter("amount", b.payment.getAmount())
 				.setQueryParameter("CurrencyCode", "NOK")
 				.setQueryParameter("redirectUrl", "http://localhost:9000/#/booking/" + b.getCabin().getCabinUrl())
+				.setQueryParameter("deliveryDate", b.getDeliveryDate())
 				.get().map(
 				new Function<WS.Response, Result>() {
 					public Result apply(WS.Response response) {
-						
+						System.out.println(response.getBody());
 						String trans = response.asXml().getElementsByTagName("TransactionId").item(0).getTextContent();
 						b.payment.setTransactionId(trans);
 						
@@ -75,6 +78,7 @@ public class PaymentController extends Controller {
 		);
 		return resultPromise;
 	}
+	
 	
 	/**
 	 * authenticatePayment should be called after user has filled in payment form at Netaxcept and redirected back
@@ -115,26 +119,6 @@ public class PaymentController extends Controller {
 		return resultPromise;
 	}
 	
-	
-	/**
-	 * Method will capture amount reserved with paymentId. The method calls nets and payment are 
-	 * withdrawn from customers card. It is not decided when this method should be called yet. 
-	 * @param paymentId
-	 * @return
-	 */
-	public static Promise<Result> capturePayment(Long paymentId) {
-		
-		String url = "";
-
-		final Promise<Result> resultPromise = WS.url(url).get().map(
-				new Function<WS.Response, Result>() {
-					public Result apply(WS.Response response) {
-						return ok("captured payment?");
-					}
-				}
-				);
-		return resultPromise;
-	}
 	
 	
 	/**
