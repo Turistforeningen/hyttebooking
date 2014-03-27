@@ -9,8 +9,12 @@ angular.module('dntBookingModule', [])
         },
         
         template: 
+        
+        /*
+        The code below is working but should be replaced. Still not deleted, since it is actually working
+        */
         '<div class="row" ng-repeat="per in person.slice(0, hider)">'+
-        	'<div class="col-lg-9 col-md-8"><p>{{per.type}}<p></div>'+
+        	'<div class="col-lg-9 col-md-8"><p>{{per.type}}</p></div>'+
         	'<div class="col-lg-3 col-md-4"><select class="selectNumber" ng-model="per.nr"'+
         	'ng-options="pe for pe in range(per.nr)"></select></div></div>'+
         		'<div class="row"><div class="col-lg-12 col-md-12">' +
@@ -21,7 +25,39 @@ angular.module('dntBookingModule', [])
         	'<div class="col-lg-9 col-md-8"><p>{{per.type}}</p></div>'+
         	'<div class="col-lg-3 col-md-4"><select class="selectNumber" ng-model="per.nr"'+
         	'ng-options="pe for pe in range(per.nr)"></select></div>'+
-        '</div>',
+        '</div>'+
+        
+        
+        
+        /*
+        The code below is suppose to work, but it is not
+        */
+        '<div class="row" ng-repeat="per in person.slice(0, hider)">'+
+			'<div class="col-lg-9 col-md-8">'+
+				'<p>{{per.type}}</p>'+
+			'</div>'+
+			'<div class="col-lg-3 col-md-4">'+
+				'<select class="selectNumber" ng-model="per.nr" ng-options="pe for pe in range(per.nr)"></select>'+
+			'</div>'+
+		'</div>'+
+		'<div class="row">'+
+			'<div class="col-lg-12 col-md-12">'+
+				'<div ng-controller="CollapseDemoCtrl">'+
+					'<a ng-click="isCollapsed = !isCollapsed">Ikke medlem?</a>'+
+					'<div collapse="isCollapsed">'+
+						'<div class="row" ng-hide="hide" ng-repeat="per in person.slice(hider)">'+
+							'<div class="col-lg-9 col-md-8">'+
+								'<p>{{per.type}}</p>'+
+								'<p>Testparagraf</p>'+
+							'</div>'+
+							'<div class="col-lg-3 col-md-4">'+
+								'<select class="selectNumber" ng-model="per.nr" ng-options="pe for pe in range(per.nr)"></select>'+
+							'</div>'+
+						'</div>'+
+					'</div>'+
+				'</div>'+
+			'</div>'+
+		'</div>',
         
         controller: function($scope, $log) {
         	$scope.person = {};
