@@ -95,8 +95,7 @@ app.controller('testController', function ($scope, $window) {
 
 
 
-View. Possible to add danger and sucess alert to the view
- * by using the method addAlert. The method postBooking uses the ordersService to 
+View. The method postBooking uses the ordersService to 
  * post the booking to the server.
  */
 app.controller('bookingController', function ($rootScope, $scope, ordersService, $log, $routeParams, $window) {
@@ -137,9 +136,7 @@ app.controller('bookingController', function ($rootScope, $scope, ordersService,
     	
 		$scope.booking.beds =($scope.bedsTotal()) + "";
 		$log.info($scope.booking.beds);
-		$scope.booking.Person = $scope.personType;
-		//$scope.booking.dateFrom = "2014-09-18";
-		//$scope.booking.dateTo = "2014-09-22";
+		$scope.booking.guests = $scope.personType;
     	ordersService.postOrder($scope.booking)
 		.success(function (data) {
 			$scope.pay(data.id);
