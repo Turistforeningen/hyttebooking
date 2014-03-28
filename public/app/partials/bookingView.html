@@ -86,15 +86,15 @@
 
 					<div class="row">
 						<div class="col-lg-6 col-md-6">
-							<div ng-model="booking.dateFrom" ng-controller="TooltipDemoCtrl" tooltip-placement="left" tooltip-html-unsafe="{{tooltipArrival}}" tooltip-popup-delay="500">
-								<datepicker min="now" show-weeks="showWeeks"></datepicker>
+							<div  ng-controller="TooltipDemoCtrl" tooltip-placement="left" tooltip-html-unsafe="{{tooltipArrival}}" tooltip-popup-delay="500">
+								<datepicker ng-model="booking.dateFrom" min="now" show-weeks="showWeeks"></datepicker>
 							</div>
 							<!-- /well -->
 						</div>
 						<!-- /col -->
 						<div class="col-lg-6 col-md-6">
-							<div ng-model="booking.dateTo" ng-controller="TooltipDemoCtrl" tooltip-placement="right" tooltip-html-unsafe="{{tooltipDeparture}}" tooltip-popup-delay="500">
-								<datepicker min="booking.dateFrom" show-weeks="showWeeks"></datepicker>
+							<div  ng-controller="TooltipDemoCtrl" tooltip-placement="right" tooltip-html-unsafe="{{tooltipDeparture}}" tooltip-popup-delay="500">
+								<datepicker ng-model="booking.dateTo" min="booking.dateFrom" show-weeks="showWeeks"></datepicker>
 							</div>
 							<!-- /well -->
 						</div>
@@ -159,5 +159,6 @@
 
 	<pre>{{booking | json}}</pre>
 	<pre>{{personType | json}}</pre>
+	<pre>{{booking.dateFrom | date}}</pre>
 </div>
 <!-- /container -->
