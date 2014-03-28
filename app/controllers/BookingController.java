@@ -147,7 +147,7 @@ public class BookingController extends Controller {
 				return badRequest(result);
 			}
 		}
-		
+		System.out.println(beds.size() + "beds -Size");
 		Booking booking = Booking.createBooking(
 				SecurityController.getUser().id, 
 				startDt.toDate(),
