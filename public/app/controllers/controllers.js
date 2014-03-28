@@ -59,7 +59,7 @@ app.controller('testController', function ($scope, $window) {
 	$scope.testExternalView =function() {
 		$window.location.href ="http://www.vg.no";
 	};
-	  
+	
     init();
 
     function init() {
@@ -98,7 +98,7 @@ app.controller('testController', function ($scope, $window) {
 View. The method postBooking uses the ordersService to 
  * post the booking to the server.
  */
-app.controller('bookingController', function ($rootScope, $scope, ordersService, $log, $routeParams, $window) {
+app.controller('bookingController', function ($filter, $rootScope, $scope, ordersService, $log, $routeParams, $window) {
 	$scope.personType;
 	$scope.paid = 0;
 	$scope.booking ={};
@@ -135,8 +135,10 @@ app.controller('bookingController', function ($rootScope, $scope, ordersService,
     $scope.postBooking = function() {
     	
 		$scope.booking.beds =($scope.bedsTotal()) + "";
-		$log.info($scope.booking.beds);
 		$scope.booking.guests = $scope.personType;
+		$scope.booking.dateFrom= $filter('date')($scope.booking.dateFrom,'yyyy-MM-dd');
+		$scope.booking.dateTo= $filter('date')($scope.booking.dateTo,'yyyy-MM-dd');
+		
     	ordersService.postOrder($scope.booking)
 		.success(function (data) {
 			$scope.pay(data.id);
