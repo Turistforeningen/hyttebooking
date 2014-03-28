@@ -5,6 +5,12 @@ import models.LargeCabin;
 import models.SmallCabin;
 import flexjson.JSONDeserializer;
 
+/**
+ * Subclass of AbstractForm. Binds and validate json data used to create
+ * a Cabin in the booking system.
+ * @author Olav
+ *
+ */
 public class CabinForm extends AbstractForm<Cabin>{
 	
 	public String type;
@@ -12,10 +18,17 @@ public class CabinForm extends AbstractForm<Cabin>{
 	public int beds;
 	public int id;
 	
+	/**
+	 * FlexJson needs an constructor even if its empty
+	 */
 	public CabinForm() {
 		
 	}
 	
+	/**
+	 * CreateModel creates an Cabin and saves it to the database.
+	 * If the form is not valid, it returns null.
+	 */
 	@Override
 	public boolean validate() {
 		if(type == null) {
@@ -37,9 +50,14 @@ public class CabinForm extends AbstractForm<Cabin>{
 		return true;	
 	}
 	
+	/**
+	 * Validate is responsible for checking that no data is missing from the json request,
+	 * and that data is correctly inputed. If there is any missing or wrong
+	 * parameters, then the form is deemed invalid.
+	 */
 	@Override
 	public Cabin createModel() {
-		if(validate()) {
+		if(isValid()) {
 			if(this.type.equals("SmallCabin")) {
 				SmallCabin cabin = new SmallCabin(this.name);
 				cabin.save();
@@ -59,7 +77,14 @@ public class CabinForm extends AbstractForm<Cabin>{
 		return "type: " +type + " ,name: " +name +" ,beds: " + beds + " ,id: " +id;
 	}
 	
-	
+	/**
+	 * jsonFlex is used to deserialize/unmarshall json String into a form containing
+	 * java classes like String, int, List<T>. If the deserializer cant complete,
+	 * it is counted as an error.  
+	 * 
+	 * @param jsonBooking
+	 * @return CabinForm used to validate and bind the data.
+	 */
 	public static CabinForm deserializeJson(String jsonCabin) {
 		CabinForm cabinData = null;
 		

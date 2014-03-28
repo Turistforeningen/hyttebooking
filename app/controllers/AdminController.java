@@ -1,14 +1,10 @@
 package controllers;
 
-import java.util.List;
 
-import com.fasterxml.jackson.databind.JsonNode;
 
 import models.Booking;
 import models.Cabin;
-import models.LargeCabin;
-import models.SmallCabin;
-import models.User;
+
 import flexjson.JSONSerializer;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -81,11 +77,17 @@ public class AdminController extends Controller {
 		
 		CabinForm form = utilities.CabinForm
 				.deserializeJson(request().body().asJson().toString());
-		//looks logically bad that a Cabin is created before form.valid() is run
-		//Make fix, without running validation two times?
-		Cabin c =form.createModel();
+		
 		if(form.isValid()) {
-			return ok();
+			
+			Cabin c =form.createModel();
+			
+			if (c == null) {
+				return badRequest(form.getError());
+			}
+			else {
+				return ok();
+			}
 		}
 		else {
 			return badRequest(form.getError());
