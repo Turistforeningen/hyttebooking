@@ -20,7 +20,7 @@ angular.module('dntBookingModule', ['ui.bootstrap'])
 		'<div class="row">'+
 			'<div class="col-lg-12 col-md-12">'+
 					'<br>'+
-					'<a ng-click="toggleCollapsed()" href="">Ikke medlem?</a>'+
+					'<a ng-click="toggleCollapsed()" href="" ng-controller="TooltipDemoCtrl" tooltip-placement="top" tooltip-html-unsafe="{{tooltipNoneMember}}" tooltip-popup-delay="500">Ikke medlem?</a>'+
 					'<br><br>'+
 					'<div collapse="isCollapsed">'+
 						'<div class="row" ng-repeat="per in person.slice(hider)">'+
