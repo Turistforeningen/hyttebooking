@@ -17,27 +17,10 @@
 
 			<!-- /////////////////////////////////////////////// Numbers of beds to be reserved ////////////////////////////////////////////// -->
 			<div class="row">
-				<div class="col-lg-11 col-md-11">
-					<h2>Booking <a
-						title="Bookingen foregår over tre steg fra venstre mot høyre; <br><br>
-					Velg antall personer i kategorier bookingen gjelder for.<br><br>
-					Velg dato for ankomst og avreise.<br><br>Se oversikt over reservasjon før du går
-					til neste steg av reservasjonen ved å trykke Reserver."
-						data-html="true" rel="tooltip" href=""><i
-						class="fa fa-question-circle"
-						style="text-align: right"></i></a></h2>
+				<div class="col-lg-12 col-md-12">
+					<h2>Booking <a ng-controller="TooltipDemoCtrl" href="" tooltip-placement="right" tooltip-html-unsafe="{{tooltipBookingInfo}}"><i
+							class="fa fa-question-circle"></i></a></h2>
 				</div>
-				<!-- /col -->
-				<!-- <div class="col-lg-1 col-md-1 tooltip-demo" style="height: 63px">
-					<a
-						title="Bookingen foregår over tre steg fra venstre mot høyre; <br><br>
-					Velg antall personer i kategorier bookingen gjelder for.<br><br>
-					Velg dato for ankomst og avreise.<br><br>Se oversikt over reservasjon før du går
-					til neste steg av reservasjonen ved å trykke Reserver."
-						data-html="true" rel="tooltip" href=""><i
-						class="fa fa-question-circle fa-2x fa-info-circle-position"
-						style="text-align: right"></i></a>
-				</div> -->
 				<!-- /col -->
 			</div>
 			<!-- /row -->
@@ -53,7 +36,7 @@
 							<!-- /col -->
 						</div>
 
-						
+
 						<!-- /row -->
 					</div>
 
@@ -82,24 +65,6 @@
 
 
 				<!-- //////////////////////////////////////////////////// Date to be reserved //////////////////////////////////////////////////// -->
-				<!-- 
-				<div class="col-lg-6 col-md-6 calenderDivStyle">
-					<div class="row">
-						<div class="col-lg-6 col-md-6">
-							<strong>Ankomst:</strong> <input type="text"
-								ng-model="booking.dateFrom" class="form-control"
-								placeholder="ÅÅÅÅ-MM-DD" datepicker-popup="yyyy-MM-dd">
-
-						</div>
-						<div class="col-lg-6 col-md-6">
-							<strong>Avreise:</strong> <input type="text"
-								ng-model="booking.dateTo" class="form-control"
-								placeholder="ÅÅÅÅ-MM-DD" datepicker-popup="yyyy-MM-dd">
-
-						</div>
-					</div>
-					-->
-
 
 				<div class="col-lg-6 col-md-6 calenderDivStyle">
 					<div class="row">
@@ -113,17 +78,22 @@
 						<!-- /col -->
 					</div>
 					<!-- /row -->
+					<div class="row">
+						<div class="col-lg-12 col-md-12 spaceLineSmall"></div>
+						<!-- /col -->
+					</div>
+					<!-- /row -->
 
 					<div class="row">
 						<div class="col-lg-6 col-md-6">
-							<div class="well well-sm" ng-model="booking.dateFrom">
+							<div ng-model="booking.dateFrom" ng-controller="TooltipDemoCtrl" tooltip-placement="left" tooltip-html-unsafe="{{tooltipArrival}}" tooltip-popup-delay="500">
 								<datepicker min="now" show-weeks="showWeeks"></datepicker>
 							</div>
 							<!-- /well -->
 						</div>
 						<!-- /col -->
 						<div class="col-lg-6 col-md-6">
-							<div class="well well-sm" ng-model="booking.dateTo">
+							<div ng-model="booking.dateTo" ng-controller="TooltipDemoCtrl" tooltip-placement="right" tooltip-html-unsafe="{{tooltipDeparture}}" tooltip-popup-delay="500">
 								<datepicker min="booking.dateFrom" show-weeks="showWeeks"></datepicker>
 							</div>
 							<!-- /well -->
@@ -154,7 +124,7 @@
 						<div ng-controller="ModalController" ng-init="personType">
 
 							<button class="btn btn-primary"
-								ng-click="open('/assets/app/partials/bookingModal.html')">Reserver</button>
+								ng-click="open('/assets/app/partials/bookingModal.html')" ng-controller="TooltipDemoCtrl" tooltip-placement="bottom" tooltip-html-unsafe="{{tooltipReserveButton}}" tooltip-popup-delay="500">Reserver</button>
 							<div ng-show="selected">Selection from a modal: {{ selected
 								}}</div>
 						</div>
@@ -187,7 +157,7 @@
 	<!-- /row -->
 
 
-<pre>{{booking | json}}</pre>
-<pre>{{personType | json}}</pre>
+	<pre>{{booking | json}}</pre>
+	<pre>{{personType | json}}</pre>
 </div>
 <!-- /container -->

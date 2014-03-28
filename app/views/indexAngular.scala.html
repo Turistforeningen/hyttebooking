@@ -27,13 +27,13 @@
 			<div class="collapse navbar-collapse"  id="bs-example-navbar-collapse-1" ng-controller="headerController">
 				<ul class="nav navbar-nav"></ul>
 				<ul class="nav navbar-nav navbar-right">
-					<li ng-show="!loggedIn"><a href="#/login">sign in</a></li>
+					<li ng-show="!loggedIn"><a href="#/login">Logg inn</a></li>
 					<li ng-show="loggedIn" class="dropdown"><a href="#" class="dropdown-toggle"
 						data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span> {{name}} <b class="caret"></b></a>
 						<ul class="dropdown-menu">
-							<li><a href="#/orderHistory">Orders</a></li>
+							<li><a href="#/orderHistory">Brukerprofil</a></li>
 							<li class="divider"></li>
-							<li><a ng-click="logoutAction()">Sign out</a></li>
+							<li><a ng-click="logoutAction()">Logg ut</a></li>
 						</ul></li>
 				</ul>
 			</div>
