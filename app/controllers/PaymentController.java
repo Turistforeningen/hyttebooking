@@ -65,6 +65,7 @@ public class PaymentController extends Controller {
 				.get().map(
 				new Function<WS.Response, Result>() {
 					public Result apply(WS.Response response) {
+						//needs check here
 						System.out.println(response.getBody());
 						String trans = response.asXml().getElementsByTagName("TransactionId").item(0).getTextContent();
 						b.payment.setTransactionId(trans);
@@ -112,6 +113,7 @@ public class PaymentController extends Controller {
 				.get().map(
 				new Function<WS.Response, Result>() {
 					public Result apply(WS.Response response) {
+						//needs check here
 						return ok(response.getBody());
 					}
 				}
@@ -142,6 +144,7 @@ public static Promise<Boolean> cancelPayment(String transactionId) {
 				.get().map(
 				new Function<WS.Response, Boolean>() {
 					public Boolean apply(WS.Response response) {
+						//needs check here
 						System.out.println(response.getBody());
 						return true;
 					}

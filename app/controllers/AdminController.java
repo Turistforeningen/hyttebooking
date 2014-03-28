@@ -13,6 +13,7 @@ import flexjson.JSONSerializer;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.With;
+import utilities.CabinForm;
 import utilities.Page;
 
 @With(SecurityController.class)
@@ -62,28 +63,32 @@ public class AdminController extends Controller {
 		return ok(bookingSerializer.serialize(bookingsAtCabin));
 	}
 	
+	/**
+	 * A cabin can be added to the booking system by running submitCabin.
+	 * This is naturally a restricted operation only for admins.
+	 * 
+	 * The json request are validated and binded to a model using the CabinForm.
+	 * A subclass of AbstractForm. The data are deserialized and validated, and 
+	 * if errors are found a error message is created by the form which this
+	 * method returns.
+	 * @return a Result containing a json string with status and message value.
+	 */
 	public static Result submitCabin() {
 		
 		if (!SecurityController.getUser().admin) {
 			return unauthorized();
 		}
 		
-		JsonNode json = request().body().asJson();
-		
-		String type = json.get("type").asText();
-		if(type.equals("SmallCabin")) {
-			SmallCabin cabin = new SmallCabin(json.get("name").asText());
-			//make convenience methods here, and if id should be set,
-			//it must not crash with id of other cabins.
-			cabin.save();
+		CabinForm form = utilities.CabinForm
+				.deserializeJson(request().body().asJson().toString());
+		//looks logically bad that a Cabin is created before form.valid() is run
+		//Make fix, without running validation two times?
+		Cabin c =form.createModel();
+		if(form.isValid()) {
 			return ok();
 		}
-		else if(type.equals("LargeCabin")) {
-			LargeCabin cabin = new LargeCabin(json.get("name").asText(), json.get("beds").asInt());
-			cabin.save();
-			return ok();
+		else {
+			return badRequest(form.getError());
 		}
-		return badRequest();
-		
 	}
 }
