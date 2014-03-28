@@ -14,6 +14,12 @@ import models.Cabin;
 import models.LargeCabin;
 import models.Payment;
 
+/**
+ * Subclass of AbstractForm. Binds and validate json data used to create
+ * a Booking in the system.
+ * @author Olav
+ *
+ */
 public class BookingForm extends AbstractForm<Booking> {
 	public Long cabinId;
 	public String dateFrom;
@@ -21,14 +27,24 @@ public class BookingForm extends AbstractForm<Booking> {
 	public int beds;
 	public List<PriceForm> guests;
 	
+	/**
+	 * FlexJson needs an constructor even if its empty
+	 */
 	public BookingForm() {
 		
 	}
 
 	
+	/**
+	 * CreateModel creates an Booking and saves it to the database.
+	 * If the form is not valid, it returns null.
+	 * It check that there is available beds if the cabin booked at is
+	 * a largeCabin, and saves payment information like the amount 
+	 * to be paid.
+	 */
 	@Override
 	public Booking createModel() {
-		if(validate()) {
+		if(isValid()) {
 			//save these in validate? Or messy
 			DateTime startDt = utilities.DateHelper.toDt(this.dateFrom);
 			DateTime endDt = utilities.DateHelper.toDt(this.dateTo);
@@ -52,7 +68,7 @@ public class BookingForm extends AbstractForm<Booking> {
 			double amount = PriceHelper.calculateAmount(guests, Days.daysBetween(startDt, endDt).getDays());
 			Payment.createPaymentForBooking(SecurityController.getUser(), booking, amount);
 			addSuccess("message", "booking saved");
-			addSuccess("id", booking.id +"");
+			
 			
 			return booking;
 		}
@@ -60,7 +76,11 @@ public class BookingForm extends AbstractForm<Booking> {
 		return null;
 	}
 
-	
+	/**
+	 * Validate is responsible for checking that no data is missing from the json request,
+	 * and that data is correctly inputted. If there is any missing or wrong
+	 * parameters, then the form is deemed invalid.
+	 */
 	@Override
 	public boolean validate() {
 		if(cabinId == null) {
@@ -104,7 +124,14 @@ public class BookingForm extends AbstractForm<Booking> {
 		return true;
 	}
 	
-	
+	/**
+	 * jsonFlex is used to deserialize/unmarshall json String into a form containing
+	 * java classes like String, int, List<T>. If the deserializer cant complete,
+	 * it is counted as an error.  
+	 * 
+	 * @param jsonBooking
+	 * @return BookingForm used to validate and bind the data.
+	 */
 	public static BookingForm deserializeJson(String jsonBooking) {
 		BookingForm bookingData = null;
 		try {

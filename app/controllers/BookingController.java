@@ -2,9 +2,6 @@ package controllers;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
 import org.joda.time.DateTime;
@@ -20,17 +17,11 @@ import org.joda.time.Days;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import flexjson.JSONDeserializer;
 import flexjson.JSONSerializer;
-import models.Bed;
 import models.Booking;
 import models.Cabin;
-import models.Guest;
 import models.LargeCabin;
-import models.Payment;
 import models.SmallCabin;
-import models.User;
-import play.api.data.Form;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -38,7 +29,6 @@ import play.mvc.Results;
 import play.mvc.With;
 import utilities.BookingForm;
 import utilities.Page;
-import utilities.PriceHelper;
 
 @With(SecurityController.class)
 public class BookingController extends Controller {
@@ -108,12 +98,20 @@ public class BookingController extends Controller {
 	 */
 	public static Result submitBooking() {
 		
-		JsonNode json = request().body().asJson();
-		BookingForm form = BookingForm.deserializeJson(json.toString());
-		Booking booking = form.createModel();
-		
+		BookingForm form = BookingForm
+				.deserializeJson(request().body().asJson().toString());
+	
 		if(form.isValid()) {
-			return ok(form.getSuccess());
+			Booking booking = form.createModel();
+			
+			if(booking == null) {
+				return badRequest(form.getError());
+			}
+			else {
+				ObjectNode response = form.getSuccess();
+				response.put("id", booking.id +"");
+				return ok(form.getSuccess());
+			}
 		}
 		else {
 			return badRequest(form.getError());
