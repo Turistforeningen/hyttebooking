@@ -1,5 +1,7 @@
 package utilities;
 
+import java.util.List;
+
 import com.fasterxml.jackson.databind.JsonNode;
 
 public class PriceHelper {
@@ -10,6 +12,17 @@ public class PriceHelper {
 		//based on type, to avoid price-changing frontend.
 		for(JsonNode guestType : guestList) {
 			amount += days*guestType.get("nr").asInt()*guestType.get("price").asDouble();
+		}
+		
+		return amount;
+	}
+	
+	public static double calculateAmount(List<PriceForm> guestList, int days) {
+		double amount = 0;
+		//Temporarily gets prices from json string, but should get them from database
+		//based on type, to avoid price-changing frontend.
+		for(PriceForm guestType : guestList) {
+			amount += days*guestType.nr*guestType.price;
 		}
 		
 		return amount;
