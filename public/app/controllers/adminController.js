@@ -130,7 +130,7 @@ app.controller('cabinFormController', function ($scope, $location, $routeParams,
 			$log.info("posted");
 		})
 		.error(function (error) {
-			$log.info("not posted");
+			$log.info("not posted" + error.message);
 		});
 	};
 	

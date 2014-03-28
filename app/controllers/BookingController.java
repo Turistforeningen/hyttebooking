@@ -2,9 +2,6 @@ package controllers;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
 import org.joda.time.DateTime;
@@ -15,26 +12,23 @@ import org.joda.time.Days;
 
 
 
+
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import flexjson.JSONSerializer;
-import models.Bed;
 import models.Booking;
 import models.Cabin;
-import models.Guest;
 import models.LargeCabin;
-import models.Payment;
 import models.SmallCabin;
-import models.User;
-import play.api.data.Form;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Results;
 import play.mvc.With;
+import utilities.BookingForm;
 import utilities.Page;
-import utilities.PriceHelper;
 
 @With(SecurityController.class)
 public class BookingController extends Controller {
@@ -94,75 +88,34 @@ public class BookingController extends Controller {
 			}
 		}
 	}
-
+	/**
+	 * Controller method that use a the custom subclass bookingForm to 
+	 * validate and bind the json data in the request body.
+	 * If there is any validation errors the isValid method will return false.
+	 * 
+	 * 
+	 * @return json string describing what went wrong. Validation or booked to capacity etc
+	 */
 	public static Result submitBooking() {
-		ObjectNode result = Json.newObject();
 		
-		JsonNode json = request().body().asJson();
-		
-		if(json == null) {
-			result.put("status", "KO");
-			result.put("message", "Expected Json");
-			return badRequest(result);
-		}
-
-		Cabin cabin = Cabin.find.byId(json.get("cabinId").asLong());
-		if(cabin == null) {
-			result.put("status", "KO");
-			result.put("message", "cant book at this cabin");
-		}
-
-		String nrPerson = json.get("beds").asText();
-		String start = json.get("dateFrom").asText();
-		System.out.println(json.get("dateFrom").asText());
-		DateTime startDt = utilities.DateHelper.toDt(start);
-		System.out.println("Start dt: "+startDt);
-		String end = json.get("dateTo").asText();
-		DateTime endDt = utilities.DateHelper.toDt(end);
-		JsonNode guests = json.get("guests");
-		System.out.println("End dt: "+endDt);
-
-		//validate request here
-		if(
-				startDt == null ||
-				endDt 	== null ||
-				guests == null ||
-				startDt.isBeforeNow() ||
-				endDt.isBeforeNow() ||
-				!startDt.isBefore(endDt)
-				) 
-		{
+		BookingForm form = BookingForm
+				.deserializeJson(request().body().asJson().toString());
+	
+		if(form.isValid()) {
+			Booking booking = form.createModel();
 			
-			result.put("status", "KO");
-			result.put("message", "date invalid");
-			return badRequest(result);
-		}
-
-		List<Bed> beds = null;
-		if (cabin instanceof LargeCabin) {
-			beds = ((LargeCabin) cabin).book(Integer.parseInt(nrPerson), startDt, endDt);
-			if(beds == null) {
-				result.put("status", "KO");
-				result.put("message", "no available beds");
-				return badRequest(result);
+			if(booking == null) {
+				return badRequest(form.getError());
+			}
+			else {
+				ObjectNode response = form.getSuccess();
+				response.put("id", booking.id +"");
+				return ok(form.getSuccess());
 			}
 		}
-		System.out.println(beds.size() + "beds -Size");
-		Booking booking = Booking.createBooking(
-				SecurityController.getUser().id, 
-				startDt.toDate(),
-				endDt.toDate(),
-				cabin.id,
-				beds);
-		
-		double amount = PriceHelper.calculateAmount(guests, Days.daysBetween(startDt, endDt).getDays());
-		Payment.createPaymentForBooking(SecurityController.getUser(), booking, amount);
-		//TODO should be some sort of check here that booking != null
-		result.put("status", "OK");
-		result.put("message", "booking saved");
-		result.put("id", booking.id);
-		return ok(result);
-
+		else {
+			return badRequest(form.getError());
+		}
 	}
 
 

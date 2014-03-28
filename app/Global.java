@@ -17,7 +17,7 @@ import org.joda.time.DateTime;
  * with model (since cabins have no name [debatable])
  */
 public class Global extends GlobalSettings {
-	public final static int NR_OF_DUMMY_BOOKINGS = 2;
+	public final static int NR_OF_DUMMY_BOOKINGS = 0;
 	public final static int BOOKING_DATE_RANGE = 40;
 	@Override
 	public void onStart(Application app) {

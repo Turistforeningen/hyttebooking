@@ -1,18 +1,15 @@
 package controllers;
 
-import java.util.List;
 
-import com.fasterxml.jackson.databind.JsonNode;
 
 import models.Booking;
 import models.Cabin;
-import models.LargeCabin;
-import models.SmallCabin;
-import models.User;
+
 import flexjson.JSONSerializer;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.With;
+import utilities.CabinForm;
 import utilities.Page;
 
 @With(SecurityController.class)
@@ -62,28 +59,38 @@ public class AdminController extends Controller {
 		return ok(bookingSerializer.serialize(bookingsAtCabin));
 	}
 	
+	/**
+	 * A cabin can be added to the booking system by running submitCabin.
+	 * This is naturally a restricted operation only for admins.
+	 * 
+	 * The json request are validated and binded to a model using the CabinForm.
+	 * A subclass of AbstractForm. The data are deserialized and validated, and 
+	 * if errors are found a error message is created by the form which this
+	 * method returns.
+	 * @return a Result containing a json string with status and message value.
+	 */
 	public static Result submitCabin() {
 		
 		if (!SecurityController.getUser().admin) {
 			return unauthorized();
 		}
 		
-		JsonNode json = request().body().asJson();
+		CabinForm form = utilities.CabinForm
+				.deserializeJson(request().body().asJson().toString());
 		
-		String type = json.get("type").asText();
-		if(type.equals("SmallCabin")) {
-			SmallCabin cabin = new SmallCabin(json.get("name").asText());
-			//make convenience methods here, and if id should be set,
-			//it must not crash with id of other cabins.
-			cabin.save();
-			return ok();
+		if(form.isValid()) {
+			
+			Cabin c =form.createModel();
+			
+			if (c == null) {
+				return badRequest(form.getError());
+			}
+			else {
+				return ok();
+			}
 		}
-		else if(type.equals("LargeCabin")) {
-			LargeCabin cabin = new LargeCabin(json.get("name").asText(), json.get("beds").asInt());
-			cabin.save();
-			return ok();
+		else {
+			return badRequest(form.getError());
 		}
-		return badRequest();
-		
 	}
 }
