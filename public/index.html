@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html ng-app="dntApp">
+<head>
+    <title>DNT</title>
+    <link rel="stylesheet" type="text/css" href="assets/stylesheets/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="assets/stylesheets/main.css">
+    <link rel="stylesheet" type="text/css" href="assets/stylesheets/font-awesome.css">
+    <link rel="stylesheet" type="text/css" href="assets/stylesheets/font-awesome.min.css">
+    <link rel="SHORTCUT ICON" href="assets/images/favicon.ico" />
+</head >
+<body ng-cloak>
+    <div ng-include="'assets/app/partials/navbar.html'">
+    </div>
+    
+    <div ng-view class="">
+    </div>
+    
+    <script src="assets/javascripts/jquery-1.9.0.min.js"></script>
+    <script src="assets/javascripts/angular.js"></script>
+    <script src="assets/javascripts/bootstrap.js"></script>
+    <script src="assets/javascripts/angular-route.js"></script>
+    <script src="assets/javascripts/angular-cookies.js"></script>
+    <script src="assets/javascripts/angular-resource.js"></script>
+    <script src="assets/javascripts/angular-sanitize.js"></script>
+    <script src="assets/javascripts/ui-bootstrap-tpls-0.10.0.min.js"></script>
+    
+    <script src="assets/javascripts/angular-locale_no.js"></script>
+    
+    <script src="assets/javascripts/daterangepicker.js"></script>
+    <script src="assets/javascripts/moment.js"></script>
+    <script src="assets/javascripts/ng-bs-daterangepicker.js"></script>
+    
+    <script src="assets/app/app.js"></script>
+    <script src="assets/app/controllers/controllers.js"></script>
+    <script src="assets/app/directives/dntBookingModule.js"></script>
+    <script src="assets/app/controllers/adminController.js"></script>
+    
+    <script src="assets/app/controllers/modal.js"></script>
+    <script src="assets/app/controllers/tooltip.js"></script>
+    <script src="assets/app/controllers/collapse.js"></script>
+    
+    <script src="assets/app/controllers/accordion.js"></script>
+    <script src="assets/app/services/ordersService.js"></script>
+    <script src="assets/app/services/cabinService.js"></script>
+    <script src="assets/app/services/authService.js"></script>
+    
+   
+</body>
+</html>
