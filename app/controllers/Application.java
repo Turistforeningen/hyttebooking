@@ -10,7 +10,7 @@ import play.db.ebean.Model;
 import play.mvc.*;
 import views.html.*;
 
-public class Application extends Controller {
+public class Application extends Controller {	
     
     public static Result bookAtCabin(String cabinID) {
     	String beds = request().getQueryString("sengeplasser");
