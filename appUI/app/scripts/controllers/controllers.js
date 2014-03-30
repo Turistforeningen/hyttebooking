@@ -3,8 +3,8 @@
  * Controller for the ordersView. Sends a get request for orderHistory to the server.
  * Methods for getting and cancelling bookings.
  */
-angular.module('dntApp').controller('orderController', ['$scope','$location','$routeParams','ordersService',' api', '$log',
-                                                        function ($scope, $location, $routeParams, ordersService, api, $log) {
+angular.module('dntApp').controller('orderController', ['$scope','$location','$routeParams','ordersService', '$log',
+                                                        function ($scope, $location, $routeParams, ordersService, $log) {
 	$scope.currentPage =1;
 	$scope.totalItems = 10;
 	$scope.itemsPerPage = 10;
@@ -14,7 +14,7 @@ angular.module('dntApp').controller('orderController', ['$scope','$location','$r
 	};
 
 	$scope.getOrders = function(page) {
-
+		$log.info('inni her ja');
 		ordersService.getOrders(page, $scope.itemsPerPage)
 		.success(function (userOrders) {
 			$scope.currentPage = page +1;
@@ -43,6 +43,7 @@ angular.module('dntApp').controller('orderController', ['$scope','$location','$r
 
 
 	function init() {
+		$log.info('inni init');
 		var pageNo = parseInt($routeParams.page);
 		if(pageNo) {
 			$scope.getOrders(pageNo-1);
