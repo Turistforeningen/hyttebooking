@@ -1,5 +1,23 @@
 'use strict';
 
+/**
+ * @ngdoc directive
+ * @name dntBookingModule.directive:dntSelector
+ * @element dntSelector
+ * @function
+ * @restrict AE
+ * @description
+ * Displays a number of selects decided by the number of guestTypes.
+ * It will prevent the user from selecting guests from each category such that
+ * the total number of guests are over the cabin capacity.
+ * 
+ *
+ * **Note:** PersonType should be of the form [{"type": "x", "price": "x", "amount":"x"}, ... , {"type": "x", "price": "x", "amount":"x"}]
+ *
+ * @example
+   <dntSelector personTypes="[{"type": "ungdom, medlem", "price": "300", "amount":"0"}]" hideTypeIndex="1">
+   </example>
+ */
 angular.module('dntBookingModule', ['ui.bootstrap'])
 .directive('dntSelector', function() {
 	return {

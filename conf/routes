@@ -20,8 +20,13 @@ POST    /api/cabins                             controllers.AdminController.subm
 GET     /api/cabins/:id/prices                  controllers.BookingController.getPriceForCabin(id: Long) 
 GET     /api/bookings/:id/payment               controllers.PaymentController.registerPayment(id: Long)   
 POST    /api/payment/authenticate               controllers.PaymentController.authenticatePayment()  
- 
 
+#Docs routes -temp uses bootstrap etc but is its own folder
+GET     /api                             controllers.Assets.at(path="/app-ui/docs", file="index.html")
+GET     /css/*file                        controllers.Assets.at(path="/app-ui/docs/css", file)
+GET     /js/*file                         controllers.Assets.at(path="/app-ui/docs/js", file)
+GET     /font/*file                       controllers.Assets.at(path="/app-ui/docs/font", file)
+GET     /partials/*file                   controllers.Assets.at(path="/app-ui/docs/partials", file)
      
 #Prod routes - uncomment and run "grunt" command
 # Home page

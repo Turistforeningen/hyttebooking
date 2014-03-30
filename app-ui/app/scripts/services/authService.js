@@ -3,7 +3,12 @@
  * The authorization handles posting login and logout request to server.
  * 
  */
-
+/**
+ * @ngdoc service 
+ * @name dntApp.authorization
+ * @description The authorization handles posting login and logout request to server.
+ * @requires $http 
+**/
 angular.module('dntApp').factory('authorization', ['$http', function ($http) {
 
 	return {
