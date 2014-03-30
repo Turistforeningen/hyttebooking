@@ -51,7 +51,7 @@ angular.module('dntApp').factory('httpInterceptor', ['$q', '$window', '$location
 
 /**
  * @ngdoc service 
- * @name dntApp.httpInterceptor
+ * @name dntApp.api
  * @description Puts the authentication token into the header of http request done
  * by client. 
  * Token is retrieved either from cookieStore (logged in from a previous session)

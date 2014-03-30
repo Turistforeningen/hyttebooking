@@ -6,17 +6,31 @@
  * @element div
  * @function
  * @restrict AE
+ * @param  {json array} personTypes  json array with supported guest types for cabin
+ * @param  {number} hideTypeIndex  If there is many categories, a number can be used to hide the rest of the categories
+ * @param  {number} numberOfBeds  The max bed capacity of the cabin. Avoids user to select more beds than can be actually booked.
  * @description
  * Displays a number of selects decided by the number of guestTypes.
  * It will prevent the user from selecting guests from each category such that
  * the total number of guests are over the cabin capacity.
  * 
  *
- * **Note:** PersonType should be of the form [{"type": "x", "price": "x", "amount":"x"}, ... , {"type": "x", "price": "x", "amount":"x"}]
+ * **Note:** PersonType should be of the form [{"type": "x", "price": "x", "nr":"x"}, ... , {"type": "x", "price": "x", "nr":"x"}]
  *
  * @example
-   <dntSelector personTypes="[{"type": "ungdom, medlem", "price": "300", "amount":"0"}]" hideTypeIndex="1">
-   </example>
+ * <p>Selector</p>
+ * <example module="sx">
+        <file name="script.js">
+            angular.module('sx', []);
+            function ctrl($scope) {
+                $scope.guests = [{"nr": 0,"price": 300,"type": "Voksen, medlem"},{"nr": 0,"price": 150,"type": "Ungdom, medlem"}];
+            }
+        </file>
+        <file name="index.html">
+ * <div ng-controller="ctrl">
+ * <dnt-selector person-types="guests" hide-type-index="4"
+									number-of-beds="20"></dnt-selector><p>{{ guests }}</p>
+ *</div></file></example>
  */
 angular.module('dntBookingModule', ['ui.bootstrap'])
 .directive('dntSelector', function() {
@@ -126,6 +140,9 @@ angular.module('dntBookingModule', ['ui.bootstrap'])
  * @function
  * @restrict AE
  * @description
+ * @param  {json array} personTypes  json array with supported guest types for cabin
+ * @param {Date} fromDate Date the of arrival to cabin
+ * @param {Date} toDate Date of departure from cabin
  * Displays the total price, and the prices for each guesttype calculated based on booking dates and number of persons in 
  * that category. Its basically a summary component that uses the same personTypes json variable. It recalculates
  * the price whenever dates change or user change any of the select boxes of dntSelector.
@@ -135,8 +152,8 @@ angular.module('dntBookingModule', ['ui.bootstrap'])
  *	AND be the reference the same model as dntSelector to work properly.
  *
  * @example
-   <dntPriceViewers personTypes="[{"type": "ungdom, medlem", "price": "300", "amount":"0"}]" hideTypeIndex="1">
-   </example>
+   <dnt-price-viewer person-types="[{"type": "ungdom, medlem", "price": "300", "amount":"2"}]">
+   </dnt-price-viewer>
  */
 angular.module('dntBookingModule')
 .directive('dntPriceViewer', function() {
