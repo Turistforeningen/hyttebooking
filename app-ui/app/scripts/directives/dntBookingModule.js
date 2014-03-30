@@ -3,7 +3,7 @@
 /**
  * @ngdoc directive
  * @name dntBookingModule.directive:dntSelector
- * @element dntSelector
+ * @element div
  * @function
  * @restrict AE
  * @description
@@ -118,6 +118,26 @@ angular.module('dntBookingModule', ['ui.bootstrap'])
 			}
 	};
 });
+
+/**
+ * @ngdoc directive
+ * @name dntBookingModule.directive:dntPriceViewer
+ * @element div
+ * @function
+ * @restrict AE
+ * @description
+ * Displays the total price, and the prices for each guesttype calculated based on booking dates and number of persons in 
+ * that category. Its basically a summary component that uses the same personTypes json variable. It recalculates
+ * the price whenever dates change or user change any of the select boxes of dntSelector.
+ * 
+ *
+ * **Note:** PersonType should be of the form [{"type": "x", "price": "x", "amount":"x"}, ... , {"type": "x", "price": "x", "amount":"x"}],
+ *	AND be the reference the same model as dntSelector to work properly.
+ *
+ * @example
+   <dntPriceViewers personTypes="[{"type": "ungdom, medlem", "price": "300", "amount":"0"}]" hideTypeIndex="1">
+   </example>
+ */
 angular.module('dntBookingModule')
 .directive('dntPriceViewer', function() {
 	return {

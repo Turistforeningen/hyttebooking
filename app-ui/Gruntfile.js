@@ -362,7 +362,15 @@ module.exports = function (grunt) {
       }
     },
     ngdocs: {
-       all: ['app/scripts/**/*.js']
+    	options: {
+            html5Mode: true,
+            title: 'cabin Booking',
+            
+        },
+        api: {
+            src: ['app/scripts/**/*.js'],
+            title: 'API Reference'
+        }
     }
   });
 

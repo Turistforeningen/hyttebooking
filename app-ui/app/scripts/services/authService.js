@@ -1,8 +1,5 @@
 'use strict';
-/*
- * The authorization handles posting login and logout request to server.
- * 
- */
+
 /**
  * @ngdoc service 
  * @name dntApp.authorization
@@ -26,6 +23,13 @@ angular.module('dntApp').factory('authorization', ['$http', function ($http) {
  * httpInterceptor will intercept a unauthorized access and redirect
  * user to /login view.
  */
+/**
+ * @ngdoc service 
+ * @name dntApp.httpInterceptor
+ * @description httpInterceptor will intercept a unauthorized access and redirect
+ * user to /login view.
+ * @requires $http 
+**/
 angular.module('dntApp').factory('httpInterceptor', ['$q', '$window', '$location', function httpInterceptor ($q, $window, $location) {
 	return function (promise) {
 		var success = function (response) {
@@ -45,12 +49,15 @@ angular.module('dntApp').factory('httpInterceptor', ['$q', '$window', '$location
 }]);
 
 
-/*
- *Puts the authentication token into the header of http request done
- *by client. 
- *Token is either stored in a cookie (from a previous session)
- *or sent as a method parameter. 
- */
+/**
+ * @ngdoc service 
+ * @name dntApp.httpInterceptor
+ * @description Puts the authentication token into the header of http request done
+ * by client. 
+ * Token is retrieved either from cookieStore (logged in from a previous session)
+ * or sent as a method parameter.
+ * @requires $http 
+**/
 angular.module('dntApp').factory('api', ['$http', '$cookieStore', function ($http, $cookieStore) {
 	return {
 		init: function (token) {
