@@ -296,7 +296,13 @@ module.exports = function (grunt) {
               cwd: '<%= yeoman.app %>/bower_components/bootstrap/dist/fonts/',
               src: ['**'],
               dest: '<%= yeoman.dist %>/bower_components/bootstrap/dist/fonts/' // Font Awesome copy hack
-            }]
+            },
+            {
+                expand: true,
+                cwd: '<%= yeoman.app %>/docs',
+                src: ['**'],
+                dest: '<%= yeoman.dist %>/docs' // Font Awesome copy hack
+              }]
       },
       styles: {
         expand: true,
@@ -354,6 +360,9 @@ module.exports = function (grunt) {
         configFile: 'karma.conf.js',
         singleRun: true
       }
+    },
+    ngdocs: {
+       all: ['app/scripts/**/*.js']
     }
   });
 
@@ -408,4 +417,7 @@ module.exports = function (grunt) {
     'test',
     'build'
   ]);
+  
+  grunt.loadNpmTasks('grunt-ngdocs');
 };
+
