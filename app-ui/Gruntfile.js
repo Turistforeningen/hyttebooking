@@ -365,6 +365,11 @@ module.exports = function (grunt) {
     	options: {
             html5Mode: true,
             title: 'cabin Booking',
+            scripts: ['angular.js',
+                      '../bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js',
+                      '../scripts/directives/dntBookingModule.js'
+                      
+                      ],
             
         },
         api: {
