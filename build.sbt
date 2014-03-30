@@ -9,4 +9,7 @@ libraryDependencies ++= Seq(
   "net.sf.flexjson" % "flexjson" % "2.1"
 )     
 
+
 play.Project.playJavaSettings
+
+playAssetsDirectories <+= baseDirectory / "app-ui"

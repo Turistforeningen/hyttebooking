@@ -2,8 +2,7 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-# Home page
-GET     /                                       controllers.Assets.at(path="/public/assets", file="index.html")
+
 
 
 
@@ -20,7 +19,20 @@ GET     /api/cabins/:id                         controllers.AdminController.getC
 POST    /api/cabins                             controllers.AdminController.submitCabin()
 GET     /api/cabins/:id/prices                  controllers.BookingController.getPriceForCabin(id: Long) 
 GET     /api/bookings/:id/payment               controllers.PaymentController.registerPayment(id: Long)   
-POST    /api/payment/authenticate               controllers.PaymentController.authenticatePayment()        
+POST    /api/payment/authenticate               controllers.PaymentController.authenticatePayment()  
+ 
+
+     
+
+# Home page
+#GET     /                                       controllers.Assets.at(path="/public/assets", file="index.html")
 # Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file               controllers.Assets.at(path="/public/assets", file)
-GET     /bower_components/*file               controllers.Assets.at(path="/public/bower_components", file)
+#GET     /assets/*file               controllers.Assets.at(path="/public/assets", file)
+#GET     /bower_components/*file               controllers.Assets.at(path="/public/bower_components", file)
+
+#Dev routes
+GET     /dev                            controllers.Assets.at(path="/app-ui/app", file="index.html")
+GET		/bower_components/*file         controllers.Assets.at(path="/app-ui/app/bower_components", file)
+GET     /scripts/*file                  controllers.Assets.at(path="/app-ui/app/scripts", file)
+GET     /styles/*file                   controllers.Assets.at(path="/app-ui/app/styles", file)
+GET     /views/*file                    controllers.Assets.at(path="/app-ui/app/views", file)
