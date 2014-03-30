@@ -4,8 +4,8 @@
  * 
  */
 
-app.factory('authorization', function ($http, $log) {
- 
+angular.module('dntApp').factory('authorization', ['$http', function ($http) {
+
 	return {
 		login: function (credentials) {
 			return $http.post('/login', credentials);
@@ -15,29 +15,29 @@ app.factory('authorization', function ($http, $log) {
 			return $http.post('/logout');
 		}
 	};
-});
+}]);
 
 /*
  * httpInterceptor will intercept a unauthorized access and redirect
  * user to /login view.
  */
-app.factory('httpInterceptor', function httpInterceptor ($q, $window, $location) {
-	  return function (promise) {
-	      var success = function (response) {
-	          return response;
-	      };
+angular.module('dntApp').factory('httpInterceptor', ['$q', '$window', '$location', function httpInterceptor ($q, $window, $location) {
+	return function (promise) {
+		var success = function (response) {
+			return response;
+		};
 
-	      var error = function (response) {
-	          if (response.status === 401) {
-	              $location.url('/login');
-	          }
+		var error = function (response) {
+			if (response.status === 401) {
+				$location.url('/login');
+			}
 
-	          return $q.reject(response);
-	      };
+			return $q.reject(response);
+		};
 
-	      return promise.then(success, error);
-	  };
-	});
+		return promise.then(success, error);
+	};
+}]);
 
 
 /*
@@ -46,11 +46,11 @@ app.factory('httpInterceptor', function httpInterceptor ($q, $window, $location)
  *Token is either stored in a cookie (from a previous session)
  *or sent as a method parameter. 
  */
-app.factory('api', function ($http, $cookieStore, $log) {
-	 return {
-	      init: function (token) {
-	    	 
-	          $http.defaults.headers.common['X-AUTH-TOKEN'] = token || $cookieStore.get('token');
-	      }
-	  };
-	});
+angular.module('dntApp').factory('api', ['$http', '$cookieStore', function ($http, $cookieStore) {
+	return {
+		init: function (token) {
+
+			$http.defaults.headers.common['X-AUTH-TOKEN'] = token || $cookieStore.get('token');
+		}
+	};
+}]);

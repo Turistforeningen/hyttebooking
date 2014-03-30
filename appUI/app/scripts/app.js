@@ -1,13 +1,13 @@
 'use strict';
 
-var app = angular.module('dntApp',['ngRoute', 'ui.bootstrap', 'ngCookies', 'ngResource', 'ngSanitize', 'dntBookingModule']);
+angular.module('dntApp',['ngRoute', 'ui.bootstrap', 'ngCookies', 'ngResource', 'ngSanitize', 'dntBookingModule']);
 
 /*
  * Routes, routeinterceptor done below. Httpinterceptor, redirect to /login
  * when a request returns unauthorized.
  * 
  */
-app.config(function ($routeProvider, $locationProvider, $httpProvider) {
+angular.module('dntApp').config(['$routeProvider', '$locationProvider', '$httpProvider', function ($routeProvider, $locationProvider, $httpProvider) {
 	
 	$httpProvider.responseInterceptors.push('httpInterceptor');
 	
@@ -53,8 +53,8 @@ app.config(function ($routeProvider, $locationProvider, $httpProvider) {
 	
 	
 	
-});
+}]);
 
-app.run(function (api) {
+angular.module('dntApp').run(function (api) {
 	api.init();
 });
