@@ -3,7 +3,7 @@
 /*
  * Service with functions used to interface client with server.
  */
-app.service('ordersService', function ($http) {
+angular.module('dntApp').service('ordersService', ['$http','$log', function ($http, $log) {
 
 
 	this.getOrders = function (page, pageSize) {
@@ -18,6 +18,8 @@ app.service('ordersService', function ($http) {
 	};
 
 	this.postOrder = function(data) {
+		$log.info(data + 'THIS ID SATA');
+		$log.info(data);
 		var url = '/api/bookings/';
 		return $http.post(url, data);
 	};
@@ -37,5 +39,5 @@ app.service('ordersService', function ($http) {
 		var data = {'responseCode' :response, 'transactionId' : paymentId};
 		return $http.post(url, data);
 	};
-});
+}]);
 

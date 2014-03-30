@@ -1,3 +1,5 @@
+
+
 .nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
 .selectNumber {
 	min-width:50px;
@@ -26,6 +28,8 @@ body{
 .whole{
 	background-color: #ffffff;
 }
+
+
 
 /*-----------Glyphicon mods-----------*/
 

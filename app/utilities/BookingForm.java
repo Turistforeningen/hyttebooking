@@ -116,6 +116,7 @@ public class BookingForm extends AbstractForm<Booking> {
 		}
 		
 		if(startDt.isBeforeNow() || endDt.isBeforeNow() || !startDt.isBefore(endDt))  {
+			System.out.println(startDt +" "+ endDt);
 			addError("The range selected is not valid");
 			return false;	
 		}

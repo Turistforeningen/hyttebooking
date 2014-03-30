@@ -10,92 +10,94 @@ angular.module('dntBookingModule', ['ui.bootstrap'])
 			'beds' : '=numberOfBeds'
 		},
 
-		template: 
-        '<div class="row" ng-repeat="per in person.slice(0, hider)">'+
+		template:
+			'<div class="row" ng-repeat="per in person.slice(0, hider)">'+
 			'<div class="col-lg-8 col-md-8">'+
-				'<p>{{per.type}}</p>'+
+			'<p>{{per.type}}</p>'+
 			'</div>'+
 			'<div class="col-lg-4 col-md-4 modRightText">'+
-				'<select class="selectNumber" ng-model="per.nr" ng-options="pe for pe in range(per.nr)"></select>'+
+			'<select class="selectNumber" ng-model="per.nr" ng-options="pe for pe in range(per.nr)"></select>'+
 			'</div>'+
-		'</div>'+
-		'<div class="row">'+
+			'</div>'+
+			'<div class="row">'+
 			'<div class="col-lg-12 col-md-12">'+
-					'<br>'+
-					'<a ng-click="toggleCollapsed()" href="" ng-controller="TooltipDemoCtrl" tooltip-placement="top" tooltip-html-unsafe="{{tooltipNoneMember}}" tooltip-popup-delay="500">Ikke medlem?</a>'+
-					'<br><br>'+
-					'<div collapse="isCollapsed">'+
-						'<div class="row" ng-repeat="per in person.slice(hider)">'+
-							'<div class="col-lg-8 col-md-8">'+
-								'<p>{{per.type}}</p>'+
-								
-							'</div>'+
-							'<div class="col-lg-4 col-md-4 modRightText">'+
-								'<select class="selectNumber" ng-model="per.nr" ng-options="pe for pe in range(per.nr)"></select>'+
-							'</div>'+
-						'</div>'+
-					'</div>'+
-			
+			'<br>'+
+			'<a ng-click="toggleCollapsed()" href="" ng-controller="TooltipDemoCtrl" tooltip-placement="top" tooltip-html-unsafe="{{tooltipNoneMember}}" tooltip-popup-delay="500">Ikke medlem?</a>'+
+			'<br><br>'+
+			'<div collapse="isCollapsed">'+
+			'<div class="row" ng-repeat="per in person.slice(hider)">'+
+			'<div class="col-lg-8 col-md-8">'+
+			'<p>{{per.type}}</p>'+
+
 			'</div>'+
-		'</div>',
+			'<div class="col-lg-4 col-md-4 modRightText">'+
+			'<select class="selectNumber" ng-model="per.nr" ng-options="pe for pe in range(per.nr)"></select>'+
+			'</div>'+
+			'</div>'+
+			'</div>'+
 
-		controller: function($scope, $log) {
-			$scope.person = {};
-			$scope.isCollapsed = true;
+			'</div>'+
+			'</div>',
 
-			$scope.toggleCollapsed = function() {
-				$scope.isCollapsed = !$scope.isCollapsed;
-				//When a user shuts down this collapse all entries inside collapse should be erased here
-			}
-			$scope.setPerson = function(person) {
-				$scope.person = person;
-			};
-			$scope.getPerson = function(person) {
-				return $scope.person;
-			};
+		controller: ['$scope', function($scope) {
+				$scope.person = {};
+				$scope.isCollapsed = true;
 
-			$scope.bedsLeft = function() {
+				$scope.toggleCollapsed = function() {
+					$scope.isCollapsed = !$scope.isCollapsed;
+					//When a user shuts down this collapse all entries inside collapse should be erased here
+				};
+				$scope.setPerson = function(person) {
+					$scope.person = person;
+				};
+				$scope.getPerson = function(person) {
+					return $scope.person;
+				};
 
-				var left = $scope.beds;
-				angular.forEach($scope.person, function(value, key) {
-					left = left -value.nr;
-				});
-				if(left>0) {
-					return left;
-				}
-				else {
+				$scope.bedsLeft = function() {
 
-					return 0;
-				}
-			};
+					var left = $scope.beds;
+					angular.forEach($scope.person, function(value, key) {
+						left = left -value.nr;
+					});
+					if(left>0) {
+						return left;
+					}
+					else {
 
-			$scope.range = function(value) {
+						return 0;
+					}
+				};
 
-				var bedsLeft = $scope.bedsLeft();
-				var end = bedsLeft;
-				if((value != null || value>0) && end<=value) {
-					end = value + bedsLeft;
-				}
+				$scope.range = function(value) {
 
-				var result = [];
-				for (var i = 0; i <= end; i++) {
-					result.push(i);
-				}
+					var bedsLeft = $scope.bedsLeft();
+					var end = bedsLeft;
+					if((value !== null || value>0) && end<=value) {
+						end = value + bedsLeft;
+					}
 
-				return result;
-			};
+					var result = [];
+					for (var i = 0; i <= end; i++) {
+						result.push(i);
+					}
 
-		},
+					return result;
+				};
+
+			}],
 
 		link: function(scope, elem, attrs) {
-			scope.setPerson(scope.data);
-			scope.$watch('data', function(newValue, oldValue) {
-				if (newValue)
-					scope.setPerson(newValue);
+				scope.setPerson(scope.data);
+				scope.$watch('data', function(newValue, oldValue) {
+					if (newValue) {
+						scope.setPerson(newValue);
+					}
 
-			});
 
-		}
+				});
+
+			}
 	};
 });
 angular.module('dntBookingModule')
@@ -110,7 +112,7 @@ angular.module('dntBookingModule')
 		},
 
 		template:
-			'<div class="row" style="min-height: 250px;">' + 
+			'<div class="row" style="min-height: 250px;">' +
 			'<table class="table table-condensed">' +
 			'<tr ng-repeat="person in personType" ng-show="person.nr>0">'+
 			'<td>{{person.type}}</td>'+
@@ -129,11 +131,10 @@ angular.module('dntBookingModule')
 			'</table>'+
 			'</div></div>',
 
-			controller: function($scope, $log) {
+		controller: ['$scope', '$log', function($scope, $log) {
 				$scope.personType = {};
 				$scope.days =1;
-				$scope.fromDate;
-				$scope.toDate;
+				
 
 				$scope.setPersonType = function(person) {
 					$scope.personType = person;
@@ -173,26 +174,31 @@ angular.module('dntBookingModule')
 					}
 				};
 
-			},
+			}],
 
-			link: function(scope, elem, attrs) {
+		link: function(scope, elem, attrs) {
 				scope.setPersonType(scope.data);
 				scope.$watch('data', function(newValue, oldValue) {
-					if (newValue)
+					if (newValue) {
 						scope.setPersonType(newValue);
+					}
 					scope.calculatePrice();
 				}, true);
 
 
 
 				scope.$watch('fromDate', function(newValue, oldValue) {
-					if (newValue)
+					if (newValue) {
 						scope.newDateRange();
+					}
+
 				});
 
 				scope.$watch('toDate', function(newValue, oldValue) {
-					if (newValue)
+					if (newValue) {
 						scope.newDateRange();
+					}
+
 				});
 			}
 	};

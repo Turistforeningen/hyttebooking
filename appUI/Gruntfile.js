@@ -102,7 +102,7 @@ module.exports = function (grunt) {
         reporter: require('jshint-stylish')
       },
       all: [
-        'Gruntfile.js',
+        //'Gruntfile.js',
         '<%= yeoman.app %>/scripts/{,*/}*.js'
       ],
       test: {
@@ -115,6 +115,7 @@ module.exports = function (grunt) {
 
     // Empties folders to start fresh
     clean: {
+      options: { force: true },
       dist: {
         files: [{
           dot: true,
@@ -283,7 +284,19 @@ module.exports = function (grunt) {
           cwd: '.tmp/images',
           dest: '<%= yeoman.dist %>/images',
           src: ['generated/*']
-        }]
+        },
+        {
+            expand: true,
+            cwd: '<%= yeoman.app %>/bower_components/components-font-awesome/fonts/',
+            src: ['**'],
+            dest: '<%= yeoman.dist %>/../bower_components/components-font-awesome/fonts/' // Font Awesome copy hack
+          },
+          {
+              expand: true,
+              cwd: '<%= yeoman.app %>/bower_components/bootstrap/dist/fonts/',
+              src: ['**'],
+              dest: '<%= yeoman.dist %>/../bower_components/components-font-awesome/fonts/' // Font Awesome copy hack
+            }]
       },
       styles: {
         expand: true,
@@ -321,15 +334,16 @@ module.exports = function (grunt) {
     //     }
     //   }
     // },
-    // uglify: {
-    //   dist: {
-    //     files: {
-    //       '<%= yeoman.dist %>/scripts/scripts.js': [
-    //         '<%= yeoman.dist %>/scripts/scripts.js'
-    //       ]
-    //     }
-    //   }
-    // },
+    uglify: {
+        options: {
+            mangle: false
+          },
+          dist: {
+            files: {
+                '<%= yeoman.dist %>/scripts/scripts.js': ['<%= yeoman.dist %>/scripts/scripts.js']
+              }
+            }
+          },
     // concat: {
     //   dist: {}
     // },
