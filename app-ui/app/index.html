@@ -2,19 +2,19 @@
 <html ng-app="dntApp">
 <head>
     <title>DNT</title>
-    <!-- build:css assets/styles/vendor.css -->
+    <!-- build:css styles/vendor.css -->
     <!-- bower:css -->
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
     <link rel="stylesheet" href="bower_components/components-font-awesome/css/font-awesome.css" />
     <!-- endbower -->
     <!-- endbuild -->
-    <!-- build:css({.tmp,app}) assets/styles/main.css -->
+    <!-- build:css({.tmp,app}) styles/main.css -->
     <link rel="stylesheet" type="text/css" href="styles/custom.css">
      <!-- endbuild -->
-    <link rel="SHORTCUT ICON" href="assets/images/favicon.ico" />
+    <link rel="SHORTCUT ICON" href="images/favicon.ico" />
 </head >
 <body ng-cloak>
-    <div ng-include="'assets/views/navbar.html'">
+    <div ng-include="'/views/navbar.html'">
     </div>
     
     <div ng-view class="">
@@ -25,7 +25,7 @@
     <script src="bower_components/json3/lib/json3.min.js"></script>
     <![endif]-->
     
-    <!-- build:js assets/scripts/vendor.js -->
+    <!-- build:js scripts/vendor.js -->
    
     <script src="bower_components/jquery/dist/jquery.min.js"></script>
     <script src="bower_components/angular/angular.min.js"></script>
@@ -38,14 +38,13 @@
 
     <!-- endbuild -->
     
-    <!-- build:js({.tmp,app}) assets/scripts/scripts.js -->
+    <!-- build:js({.tmp,app}) scripts/scripts.js -->
     <script src="scripts/app.js"></script>
     <script src="scripts/controllers/controllers.js"></script>
     <script src="scripts/directives/dntBookingModule.js"></script>
     <script src="scripts/controllers/adminController.js"></script> 
     <script src="scripts/controllers/modal.js"></script>
-    <script src="scripts/controllers/tooltip.js"></script>
-    <script src="scripts/controllers/collapse.js"></script> 
+    <script src="scripts/controllers/tooltip.js"></script> 
     <script src="scripts/services/ordersService.js"></script>
     <script src="scripts/services/cabinService.js"></script>
     <script src="scripts/services/authService.js"></script>

@@ -50,10 +50,10 @@ angular.module('dntApp').controller( 'ModalController', ['$rootScope','$scope','
 		if($scope.paid !==0) {
 			if($scope.paid ===1) {
 				$log.info($scope.paid);
-				$scope.open('/assets/views/statusModalSuccess.html');
+				$scope.open('/views/statusModalSuccess.html');
 			}
 			else {
-				$scope.open('/assets/views/statusModalError.html');
+				$scope.open('/views/statusModalError.html');
 			}
 
 		}

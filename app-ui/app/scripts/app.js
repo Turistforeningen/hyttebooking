@@ -14,40 +14,40 @@ angular.module('dntApp').config(['$routeProvider', '$locationProvider', '$httpPr
 	$routeProvider
 	.when('/', {
 		controller: 'testController',
-		templateUrl: '/assets/views/testView.html'
+		templateUrl: '/views/testView.html'
 		
 	})
 	.when('/orderHistory', {
 		
 		controller: 'orderController',
-		templateUrl: '/assets/views/ordersView.html'
+		templateUrl: '/views/ordersView.html'
 			
 	})
 	.when('/booking/:id', {
 		
 		controller: 'bookingController',
-		templateUrl: '/assets/views/bookingView.html'
+		templateUrl: '/views/bookingView.html'
 	})
 	.when('/login', {
 		
 		controller: 'authController',
-		templateUrl: '/assets/views/authView.html'
+		templateUrl: '/views/authView.html'
 	})
 	.when('/admin', {
 		controller: 'adminViewController',
-		templateUrl: '/assets/views/adminView.html'
+		templateUrl: '/views/adminView.html'
 	})
 	.when('/admin/cabin/:id', {
 		controller: 'adminViewController',
-		templateUrl: '/assets/views/adminView.html'
+		templateUrl: '/views/adminView.html'
 	})
 	.when('/calendar', {
 		controller: 'bookingController',
-		templateUrl: '/assets/views/calendar.html'
+		templateUrl: '/views/calendar.html'
 	})
 	.when('/termsAndConditions', {
 		controller: '',
-		templateUrl: '/assets/views/termsAndConditions.html'
+		templateUrl: '/views/termsAndConditions.html'
 	})
 	.otherwise({ redirectTo: '/'});
 	

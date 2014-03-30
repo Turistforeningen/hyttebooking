@@ -22,7 +22,7 @@ module.exports = function (grunt) {
     yeoman: {
       // configurable paths
       app: require('./bower.json').appPath || 'app',
-      dist: '../public/assets'
+      dist: '../public'
     },
 
     // Watches files for changes and runs tasks based on the changed files
@@ -173,7 +173,7 @@ module.exports = function (grunt) {
     useminPrepare: {
       html: '<%= yeoman.app %>/index.html',
       options: {
-        dest: '<%= yeoman.dist %>/..',
+        dest: '<%= yeoman.dist %>',
         flow: {
           html: {
             steps: {
@@ -189,9 +189,9 @@ module.exports = function (grunt) {
     // Performs rewrites based on rev and the useminPrepare configuration
     usemin: {
       html: ['<%= yeoman.dist %>/{,*/}*.html'],
-      css: ['<%= yeoman.dist %>/../styles/{,*/}*.css'],
+      css: ['<%= yeoman.dist %>/styles/{,*/}*.css'],
       options: {
-        assetsDirs: ['<%= yeoman.dist %>/..']
+        assetsDirs: ['<%= yeoman.dist %>/']
     
       }
     },
@@ -289,13 +289,13 @@ module.exports = function (grunt) {
             expand: true,
             cwd: '<%= yeoman.app %>/bower_components/components-font-awesome/fonts/',
             src: ['**'],
-            dest: '<%= yeoman.dist %>/../bower_components/components-font-awesome/fonts/' // Font Awesome copy hack
+            dest: '<%= yeoman.dist %>/bower_components/components-font-awesome/fonts/' // Font Awesome copy hack
           },
           {
               expand: true,
               cwd: '<%= yeoman.app %>/bower_components/bootstrap/dist/fonts/',
               src: ['**'],
-              dest: '<%= yeoman.dist %>/../bower_components/components-font-awesome/fonts/' // Font Awesome copy hack
+              dest: '<%= yeoman.dist %>/bower_components/bootstrap/dist/fonts/' // Font Awesome copy hack
             }]
       },
       styles: {
