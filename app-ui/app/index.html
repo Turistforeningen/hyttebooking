@@ -13,16 +13,25 @@
     <link rel="stylesheet" type="text/css" href="styles/custom.css">
      <!-- endbuild -->
     <link rel="SHORTCUT ICON" href="images/favicon.ico" />
+    <link href="http://www.planbox.com/feedback/feedback.css" rel="stylesheet" type="text/css">
 </head >
 <body ng-cloak>
     <div ng-include="'/views/navbar.html'">
     </div>
-    
 
-    <div ng-view class="">
-    </div>
-    
-     <!--[if lt IE 9]>
+
+	<div ng-view class="">
+		﻿
+		<script type="text/javascript" charset="utf-8">
+			window.FeedbackOptions = {
+				planboxToken : '80151d97de4503deba48cb414e4d8c2d',
+			};
+		</script>
+		<script src="http://www.planbox.com/feedback/feedback.js"></script>
+		
+	</div>
+
+	<!--[if lt IE 9]>
     <script src="bower_components/es5-shim/es5-shim.js"></script>
     <script src="bower_components/json3/lib/json3.min.js"></script>
     <![endif]-->

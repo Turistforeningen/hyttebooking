@@ -13,4 +13,6 @@ libraryDependencies ++= Seq(
 
 play.Project.playJavaSettings
 
-playAssetsDirectories <+= baseDirectory / "app-ui"
+playAssetsDirectories <+= baseDirectory / "app-ui/app"
+
+playAssetsDirectories <+= baseDirectory / "app-ui/docs"
