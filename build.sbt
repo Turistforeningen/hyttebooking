@@ -10,4 +10,7 @@ libraryDependencies ++= Seq(
   "org.bouncycastle" % "bcprov-jdk15on" % "1.50"
 )     
 
+
 play.Project.playJavaSettings
+
+playAssetsDirectories <+= baseDirectory / "app-ui"

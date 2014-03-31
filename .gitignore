@@ -3,7 +3,9 @@
 .*
 # except for .gitignore
 !.gitignore
-
+# and others
+!.jshintrc
+!.bowerrc
 # Ignore Play! working directory #
 db
 eclipse
@@ -21,3 +23,12 @@ server.pid
 conf/evolutions/default/
 *.iml
 *.eml
+public
+node_modules
+dist
+.tmp
+.sass-cache
+
+app-ui/app/bower_components
+
+app-ui/docs
