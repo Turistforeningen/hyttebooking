@@ -6,6 +6,9 @@
 # and others
 !.jshintrc
 !.bowerrc
+!.editorconfig
+!.gitattributes
+!.travis.yml
 # Ignore Play! working directory #
 db
 eclipse
