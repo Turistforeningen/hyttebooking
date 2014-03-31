@@ -28,6 +28,7 @@ public class PaymentController extends Controller {
 	private static final String NETS_PROCESS = "https://epayment-test.bbs.no/Netaxept/Process.aspx";
 	private static final String MERCHANT_ID = play.Play.application().configuration().getString("application.merchantId");
 	private static final String REDIRECT_URL = "https://epayment-test.bbs.no/Terminal/default.aspx";
+	private static final String SERVER_URL = play.Play.application().configuration().getString("application.address");
 	
 	
 	/**
@@ -60,7 +61,7 @@ public class PaymentController extends Controller {
 				.setQueryParameter("orderNumber", b.id+"")
 				.setQueryParameter("amount", b.payment.getAmount())
 				.setQueryParameter("CurrencyCode", "NOK")
-				.setQueryParameter("redirectUrl", "http://localhost:9000/#/booking/" + b.getCabin().getCabinUrl())
+				.setQueryParameter("redirectUrl", SERVER_URL + "#/booking/" + b.getCabin().getCabinUrl())
 				.setQueryParameter("deliveryDate", b.getDeliveryDate())
 				.get().map(
 				new Function<WS.Response, Result>() {
