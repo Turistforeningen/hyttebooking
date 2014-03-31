@@ -3,6 +3,15 @@
 .*
 # except for .gitignore
 !.gitignore
+# and others
+!.jshintrc
+!.bowerrc
+!.editorconfig
+!.gitattributes
+!.travis.yml
+
+#Ignore SECRET_ID SECRET_MERCANT
+conf/secrets.conf
 
 # Ignore Play! working directory #
 db
@@ -21,3 +30,13 @@ server.pid
 conf/evolutions/default/
 *.iml
 *.eml
+public
+node_modules
+dist
+.tmp
+.sass-cache
+
+app-ui/app/bower_components
+
+app-ui/docs
+RUNNNING_PID

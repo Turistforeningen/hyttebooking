@@ -8,6 +8,8 @@ import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import flexjson.JSON;
+
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -49,6 +51,7 @@ public class User extends Model {
     @JsonIgnore
     private String password;
 
+    @JSON(include = false)
     public String getPassword() {
         return password;
     }

@@ -45,7 +45,9 @@ public abstract class Cabin extends Model {
 	public abstract String getcabinType();
 
 	public abstract String getNrOfBeds();
-
+	
+	public abstract String getCabinUrl();
+	
 	public static Finder<Long, Cabin> find = new Finder<Long, Cabin>(Long.class, Cabin.class);
 
 

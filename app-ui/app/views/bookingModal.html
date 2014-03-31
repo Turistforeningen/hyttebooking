@@ -1,0 +1,51 @@
+<div class="modal-body">
+	<div style="text-align: right">
+		<button class="btn btn-danger" ng-click="cancel()">
+			<span class="glyphicon glyphicon-ok"></span>
+		</button>
+	</div>
+	<h4>Brukeropplysninger</h4>
+	<div class="row">
+		<div class="col-lg-4">
+			<p>Fornavn</p>
+			<p>Etternavn</p>
+			<p>Fødselsdato</p>
+			<p>Adresse</p>
+			<p>Poststed</p>
+			<p>Postnummer</p>
+			<p>Epost</p>
+		</div>
+		<div class="col-lg-8">
+			<p>Ola</p>
+			<p>Nordmann</p>
+			<p>30.05.1989</p>
+			<p>Gateveien 3</p>
+			<p>Plassen</p>
+			<p>1234</p>
+			<p>ola.nordmann@mail.no</p>
+		</div>
+	</div>
+</div>
+<div class="modal-body" style="border-top: 1px solid #ccc;">
+	<h4>Bekreft reservasjon</h4>
+	<p><a ng-click="closeModal" href="#/termsAndConditions">Les og bekreft kjøpsvilkår.</a></p> <!-- This still does not work -->
+	<div class="checkbox">
+		<label> <input type="checkbox"> <i>Jeg har lest og
+				godkjenner Deres vilkår.</i>
+		</label>
+	</div>
+</div>
+<div class="modal-body" style="border-top: 1px solid #ccc;">
+	<h4>Oversikt over kjøp</h4>
+	<div class="row">
+		
+		
+		<!-- This still does not work -->
+		<div class="col-lg-12">
+			<dnt-price-viewer person-types="personType" from-date="booking.dateFrom" to-date="booking.dateTo"></dnt-price-viewer>
+		</div>
+	</div>
+	<div style="text-align: right">
+		<button class="btn btn-primary" ng-click="ok()">Bekreft reservasjon</button>
+	</div>
+</div>

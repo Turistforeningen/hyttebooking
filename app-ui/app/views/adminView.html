@@ -1,0 +1,26 @@
+<div class="container whole">
+	<div class="row">
+		<h1>Overview</h1>
+		<P>Info about system bla bal bal bal</P>
+		<P>Info about system bla bal bal bal</P>
+		<P>Info about system bla bal bal bal</P>
+	</div>
+	<div class="row">
+		<div class="col-lg-11" style="text-align: center;"></div>
+		<div class="col-lg-1" style="text-align: center;">
+			<a class="glyphicon glyphicon-circle-arrow-left"href="#/"> Back</a>
+		</div>
+	   
+	</div>
+	<div ng-show="view == 0" ng-controller="cabinTableController">
+		<ng-include src="'/views/cabinTable.html'">
+		</ng-include>
+	</div>
+
+	<div ng-show="view== 1" ng-controller="cabinDetailsController" ng-init="(id)">
+		<ng-include src="'/views/cabinDetails.html'">
+		</ng-include>
+	</div>
+
+</div>
+

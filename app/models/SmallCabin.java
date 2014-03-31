@@ -15,6 +15,10 @@ import play.data.validation.Constraints;
 @DiscriminatorValue("SMALL_CABIN")
 public class SmallCabin extends Cabin {
 	
+	@Constraints.Required
+	public double memberPrice;
+	@Constraints.Required
+	public double nonMemberPrice;
 	
 	@OneToMany
 	public List<Booking> bookings;
@@ -50,5 +54,12 @@ public class SmallCabin extends Cabin {
 				.gt("dateFrom", DateTime.now().toDate())
 				.ne("status", Booking.CANCELLED)
 				.findRowCount();
+	}
+
+
+	@Override
+	public String getCabinUrl() {
+		// TODO Auto-generated method stub
+		return this.id + "?type=small&beds=hele";
 	}	
 }

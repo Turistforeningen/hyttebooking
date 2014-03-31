@@ -25,6 +25,8 @@ create table cabin (
   DTYPE                     varchar(31) not null,
   id                        bigint not null,
   name                      varchar(255),
+  member_price              double,
+  non_member_price          double,
   constraint pk_cabin primary key (id))
 ;
 
@@ -39,6 +41,7 @@ create table payment (
   id                        bigint not null,
   amount                    double,
   date                      date,
+  transaction_id            varchar(255),
   constraint pk_payment primary key (id))
 ;
 

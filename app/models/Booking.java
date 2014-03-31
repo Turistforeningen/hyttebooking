@@ -14,11 +14,12 @@ import com.avaje.ebean.Expr;
 import com.avaje.ebean.Expression;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import flexjson.JSON;
 import play.data.format.Formats;
 import play.data.validation.Constraints;
 import play.db.ebean.Model;
+import utilities.DateHelper;
 import utilities.Page;
 
 @Entity
@@ -50,8 +51,10 @@ public class Booking extends Model {
 	
 	public Integer status = new Integer(0);
 	
+	
 	@OneToOne
 	public Payment payment;
+	
 	
 	@ManyToOne
 	public SmallCabin smallCabin;
@@ -61,6 +64,7 @@ public class Booking extends Model {
 	
 	public void addBed(Bed b) {
 		beds.add(b);
+		//b.update();
 		
 	}
 	
@@ -71,7 +75,6 @@ public class Booking extends Model {
 	 * @return Cabin
 	 */
 	public Cabin getCabin() {
-		System.out.println("Called");
 		if(beds.size() != 0) {
 			return beds.get(0).largeCabin;
 		}
@@ -81,13 +84,22 @@ public class Booking extends Model {
 	}
 	
 	/**
+	 * Getter for payment object. Json(include = false) ensures that
+	 * jonFlex serializing wont serialize sensitive data.
+	 * @return Payment - containing transactionId, date of payment
+	 */
+	@JSON(include = false)
+	public Payment getPayment() {
+		return this.payment;
+	}
+	/**
 	 * Determines if booking can be cancelled or not. Can be used
 	 * by both frontend (json serialized) and backend to verify a request to
 	 * cancel a booking.
 	 * @return boolean
 	 */
 	public boolean isAbleToCancel() {
-		//This login should probably be placed somewhere else?
+		//This logic should probably be placed somewhere else?
 		if(DateTime.now().plusDays(7).isAfter(this.dateFrom.getTime())) {
 			return false;
 		}
@@ -96,7 +108,14 @@ public class Booking extends Model {
 		}
 	}
 	
-	
+	/**
+	 * The date a booking is regarded as delivered, and payment from user expected.
+	 * @return date of delivery
+	 */
+	@JSON(include = false)
+	public String getDeliveryDate() {
+		return DateHelper.dtToYYYYMMDDString(new DateTime(this.dateFrom.getTime()));
+	}
 	/**
 	 * A getter which return number of beds booked in a largeCabin. Used by frontend (json serialized)
 	 * @return String - number of beds in order or cabin 
@@ -169,7 +188,6 @@ public class Booking extends Model {
 			b.smallCabin = (SmallCabin)cabin;
 		}
 		else {
-
 			for(Bed bed: beds) {
 				b.addBed(bed);	
 			}
@@ -182,6 +200,8 @@ public class Booking extends Model {
 
 		return b;
 	}
+	
+	
 }
 
 

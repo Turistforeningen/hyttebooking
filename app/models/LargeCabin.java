@@ -9,6 +9,8 @@ import javax.persistence.*;
 import org.joda.time.DateTime;
 
 
+
+
 import play.data.validation.Constraints;
 
 @Entity
@@ -20,8 +22,8 @@ public class LargeCabin extends Cabin {
 	@OneToMany(mappedBy="largeCabin", cascade = CascadeType.ALL, orphanRemoval=true)
 	public List<Bed> beds;
 	
-	//@ManyToOne
-	public PriceMatrix prices; 
+	/*@ManyToMany*/
+	public List<Price> priceMatrix;
 	/** TODO add Constraints.Required right here**/
 	
 	/**
@@ -56,7 +58,6 @@ public class LargeCabin extends Cabin {
 	 * @return null if availBeds.size() < numberOfBeds, else availBeds 
 	 */
 	public List<Bed> book(int numberOfBeds, DateTime fromDate, DateTime toDate) {
-		
 		ArrayList<Bed> availBeds = new ArrayList<Bed>(); /** Consider using auto-sorted collection **/
 		for(Bed b: beds)
 		{
@@ -66,7 +67,7 @@ public class LargeCabin extends Cabin {
 		
 		if(availBeds.size() < numberOfBeds)
 			return null;
-		return availBeds.subList(0, numberOfBeds-1);
+		return availBeds.subList(0, numberOfBeds);
 	}
 	
 	/**
@@ -111,5 +112,15 @@ public class LargeCabin extends Cabin {
 				.gt("dateFrom", DateTime.now().toDate())
 				.ne("status", Booking.CANCELLED)
 				.findRowCount();
+	}
+	
+	public void addPrice(Long id, String guestType, String ageRange, double nonMemberPrice, double memberPrice) {
+		Price price = new Price(id, guestType, ageRange, nonMemberPrice, memberPrice);
+		priceMatrix.add(price);
+	}
+
+	@Override
+	public String getCabinUrl() {
+		return this.id + "?type=large&beds=" + this.getNrOfBeds();
 	}
 }

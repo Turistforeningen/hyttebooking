@@ -4,6 +4,8 @@ import java.text.SimpleDateFormat;
 
 import org.joda.time.DateTime;
 import org.joda.time.Days;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 public class DateHelper {
 
@@ -60,5 +62,22 @@ public class DateHelper {
 		ret[1] = Days.daysBetween(startDate, b).getDays();
 		return ret;
 	}
-
+	
+	/**
+	 * Converts a string of format "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'" 
+	 * to a dateTime object.
+	 * @param date string in the format, "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+	 * @return A dateTime date object
+	 */
+	public static DateTime stringtoDt(String date) {
+		DateTimeFormatter dtf = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+		DateTime dt = dtf.parseDateTime(date);
+		return dt;
+	}
+	
+	public static String dtToYYYYMMDDString(DateTime time) {
+		DateTimeFormatter dtf = DateTimeFormat.forPattern("yyyyMMdd");
+		return dtf.print(time);
+	}
+	
 }

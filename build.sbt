@@ -6,7 +6,13 @@ libraryDependencies ++= Seq(
   javaJdbc,
   javaEbean,
   cache,
-  "net.sf.flexjson" % "flexjson" % "2.1"
+  "net.sf.flexjson" % "flexjson" % "2.1", 
+  "org.bouncycastle" % "bcprov-jdk15on" % "1.50"
 )     
 
+
 play.Project.playJavaSettings
+
+playAssetsDirectories <+= baseDirectory / "app-ui/app"
+
+playAssetsDirectories <+= baseDirectory / "app-ui/docs"
