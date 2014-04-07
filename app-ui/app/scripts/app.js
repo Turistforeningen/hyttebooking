@@ -48,6 +48,11 @@ angular.module('dntApp').config(['$routeProvider', '$locationProvider', '$httpPr
 	.when('/termsAndConditions', {
 		controller: '',
 		templateUrl: '/views/termsAndConditions.html'
+	})		
+	.when('/bookingManual', {
+		controller: '',
+		templateUrl: '/views/bookingManual.html'
+			
 	})
 	.otherwise({ redirectTo: '/'});
 	
