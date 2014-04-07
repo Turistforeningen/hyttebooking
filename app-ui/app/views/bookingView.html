@@ -18,7 +18,7 @@
 			<!-- /////////////////////////////////////////////// Numbers of beds to be reserved ////////////////////////////////////////////// -->
 			<div class="row">
 				<div class="col-lg-12 col-md-12">
-					<h2>Booking <a ng-controller="TooltipDemoCtrl" href="" tooltip-placement="right" tooltip-html-unsafe="{{tooltipBookingInfo}}"><i
+					<h2>Booking <a ng-controller="TooltipDemoCtrl" href="" tooltip-trigger="click" tooltip-placement="right" tooltip-html-unsafe="{{tooltipBookingInfo}}"><i
 							class="fa fa-question-circle"></i></a></h2>
 				</div>
 				<!-- /col -->
@@ -86,14 +86,14 @@
 
 					<div class="row">
 						<div class="col-lg-6 col-md-6">
-							<div  ng-controller="TooltipDemoCtrl" tooltip-placement="left" tooltip-html-unsafe="{{tooltipArrival}}" tooltip-popup-delay="500">
+							<div  ng-controller="TooltipDemoCtrl" tooltip-placement="left" tooltip-html-unsafe="{{tooltipArrival}}" tooltip-popup-delay="1200">
 								<datepicker ng-model="booking.dateFrom" min="now" show-weeks="showWeeks"></datepicker>
 							</div>
 							<!-- /well -->
 						</div>
 						<!-- /col -->
 						<div class="col-lg-6 col-md-6">
-							<div  ng-controller="TooltipDemoCtrl" tooltip-placement="right" tooltip-html-unsafe="{{tooltipDeparture}}" tooltip-popup-delay="500">
+							<div  ng-controller="TooltipDemoCtrl" tooltip-placement="right" tooltip-html-unsafe="{{tooltipDeparture}}" tooltip-popup-delay="1200">
 								<datepicker ng-model="booking.dateTo" min="booking.dateFrom" show-weeks="showWeeks"></datepicker>
 							</div>
 							<!-- /well -->
@@ -124,7 +124,7 @@
 						<div ng-controller="ModalController" ng-init="personType">
 
 							<button class="btn btn-primary"
-								ng-click="open('/views/bookingModal.html')" ng-controller="TooltipDemoCtrl" tooltip-placement="bottom" tooltip-html-unsafe="{{tooltipReserveButton}}" tooltip-popup-delay="500">Reserver</button>
+								ng-click="open('/views/receiptModal.html')" ng-controller="TooltipDemoCtrl" tooltip-placement="bottom" tooltip-html-unsafe="{{tooltipReserveButton}}" tooltip-popup-delay="1200">Reserver</button>
 							<div ng-show="selected">Selection from a modal: {{ selected
 								}}</div>
 						</div>
