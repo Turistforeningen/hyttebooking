@@ -118,12 +118,12 @@ public class BookingController extends Controller {
 				//maybe pass a message to a dedicated actor instead of runnable.
 				//TODO: Read akka documentation more carefully
 				final Long id = booking.id;
-				Akka.system().scheduler().scheduleOnce(Duration.create(30, TimeUnit.SECONDS),
+				Akka.system().scheduler().scheduleOnce(Duration.create(5, TimeUnit.SECONDS),
 						  new Runnable() {
 						    @Override
 						    public void run() {
 						      Booking b = Booking.getBookingById(id+"");
-						      if(b.status != Booking.PAID) {
+						      if(!b.status.equals(Booking.PAID)) {
 						    	  System.out.println("Oh no your didnt!");
 						    	  //cancel booking and unlock beds or cabin for other customers
 						    	  //What happens if customer leaves for half an hour and comes

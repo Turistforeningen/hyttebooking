@@ -118,9 +118,9 @@ public class PaymentController extends Controller {
 		if(transactionId == null) {
 			return Promise.pure((Result)badRequest("No transactionId")); 
 		}
-		
+		//check if p contains a booking (Check if the transactionId is a valid id at all.
 		Payment p = Payment.find.where().eq("transactionId", transactionId).findUnique();
-		if(p.booking.status == Booking.TIMEDOUT) {
+		if(p.booking.status.equals(Booking.TIMEDOUT)) {
 			return Promise.pure((Result)badRequest("Request timed out")); 
 		}
 		

@@ -5,6 +5,7 @@ import java.util.Calendar;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 
 import org.joda.time.DateTime;
 
@@ -34,6 +35,7 @@ public class Payment extends Model {
 	@Constraints.Required
 	public User user;	
 	
+	@OneToOne(mappedBy = "payment")
 	public Booking booking;
 	
 	//Nets accepted amount string
