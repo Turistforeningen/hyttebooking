@@ -7,19 +7,23 @@
 	<!-- /row -->
 
 	<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-	<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-	<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 	<!-- //////////////////////////////////////////////// DNT BOOKING SOLUTION - START///////////////////////////////////////////////// -->
+	<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
 	<div class="row bookingBanner">
 
 		<div class="col-lg-12 col-md-12">
 
 
-			<!-- /////////////////////////////////////////////// Numbers of beds to be reserved ////////////////////////////////////////////// -->
+	<!-- /////////////////////////////////////////////// Numbers of beds to be reserved ////////////////////////////////////////////// -->
 			<div class="row">
 				<div class="col-lg-12 col-md-12">
-					<h2>Booking <a ng-controller="TooltipDemoCtrl" href="" tooltip-trigger="click" tooltip-placement="right" tooltip-html-unsafe="{{tooltipBookingInfo}}"><i
-							class="fa fa-question-circle"></i></a></h2>
+					<h2>
+						Booking <a ng-controller="TooltipDemoCtrl" href=""
+							tooltip-trigger="click" tooltip-placement="right"
+							tooltip-html-unsafe="{{tooltipBookingInfo}}"><i
+							class="fa fa-question-circle"></i></a>
+					</h2>
 				</div>
 				<!-- /col -->
 			</div>
@@ -64,7 +68,7 @@
 				<!-- /col -->
 
 
-				<!-- //////////////////////////////////////////////////// Date to be reserved //////////////////////////////////////////////////// -->
+	<!-- //////////////////////////////////////////////////// Date to be reserved //////////////////////////////////////////////////// -->
 
 				<div class="col-lg-6 col-md-6 calenderDivStyle">
 					<div class="row">
@@ -86,15 +90,21 @@
 
 					<div class="row">
 						<div class="col-lg-6 col-md-6">
-							<div  ng-controller="TooltipDemoCtrl" tooltip-placement="left" tooltip-html-unsafe="{{tooltipArrival}}" tooltip-popup-delay="1200">
-								<datepicker ng-model="booking.dateFrom" min="now" show-weeks="showWeeks"></datepicker>
+							<div ng-controller="TooltipDemoCtrl" tooltip-placement="left"
+								tooltip-html-unsafe="{{tooltipArrival}}"
+								tooltip-popup-delay="1200">
+								<datepicker ng-model="booking.dateFrom" min="now"
+									show-weeks="showWeeks"></datepicker>
 							</div>
 							<!-- /well -->
 						</div>
 						<!-- /col -->
 						<div class="col-lg-6 col-md-6">
-							<div  ng-controller="TooltipDemoCtrl" tooltip-placement="right" tooltip-html-unsafe="{{tooltipDeparture}}" tooltip-popup-delay="1200">
-								<datepicker ng-model="booking.dateTo" min="booking.dateFrom" show-weeks="showWeeks"></datepicker>
+							<div ng-controller="TooltipDemoCtrl" tooltip-placement="right"
+								tooltip-html-unsafe="{{tooltipDeparture}}"
+								tooltip-popup-delay="1200">
+								<datepicker ng-model="booking.dateTo" min="booking.dateFrom"
+									show-weeks="showWeeks"></datepicker>
 							</div>
 							<!-- /well -->
 						</div>
@@ -105,14 +115,15 @@
 				<!-- /col -->
 
 
-				<!-- ////////////////////////////////////////////////// Order summary and submit ///////////////////////////////////////////////// -->
+	<!-- ////////////////////////////////////////////////// Order summary and submit ///////////////////////////////////////////////// -->
 
 				<div class="col-lg-3 col-md-3">
 					<div class="row">
 						<div class="col-lg-12 col-md-12">
 							<div class="col-lg-12 col-md-12">
 								<dnt-price-viewer person-types="personType"
-									from-date="booking.dateFrom" to-date="booking.dateTo"></dnt-price-viewer>
+									from-date="booking.dateFrom"
+									to-date="booking.dateTo"></dnt-price-viewer>
 							</div>
 							<!-- /col -->
 						</div>
@@ -124,9 +135,10 @@
 						<div ng-controller="ModalController" ng-init="personType">
 
 							<button class="btn btn-primary"
-								ng-click="open('/views/receiptModal.html')" ng-controller="TooltipDemoCtrl" tooltip-placement="bottom" tooltip-html-unsafe="{{tooltipReserveButton}}" tooltip-popup-delay="1200">Reserver</button>
-							<div ng-show="selected">Selection from a modal: {{ selected
-								}}</div>
+								ng-click="open('/views/bookingModal.html')"
+								ng-controller="TooltipDemoCtrl" tooltip-placement="bottom"
+								tooltip-html-unsafe="{{tooltipReserveButton}}"
+								tooltip-popup-delay="1200">Reserver</button>
 						</div>
 						<!-- /ng-controller -->
 					</div>
@@ -137,16 +149,14 @@
 			<!-- /row -->
 
 
-			<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+	<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 		</div>
 		<!-- /col -->
 	</div>
 	<!-- /row -->
 
-
+	<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 	<!-- ///////////////////////////////////////////////// DNT BOOKING SOLUTION - END ///////////////////////////////////////////////// -->
-	<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-	<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 	<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 
 	<div class="row">

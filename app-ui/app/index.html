@@ -1,24 +1,42 @@
 ﻿<!DOCTYPE html>
 <html ng-app="dntApp">
 <head>
-    <title>DNT</title>
-    <link rel="SHORTCUT ICON" href="/images/favicon.ico" />
-    <!-- build:css styles/vendor.css -->
-    <!-- bower:css -->
-    <link href="http://www.planbox.com/feedback/feedback.css" rel="stylesheet" type="text/css">
-    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
-    <link rel="stylesheet" href="bower_components/components-font-awesome/css/font-awesome.css" />
-    <!-- endbower -->
-    <!-- endbuild -->
-    <!-- build:css({.tmp,app}) styles/main.css -->
-    <link rel="stylesheet" type="text/css" href="styles/custom.css">
-     <!-- endbuild -->
-    
-    <link href="http://www.planbox.com/feedback/feedback.css" rel="stylesheet" type="text/css">
-</head >
+<title>DNT</title>
+
+<link rel="shotcut icon" href="/images/favicon.ico" />
+
+<link name="author" content="
+	Olav Kåre Vatne, 
+	Terje Mikalsen, 
+	Jamawadi Noor, 
+	Magnus Dysthe, 
+	Helle Grimnes, 
+	Gøran Smistad">
+	
+<meta name="description" content="
+	This website is developed by students at NTNU: Norwegian University
+	of Science and Technology for DNT: Den Norske Turistforeningen.
+	The website is showing a prototype for their needed universal booking solution.">
+
+<!-- build:css styles/vendor.css -->
+<!-- bower:css -->
+<link href="http://www.planbox.com/feedback/feedback.css"
+	rel="stylesheet" type="text/css">
+<link rel="stylesheet"
+	href="bower_components/bootstrap/dist/css/bootstrap.css" />
+<link rel="stylesheet"
+	href="bower_components/components-font-awesome/css/font-awesome.css" />
+<!-- endbower -->
+<!-- endbuild -->
+<!-- build:css({.tmp,app}) styles/main.css -->
+<link rel="stylesheet" type="text/css" href="styles/custom.css">
+<!-- endbuild -->
+
+<link href="http://www.planbox.com/feedback/feedback.css"
+	rel="stylesheet" type="text/css">
+</head>
 <body ng-cloak>
-    <div ng-include="'/views/navbar.html'">
-    </div>
+	<div ng-include="'/views/navbar.html'"></div>
 
 
 	<div ng-view class="">
@@ -29,38 +47,39 @@
 			};
 		</script>
 		<script src="http://www.planbox.com/feedback/feedback.js"></script>
-		
+
 	</div>
 
 	<!--[if lt IE 9]>
     <script src="bower_components/es5-shim/es5-shim.js"></script>
     <script src="bower_components/json3/lib/json3.min.js"></script>
     <![endif]-->
-    
-    <!-- build:js scripts/vendor.js -->
-   
-    <script src="bower_components/jquery/dist/jquery.min.js"></script>
-    <script src="bower_components/angular/angular.min.js"></script>
-    <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-    <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
-    <script src="bower_components/angular-resource/angular-resource.min.js"></script>
-    <script src="bower_components/angular-cookies/angular-cookies.min.js"></script>
-    <script src="bower_components/angular-sanitize/angular-sanitize.min.js"></script>
-    <script src="bower_components/angular-route/angular-route.min.js"></script>
 
-    <!-- endbuild -->
-    
-    <!-- build:js({.tmp,app}) scripts/scripts.js -->
-    <script src="scripts/app.js"></script>
-    <script src="scripts/controllers/controllers.js"></script>
-    <script src="scripts/directives/dntBookingModule.js"></script>
-    <script src="scripts/controllers/adminController.js"></script> 
-    <script src="scripts/controllers/modal.js"></script>
-    <script src="scripts/controllers/tooltip.js"></script> 
-    <script src="scripts/services/ordersService.js"></script>
-    <script src="scripts/services/cabinService.js"></script>
-    <script src="scripts/services/authService.js"></script>
-    <script src="scripts/angular-locale_no.js"></script>
-    <!-- endbuild -->
+	<!-- build:js scripts/vendor.js -->
+
+	<script src="bower_components/jquery/dist/jquery.min.js"></script>
+	<script src="bower_components/angular/angular.min.js"></script>
+	<script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+	<script
+		src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+	<script src="bower_components/angular-resource/angular-resource.min.js"></script>
+	<script src="bower_components/angular-cookies/angular-cookies.min.js"></script>
+	<script src="bower_components/angular-sanitize/angular-sanitize.min.js"></script>
+	<script src="bower_components/angular-route/angular-route.min.js"></script>
+
+	<!-- endbuild -->
+
+	<!-- build:js({.tmp,app}) scripts/scripts.js -->
+	<script src="scripts/app.js"></script>
+	<script src="scripts/controllers/controllers.js"></script>
+	<script src="scripts/directives/dntBookingModule.js"></script>
+	<script src="scripts/controllers/adminController.js"></script>
+	<script src="scripts/controllers/modal.js"></script>
+	<script src="scripts/controllers/tooltip.js"></script>
+	<script src="scripts/services/ordersService.js"></script>
+	<script src="scripts/services/cabinService.js"></script>
+	<script src="scripts/services/authService.js"></script>
+	<script src="scripts/angular-locale_no.js"></script>
+	<!-- endbuild -->
 </body>
 </html>
