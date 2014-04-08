@@ -136,7 +136,7 @@ angular.module('dntApp').controller('bookingController', ['$filter','$rootScope'
 			$window.location.href =data.redirectUrl;
 		})
 		.error(function(error) {
-
+			$log.info(error.message);
 		});
 	};
 	

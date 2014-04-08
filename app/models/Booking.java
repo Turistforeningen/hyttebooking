@@ -24,9 +24,11 @@ import utilities.Page;
 
 @Entity
 public class Booking extends Model {
+	public static Integer TIMEDOUT = new Integer(3);
 	public static Integer CANCELLED = new Integer(2);
 	public static Integer PAID = new Integer(1);
 	public static Integer BOOKED = new Integer(0);
+	
 	@Id
 	public Long id;
 	
@@ -155,7 +157,7 @@ public class Booking extends Model {
 		if(user != null) {
 			Page<Booking> bookingPage = new Page<Booking>();
 			 bookingPage.data = find.where()
-			         .and(Expr.eq("user", user), Expr.ne("status", CANCELLED))
+			         .and(Expr.eq("user", user), Expr.le("status", PAID))
 			         .orderBy("dateFrom asc")
 			         .findPagingList(pageSize)
 			         .getPage(page).getList();
