@@ -12,6 +12,8 @@
 
 #Ignore SECRET_ID SECRET_MERCANT
 conf/secrets.conf
+conf/MERCHANT_ID
+conf/MERCHANT_SECRET
 
 # Ignore Play! working directory #
 db
