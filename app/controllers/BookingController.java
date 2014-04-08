@@ -3,9 +3,13 @@ package controllers;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.joda.time.DateTime;
 import org.joda.time.Days;
+
+
+
 
 
 
@@ -22,11 +26,13 @@ import models.Booking;
 import models.Cabin;
 import models.LargeCabin;
 import models.SmallCabin;
+import play.libs.Akka;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Results;
 import play.mvc.With;
+import scala.concurrent.duration.Duration;
 import utilities.BookingForm;
 import utilities.Page;
 
@@ -102,12 +108,33 @@ public class BookingController extends Controller {
 				.deserializeJson(request().body().asJson().toString());
 	
 		if(form.isValid()) {
+			//already saved by model helper method inside
 			Booking booking = form.createModel();
 			
 			if(booking == null) {
 				return badRequest(form.getError());
 			}
 			else {
+				//maybe pass a message to a dedicated actor instead of runnable.
+				//TODO: Read akka documentation more carefully
+				final Long id = booking.id;
+				Akka.system().scheduler().scheduleOnce(Duration.create(5, TimeUnit.SECONDS),
+						  new Runnable() {
+						    @Override
+						    public void run() {
+						      Booking b = Booking.getBookingById(id+"");
+						      if(!b.status.equals(Booking.PAID)) {
+						    	  System.out.println("Oh no your didnt!");
+						    	  //cancel booking and unlock beds or cabin for other customers
+						    	  //What happens if customer leaves for half an hour and comes
+						    	  //back and finishes payment? QUETION
+						    	  b.status = Booking.TIMEDOUT;
+						    	  b.update();
+						    	  
+						      }
+						    }
+						}, Akka.system().dispatcher());
+				
 				ObjectNode response = form.getSuccess();
 				response.put("id", booking.id +"");
 				return ok(form.getSuccess());

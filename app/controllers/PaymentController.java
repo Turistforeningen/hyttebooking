@@ -5,14 +5,19 @@ package controllers;
 	
 
 
+
 import org.w3c.dom.Document;
 
 
+
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import models.Booking;
+import models.Payment;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.SimpleResult;
@@ -21,6 +26,7 @@ import static play.libs.F.Promise;
 import play.libs.F;
 import play.libs.Json;
 import play.libs.WS;
+import play.libs.XPath;
 
 public class PaymentController extends Controller {
 	private static final String SECRET_MERCHANT = play.Play.application().configuration().getString("application.merchantKey");
@@ -66,15 +72,28 @@ public class PaymentController extends Controller {
 				.get().map(
 				new Function<WS.Response, Result>() {
 					public Result apply(WS.Response response) {
-						//needs check here
-						System.out.println(response.getBody());
-						String trans = response.asXml().getElementsByTagName("TransactionId").item(0).getTextContent();
-						b.payment.setTransactionId(trans);
-						
-						ObjectNode result = Json.newObject();
-						result.put("TransactionId", trans);
-						result.put("redirectUrl",REDIRECT_URL + "?merchantId=" + MERCHANT_ID  +"&transactionId="+trans);
-						return ok(result);
+						Document dom = response.asXml();
+						if(dom == null) {
+							System.out.println("lol");
+							return badRequest("Cant get proper response from nets");
+						}
+						String excpetion = XPath.selectText("//Exception", dom);
+						if(excpetion.equals(" ")) {
+							System.out.println(excpetion + "expcetion");
+							ObjectNode result = Json.newObject();
+							result.put("status", "KO");
+							result.put("message",excpetion);
+							return badRequest(result);
+						}
+						else {
+							String trans = XPath.selectText("//TransactionId", dom);
+							b.payment.setTransactionId(trans);
+							
+							ObjectNode result = Json.newObject();
+							result.put("TransactionId", trans);
+							result.put("redirectUrl",REDIRECT_URL + "?merchantId=" + MERCHANT_ID  +"&transactionId="+trans);
+							return ok(result);
+						}
 					}
 				}
 		);
@@ -92,12 +111,17 @@ public class PaymentController extends Controller {
 	public static Promise<Result> authenticatePayment() {
 		JsonNode json = request().body().asJson();
 		if(json == null) {
-			return Promise.pure((Result)badRequest());
+			return Promise.pure((Result)badRequest("Request contains no Json"));
 		}
 		
 		String transactionId = json.get("transactionId").asText();
 		if(transactionId == null) {
-			return Promise.pure((Result)badRequest()); 
+			return Promise.pure((Result)badRequest("No transactionId")); 
+		}
+		//check if p contains a booking (Check if the transactionId is a valid id at all.
+		Payment p = Payment.find.where().eq("transactionId", transactionId).findUnique();
+		if(p.booking.status.equals(Booking.TIMEDOUT)) {
+			return Promise.pure((Result)badRequest("Request timed out")); 
 		}
 		
 		String responseCode = json.get("responseCode").asText();
@@ -114,7 +138,7 @@ public class PaymentController extends Controller {
 				.get().map(
 				new Function<WS.Response, Result>() {
 					public Result apply(WS.Response response) {
-						//needs check here
+						System.out.println(response.getBody());
 						return ok(response.getBody());
 					}
 				}

@@ -5,16 +5,20 @@ import java.util.Calendar;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 
 import org.joda.time.DateTime;
 
 import flexjson.JSON;
 import play.data.validation.Constraints;
 import play.db.ebean.Model;
+import play.db.ebean.Model.Finder;
 
 @Entity
 public class Payment extends Model {
-
+	
+	public static Finder<Long, Payment> find = new Finder<Long, Payment>(Long.class, Payment.class);
+	
 	@Id 
 	public Long id;
 	
@@ -30,6 +34,9 @@ public class Payment extends Model {
 	/** User who authorised transaction **/
 	@Constraints.Required
 	public User user;	
+	
+	@OneToOne(mappedBy = "payment")
+	public Booking booking;
 	
 	//Nets accepted amount string
 	public String getAmount() {
@@ -51,6 +58,7 @@ public class Payment extends Model {
 		p.date = new Date(DateTime.now().getMillis()); //weird way. Should be yodatime
 		p.user = user;
 		p.amount = amount;
+		p.booking = b;
 		p.save();
 		b.payment = p;
 		b.update();
