@@ -6,6 +6,9 @@ import org.joda.time.DateTime;
 import org.joda.time.Days;
 
 
+
+import play.i18n.Messages;
+
 import controllers.SecurityController;
 import flexjson.JSONDeserializer;
 import models.Bed;
@@ -13,6 +16,7 @@ import models.Booking;
 import models.Cabin;
 import models.LargeCabin;
 import models.Payment;
+import models.SmallCabin;
 
 /**
  * Subclass of AbstractForm. Binds and validate json data used to create
@@ -57,6 +61,13 @@ public class BookingForm extends AbstractForm<Booking> {
 					return null;
 				}
 			}
+			else if(cabin instanceof SmallCabin) {
+				boolean bookable = ((SmallCabin) cabin).isAvailable(startDt, endDt);
+				if(!bookable) {
+					addError("Cabin not available for time period selected");
+					return null;
+				}
+			}
 			
 			Booking booking = Booking.createBooking(
 					SecurityController.getUser().id, 
@@ -84,15 +95,24 @@ public class BookingForm extends AbstractForm<Booking> {
 	@Override
 	public boolean validate() {
 		if(cabinId == null) {
-			addError("CabinId parameter not set");
+			addError(Messages.get("booking.misssingCabinId"));
 			return false;
 		}
 		
 		if(guests == null) {
-			addError("Guests array missing");
+			addError(Messages.get("booking.missingGuestArray"));
 			return false;
 		}
 		
+		int nrOfGuests = 0;
+		for(PriceForm p: guests) {
+			nrOfGuests += p.nr;
+		}
+		if(nrOfGuests<=0) {
+			addError(Messages.get("booking.atLeastOnePerson"));
+			return false;
+		}
+		//check here if booking only contains children or babies, which should not be possible
 		Cabin cabin = Cabin.find.byId(cabinId);
 		if(cabin == null) {
 			addError("Can't book at this cabin");
