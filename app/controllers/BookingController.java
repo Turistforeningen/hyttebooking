@@ -94,6 +94,7 @@ public class BookingController extends Controller {
 			}
 		}
 	}
+
 	/**
 	 * Controller method that use a the custom subclass bookingForm to 
 	 * validate and bind the json data in the request body.
@@ -106,7 +107,6 @@ public class BookingController extends Controller {
 		
 		BookingForm form = BookingForm
 				.deserializeJson(request().body().asJson().toString());
-	
 		if(form.isValid()) {
 			//already saved by model helper method inside
 			Booking booking = form.createModel();
