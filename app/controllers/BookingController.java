@@ -177,7 +177,7 @@ public class BookingController extends Controller {
 		}
 		//cancellogic to late to cancel?
 		booking.status = Booking.CANCELLED;
-		PaymentController.cancelPayment(booking.payment.transactionId);
+		PaymentController.cancelPayment(booking.payment.getTransactionId());
 		
 		booking.update();
 		
@@ -261,7 +261,8 @@ public class BookingController extends Controller {
 	 * @return Json with a page of orderHistory
 	 */
 	public static Result getOrderHistory() {
-
+		
+		//If query parameters page or size not present, default values will be used
 		int page = Page.pageHelper(request().getQueryString("page"));
 		int pageSize = Page.pageSizeHelper(request().getQueryString("size"));
 

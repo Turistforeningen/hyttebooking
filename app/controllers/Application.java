@@ -19,7 +19,7 @@ public class Application extends Controller {
     	System.out.println("cabinId: " + cabinID + " ,beds " + beds + " ,type: " + bookingType);
     	//If cabinID dont match any cabin in database return fail.
     	
-    	
+    	//not used
     	return TODO;
     }
     
