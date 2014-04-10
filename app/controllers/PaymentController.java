@@ -72,27 +72,28 @@ public class PaymentController extends Controller {
 				.get().map(
 				new Function<WS.Response, Result>() {
 					public Result apply(WS.Response response) {
+						System.out.println(response.getBody());
+						
 						Document dom = response.asXml();
+						ObjectNode result = Json.newObject();
+						
 						if(dom == null) {
-							System.out.println("lol");
 							return badRequest("Cant get proper response from nets");
 						}
-						String excpetion = XPath.selectText("//Exception", dom);
-						if(excpetion.equals(" ")) {
-							System.out.println(excpetion + "expcetion");
-							ObjectNode result = Json.newObject();
-							result.put("status", "KO");
-							result.put("message",excpetion);
-							return badRequest(result);
-						}
-						else {
+						
+						String exception = XPath.selectText("//Exception", dom);
+						if(exception.equals("")) {
 							String trans = XPath.selectText("//TransactionId", dom);
 							b.payment.setTransactionId(trans);
-							
-							ObjectNode result = Json.newObject();
 							result.put("TransactionId", trans);
 							result.put("redirectUrl",REDIRECT_URL + "?merchantId=" + MERCHANT_ID  +"&transactionId="+trans);
 							return ok(result);
+						}
+						else {
+							result.put("status", "KO");
+							result.put("message",exception);
+							return badRequest(result);
+							
 						}
 					}
 				}

@@ -93,6 +93,15 @@ public class BookingForm extends AbstractForm<Booking> {
 			return false;
 		}
 		
+		int nrOfGuests = 0;
+		for(PriceForm p: guests) {
+			nrOfGuests += p.nr;
+		}
+		if(nrOfGuests<=0) {
+			addError("You have to book for at least person");
+			return false;
+		}
+		//check here if booking only contains children or babies, which should not be possible
 		Cabin cabin = Cabin.find.byId(cabinId);
 		if(cabin == null) {
 			addError("Can't book at this cabin");
