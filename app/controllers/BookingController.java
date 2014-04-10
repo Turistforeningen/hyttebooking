@@ -19,6 +19,10 @@ import org.joda.time.Days;
 
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> Switch out error and success messages with i18n
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -27,6 +31,7 @@ import models.Booking;
 import models.Cabin;
 import models.LargeCabin;
 import models.SmallCabin;
+import play.i18n.Messages;
 import play.libs.Akka;
 import play.libs.Json;
 import play.mvc.Controller;
@@ -91,7 +96,7 @@ public class BookingController extends Controller {
 				}
 			} else {
 				result.put("status", "KO");
-				result.put("message", "date invalid");
+				result.put("message", Messages.get("date.invalid"));
 				return badRequest(result);
 			}
 		}
@@ -165,6 +170,7 @@ public class BookingController extends Controller {
 		Booking booking = Booking.getBookingById(bookingId);
 
 		if(booking == null) {
+<<<<<<< HEAD
 			return notFound(JsonMessage.error("No such booking found, with id: " + bookingId));
 		}
 
@@ -174,13 +180,29 @@ public class BookingController extends Controller {
 
 		if(!booking.isAbleToCancel()) {
 			return badRequest(JsonMessage.error("To late to cancel"));
+=======
+			return notFound(JsonMessage.error(Messages.get("booking.notFound")));
+		}
+
+		if(booking.user.id != SecurityController.getUser().id) {
+			return badRequest(JsonMessage.error(Messages.get("booking.noAccess")));
+		}
+
+		if(!booking.isAbleToCancel()) {
+			return badRequest(JsonMessage.error(Messages.get("booking.cannotCancel")));
+>>>>>>> Switch out error and success messages with i18n
 		}
 		//cancellogic to late to cancel?
 		booking.status = Booking.CANCELLED;
 		PaymentController.cancelPayment(booking.payment.getTransactionId());
 		
+<<<<<<< HEAD
 		booking.update();
 		
+=======
+
+		booking.update();		
+>>>>>>> Switch out error and success messages with i18n
 		return ok(JsonMessage.success(""));
 	}
 

@@ -1,4 +1,22 @@
+json.couldNotParseData      = Klarte ikke å bearbeide json data
+
+date.invalid                = Dato ugyldig
+
 booking.atLeastOnePerson    = Du må reservere for minst en person
 booking.missingGuestArray   = Mangler gjesteliste i json
 booking.misssingCabinId     = Mangler hytte id i json
 booking.missingCabin        = Kan ikke reservere på denne hytta
+booking.missingDates        = Fra dato eller til dato mangler
+booking.invalidFromDate     = Fra dato parameter er ugyldig
+booking.invalidToDate       = Til dato parameter er ugyldig
+booking.invalidDateRange    = Reservasjonsperioden er ugyldig
+booking.successful          = Reservasjon lagret
+booking.cabinNotAvailable   = Hytta er opptatt i den valgte perioden
+booking.bedsNotAvailable    = Ikke nok senger ledig i valgt periode
+booking.notFound            = Reservasjon ikke funnet
+booking.noAccess            = Ikke din booking
+booking.cannotCancel        = For sent å avbestille reservasjon
+
+cabin.missingType           = Mangler type-parameter i json
+cabin.invalidType           = Type parameter ugyldig
+cabin.missingName           = Mangler name-parameter i json
