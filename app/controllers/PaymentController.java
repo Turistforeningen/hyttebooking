@@ -54,7 +54,10 @@ public class PaymentController extends Controller {
 		
 		final Booking b = Booking.getBookingById(bookingId+ "");
 		if(b == null || b.status == Booking.BOOKED) {
-			return Promise.pure((Result) notFound("notfound"));
+			ObjectNode result = Json.newObject();
+			result.put("status", "KO");
+			result.put("message","Booking your trying to pay for, not found");
+			return Promise.pure((Result) notFound(result));
 		}
 		System.out.println(b.getDeliveryDate());
 		/*if(b.user != SecurityController.getUser()) {
@@ -78,7 +81,9 @@ public class PaymentController extends Controller {
 						ObjectNode result = Json.newObject();
 						
 						if(dom == null) {
-							return badRequest("Cant get proper response from nets");
+							result.put("status", "KO");
+							result.put("message","Cant get proper response from nets");
+							return badRequest(result);
 						}
 						
 						String exception = XPath.selectText("//Exception", dom);
@@ -111,23 +116,33 @@ public class PaymentController extends Controller {
 	 */
 	public static Promise<Result> authenticatePayment() {
 		JsonNode json = request().body().asJson();
+		ObjectNode result = Json.newObject();
+		
 		if(json == null) {
-			return Promise.pure((Result)badRequest("Request contains no Json"));
+			result.put("status", "KO");
+			result.put("message","Request contains no Json");
+			return Promise.pure((Result)badRequest(result));
 		}
 		
 		String transactionId = json.get("transactionId").asText();
 		if(transactionId == null) {
-			return Promise.pure((Result)badRequest("No transactionId")); 
+			result.put("status", "KO");
+			result.put("message","No transactionId sent");
+			return Promise.pure((Result)badRequest(result)); 
 		}
 		//check if p contains a booking (Check if the transactionId is a valid id at all.
 		Payment p = Payment.find.where().eq("transactionId", transactionId).findUnique();
 		if(p.booking.status.equals(Booking.TIMEDOUT)) {
-			return Promise.pure((Result)badRequest("Request timed out")); 
+			result.put("status", "KO");
+			result.put("message","You took to long to pay, booking timed out");
+			return Promise.pure((Result)badRequest(result)); 
 		}
 		
 		String responseCode = json.get("responseCode").asText();
 		if(!responseCode.equals("OK")) {
-			return Promise.pure((Result)badRequest(responseCode)); 
+			result.put("status", "KO");
+			result.put("message","Problem with payment, cannot authenticate payment");
+			return Promise.pure((Result)badRequest(result)); 
 		}
 		
 		//async  call to netAxcept
@@ -137,13 +152,33 @@ public class PaymentController extends Controller {
 				.setQueryParameter("transactionId", transactionId)
 				.setQueryParameter("operation", "AUTH")
 				.get().map(
-				new Function<WS.Response, Result>() {
-					public Result apply(WS.Response response) {
-						System.out.println(response.getBody());
-						return ok(response.getBody());
-					}
-				}
-				);
+						new Function<WS.Response, Result>() {
+							public Result apply(WS.Response response) {
+								System.out.println(response.getBody());
+
+								Document dom = response.asXml();
+								ObjectNode result = Json.newObject();
+
+								if(dom == null) {
+									result.put("status", "KO");
+									result.put("message","Cant get proper response from nets");
+								}
+
+								String exception = XPath.selectText("//Exception", dom);
+								if(exception.equals("")) {
+									result.put("status", "OK");
+									result.put("message", "payment authenicated");
+									return ok(result);
+								}
+								else {
+									result.put("status", "KO");
+									result.put("message",exception);
+									return badRequest(result);
+
+								}
+							}
+						}
+						);
 		return resultPromise;
 	}
 	
