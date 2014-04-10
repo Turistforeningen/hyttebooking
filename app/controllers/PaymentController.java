@@ -27,6 +27,7 @@ import play.libs.F;
 import play.libs.Json;
 import play.libs.WS;
 import play.libs.XPath;
+import utilities.JsonMessage;
 
 public class PaymentController extends Controller {
 	private static final String SECRET_MERCHANT = play.Play.application().configuration().getString("application.merchantKey");
@@ -54,10 +55,7 @@ public class PaymentController extends Controller {
 		
 		final Booking b = Booking.getBookingById(bookingId+ "");
 		if(b == null || b.status == Booking.BOOKED) {
-			ObjectNode result = Json.newObject();
-			result.put("status", "KO");
-			result.put("message","Booking your trying to pay for, not found");
-			return Promise.pure((Result) notFound(result));
+			return Promise.pure((Result) notFound(JsonMessage.error("Booking your trying to pay for, not found")));
 		}
 		System.out.println(b.getDeliveryDate());
 		/*if(b.user != SecurityController.getUser()) {
@@ -78,27 +76,23 @@ public class PaymentController extends Controller {
 						System.out.println(response.getBody());
 						
 						Document dom = response.asXml();
-						ObjectNode result = Json.newObject();
+
 						
 						if(dom == null) {
-							result.put("status", "KO");
-							result.put("message","Cant get proper response from nets");
-							return badRequest(result);
+							return badRequest(JsonMessage.error("Cant get proper response from nets"));
 						}
 						
 						String exception = XPath.selectText("//Exception", dom);
 						if(exception.equals("")) {
 							String trans = XPath.selectText("//TransactionId", dom);
 							b.payment.setTransactionId(trans);
+							ObjectNode result = Json.newObject();
 							result.put("TransactionId", trans);
 							result.put("redirectUrl",REDIRECT_URL + "?merchantId=" + MERCHANT_ID  +"&transactionId="+trans);
 							return ok(result);
 						}
 						else {
-							result.put("status", "KO");
-							result.put("message",exception);
-							return badRequest(result);
-							
+							return badRequest(JsonMessage.error(exception));	
 						}
 					}
 				}
@@ -116,33 +110,24 @@ public class PaymentController extends Controller {
 	 */
 	public static Promise<Result> authenticatePayment() {
 		JsonNode json = request().body().asJson();
-		ObjectNode result = Json.newObject();
 		
 		if(json == null) {
-			result.put("status", "KO");
-			result.put("message","Request contains no Json");
-			return Promise.pure((Result)badRequest(result));
+			return Promise.pure((Result)badRequest(JsonMessage.error("Request contains no Json")));
 		}
 		
 		String transactionId = json.get("transactionId").asText();
 		if(transactionId == null) {
-			result.put("status", "KO");
-			result.put("message","No transactionId sent");
-			return Promise.pure((Result)badRequest(result)); 
+			return Promise.pure((Result)badRequest(JsonMessage.error("No transactionId sent"))); 
 		}
 		//check if p contains a booking (Check if the transactionId is a valid id at all.
 		Payment p = Payment.find.where().eq("transactionId", transactionId).findUnique();
 		if(p.booking.status.equals(Booking.TIMEDOUT)) {
-			result.put("status", "KO");
-			result.put("message","You took to long to pay, booking timed out");
-			return Promise.pure((Result)badRequest(result)); 
+			return Promise.pure((Result)badRequest(JsonMessage.error("You took to long to pay, booking timed out"))); 
 		}
 		
 		String responseCode = json.get("responseCode").asText();
 		if(!responseCode.equals("OK")) {
-			result.put("status", "KO");
-			result.put("message","Problem with payment, cannot authenticate payment");
-			return Promise.pure((Result)badRequest(result)); 
+			return Promise.pure((Result)badRequest(JsonMessage.error("Problem with payment, cannot authenticate payment"))); 
 		}
 		
 		//async  call to netAxcept
@@ -157,23 +142,17 @@ public class PaymentController extends Controller {
 								System.out.println(response.getBody());
 
 								Document dom = response.asXml();
-								ObjectNode result = Json.newObject();
 
 								if(dom == null) {
-									result.put("status", "KO");
-									result.put("message","Cant get proper response from nets");
+									return badRequest(JsonMessage.error("Cant get proper response from nets"));
 								}
 
 								String exception = XPath.selectText("//Exception", dom);
 								if(exception.equals("")) {
-									result.put("status", "OK");
-									result.put("message", "payment authenicated");
-									return ok(result);
+									return ok(JsonMessage.success("payment authenicated"));
 								}
 								else {
-									result.put("status", "KO");
-									result.put("message",exception);
-									return badRequest(result);
+									return badRequest(JsonMessage.error(exception));
 
 								}
 							}
