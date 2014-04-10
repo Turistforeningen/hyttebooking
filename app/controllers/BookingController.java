@@ -19,6 +19,8 @@ import org.joda.time.Days;
 
 
 
+
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -27,6 +29,7 @@ import models.Booking;
 import models.Cabin;
 import models.LargeCabin;
 import models.SmallCabin;
+import play.i18n.Messages;
 import play.libs.Akka;
 import play.libs.Json;
 import play.mvc.Controller;
@@ -49,9 +52,7 @@ public class BookingController extends Controller {
 		ObjectNode result = Json.newObject();
 		JsonNode json = request().body().asJson();
 		if(json == null) {
-			result.put("status", "KO");
-			result.put("message", "Expected Json");
-			return badRequest(result);
+			return badRequest(JsonMessage.error(Messages.get("json.expected")));
 		}
 		else {
 			//startDate, endDate, nrOfPerson, cabinId
@@ -91,7 +92,7 @@ public class BookingController extends Controller {
 				}
 			} else {
 				result.put("status", "KO");
-				result.put("message", "date invalid");
+				result.put("message", Messages.get("date.invalid"));
 				return badRequest(result);
 			}
 		}
@@ -165,22 +166,32 @@ public class BookingController extends Controller {
 		Booking booking = Booking.getBookingById(bookingId);
 
 		if(booking == null) {
-			return notFound(JsonMessage.error("No such booking found, with id: " + bookingId));
+			return notFound(JsonMessage.error(Messages.get("booking.notFound")+ ": " + bookingId));
 		}
 
 		if(booking.user.id != SecurityController.getUser().id) {
-			return badRequest(JsonMessage.error("No access"));
+			return badRequest(JsonMessage.error(Messages.get("booking.noAccess")));
 		}
 
 		if(!booking.isAbleToCancel()) {
-			return badRequest(JsonMessage.error("To late to cancel"));
+			return notFound(JsonMessage.error(Messages.get("booking.notFound")));
+		}
+
+		if(booking.user.id != SecurityController.getUser().id) {
+			return badRequest(JsonMessage.error(Messages.get("booking.noAccess")));
+		}
+
+		if(!booking.isAbleToCancel()) {
+			return badRequest(JsonMessage.error(Messages.get("booking.cannotCancel")));
 		}
 		//cancellogic to late to cancel?
 		booking.status = Booking.CANCELLED;
 		PaymentController.cancelPayment(booking.payment.getTransactionId());
 		
 		booking.update();
-		
+
+
+		booking.update();		
 		return ok(JsonMessage.success(""));
 	}
 

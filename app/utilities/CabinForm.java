@@ -1,5 +1,6 @@
 package utilities;
 
+import play.i18n.Messages;
 import models.Cabin;
 import models.LargeCabin;
 import models.SmallCabin;
@@ -32,18 +33,17 @@ public class CabinForm extends AbstractForm<Cabin>{
 	@Override
 	public boolean validate() {
 		if(type == null) {
-			System.out.println("hei");
-			this.addError("No type paramter in Json");
+			this.addError(Messages.get("cabin.missingType"));
 			return false;
 		}
 		
 		if(!(type.equals("LargeCabin") || type.equals("SmallCabin"))) {
-			this.addError("Name parameter invalid");
+			this.addError(Messages.get("cabin.invalidType"));
 			return false;
 		}
 		
 		if(name == null) {
-			this.addError("No name parameter in Json");
+			this.addError(Messages.get("cabin.missingName"));
 			return false;
 		}
 		
@@ -94,7 +94,7 @@ public class CabinForm extends AbstractForm<Cabin>{
 		} catch (Exception e) {
 			//add more detailed data. Possibly what variable it cant find.
 			cabinData = new CabinForm();
-			cabinData.addError("Could not parse data");
+			cabinData.addError(Messages.get("json.couldNotParseData"));
 			
 		}
 		return cabinData;

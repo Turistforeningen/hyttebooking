@@ -23,6 +23,7 @@ import play.mvc.Result;
 import play.mvc.SimpleResult;
 import static play.libs.F.Function;
 import static play.libs.F.Promise;
+import play.i18n.Messages;
 import play.libs.F;
 import play.libs.Json;
 import play.libs.WS;
@@ -57,7 +58,7 @@ public class PaymentController extends Controller {
 		
 		final Booking b = Booking.getBookingById(bookingId+ "");
 		if(b == null || b.status == Booking.BOOKED) {
-			return Promise.pure((Result) notFound(JsonMessage.error("Booking your trying to pay for, not found")));
+			return Promise.pure((Result) notFound(JsonMessage.error(Messages.get("payment.bookingNotFound"))));
 		}
 		System.out.println(b.getDeliveryDate());
 		//if deliverydate is 3 month in the future nets wont collect it automatically,
@@ -117,7 +118,7 @@ public class PaymentController extends Controller {
 		JsonNode json = request().body().asJson();
 		
 		if(json == null) {
-			return Promise.pure((Result)badRequest(JsonMessage.error("Request contains no Json")));
+			return Promise.pure((Result)badRequest(JsonMessage.error(Messages.get("json.expected"))));
 		}
 		
 		String transactionId = json.get("transactionId").asText();

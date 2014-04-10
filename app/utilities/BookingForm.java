@@ -7,6 +7,8 @@ import org.joda.time.Days;
 
 
 
+import play.i18n.Messages;
+
 import controllers.SecurityController;
 import flexjson.JSONDeserializer;
 import models.Bed;
@@ -55,14 +57,14 @@ public class BookingForm extends AbstractForm<Booking> {
 			if (cabin instanceof LargeCabin) {
 				bedsO = ((LargeCabin) cabin).book(beds, startDt, endDt);
 				if(bedsO == null) {
-					addError("No beds available for time period selected");
+					addError(Messages.get("booking.bedsNotAvailable"));
 					return null;
 				}
 			}
 			else if(cabin instanceof SmallCabin) {
 				boolean bookable = ((SmallCabin) cabin).isAvailable(startDt, endDt);
 				if(!bookable) {
-					addError("Cabin not available for time period selected");
+					addError(Messages.get("booking.cabinNotAvailable"));
 					return null;
 				}
 			}
@@ -76,7 +78,7 @@ public class BookingForm extends AbstractForm<Booking> {
 			
 			double amount = PriceHelper.calculateAmount(guests, Days.daysBetween(startDt, endDt).getDays());
 			Payment.createPaymentForBooking(SecurityController.getUser(), booking, amount);
-			addSuccess("message", "booking saved");
+			addSuccess("message", Messages.get("booking.successful"));
 			
 			
 			return booking;
@@ -93,12 +95,12 @@ public class BookingForm extends AbstractForm<Booking> {
 	@Override
 	public boolean validate() {
 		if(cabinId == null) {
-			addError("CabinId parameter not set");
+			addError(Messages.get("booking.misssingCabinId"));
 			return false;
 		}
 		
 		if(guests == null) {
-			addError("Guests array missing");
+			addError(Messages.get("booking.missingGuestArray"));
 			return false;
 		}
 		
@@ -107,35 +109,35 @@ public class BookingForm extends AbstractForm<Booking> {
 			nrOfGuests += p.nr;
 		}
 		if(nrOfGuests<=0) {
-			addError("You have to book for at least person");
+			addError(Messages.get("booking.atLeastOnePerson"));
 			return false;
 		}
 		//check here if booking only contains children or babies, which should not be possible
 		Cabin cabin = Cabin.find.byId(cabinId);
 		if(cabin == null) {
-			addError("Can't book at this cabin");
+			addError(Messages.get("booking.missingCabin"));
 			return false;
 		}
 		
 		if(dateFrom == null || dateTo == null) {
-			addError("DateTo or dateFrom are missing");
+			addError(Messages.get("booking.missingDates"));
 			return false;
 		}
 		DateTime startDt = utilities.DateHelper.toDt(this.dateFrom);
 		if(startDt == null) {
-			addError("FromDate parameter is invalid");
+			addError(Messages.get("booking.invalidFromDate"));
 			return false;
 		}
 		
 		DateTime endDt = utilities.DateHelper.toDt(this.dateTo);
 		if(endDt == null) {
-			addError("ToDate parameter is invalid");
+			addError(Messages.get("booking.invalidToDate"));
 			return false;
 		}
 		
 		if(startDt.isBeforeNow() || endDt.isBeforeNow() || !startDt.isBefore(endDt))  {
 			System.out.println(startDt +" "+ endDt);
-			addError("The range selected is not valid");
+			addError(Messages.get("booking.invalidDateRange"));
 			return false;	
 		}
 		
@@ -161,7 +163,7 @@ public class BookingForm extends AbstractForm<Booking> {
 			e.printStackTrace();
 			//add more detailed data. Possibly what variable it cant find.
 			bookingData = new BookingForm();
-			bookingData.addError("Could not parse data");
+			bookingData.addError(Messages.get("json.couldNotParseData"));
 			bookingData.validationError = true;
 			
 		}

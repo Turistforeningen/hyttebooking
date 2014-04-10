@@ -24,7 +24,7 @@ public class JsonMessage {
 	}
 	/**
 	 * General json success message containing status and message
-	 * @param message - what error has occured
+	 * @param message - what went ok
 	 * @return ObjectNode containing json
 	 */
 	public static ObjectNode success(String message) {
