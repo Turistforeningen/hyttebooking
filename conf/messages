@@ -1,3 +1,4 @@
 booking.atLeastOnePerson    = Du må reservere for minst en person
 booking.missingGuestArray   = Mangler gjesteliste i json
 booking.misssingCabinId     = Mangler hytte id i json
+booking.missingCabin        = Kan ikke reservere på denne hytta

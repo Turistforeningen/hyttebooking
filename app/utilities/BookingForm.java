@@ -115,7 +115,7 @@ public class BookingForm extends AbstractForm<Booking> {
 		//check here if booking only contains children or babies, which should not be possible
 		Cabin cabin = Cabin.find.byId(cabinId);
 		if(cabin == null) {
-			addError("Can't book at this cabin");
+			addError(Messages.get("booking.missingCabin"));
 			return false;
 		}
 		
