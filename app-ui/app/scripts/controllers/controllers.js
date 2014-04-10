@@ -78,6 +78,7 @@ View. The method postBooking uses the ordersService to
  */
 angular.module('dntApp').controller('bookingController', ['$filter','$rootScope','$scope','ordersService','$log','$routeParams','$window',
                                                           function ($filter, $rootScope, $scope, ordersService, $log, $routeParams, $window) {
+	$scope.errorMessage;
 	$scope.personType = null;
 	$scope.paid = 0;
 	$scope.booking ={};
@@ -124,7 +125,7 @@ angular.module('dntApp').controller('bookingController', ['$filter','$rootScope'
 			$log.info('Det virket' + data.message);
 		})
 		.error(function (error) {
-			$log.info('Det virket ikke. ' + error.message);
+			$scope.errorMessage = error.message;
 
 		});
 	};
