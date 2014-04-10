@@ -8,8 +8,8 @@ import org.joda.time.DateTime;
 import org.joda.time.Instant;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.sun.org.apache.xml.internal.security.exceptions.Base64DecodingException;
-import com.sun.org.apache.xml.internal.security.utils.Base64;
+
+import org.apache.commons.codec.binary.Base64;
 
 import flexjson.JSON;
 import play.libs.Json;
@@ -36,7 +36,7 @@ public class ConnectController extends Controller {
 	 * encryption not being complete.
 	 * @return
 	 */
-	public static Promise<Result> testConnect() throws Base64DecodingException, DataLengthException, InvalidCipherTextException, UnsupportedEncodingException { 
+	public static Promise<Result> testConnect() throws DataLengthException, InvalidCipherTextException, UnsupportedEncodingException { 
 		AESBouncyCastle aes = new AESBouncyCastle();
 
 		String json = "{\"timestamp\": "+getTimeStamp()+"}";
@@ -69,18 +69,19 @@ public class ConnectController extends Controller {
 		AESBouncyCastle aes = new AESBouncyCastle(); /** The encryption helper class **/
 		String json = "{\"timestamp\": "+getTimeStamp()+"}"; /** The JSON payload sent containing timestamp **/
 		byte[] encryptedJson = aes.encrypt(json.getBytes("UTF-8")); /** Payload encrypted **/
-		String data = new String(Base64.encode(encryptedJson)); /** Base64 encoding of encrypted payload **/
+		String data = new String(Base64.encodeBase64(encryptedJson)); /** Base64 encoding of encrypted payload **/
 		
 		final Promise<Result> resultPromise = WS.url(SIGNON).
 				setQueryParameter("client", CLIENT).
 				setQueryParameter("data", data).
 				get().map(
 						new Function<WS.Response, Result>() {
-							public Result apply(WS.Response response) throws DataLengthException, InvalidCipherTextException, Base64DecodingException {
+							public Result apply(WS.Response response) throws DataLengthException, InvalidCipherTextException {
 								//Here we decrypt the JSON
 								AESBouncyCastle aes = new AESBouncyCastle();
 								String encryptedJson = response.getBody();
-								String decryptedJson = new String(aes.decrypt(Base64.decode(encryptedJson)));
+								byte[] decoded = Base64.decodeBase64(encryptedJson.getBytes());
+								String decryptedJson = new String(aes.decrypt(decoded));
 								JsonNode json = Json.parse(decryptedJson);
 								if(authenticated(json)) {
 									
