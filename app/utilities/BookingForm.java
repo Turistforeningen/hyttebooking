@@ -7,6 +7,8 @@ import org.joda.time.Days;
 
 
 
+import play.i18n.Messages;
+
 import controllers.SecurityController;
 import flexjson.JSONDeserializer;
 import models.Bed;
@@ -93,12 +95,12 @@ public class BookingForm extends AbstractForm<Booking> {
 	@Override
 	public boolean validate() {
 		if(cabinId == null) {
-			addError("CabinId parameter not set");
+			addError(Messages.get("booking.misssingCabinId"));
 			return false;
 		}
 		
 		if(guests == null) {
-			addError("Guests array missing");
+			addError(Messages.get("booking.missingGuestArray"));
 			return false;
 		}
 		
@@ -107,7 +109,7 @@ public class BookingForm extends AbstractForm<Booking> {
 			nrOfGuests += p.nr;
 		}
 		if(nrOfGuests<=0) {
-			addError("You have to book for at least person");
+			addError(Messages.get("booking.atLeastOnePerson"));
 			return false;
 		}
 		//check here if booking only contains children or babies, which should not be possible
