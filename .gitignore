@@ -10,6 +10,8 @@
 !.gitattributes
 !.travis.yml
 
+#Ignore public folder
+public/
 #Ignore SECRET_ID SECRET_MERCANT
 conf/secrets.conf
 conf/MERCHANT_ID

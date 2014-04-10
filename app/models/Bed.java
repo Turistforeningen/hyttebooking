@@ -46,7 +46,7 @@ public class Bed extends Model  {
 			DateTime fromDate2 = new DateTime(booking.dateFrom);
 			DateTime toDate2 = new DateTime(booking.dateTo);
 
-			if(utilities.DateHelper.isOverlap(fromDate, toDate, fromDate2, toDate2))
+			if(utilities.DateHelper.isOverlap(fromDate, toDate, fromDate2, toDate2) && booking.status<Booking.CANCELLED)
 				return false;
 		}
 		

@@ -18,6 +18,7 @@ import org.joda.time.Days;
 
 
 
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -34,6 +35,7 @@ import play.mvc.Results;
 import play.mvc.With;
 import scala.concurrent.duration.Duration;
 import utilities.BookingForm;
+import utilities.JsonMessage;
 import utilities.Page;
 
 @With(SecurityController.class)
@@ -94,6 +96,7 @@ public class BookingController extends Controller {
 			}
 		}
 	}
+
 	/**
 	 * Controller method that use a the custom subclass bookingForm to 
 	 * validate and bind the json data in the request body.
@@ -106,7 +109,6 @@ public class BookingController extends Controller {
 		
 		BookingForm form = BookingForm
 				.deserializeJson(request().body().asJson().toString());
-	
 		if(form.isValid()) {
 			//already saved by model helper method inside
 			Booking booking = form.createModel();
@@ -118,7 +120,7 @@ public class BookingController extends Controller {
 				//maybe pass a message to a dedicated actor instead of runnable.
 				//TODO: Read akka documentation more carefully
 				final Long id = booking.id;
-				Akka.system().scheduler().scheduleOnce(Duration.create(5, TimeUnit.SECONDS),
+				Akka.system().scheduler().scheduleOnce(Duration.create(30, TimeUnit.MINUTES),
 						  new Runnable() {
 						    @Override
 						    public void run() {
@@ -128,6 +130,7 @@ public class BookingController extends Controller {
 						    	  //cancel booking and unlock beds or cabin for other customers
 						    	  //What happens if customer leaves for half an hour and comes
 						    	  //back and finishes payment? QUETION
+						    	  //remember that timeout should be also considered in isAvail methods
 						    	  b.status = Booking.TIMEDOUT;
 						    	  b.update();
 						    	  
@@ -160,35 +163,25 @@ public class BookingController extends Controller {
 	 */
 	public static Result cancelBooking(String bookingId) {
 		Booking booking = Booking.getBookingById(bookingId);
-		ObjectNode result = Json.newObject();
 
 		if(booking == null) {
-			result.put("Status", "KO");
-			result.put("message", "No such booking found");
-			return notFound(result);
+			return notFound(JsonMessage.error("No such booking found, with id: " + bookingId));
 		}
 
 		if(booking.user.id != SecurityController.getUser().id) {
-			result.put("Status", "KO");
-			result.put("message", "No access");
-			return badRequest(result);
+			return badRequest(JsonMessage.error("No access"));
 		}
 
 		if(!booking.isAbleToCancel()) {
-			result.put("Status", "KO");
-			result.put("message", "To late to cancel");
-			return badRequest(result);
+			return badRequest(JsonMessage.error("To late to cancel"));
 		}
 		//cancellogic to late to cancel?
 		booking.status = Booking.CANCELLED;
-		PaymentController.cancelPayment(booking.payment.transactionId);
+		PaymentController.cancelPayment(booking.payment.getTransactionId());
 		
-
 		booking.update();
-		result.put("Status", "OK");
-		result.put("message", "");
 		
-		return ok(result);
+		return ok(JsonMessage.success(""));
 	}
 
 	/** 
@@ -268,7 +261,8 @@ public class BookingController extends Controller {
 	 * @return Json with a page of orderHistory
 	 */
 	public static Result getOrderHistory() {
-
+		
+		//If query parameters page or size not present, default values will be used
 		int page = Page.pageHelper(request().getQueryString("page"));
 		int pageSize = Page.pageSizeHelper(request().getQueryString("size"));
 

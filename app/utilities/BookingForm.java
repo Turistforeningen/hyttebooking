@@ -6,6 +6,7 @@ import org.joda.time.DateTime;
 import org.joda.time.Days;
 
 
+
 import controllers.SecurityController;
 import flexjson.JSONDeserializer;
 import models.Bed;
@@ -13,6 +14,7 @@ import models.Booking;
 import models.Cabin;
 import models.LargeCabin;
 import models.Payment;
+import models.SmallCabin;
 
 /**
  * Subclass of AbstractForm. Binds and validate json data used to create
@@ -57,6 +59,13 @@ public class BookingForm extends AbstractForm<Booking> {
 					return null;
 				}
 			}
+			else if(cabin instanceof SmallCabin) {
+				boolean bookable = ((SmallCabin) cabin).isAvailable(startDt, endDt);
+				if(!bookable) {
+					addError("Cabin not available for time period selected");
+					return null;
+				}
+			}
 			
 			Booking booking = Booking.createBooking(
 					SecurityController.getUser().id, 
@@ -93,6 +102,15 @@ public class BookingForm extends AbstractForm<Booking> {
 			return false;
 		}
 		
+		int nrOfGuests = 0;
+		for(PriceForm p: guests) {
+			nrOfGuests += p.nr;
+		}
+		if(nrOfGuests<=0) {
+			addError("You have to book for at least person");
+			return false;
+		}
+		//check here if booking only contains children or babies, which should not be possible
 		Cabin cabin = Cabin.find.byId(cabinId);
 		if(cabin == null) {
 			addError("Can't book at this cabin");

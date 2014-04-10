@@ -27,13 +27,16 @@ import play.libs.F;
 import play.libs.Json;
 import play.libs.WS;
 import play.libs.XPath;
+import utilities.JsonMessage;
 
 public class PaymentController extends Controller {
+	private static final String BASE_URL = "https://test.epayment.nets.eu/Netaxept/";
 	private static final String SECRET_MERCHANT = play.Play.application().configuration().getString("application.merchantKey");
-	private static final String NETS_REGISTER = "https://epayment-test.bbs.no/Netaxept/Register.aspx";
-	private static final String NETS_PROCESS = "https://epayment-test.bbs.no/Netaxept/Process.aspx";
+	private static final String NETS_REGISTER = BASE_URL +"Register.aspx";
+	private static final String NETS_PROCESS = BASE_URL + "Process.aspx";
+	private static final String NETS_QUERY = BASE_URL + "query.aspx";
 	private static final String MERCHANT_ID = play.Play.application().configuration().getString("application.merchantId");
-	private static final String REDIRECT_URL = "https://epayment-test.bbs.no/Terminal/default.aspx";
+	private static final String REDIRECT_URL = "https://test.epayment.nets.eu/Terminal/default.aspx";
 	private static final String SERVER_URL = play.Play.application().configuration().getString("application.address");
 	
 	
@@ -54,9 +57,11 @@ public class PaymentController extends Controller {
 		
 		final Booking b = Booking.getBookingById(bookingId+ "");
 		if(b == null || b.status == Booking.BOOKED) {
-			return Promise.pure((Result) notFound("notfound"));
+			return Promise.pure((Result) notFound(JsonMessage.error("Booking your trying to pay for, not found")));
 		}
 		System.out.println(b.getDeliveryDate());
+		//if deliverydate is 3 month in the future nets wont collect it automatically,
+		//Set deliveryDate to 3 month in the future if booking happends i.e 2 years from now.
 		/*if(b.user != SecurityController.getUser()) {
 		return Promise.pure((Result) notFound("This is not your booking"));
 		}*/
@@ -72,27 +77,27 @@ public class PaymentController extends Controller {
 				.get().map(
 				new Function<WS.Response, Result>() {
 					public Result apply(WS.Response response) {
+						System.out.println(response.getBody());
+						
 						Document dom = response.asXml();
+
+						
 						if(dom == null) {
-							System.out.println("lol");
-							return badRequest("Cant get proper response from nets");
+							return badRequest(JsonMessage.error("Cant get proper response from nets"));
 						}
-						String excpetion = XPath.selectText("//Exception", dom);
-						if(excpetion.equals(" ")) {
-							System.out.println(excpetion + "expcetion");
-							ObjectNode result = Json.newObject();
-							result.put("status", "KO");
-							result.put("message",excpetion);
-							return badRequest(result);
-						}
-						else {
+						
+						String exception = XPath.selectText("//Exception", dom);
+						if(exception.equals("")) {
 							String trans = XPath.selectText("//TransactionId", dom);
 							b.payment.setTransactionId(trans);
-							
+	
 							ObjectNode result = Json.newObject();
 							result.put("TransactionId", trans);
 							result.put("redirectUrl",REDIRECT_URL + "?merchantId=" + MERCHANT_ID  +"&transactionId="+trans);
 							return ok(result);
+						}
+						else {
+							return badRequest(JsonMessage.error(exception));	
 						}
 					}
 				}
@@ -110,23 +115,24 @@ public class PaymentController extends Controller {
 	 */
 	public static Promise<Result> authenticatePayment() {
 		JsonNode json = request().body().asJson();
+		
 		if(json == null) {
-			return Promise.pure((Result)badRequest("Request contains no Json"));
+			return Promise.pure((Result)badRequest(JsonMessage.error("Request contains no Json")));
 		}
 		
 		String transactionId = json.get("transactionId").asText();
 		if(transactionId == null) {
-			return Promise.pure((Result)badRequest("No transactionId")); 
+			return Promise.pure((Result)badRequest(JsonMessage.error("No transactionId sent"))); 
 		}
 		//check if p contains a booking (Check if the transactionId is a valid id at all.
 		Payment p = Payment.find.where().eq("transactionId", transactionId).findUnique();
 		if(p.booking.status.equals(Booking.TIMEDOUT)) {
-			return Promise.pure((Result)badRequest("Request timed out")); 
+			return Promise.pure((Result)badRequest(JsonMessage.error("You took to long to pay, booking timed out"))); 
 		}
 		
 		String responseCode = json.get("responseCode").asText();
 		if(!responseCode.equals("OK")) {
-			return Promise.pure((Result)badRequest(responseCode)); 
+			return Promise.pure((Result)badRequest(JsonMessage.error("Problem with payment, cannot authenticate payment"))); 
 		}
 		
 		//async  call to netAxcept
@@ -136,13 +142,27 @@ public class PaymentController extends Controller {
 				.setQueryParameter("transactionId", transactionId)
 				.setQueryParameter("operation", "AUTH")
 				.get().map(
-				new Function<WS.Response, Result>() {
-					public Result apply(WS.Response response) {
-						System.out.println(response.getBody());
-						return ok(response.getBody());
-					}
-				}
-				);
+						new Function<WS.Response, Result>() {
+							public Result apply(WS.Response response) {
+								System.out.println(response.getBody());
+
+								Document dom = response.asXml();
+
+								if(dom == null) {
+									return badRequest(JsonMessage.error("Cant get proper response from nets"));
+								}
+
+								String exception = XPath.selectText("//Exception", dom);
+								if(exception.equals("")) {
+									return ok(JsonMessage.success("payment authenicated"));
+								}
+								else {
+									return badRequest(JsonMessage.error(XPath.selectText("//Message", dom)));
+
+								}
+							}
+						}
+						);
 		return resultPromise;
 	}
 	
@@ -158,23 +178,84 @@ public class PaymentController extends Controller {
 	 * @return boolean telling if operation was successful.
 	 */
 public static Promise<Boolean> cancelPayment(String transactionId) {
+		//should probably do this async and set flag here.
+	try {
+		Document dom = queryPayment(transactionId).get(10000);
+		String amountCaptured = XPath.selectText("//AmountCaptured", dom);
+		System.out.println(amountCaptured +" lol");
+		//If anything has been captured already, credit customer, else annul order
+		if(Integer.parseInt(amountCaptured)>0) {
+			return authOrCreditPayment(transactionId, "CREDIT");
+		}
+		else {
+			return authOrCreditPayment(transactionId, "ANNUL");
+		}
+	} catch (Exception e) {
+	}
+		//booking controller does not take this return value into consideration
+		return null;
 		
-		//Temp: Assume a payment that is cancelled has not yet been captured
+}
 
-		final Promise<Boolean> resultPromise = WS.url(NETS_PROCESS)
-				.setQueryParameter("merchantId", MERCHANT_ID)
-				.setQueryParameter("token", SECRET_MERCHANT)
-				.setQueryParameter("transactionId", transactionId)
-				.setQueryParameter("operation", "ANNUL")
-				.get().map(
-				new Function<WS.Response, Boolean>() {
-					public Boolean apply(WS.Response response) {
-						//needs check here
-						System.out.println(response.getBody());
+/**
+ * Call nets about a transaction and get information about transaction.
+ * Who paid, when, has it been annulled, captured etc
+ * @param transactionId - transaction to query about
+ * @return Document - xml response from Nets
+ */
+public static Promise<Document> queryPayment(String transactionId) {
+	final Promise<Document> resultPromise = WS.url(NETS_QUERY)
+			.setQueryParameter("merchantId", MERCHANT_ID)
+			.setQueryParameter("token", SECRET_MERCHANT)
+			.setQueryParameter("transactionId", transactionId)
+			.get().map(
+			new Function<WS.Response, Document>() {
+				public Document apply(WS.Response response) {
+					System.out.println(response.getBody());
+					Document dom = response.asXml();
+					return dom;
+				}
+			}
+			);
+	return resultPromise;
+}
+
+/**
+ * Depending on whether payment has been captured or not will either credit or annul a payment.
+ * @param transactionId - booking transaction to be refunded
+ * @param operation - either ANNUL or CREDIT
+ * @return a boolean telling whether operation went ok or not.
+ */
+public static Promise<Boolean> authOrCreditPayment(String transactionId, String operation) {
+	final Promise<Boolean> resultPromise = WS.url(NETS_PROCESS)
+			.setQueryParameter("merchantId", MERCHANT_ID)
+			.setQueryParameter("token", SECRET_MERCHANT)
+			.setQueryParameter("transactionId", transactionId)
+			.setQueryParameter("operation", operation)
+			.get().map(
+			new Function<WS.Response, Boolean>() {
+				public Boolean apply(WS.Response response) {
+					//needs check here
+					System.out.println(response.getBody());
+					
+					Document dom = response.asXml();
+
+					if(dom == null) {
+						return false;
+					}
+
+					String exception = XPath.selectText("//Exception", dom);
+					if(exception.equals("")) {
 						return true;
 					}
+					else {
+						return false;
+
+					}
+					
 				}
-				);
-		return resultPromise;
-	}
+			}
+			);
+	return resultPromise;
+}
 }
