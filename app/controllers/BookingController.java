@@ -118,7 +118,7 @@ public class BookingController extends Controller {
 				//maybe pass a message to a dedicated actor instead of runnable.
 				//TODO: Read akka documentation more carefully
 				final Long id = booking.id;
-				Akka.system().scheduler().scheduleOnce(Duration.create(5, TimeUnit.SECONDS),
+				Akka.system().scheduler().scheduleOnce(Duration.create(30, TimeUnit.MINUTES),
 						  new Runnable() {
 						    @Override
 						    public void run() {
@@ -128,6 +128,7 @@ public class BookingController extends Controller {
 						    	  //cancel booking and unlock beds or cabin for other customers
 						    	  //What happens if customer leaves for half an hour and comes
 						    	  //back and finishes payment? QUETION
+						    	  //remember that timeout should be also considered in isAvail methods
 						    	  b.status = Booking.TIMEDOUT;
 						    	  b.update();
 						    	  

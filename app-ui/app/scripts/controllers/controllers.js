@@ -146,7 +146,7 @@ angular.module('dntApp').controller('bookingController', ['$filter','$rootScope'
 			$scope.personType = data;
 		})
 		.error(function(error) {
-			$log.info('');
+			$log.info(error.message);
 		});
 	};
 
@@ -158,6 +158,7 @@ angular.module('dntApp').controller('bookingController', ['$filter','$rootScope'
 		})
 		.error(function(error) {
 			$scope.paid = 2;
+			$log.info(error.message);
 
 		});
 	};
