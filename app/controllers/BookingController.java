@@ -18,6 +18,8 @@ import org.joda.time.Days;
 
 
 
+
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -26,6 +28,7 @@ import models.Booking;
 import models.Cabin;
 import models.LargeCabin;
 import models.SmallCabin;
+import play.i18n.Messages;
 import play.libs.Akka;
 import play.libs.Json;
 import play.mvc.Controller;
@@ -34,6 +37,7 @@ import play.mvc.Results;
 import play.mvc.With;
 import scala.concurrent.duration.Duration;
 import utilities.BookingForm;
+import utilities.JsonMessage;
 import utilities.Page;
 
 @With(SecurityController.class)
@@ -89,7 +93,7 @@ public class BookingController extends Controller {
 				}
 			} else {
 				result.put("status", "KO");
-				result.put("message", "date invalid");
+				result.put("message", Messages.get("date.invalid"));
 				return badRequest(result);
 			}
 		}
@@ -160,35 +164,25 @@ public class BookingController extends Controller {
 	 */
 	public static Result cancelBooking(String bookingId) {
 		Booking booking = Booking.getBookingById(bookingId);
-		ObjectNode result = Json.newObject();
 
 		if(booking == null) {
-			result.put("Status", "KO");
-			result.put("message", "No such booking found");
-			return notFound(result);
+			return notFound(JsonMessage.error(Messages.get("booking.notFound")));
 		}
 
 		if(booking.user.id != SecurityController.getUser().id) {
-			result.put("Status", "KO");
-			result.put("message", "No access");
-			return badRequest(result);
+			return badRequest(JsonMessage.error(Messages.get("booking.noAccess")));
 		}
 
 		if(!booking.isAbleToCancel()) {
-			result.put("Status", "KO");
-			result.put("message", "To late to cancel");
-			return badRequest(result);
+			return badRequest(JsonMessage.error(Messages.get("booking.cannotCancel")));
 		}
 		//cancellogic to late to cancel?
 		booking.status = Booking.CANCELLED;
 		PaymentController.cancelPayment(booking.payment.transactionId);
 		
 
-		booking.update();
-		result.put("Status", "OK");
-		result.put("message", "");
-		
-		return ok(result);
+		booking.update();		
+		return ok(JsonMessage.success(""));
 	}
 
 	/** 
