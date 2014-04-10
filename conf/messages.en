@@ -1,3 +1,4 @@
-booking.atLeastOnePerson = You have to book for at least one person
-booking.missingGuestArray = Guests array missing in json
+booking.atLeastOnePerson    = You have to book for at least one person
+booking.missingGuestArray   = Guests array missing in json
 booking.misssingCabinId     = Missing cabin id in json
+booking.missingCabin        = Cannot book at this cabin
