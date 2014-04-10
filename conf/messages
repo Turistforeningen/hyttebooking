@@ -1,4 +1,5 @@
 json.couldNotParseData      = Klarte ikke å bearbeide json data
+json.expected               = Forventet json
 
 date.invalid                = Dato ugyldig
 
@@ -20,3 +21,5 @@ booking.cannotCancel        = For sent å avbestille reservasjon
 cabin.missingType           = Mangler type-parameter i json
 cabin.invalidType           = Type parameter ugyldig
 cabin.missingName           = Mangler name-parameter i json
+
+payment.bookingNotFound     = Reservasjon du prøver å betale finnes ikke

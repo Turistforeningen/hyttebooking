@@ -1,4 +1,5 @@
 json.couldNotParseData      = Could not parse json data
+json.expected               = Expected Json
 
 date.invalid                = Date invalid
 
@@ -19,3 +20,5 @@ booking.noAccess            = Not your booking
 cabin.missingType           = Missing type parameter in json
 cabin.invalidType           = Type parameter invalid
 cabin.missingName           = Missing name parameter in json
+
+payment.bookingNotFound     = Booking your trying to pay for, not found

@@ -19,10 +19,8 @@ import org.joda.time.Days;
 
 
 
-<<<<<<< HEAD
-=======
 
->>>>>>> Switch out error and success messages with i18n
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -54,9 +52,7 @@ public class BookingController extends Controller {
 		ObjectNode result = Json.newObject();
 		JsonNode json = request().body().asJson();
 		if(json == null) {
-			result.put("status", "KO");
-			result.put("message", "Expected Json");
-			return badRequest(result);
+			return badRequest(JsonMessage.error(Messages.get("json.expected")));
 		}
 		else {
 			//startDate, endDate, nrOfPerson, cabinId
@@ -170,17 +166,14 @@ public class BookingController extends Controller {
 		Booking booking = Booking.getBookingById(bookingId);
 
 		if(booking == null) {
-<<<<<<< HEAD
-			return notFound(JsonMessage.error("No such booking found, with id: " + bookingId));
+			return notFound(JsonMessage.error(Messages.get("booking.notFound")+ ": " + bookingId));
 		}
 
 		if(booking.user.id != SecurityController.getUser().id) {
-			return badRequest(JsonMessage.error("No access"));
+			return badRequest(JsonMessage.error(Messages.get("booking.noAccess")));
 		}
 
 		if(!booking.isAbleToCancel()) {
-			return badRequest(JsonMessage.error("To late to cancel"));
-=======
 			return notFound(JsonMessage.error(Messages.get("booking.notFound")));
 		}
 
@@ -190,19 +183,15 @@ public class BookingController extends Controller {
 
 		if(!booking.isAbleToCancel()) {
 			return badRequest(JsonMessage.error(Messages.get("booking.cannotCancel")));
->>>>>>> Switch out error and success messages with i18n
 		}
 		//cancellogic to late to cancel?
 		booking.status = Booking.CANCELLED;
 		PaymentController.cancelPayment(booking.payment.getTransactionId());
 		
-<<<<<<< HEAD
 		booking.update();
-		
-=======
+
 
 		booking.update();		
->>>>>>> Switch out error and success messages with i18n
 		return ok(JsonMessage.success(""));
 	}
 
