@@ -9,7 +9,7 @@ import org.joda.time.Instant;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import org.apache.commons.codec.binary.Base64;
+import javax.xml.bind.DatatypeConverter;
 
 import flexjson.JSON;
 import play.libs.Json;
@@ -19,7 +19,7 @@ import play.libs.F.Promise;
 import play.mvc.Controller;
 import play.mvc.Result;
 import utilities.AESBouncyCastle;
-
+import utilities.Payload;
 
 /**
  * Controller class for DNT Connect for logging users in.
@@ -29,6 +29,7 @@ import utilities.AESBouncyCastle;
 public class ConnectController extends Controller {
 	private static final String SIGNON = "https://www.turistforeningen.no/connect/signon/";
 	private static final String CLIENT = "Booking";
+	private static final byte[] SECRETKEY = DatatypeConverter.parseBase64Binary(play.Play.application().configuration().getString("application.secretKey"));
 	//private static final String REDIRECT_URL TODO: Currently leaving out redirect in order to have default redirect url
 
 	/**
@@ -36,16 +37,16 @@ public class ConnectController extends Controller {
 	 * encryption not being complete.
 	 * @return
 	 */
-	public static Promise<Result> testConnect() throws DataLengthException, InvalidCipherTextException, UnsupportedEncodingException { 
-		AESBouncyCastle aes = new AESBouncyCastle();
+	public static Promise<Result> testConnect() throws Exception { 
+		AESBouncyCastle aes = new AESBouncyCastle(SECRETKEY);
 
-		String json = "{\"timestamp\": "+getTimeStamp()+"}";
+		String jsonString = "{\"timestamp\": "+getTimeStamp()+"}";
+		System.out.println("Json: "+jsonString);
 		
-		System.out.println(json);
-
-		byte[] dataBytes = aes.encrypt(json.getBytes("UTF-8"));
-		String data = new String(dataBytes, "UTF-8");
-
+		Payload payload = aes.encrypt(jsonString.getBytes("UTF-8"));
+		String data = DatatypeConverter.printBase64Binary(payload.getCipherText());
+		System.out.println("encrJsonBase64: "+data);
+		
 		final Promise<Result> resultPromise = WS.url(SIGNON).
 				setQueryParameter("client", CLIENT).
 				setQueryParameter("data", data).
@@ -65,26 +66,28 @@ public class ConnectController extends Controller {
 	 * @response ("er_autentisert" : false) The user isn't authenticated, 
 	 * @response ("er_autentisert" : true) The user was authenticated and has usable information
 	 */
-	public static Promise<Result> processLogin() throws DataLengthException, InvalidCipherTextException, UnsupportedEncodingException {
-		AESBouncyCastle aes = new AESBouncyCastle(); /** The encryption helper class **/
-		String json = "{\"timestamp\": "+getTimeStamp()+"}"; /** The JSON payload sent containing timestamp **/
-		byte[] encryptedJson = aes.encrypt(json.getBytes("UTF-8")); /** Payload encrypted **/
-		String data = new String(Base64.encodeBase64(encryptedJson)); /** Base64 encoding of encrypted payload **/
+	public static Promise<Result> processLogin() throws Exception {
+		AESBouncyCastle aes = new AESBouncyCastle(SECRETKEY); /** The encryption helper class **/
+		String jsonString = "{\"timestamp\": "+getTimeStamp()+"}"; /** The JSON payload to be sent containing timestamp **/
+		Payload payload = aes.encrypt(jsonString.getBytes("UTF-8")); /** Payload encrypted **/
+		String encrJson64 = DatatypeConverter.printBase64Binary(payload.getCipherText()); /** Base64 encoding of encrypted payload **/
 		
 		final Promise<Result> resultPromise = WS.url(SIGNON).
 				setQueryParameter("client", CLIENT).
-				setQueryParameter("data", data).
+				setQueryParameter("data", encrJson64).
 				get().map(
 						new Function<WS.Response, Result>() {
-							public Result apply(WS.Response response) throws DataLengthException, InvalidCipherTextException {
+							public Result apply(WS.Response response) throws Exception {
+								AESBouncyCastle aes = new AESBouncyCastle(SECRETKEY);
 								//Here we decrypt the JSON
-								AESBouncyCastle aes = new AESBouncyCastle();
-								String encryptedJson = response.getBody();
-								byte[] decoded = Base64.decodeBase64(encryptedJson.getBytes());
-								String decryptedJson = new String(aes.decrypt(decoded));
-								JsonNode json = Json.parse(decryptedJson);
+								int ctLength = 0; //TODO WE NEED TO KNOW HOW LONG THE PLAINTEXT IS BEFORE DECRYPTING, ASK DNT!
+								String encrJson64 = response.getBody();
+								byte[] encrJson = DatatypeConverter.parseBase64Binary(encrJson64); //decode base64
+								String jsonString = new String(aes.decrypt(ctLength, encrJson));
+								JsonNode json = Json.parse(jsonString);
 								if(authenticated(json)) {
-									
+									//user was authenticated, from here on we have a sherpa id to associate with our own user id
+									//TODO
 								} else {
 									return unauthorized();
 								}

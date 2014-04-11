@@ -56,46 +56,6 @@ public class SecurityController extends Action.Simple {
 	public static Result login() {
 		JsonNode json = request().body().asJson();
 		
-		/** TEST ENCRYPT TODO EXPAND 
-		 * Currently this only encrypts a simple string "This is the secret message!" but this will
-		 * invariably be replaced with JSON payloads. The messages between client (i.e. end-user) and DNT Connect
-		 * is performed via our server. This has to run HTTPS as per DNT Connect guidelines, and the encryption below
-		 * has to be done not by a keyGenerator but with the shared key we've got from lastpass. Next task should be to integrate
-		 * with HTTPS branch and proof-of-concept a redirect URL from DNT Connect*/
-		KeyGenerator kg;
-
-		try {
-			kg = KeyGenerator.getInstance("AES");
-			kg.init(256);
-			SecretKey sk = kg.generateKey();
-
-			AESBouncyCastle abc = new AESBouncyCastle();
-			abc.setPadding(new PKCS7Padding());
-			abc.setKey(sk.getEncoded());
-
-			String secret = "This is the secret message!";
-			System.out.println(secret);
-			byte[] ba = secret.getBytes("UTF-8");
-
-			byte[] encr = abc.encrypt(ba);
-			System.out.println("Encrypted: "+Base64.encode(encr));
-			byte[] retr = abc.decrypt(encr);
-
-			//does require foreknowledge of length to decrypt correctly. This should be stated during set-up communication maybe? Look into it TODO
-			if(retr.length == ba.length) {
-				ba = retr;
-			} else {
-				System.arraycopy(retr, 0, ba, 0, ba.length);
-			}
-
-			String decrypted = new String(ba, "UTF-8");
-			System.out.println("Decrypted: "+decrypted); 
-		} catch (NoSuchAlgorithmException | UnsupportedEncodingException | DataLengthException | InvalidCipherTextException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		/** END TEST TODO EXPAND */
-		
 		//veldig dårlig måte å gjøre det på
 		String emailAddress = json.get("emailAdress").asText();
 		String password = json.get("password").asText();

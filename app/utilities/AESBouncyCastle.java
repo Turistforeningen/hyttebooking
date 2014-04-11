@@ -1,51 +1,63 @@
 package utilities;
+import javax.crypto.Cipher;
+import java.security.Security;
 
-import org.bouncycastle.crypto.BlockCipher;
-import org.bouncycastle.crypto.DataLengthException;
-import org.bouncycastle.crypto.InvalidCipherTextException;
-import org.bouncycastle.crypto.engines.AESEngine;
-import org.bouncycastle.crypto.paddings.BlockCipherPadding;
-import org.bouncycastle.crypto.paddings.PaddedBufferedBlockCipher;
-import org.bouncycastle.crypto.params.KeyParameter;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
+import javax.crypto.spec.SecretKeySpec;
+import javax.xml.bind.DatatypeConverter;
+
+/**
+ * Construct by sending the key as bytes as parameter
+ * Note that key is usually encoded as base64, so just decode base64
+ * using something javax.xml.bind.DatatypeConverter
+ * 
+ * Encryption: call encrypt(byte[] input) and it will return both encrypted input and 
+ */
 public class AESBouncyCastle {
-	 
-    private final BlockCipher AESCipher = new AESEngine();
- 
-    private PaddedBufferedBlockCipher pbbc;
-    private KeyParameter key;
- 
-    public void setPadding(BlockCipherPadding bcp) {
-        this.pbbc = new PaddedBufferedBlockCipher(AESCipher, bcp);
-    }
- 
-    public void setKey(byte[] key) {
-        this.key = new KeyParameter(key);
-    }
- 
-    public byte[] encrypt(byte[] input)
-            throws DataLengthException, InvalidCipherTextException {
-        return processing(input, true);
-    }
- 
-    public byte[] decrypt(byte[] input)
-            throws DataLengthException, InvalidCipherTextException {
-        return processing(input, false);
-    }
- 
-    private byte[] processing(byte[] input, boolean encrypt)
-            throws DataLengthException, InvalidCipherTextException {
- 
-        pbbc.init(encrypt, key);
- 
-        byte[] output = new byte[pbbc.getOutputSize(input.length)];
-        int bytesWrittenOut = pbbc.processBytes(
-            input, 0, input.length, output, 0);
- 
-        pbbc.doFinal(output, bytesWrittenOut);
- 
-        return output;
- 
-    }
- 
+	
+	SecretKeySpec key;
+	Cipher cipher;
+	
+	/**
+	 * TODO take care of exception
+	 */
+	public AESBouncyCastle(byte[] keyBytes) throws Exception  {
+		Security.addProvider(new BouncyCastleProvider());
+
+		this.key = new SecretKeySpec(keyBytes, "AES");
+		this.cipher = Cipher.getInstance("AES/ECB/PKCS7Padding", "BC");
+	}
+	
+	/**
+	 * @return the length of the plaintext and 
+	 * Note, does not encode to base64, just encrypts
+	 */
+	public Payload encrypt(byte[] input) throws Exception {
+		cipher.init(Cipher.ENCRYPT_MODE, key);
+		byte[] cipherText = new byte[cipher.getOutputSize(input.length)];
+		int ctLength 	= cipher.update(input, 0, input.length, cipherText, 0);
+		ctLength 		+= cipher.doFinal(cipherText, ctLength);
+		
+		//System.out.println("cipher: " + DatatypeConverter.printBase64Binary(cipherText)
+			//	+ " bytes: " + ctLength);
+		
+		return new Payload(ctLength, cipherText);
+	}
+	
+	/**
+	 * @return the decrypted bytes
+	 * Note, does not decode base64, just decrypts
+	 */
+	public byte[] decrypt(int ctLength, byte[] cipherText) throws Exception {
+		cipher.init(Cipher.DECRYPT_MODE, key);
+		byte[] plainText = new byte[cipher.getOutputSize(ctLength)];
+		int ptLength = cipher.update(cipherText, 0, ctLength, plainText, 0);
+		ptLength += cipher.doFinal(plainText, ptLength);
+		
+		//System.out.println("plain : " + new String(plainText, "UTF-8")
+			//	+ " bytes: " + ptLength);
+		
+		return plainText;
+	}
 }
