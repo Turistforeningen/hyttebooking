@@ -51,7 +51,6 @@ public class PaymentController extends Controller {
 		if(b == null || b.status == Booking.BOOKED) {
 			return Promise.pure((Result) notFound(JsonMessage.error(Messages.get("payment.bookingNotFound"))));
 		}
-		System.out.println(b.getDeliveryDate());
 		//if deliverydate is 3 month in the future nets wont collect it automatically,
 		//Set deliveryDate to 3 month in the future if booking happends i.e 2 years from now.
 		/*if(b.user != SecurityController.getUser()) {

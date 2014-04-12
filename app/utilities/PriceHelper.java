@@ -17,6 +17,15 @@ public class PriceHelper {
 		return amount;
 	}
 	
+	public static int calculateNrOfBeds(List<PriceForm> guestList) {
+		int beds = 0;
+		for(PriceForm guestType : guestList) {
+			beds += guestType.nr;
+		}
+		
+		return beds;
+	}
+	
 	public static double calculateAmount(List<PriceForm> guestList, int days) {
 		double amount = 0;
 		//Temporarily gets prices from json string, but should get them from database
