@@ -139,11 +139,10 @@ angular.module('dntBookingModule', ['ui.bootstrap'])
  * @element div
  * @function
  * @restrict AE
- * @description
  * @param  {json array} personTypes  json array with supported guest types for cabin
  * @param {Date} fromDate Date the of arrival to cabin
  * @param {Date} toDate Date of departure from cabin
- * Displays the total price, and the prices for each guesttype calculated based on booking dates and number of persons in 
+ * @description Displays the total price, and the prices for each guesttype calculated based on booking dates and number of persons in 
  * that category. Its basically a summary component that uses the same personTypes json variable. It recalculates
  * the price whenever dates change or user change any of the select boxes of dntSelector.
  * 
@@ -259,7 +258,27 @@ angular.module('dntBookingModule')
 	};
 });
 
-
+/**
+ * @ngdoc directive
+ * @name dntBookingModule.directive:dntBookingModule
+ * @element div
+ * @function
+ * @restrict AE
+ * 
+ * @param  {String} cabinType Either 'small' or 'large'. Impact booking module appearance 
+ * @param {Number} numberOfBeds Required parameter for large cabins. How many beds can be booked at given large cabin  
+ * @param {Json String} bookingModel Json string with some preset parameters is required for this directive. cabinId, guests has to be present.  E.g: {"cabinId":"1","guests":[{"nr":0,"price":300,"type":"Voksen, medlem"},{"nr":0,"price":150,"type":"Ungdom, medlem"}]}. Parameter utilize two way data binding, so parent scope has access to same json string
+ * @param {Expression} onBook Binds a parent function to the directive, which will be called when the "reserver" button is pressed
+ * @param {String} errorModel Two way binded string. Error messages from the backend can be be set in the parent scope and displayed as red text in the booking module
+ * 
+ * @description dntBookingModule, contain the different ui elements needed for booking, like dnt-selector and dnt-viewer, a to-from date picker and error display.
+ * The directive is responsible for these ui elements, and validation of user input. Any result from user input will be present in
+ * the 
+ * 
+ *
+ * **Note:** {"cabinId":"1","dateFrom":"2014-04-19","guests":[{"nr":1,"price":300,"type":"Voksen, medlem"},{"nr":1,"price":150,"type":"Ungdom, medlem"},{"nr":0,"price":100,"type":"Barn, medlem"},{"nr":0,"price":0,"type":"Spedbarn"},{"nr":0,"price":400,"type":"Voksen"},{"nr":0,"price":200,"type":"ungdom"},{"nr":0,"price":150,"type":"barn"}]}
+ *
+ */
 angular.module('dntBookingModule')
 .directive('dntBookingModule', function() {
 	return {

@@ -82,10 +82,6 @@ angular.module('dntApp').controller('bookingController', ['$modal','$rootScope',
 	$scope.booking ={};
 	$scope.beds = 0;
 	
-	$scope.$on('event:booking', function(event) {
-		$scope.postBooking($scope.booking);
-	});
-	
 	
 	$scope.postBooking = function(booking) {
 		ordersService.postOrder(booking)
@@ -137,6 +133,7 @@ angular.module('dntApp').controller('bookingController', ['$modal','$rootScope',
 
 		    modalInstance.result.then(function (selectedItem) {
 		      $scope.selected = selectedItem;
+		      $scope.postBooking($scope.booking);
 		    }, function () {
 		      $log.info('Modal dismissed at: ' + new Date());
 		      

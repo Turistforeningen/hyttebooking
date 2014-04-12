@@ -1,8 +1,8 @@
 'use strict';
 
 
-angular.module('dntApp').controller( 'ModalInstanceCtrl', ['$scope','$rootScope','$modalInstance','$log','item',
-                         function ($scope,$rootScope, $modalInstance,$log, item) {
+angular.module('dntApp').controller( 'ModalInstanceCtrl', ['$scope','$modalInstance','$log','item',
+                         function ($scope, $modalInstance,$log, item) {
 
 	$scope.booking = item;
 	$scope.selected = {
@@ -10,9 +10,7 @@ angular.module('dntApp').controller( 'ModalInstanceCtrl', ['$scope','$rootScope'
 		};
 
 	$scope.ok = function () {
-		$log.info("lol");
-		$rootScope.$broadcast('event:booking');
-		$modalInstance.close($scope.selected.item);
+		$modalInstance.close($scope.conditions);
 	};
 
 	$scope.cancel = function () {
