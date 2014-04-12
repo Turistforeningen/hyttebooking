@@ -7,9 +7,10 @@ import org.joda.time.Days;
 
 
 
-import play.i18n.Messages;
 
+import play.i18n.Messages;
 import controllers.SecurityController;
+import flexjson.JSON;
 import flexjson.JSONDeserializer;
 import models.Bed;
 import models.Booking;
@@ -28,9 +29,8 @@ public class BookingForm extends AbstractForm<Booking> {
 	public Long cabinId;
 	public String dateFrom;
 	public String dateTo;
-	public int beds;
 	public List<PriceForm> guests;
-	
+	private int nrOfGuests = 0;
 	/**
 	 * FlexJson needs an constructor even if its empty
 	 */
@@ -53,10 +53,11 @@ public class BookingForm extends AbstractForm<Booking> {
 			DateTime startDt = utilities.DateHelper.toDt(this.dateFrom);
 			DateTime endDt = utilities.DateHelper.toDt(this.dateTo);
 			Cabin cabin = Cabin.find.byId(cabinId);
-			List<Bed> bedsO = null;
+			List<Bed> beds = null;
+			
 			if (cabin instanceof LargeCabin) {
-				bedsO = ((LargeCabin) cabin).book(beds, startDt, endDt);
-				if(bedsO == null) {
+				beds = ((LargeCabin) cabin).book(this.nrOfGuests, startDt, endDt);
+				if(beds == null) {
 					addError(Messages.get("booking.bedsNotAvailable"));
 					return null;
 				}
@@ -74,7 +75,7 @@ public class BookingForm extends AbstractForm<Booking> {
 					startDt.toDate(),
 					endDt.toDate(),
 					cabin.id,
-					bedsO);
+					beds);
 			
 			double amount = PriceHelper.calculateAmount(guests, Days.daysBetween(startDt, endDt).getDays());
 			Payment.createPaymentForBooking(SecurityController.getUser(), booking, amount);
@@ -104,11 +105,8 @@ public class BookingForm extends AbstractForm<Booking> {
 			return false;
 		}
 		
-		int nrOfGuests = 0;
-		for(PriceForm p: guests) {
-			nrOfGuests += p.nr;
-		}
-		if(nrOfGuests<=0) {
+		this.nrOfGuests = PriceHelper.calculateNrOfBeds(this.guests);
+		if(this.nrOfGuests<=0) {
 			addError(Messages.get("booking.atLeastOnePerson"));
 			return false;
 		}

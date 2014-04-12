@@ -82,17 +82,10 @@ angular.module('dntApp').controller('bookingController', ['$filter','$rootScope'
 	$scope.personType = null;
 	$scope.paid = 0;
 	$scope.booking ={};
-	$scope.beds = 20;
+	$scope.beds = 0;
 	$scope.price = 0;
 	$scope.now = new Date();
 
-	$scope.bedsTotal = function() {
-		var total  =0;
-		angular.forEach($scope.personType, function(value, key) {
-			total += value.nr;
-		});
-		return total;
-	};
 
 	/** Track changes from the datepicker calendars and display the from/to dates **/
 	$scope.$watch('booking.dateTo', function(){
@@ -114,7 +107,6 @@ angular.module('dntApp').controller('bookingController', ['$filter','$rootScope'
 
 	$scope.postBooking = function() {
 
-		$scope.booking.beds =($scope.bedsTotal()) + '';
 		$scope.booking.guests = $scope.personType;
 		$scope.booking.dateFrom= $filter('date')($scope.booking.dateFrom,'yyyy-MM-dd');
 		$scope.booking.dateTo= $filter('date')($scope.booking.dateTo,'yyyy-MM-dd');
