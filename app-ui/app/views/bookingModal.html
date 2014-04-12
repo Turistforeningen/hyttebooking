@@ -26,16 +26,30 @@
 		</div>
 	</div>
 </div>
-<div class="modal-body" style="border-top: 1px solid #ccc;">
-	<h4>Bekreft reservasjon</h4>
-	<p><a ng-click="cancel()" href="#/termsAndConditions">Les og bekreft kjøpsvilkår.</a></p> <!-- This still does not work -->
-	<div class="checkbox">
-		<label> <input type="checkbox"> <i>Jeg har lest og
-				godkjenner Deres vilkår.</i>
-		</label>
+<form name="termForm"  novalidate valid-submit="ok()" >
+	<div class="modal-body" style="border-top: 1px solid #ccc;">
+		<h4>Bekreft reservasjon</h4>
+		<p>
+			<a ng-click="cancel()" href="#/termsAndConditions">Les og bekreft
+				kjøpsvilkår.</a>
+		</p>
+		<!-- This still does not work -->
+
+
+		<div class="form-group"
+			ng-class="{
+                      'has-error': termForm.cond.$invalid && termForm.$submitted,
+                      'has-success': termForm.$submitted && termForm.cond.$valid}">
+
+			<input id="checkbox1" type="checkbox" name="cond" value="read"
+				ng-model="conditions" ng-required="!conditions"> <label
+				class="control-label" for="checkbox1"> <p><i>Jeg har lest
+					og godkjenner Deres vilkår.</i></p></label>
+		</div>
+
+
 	</div>
-</div>
-<div class="modal-body" style="border-top: 1px solid #ccc;">
+	<div class="modal-body" style="border-top: 1px solid #ccc;">
 	<h4>Oversikt over kjøp</h4>
 	<div class="row">
 		<div class="col-lg-8">
@@ -46,7 +60,9 @@
 		</div>
 	</div>
 	<div style="text-align: right">
-		<button class="btn btn-primary" ng-click="ok()">Bekreft
-			reservasjon</button>
+		<input type="submit" class="btn btn-primary" value="Bekreft
+            reservasjon" >
 	</div>
+	
 </div>
+</form>

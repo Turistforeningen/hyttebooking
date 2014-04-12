@@ -79,36 +79,13 @@ View. The method postBooking uses the ordersService to
 angular.module('dntApp').controller('bookingController', ['$modal','$rootScope','$scope','ordersService','$log','$routeParams','$window',
                                                           function ($modal, $rootScope, $scope, ordersService, $log, $routeParams, $window) {
 	$scope.errorMessage;
-	$scope.personType = null;
-	$scope.paid = 0;
 	$scope.booking ={};
 	$scope.beds = 0;
-	$scope.price = 0;
-	
-
 	
 	$scope.$on('event:booking', function(event) {
-
 		$scope.postBooking($scope.booking);
-
 	});
-	$scope.openConfirmDialog = function() {
-		var modalInstance = $modal.open({
-		      templateUrl: '/views/bookingModal.html',
-		      controller: 'ModalInstanceCtrl',
-		      resolve: {
-		        booking: function () {
-		          return $scope.booking;
-		        }
-		      }
-		    });
-
-		    modalInstance.result.then(function (selectedItem) {
-		      $scope.selected = selectedItem;
-		    }, function () {
-		      $log.info('Modal dismissed at: ' + new Date());
-		    });
-	};
+	
 	
 	$scope.postBooking = function(booking) {
 		ordersService.postOrder(booking)
@@ -125,11 +102,10 @@ angular.module('dntApp').controller('bookingController', ['$modal','$rootScope',
 	$scope.pay = function(bookingId) {
 		ordersService.startPayment(bookingId)
 		.success(function(data) {
-			$log.info(data.redirectUrl);
 			$window.location.href =data.redirectUrl;
 		})
 		.error(function(error) {
-			$log.info(error.message);
+			$scope.errorMessage = error.message;
 		});
 	};
 	
@@ -148,17 +124,40 @@ angular.module('dntApp').controller('bookingController', ['$modal','$rootScope',
 	$scope.authenticatePayment = function(transactionId, responseCode) {
 		ordersService.authenticatePayment(transactionId, responseCode)
 		.success(function(data) {
-
-			$scope.paid = 1;
+			$scope.openDialog('/views/statusModalSuccess.html');
 		})
 		.error(function(error) {
-			$scope.paid = 2;
-			$log.info(error.message);
-
+			$scope.openDialog('/views/statusModalError.html');
 		});
 	};
+	
+	
+	$scope.openBookingConfirmDialog = function() {
+		var modalInstance = $scope.openDialog('/views/bookingModal.html', $scope.booking);
 
+		    modalInstance.result.then(function (selectedItem) {
+		      $scope.selected = selectedItem;
+		    }, function () {
+		      $log.info('Modal dismissed at: ' + new Date());
+		      
+		    });
+	};
+	
+	
+	$scope.openDialog = function (url, data) {
+		var modalInstance = $modal.open({
+			templateUrl: url,
+			controller: 'ModalInstanceCtrl',
+			resolve: {
+		        item: function () {
+		          return data;
+		        }
+		    }
+		});
+		return modalInstance
+	};
 
+	
 	function init() {
 		var id = $routeParams.id;
 		var type =$routeParams.type;
