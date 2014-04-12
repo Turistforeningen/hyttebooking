@@ -76,45 +76,44 @@ angular.module('dntApp').controller('testController', ['$scope','$window', funct
 View. The method postBooking uses the ordersService to 
  * post the booking to the server.
  */
-angular.module('dntApp').controller('bookingController', ['$filter','$rootScope','$scope','ordersService','$log','$routeParams','$window',
-                                                          function ($filter, $rootScope, $scope, ordersService, $log, $routeParams, $window) {
+angular.module('dntApp').controller('bookingController', ['$modal','$rootScope','$scope','ordersService','$log','$routeParams','$window',
+                                                          function ($modal, $rootScope, $scope, ordersService, $log, $routeParams, $window) {
 	$scope.errorMessage;
 	$scope.personType = null;
 	$scope.paid = 0;
 	$scope.booking ={};
 	$scope.beds = 0;
 	$scope.price = 0;
-	$scope.now = new Date();
+	
 
-
-	/** Track changes from the datepicker calendars and display the from/to dates **/
-	$scope.$watch('booking.dateTo', function(){
-		$scope.dateTo = '' + $scope.booking.dateTo.getDate() + '/' + ($scope.booking.dateTo.getMonth() + 1) + ' ' + $scope.booking.dateTo.getFullYear();
-	});
-
-	$scope.$watch('booking.dateFrom', function(){
-		$scope.dateFrom = '' + $scope.booking.dateFrom.getDate() + '/' + ($scope.booking.dateFrom.getMonth() + 1) + ' ' + $scope.booking.dateFrom.getFullYear();
-		if ($scope.booking.dateTo < $scope.booking.dateFrom){
-			$scope.booking.dateTo = $scope.booking.dateFrom;
-		}
-	});
-
+	
 	$scope.$on('event:booking', function(event) {
 
-		$scope.postBooking();
+		$scope.postBooking($scope.booking);
 
 	});
+	$scope.openConfirmDialog = function() {
+		var modalInstance = $modal.open({
+		      templateUrl: '/views/bookingModal.html',
+		      controller: 'ModalInstanceCtrl',
+		      resolve: {
+		        booking: function () {
+		          return $scope.booking;
+		        }
+		      }
+		    });
 
-	$scope.postBooking = function() {
-
-		$scope.booking.guests = $scope.personType;
-		$scope.booking.dateFrom= $filter('date')($scope.booking.dateFrom,'yyyy-MM-dd');
-		$scope.booking.dateTo= $filter('date')($scope.booking.dateTo,'yyyy-MM-dd');
-
-		ordersService.postOrder($scope.booking)
+		    modalInstance.result.then(function (selectedItem) {
+		      $scope.selected = selectedItem;
+		    }, function () {
+		      $log.info('Modal dismissed at: ' + new Date());
+		    });
+	};
+	
+	$scope.postBooking = function(booking) {
+		ordersService.postOrder(booking)
 		.success(function (data) {
 			$scope.pay(data.id);
-			$log.info('Det virket' + data.message);
 		})
 		.error(function (error) {
 			$scope.errorMessage = error.message;
@@ -122,6 +121,7 @@ angular.module('dntApp').controller('bookingController', ['$filter','$rootScope'
 		});
 	};
 
+	
 	$scope.pay = function(bookingId) {
 		ordersService.startPayment(bookingId)
 		.success(function(data) {
@@ -133,16 +133,18 @@ angular.module('dntApp').controller('bookingController', ['$filter','$rootScope'
 		});
 	};
 	
+	
 	$scope.getPrices = function(id) {
 		ordersService.getPrices(id)
 		.success(function (data) {
-			$scope.personType = data;
+			$scope.booking.guests = data;
 		})
 		.error(function(error) {
 			$log.info(error.message);
 		});
 	};
 
+	
 	$scope.authenticatePayment = function(transactionId, responseCode) {
 		ordersService.authenticatePayment(transactionId, responseCode)
 		.success(function(data) {
@@ -176,10 +178,6 @@ angular.module('dntApp').controller('bookingController', ['$filter','$rootScope'
 
 					$scope.authenticatePayment($routeParams.transactionId, $routeParams.responseCode);
 				}
-
-
-
-
 			}
 		}
 	}

@@ -258,3 +258,47 @@ angular.module('dntBookingModule')
 			}
 	};
 });
+
+
+angular.module('dntBookingModule')
+.directive('dntBookingModule', function() {
+	return {
+		restrict: 'AE',
+
+		scope: {'cabinType': '@',
+			'beds': '@numberOfBeds',
+			'booking'		: '=bookingModel',
+			'onBook'	: '&',
+			'errorMessage' : '=errorModel'
+		},
+
+		templateUrl:  'views/bookingComponent.html',
+
+		controller: ['$scope', '$log','$filter', function($scope, $log ,$filter) {
+            	$scope.errorMessage;
+            	$scope.now = new Date();
+
+            	
+            	/** Track changes from the datepicker calendars and display the from/to dates **/
+            	$scope.$watch('booking.dateTo', function(){
+            		$scope.booking.dateTo= $filter('date')($scope.booking.dateTo,'yyyy-MM-dd');
+            	});
+
+            	
+            	$scope.$watch('booking.dateFrom', function(){
+            		if ($scope.booking.dateTo < $scope.booking.dateFrom){
+            			$scope.booking.dateTo = $scope.booking.dateFrom;
+            		}
+            		$scope.booking.dateFrom= $filter('date')($scope.booking.dateFrom,'yyyy-MM-dd');
+            	});
+            	
+            	
+			}],
+
+		link: function(scope, elem, attrs) {
+			//check all variables, validation on input?
+				
+				
+			}
+	};
+});

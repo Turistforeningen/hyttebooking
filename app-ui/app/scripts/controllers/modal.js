@@ -1,12 +1,12 @@
 'use strict';
 
 
-angular.module('dntApp').controller( 'ModalInstanceCtrl', ['$scope','$rootScope','$modalInstance','$log','items',
-                         function ($scope,$rootScope, $modalInstance,$log, items) {
+angular.module('dntApp').controller( 'ModalInstanceCtrl', ['$scope','$rootScope','$modalInstance','$log','booking',
+                         function ($scope,$rootScope, $modalInstance,$log, booking) {
 
-	$scope.items = items;
+	$scope.booking = booking;
 	$scope.selected = {
-			item: $scope.items[0]
+			item: $scope.booking
 		};
 
 	$scope.ok = function () {

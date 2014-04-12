@@ -160,6 +160,7 @@ public class BookingForm extends AbstractForm<Booking> {
 		} catch (Exception e) {
 			e.printStackTrace();
 			//add more detailed data. Possibly what variable it cant find.
+			System.out.println(e.getMessage());
 			bookingData = new BookingForm();
 			bookingData.addError(Messages.get("json.couldNotParseData"));
 			bookingData.validationError = true;
