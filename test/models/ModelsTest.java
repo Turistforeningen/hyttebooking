@@ -220,9 +220,9 @@ public class ModelsTest extends WithApplication{
 		DateTime b = new DateTime().now().minusDays(1); // -1
 		DateTime c = new DateTime().now(); // 0
 
-		assertEquals(1, utilities.DateHelper.getIndex(start, a, b)[0]);
-		assertEquals(-1, utilities.DateHelper.getIndex(start, a, b)[1]);
-		assertEquals(0, utilities.DateHelper.getIndex(start, a, c)[1]);
+		assertEquals(1, utilities.DateHelper.getIndex(start, a, b)[0]); //days between start and a
+		assertEquals(-1, utilities.DateHelper.getIndex(start, a, b)[1]); //days between start and b
+		assertEquals(0, utilities.DateHelper.getIndex(start, a, c)[1]); //days between start and c
 	}
 	
 	@Test

@@ -58,8 +58,8 @@ public class DateHelper {
 	public static int[] getIndex(DateTime startDate, DateTime a,
 			DateTime b) {
 		int[] ret = new int[2];
-		ret[0] = Days.daysBetween(startDate, a).getDays();
-		ret[1] = Days.daysBetween(startDate, b).getDays();
+		ret[0] = Days.daysBetween(startDate.withTimeAtStartOfDay(), a.withTimeAtStartOfDay()).getDays();
+		ret[1] = Days.daysBetween(startDate.withTimeAtStartOfDay(), b.withTimeAtStartOfDay()).getDays();
 		return ret;
 	}
 	

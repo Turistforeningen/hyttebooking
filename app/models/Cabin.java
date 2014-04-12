@@ -86,11 +86,7 @@ public abstract class Cabin extends Model {
 	}
 
 	/**
-	 * Returns all bookings that overlap with given startDate and endDate (used in dynamic calendar display)
-	 * If 01-01-2010 
-	 * @param cabinId
-	 * @param startDate
-	 * @param endDate
+	 * Returns all bookings that overlap with given startDate and endDate (used in dynamic calendar display) that are NOT cancelled
 	 * @return A list of all bookings found within given cabinId within startDate-endDate
 	 */
 	public static List<Booking> findAllBookingsForCabinGivenDate(long cabinId, DateTime startDate, DateTime endDate)
@@ -111,10 +107,12 @@ public abstract class Cabin extends Model {
 		
 		List<Booking> rBookings = new ArrayList<Booking>();
 		for(Booking b: bookings) {
+			if(b.status == 2)
+				continue;
 			if(utilities.DateHelper.isOverlap(new DateTime(b.dateFrom), new DateTime(b.dateTo), startDate, endDate))
 					rBookings.add(b);
 		}
-			return rBookings; //TODO
+			return rBookings;
 	}
 
 	public static Page<Cabin> findAllCabins(int page, int pageSize) {

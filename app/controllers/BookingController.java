@@ -21,10 +21,12 @@ import org.joda.time.Days;
 
 
 
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import flexjson.JSONSerializer;
+import models.Bed;
 import models.Booking;
 import models.Cabin;
 import models.LargeCabin;
@@ -45,8 +47,10 @@ import utilities.Page;
 public class BookingController extends Controller {
 
 	/**
-	 * TODO document this
-	 * @return
+	 * Method for retrieving availability for a time period. Returns an int array [n, m, ..., z] where
+	 * n represents number of beds available at given date. The number of days between given time period decides the size of the array
+	 * So startDate 1. April and endDate 5. April gives array [0, 0, 0, 0, 0] for a cabin with zero beds available.
+	 * For small cabins the entire cabin is treated as one bed, so 1 is available and 0 is not available.
 	 */
 	public static Result getAvailabilityForTimePeriod() {
 		ObjectNode result = Json.newObject();
@@ -55,39 +59,46 @@ public class BookingController extends Controller {
 			return badRequest(JsonMessage.error(Messages.get("json.expected")));
 		}
 		else {
-			//startDate, endDate, nrOfPerson, cabinId
 			DateTime startDate = utilities.DateHelper.toDt(json.get("startDate").asText()); //must be format YYYY-MM-DD standard ISO date
 			DateTime endDate = utilities.DateHelper.toDt(json.get("endDate").asText()); //must be format YYYY-MM-DD standard ISO date
-			int nrOfPerson = json.get("nrOfPerson").asInt();
+
 			long cabinId = json.get("cabinId").asLong(); 
 
-			//bookedDays[n] = true if and only if date is booked i.e. not available
-			boolean[] smallCBookedDays = new boolean[Math.abs(Days.daysBetween(startDate, endDate).getDays())+1];
-			int[] largeCBookedDays = new int[Math.abs(Days.daysBetween(startDate, endDate).getDays())+1];
+			int[] bookedDays = new int[Math.abs(Days.daysBetween(startDate, endDate).getDays())+1];
 			JSONSerializer serializer = new JSONSerializer();
 
 			Cabin cabin = Cabin.find.byId(cabinId);
 			if(cabin instanceof LargeCabin) {
-				//TODO implement
-				// use LargeCabin.book method
-				return TODO;
+				if(cabin instanceof LargeCabin) {
+					for(Bed beds : ((LargeCabin) cabin).beds) {
+						for(Booking b : beds.bookings) {
+							int[] indices = utilities.DateHelper.getIndex(startDate, new DateTime(b.dateFrom), new DateTime(b.dateTo));
+							if(indices[0] < 0) //if b.dateFrom precedes startDate, skip to startDate 
+								indices[0] = 0;
+							for(int i = indices[0]; i<=indices[1]; i++) {
+								bookedDays[i] += 1; //blankets daterange with +1 to indicate that 1 extra bed is taken during that period
+							}
+						}
+					}
+				}
+				result.put("bookedDays", serializer.serialize(bookedDays));
+				return ok(result);
 			} else if(cabin instanceof SmallCabin) {
-				List<Booking> bookings = cabin.findAllBookingsForCabinGivenDate(cabinId, startDate, endDate);
+				List<Booking> bookings = Cabin.findAllBookingsForCabinGivenDate(cabinId, startDate, endDate);
 
 				if(!bookings.isEmpty()) {
 					for(Booking b: bookings) {
-						//for each booking set bookedDays[i] = true for range startDate-endDate
+						//for each booking set bookedDays[i] = +1 for range startDate-endDate
 						int[] indices = utilities.DateHelper.getIndex(startDate, new DateTime(b.dateFrom), new DateTime(b.dateTo)); /** indices[0] startIndex in bookedDays, [1] is endIndex **/
 						if(indices[0] < 0) //if b.dateFrom precedes startDate, skip to startDate 
 							indices[0] = 0;
 						for(int i = indices[0]; i<=indices[1]; i++){
-							smallCBookedDays[i] = true; //TODO test
-						}
+							bookedDays[i] = 1;						}
 					}
-					result.put("bookedDays", serializer.serialize(smallCBookedDays));
+					result.put("bookedDays", serializer.serialize(bookedDays));
 					return ok(result);
 				} else { //Either something is wrong or the entire given daterange shows available for given cabin
-					result.put("bookedDays", serializer.serialize(smallCBookedDays));
+					result.put("bookedDays", serializer.serialize(bookedDays));
 					return ok(result);	
 				}
 			} else {
@@ -107,13 +118,13 @@ public class BookingController extends Controller {
 	 * @return json string describing what went wrong. Validation or booked to capacity etc
 	 */
 	public static Result submitBooking() {
-		
+
 		BookingForm form = BookingForm
 				.deserializeJson(request().body().asJson().toString());
 		if(form.isValid()) {
 			//already saved by model helper method inside
 			Booking booking = form.createModel();
-			
+
 			if(booking == null) {
 				return badRequest(form.getError());
 			}
@@ -122,23 +133,23 @@ public class BookingController extends Controller {
 				//TODO: Read akka documentation more carefully
 				final Long id = booking.id;
 				Akka.system().scheduler().scheduleOnce(Duration.create(30, TimeUnit.MINUTES),
-						  new Runnable() {
-						    @Override
-						    public void run() {
-						      Booking b = Booking.getBookingById(id+"");
-						      if(!b.status.equals(Booking.PAID)) {
-						    	  System.out.println("Oh no your didnt!");
-						    	  //cancel booking and unlock beds or cabin for other customers
-						    	  //What happens if customer leaves for half an hour and comes
-						    	  //back and finishes payment? QUETION
-						    	  //remember that timeout should be also considered in isAvail methods
-						    	  b.status = Booking.TIMEDOUT;
-						    	  b.update();
-						    	  
-						      }
-						    }
-						}, Akka.system().dispatcher());
-				
+						new Runnable() {
+					@Override
+					public void run() {
+						Booking b = Booking.getBookingById(id+"");
+						if(!b.status.equals(Booking.PAID)) {
+							System.out.println("Oh no your didnt!");
+							//cancel booking and unlock beds or cabin for other customers
+							//What happens if customer leaves for half an hour and comes
+							//back and finishes payment? QUETION
+							//remember that timeout should be also considered in isAvail methods
+							b.status = Booking.TIMEDOUT;
+							b.update();
+
+						}
+					}
+				}, Akka.system().dispatcher());
+
 				ObjectNode response = form.getSuccess();
 				response.put("id", booking.id +"");
 				return ok(form.getSuccess());
@@ -187,7 +198,7 @@ public class BookingController extends Controller {
 		//cancellogic to late to cancel?
 		booking.status = Booking.CANCELLED;
 		PaymentController.cancelPayment(booking.payment.getTransactionId());
-		
+
 		booking.update();
 
 
@@ -220,21 +231,21 @@ public class BookingController extends Controller {
 			result.put("message", "To late to cancel");
 			return badRequest(result);
 		}
-		*/
+		 */
 
 
 		/** DELETE AFTER debugging getPriceForCabin **/
 		class ListItem implements Serializable {
-            public int nr;
-            public String type;
-            public int price;
+			public int nr;
+			public String type;
+			public int price;
 
-            public ListItem(int nr, String type, int price) {
-            	this.nr = nr;
-            	this.type = type;
-            	this.price = price;
-            }
-        }
+			public ListItem(int nr, String type, int price) {
+				this.nr = nr;
+				this.type = type;
+				this.price = price;
+			}
+		}
 
 		Cabin cabin = Cabin.find.byId(id);
 		if(cabin == null) {
@@ -262,7 +273,7 @@ public class BookingController extends Controller {
 			.exclude("*.class");
 			return Results.ok(priceSerializer.serialize(list));
 		}
-		 /***/
+		/***/
 	}
 
 	/**
@@ -272,14 +283,14 @@ public class BookingController extends Controller {
 	 * @return Json with a page of orderHistory
 	 */
 	public static Result getOrderHistory() {
-		
+
 		//If query parameters page or size not present, default values will be used
 		int page = Page.pageHelper(request().getQueryString("page"));
 		int pageSize = Page.pageSizeHelper(request().getQueryString("size"));
 
 
 		Page<Booking> bookings = Booking.getBookingPageByUser(SecurityController.getUser(), page, pageSize);
-		
+
 		JSONSerializer orderDetailsSerializer = new JSONSerializer()
 		.include("data", "data.cabin" )
 		.exclude("*.class", "data.beds", "data.user", "data.smallCabin", "data.cabin.type", "data.cabin.nrOfBeds", "data.cabin.nrBookings"
