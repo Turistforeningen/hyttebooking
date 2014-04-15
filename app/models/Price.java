@@ -8,8 +8,6 @@ import play.db.ebean.Model;
 /**
  * Each cabin has a PriceMatrix, the administrators of each tourist agency can 
  * create their own personTypes and associated priceMatrices with them
- * @author Jama
- *
  */
 public class Price extends Model {
 	
@@ -25,10 +23,9 @@ public class Price extends Model {
 	@Constraints.Required
 	public String ageRange;
 	
-	/** The price for the cabin for this guestType **/
+	/** The price for the cabin for members and nonmembers**/
 	@Constraints.Required
 	public double nonMemberPrice;
-	
 	@Constraints.Required
 	public double memberPrice;
 	

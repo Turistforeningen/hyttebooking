@@ -1,20 +1,10 @@
 package models;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-
-import models.*;
-
 import org.joda.time.DateTime;
 import org.junit.*;
-
-import com.avaje.ebean.Ebean;
-
 import static org.junit.Assert.*;
-import play.Logger;
-import play.mvc.Result;
 import play.test.WithApplication;
 import utilities.Page;
 import static play.test.Helpers.*;
@@ -35,7 +25,7 @@ public class ModelsTest extends WithApplication{
 		List<Bed> beds = cabin.beds;
 		int nr = beds.size();
 		long bId = beds.get(0).id;
-		Booking book = Booking.createBooking(new Long(1), new Date(), new Date(), id, beds);
+		Booking book = Booking.createBooking(new Long(1), new DateTime(), new DateTime(), id, beds);
 		
 		long bookId = book.id;
 		book.delete();
@@ -60,7 +50,7 @@ public class ModelsTest extends WithApplication{
 		List<Bed> beds = new ArrayList<Bed>();
 		beds.add(cabin.beds.get(0));
 		beds.add(cabin.beds.get(1));
-		Booking b1 = Booking.createBooking(new Long(1), new Date(), new Date(),cabin.id, beds);
+		Booking b1 = Booking.createBooking(new Long(1), new DateTime(), new DateTime(),cabin.id, beds);
 		
 		Long id = b1.id;
 		
@@ -133,7 +123,7 @@ public class ModelsTest extends WithApplication{
 		Long id = cabin.id;
 		cabin = (LargeCabin)Cabin.find.byId(id);
 		List<Bed> beds = cabin.beds;
-		Booking book = Booking.createBooking(new Long(1), new Date(), new Date(), id, beds);
+		Booking book = Booking.createBooking(new Long(1), new DateTime(), new DateTime(), id, beds);
 		
 		long bId = book.id;
 		beds.get(0).delete();
@@ -166,7 +156,7 @@ public class ModelsTest extends WithApplication{
 		sCabin.save();
 		User user = new User("q@t","w", "t");
 		user.save();
-		Booking b = Booking.createBooking(user.id, new Date(), new Date(), sCabin.id, null);
+		Booking b = Booking.createBooking(user.id, new DateTime(), new DateTime(), sCabin.id, null);
 		
 		int bookingSizeForUser = Booking.find.where().eq("user", user).findList().size();
 		b.status = Booking.CANCELLED;
@@ -185,7 +175,7 @@ public class ModelsTest extends WithApplication{
 		sCabin.save();
 		User user = new User("q@t","w", "t");
 		user.save();
-		Booking b = Booking.createBooking(user.id, DateTime.now().toDate(), DateTime.now().plusDays(5).toDate(), sCabin.id, null);
+		Booking b = Booking.createBooking(user.id, DateTime.now(), DateTime.now().plusDays(5), sCabin.id, null);
 		
 		List<Booking> bookingsShouldBeEmpty = sCabin.findAllBookingsForCabinGivenDate(sCabin.id, DateTime.now().plusWeeks(1), DateTime.now().plusWeeks(2));
 		List<Booking> bookingsNotEmpty = sCabin.findAllBookingsForCabinGivenDate(sCabin.id, DateTime.now().plusDays(5), DateTime.now().plusDays(15));
@@ -247,8 +237,8 @@ public class ModelsTest extends WithApplication{
 				
 			
 				
-				Date fromDate = DateTime.now().plusDays(2).toDate();
-				Date toDate = DateTime.now().plusDays(4).toDate();
+				DateTime fromDate = DateTime.now().plusDays(2);
+				DateTime toDate = DateTime.now().plusDays(4);
 				
 				if(currentCabin instanceof LargeCabin) {
 					beds = ((LargeCabin)currentCabin).beds;

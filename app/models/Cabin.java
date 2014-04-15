@@ -1,26 +1,12 @@
 package models;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-
 import javax.persistence.*;
-
 import org.joda.time.DateTime;
-
-import com.avaje.ebean.Expr;
-import com.avaje.ebean.Expression;
-
 import play.db.ebean.Model;
 import utilities.Page;
-import views.html.play20.book;
 
-/**
- * Abstract superclass for SmallCabin and LargeCabin. This is taken straight from JPA inheritance
- * pages (http://en.wikibooks.org/wiki/Java_Persistence/Inheritance) and seems to be most popular
- * solution.
- * @author Jama
- */
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "DTYPE", discriminatorType = DiscriminatorType.STRING)
@@ -109,7 +95,7 @@ public abstract class Cabin extends Model {
 		for(Booking b: bookings) {
 			if(b.status == 2)
 				continue;
-			if(utilities.DateHelper.isOverlap(new DateTime(b.dateFrom), new DateTime(b.dateTo), startDate, endDate))
+			if(utilities.DateHelper.isOverlap(b.dateFrom, b.dateTo, startDate, endDate))
 					rBookings.add(b);
 		}
 			return rBookings;

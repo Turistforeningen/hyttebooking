@@ -1,18 +1,12 @@
 package models;
 
-import java.sql.Date;
-import java.util.Calendar;
-
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
-
 import org.joda.time.DateTime;
-
 import flexjson.JSON;
 import play.data.validation.Constraints;
 import play.db.ebean.Model;
-import play.db.ebean.Model.Finder;
 
 @Entity
 public class Payment extends Model {
@@ -27,7 +21,7 @@ public class Payment extends Model {
 	public double amount;
 	
 	@Constraints.Required
-	public Date date;
+	public DateTime date;
 	
 	public String transactionId;
 	
@@ -55,7 +49,7 @@ public class Payment extends Model {
 	
 	public static void createPaymentForBooking(User user, Booking b, double amount) {
 		Payment p = new Payment();
-		p.date = new Date(DateTime.now().getMillis()); //weird way. Should be yodatime
+		p.date = DateTime.now();
 		p.user = user;
 		p.amount = amount;
 		p.booking = b;

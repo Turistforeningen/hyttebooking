@@ -1,13 +1,10 @@
 package models;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.*;
 
 import org.joda.time.DateTime;
-
-import com.avaje.ebean.Expr;
 
 import play.data.validation.Constraints;
 
@@ -30,11 +27,7 @@ public class SmallCabin extends Cabin {
 	
 	public boolean isAvailable(DateTime fromDate, DateTime toDate) {
 		for(Booking booking: this.bookings) {
-			
-			DateTime fromDate2 = new DateTime(booking.dateFrom);
-			DateTime toDate2 = new DateTime(booking.dateTo);
-			
-			if(utilities.DateHelper.isOverlap(fromDate, toDate, fromDate2, toDate2) && booking.status<Booking.CANCELLED)
+			if(utilities.DateHelper.isOverlap(fromDate, toDate, booking.dateFrom, booking.dateTo) && booking.status<Booking.CANCELLED)
 				return false;
 		}
 		
@@ -59,7 +52,7 @@ public class SmallCabin extends Cabin {
 		return Booking.find
 				.where()
 				.eq("smallCabin", this)
-				.gt("dateFrom", DateTime.now().toDate())
+				.gt("dateFrom", DateTime.now())
 				.ne("status", Booking.CANCELLED)
 				.findRowCount();
 	}
