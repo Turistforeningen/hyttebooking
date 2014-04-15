@@ -65,11 +65,11 @@
                 <div class="col-lg-6 col-md-6 calenderDivStyle">
                     <div class="row">
                         <div class="col-lg-6 col-md-6">
-                            <strong>Ankomst:</strong>&nbsp;{{dateFrom}}
+                            <strong>Ankomst:</strong>&nbsp;{{booking.dateFrom}}
                         </div>
                         <!-- /col -->
                         <div class="col-lg-6 col-md-6">
-                            <strong>Avreise:</strong>&nbsp;{{dateTo}}
+                            <strong>Avreise:</strong>&nbsp;{{booking.dateTo}}
                         </div>
                         <!-- /col -->
                     </div>
@@ -152,6 +152,7 @@
         </div>
         <!-- /col -->
     </div>
+    <pre>{{booking | json}}</pre>
     <!-- /row -->
     <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
     <!-- ///////////////////////////////////////////////// DNT BOOKING SOLUTION - END ///////////////////////////////////////////////// -->
