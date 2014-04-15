@@ -72,8 +72,8 @@ public class BookingForm extends AbstractForm<Booking> {
 			
 			Booking booking = Booking.createBooking(
 					SecurityController.getUser().id, 
-					startDt.toDate(),
-					endDt.toDate(),
+					startDt,
+					endDt,
 					cabin.id,
 					beds);
 			

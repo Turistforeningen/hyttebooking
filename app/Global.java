@@ -78,9 +78,9 @@ public class Global extends GlobalSettings {
 			//bookingDate 1-20 days before fromdate
 			int bookingDays = fromDays +(int)(Math.random()*BOOKING_DATE_RANGE/2);
 
-			Date fromDate = DateTime.now().plusDays(fromDays).toDate();
-			Date toDate = DateTime.now().plusDays(toDays).toDate();
-			Date bookingDate = DateTime.now().minusDays(bookingDays).toDate();
+			DateTime fromDate = DateTime.now().plusDays(fromDays);
+			DateTime toDate = DateTime.now().plusDays(toDays);
+			DateTime bookingDate = DateTime.now().minusDays(bookingDays);
 
 			List<Bed> beds = null;
 			Cabin currentCabin = cabins[r.nextInt(cabinSize)];
@@ -94,7 +94,7 @@ public class Global extends GlobalSettings {
 			}
 
 			Booking b= Booking.createBooking(us[i%userSize].id, fromDate, toDate, currentCabin.id, beds );
-			b.timeOfBooking = bookingDate.getTime();
+			b.timeOfBooking = bookingDate.getMillis();
 			b.update();
 		}
 	}

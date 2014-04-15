@@ -14,10 +14,6 @@ import com.avaje.ebean.Ebean;
 import com.avaje.ebean.Expr;
 import com.avaje.ebean.Expression;
 
-
-
-
-
 import flexjson.JSON;
 import play.data.format.Formats;
 import play.data.validation.Constraints;
@@ -27,6 +23,7 @@ import utilities.Page;
 
 @Entity
 public class Booking extends Model {
+	public static final int CANCELLATION_LIMIT = 7; /** If booking takes place in less than or equal to seven days; cannot cancel **/
 	public static Integer TIMEDOUT = new Integer(3);
 	public static Integer CANCELLED = new Integer(2);
 	public static Integer PAID = new Integer(1);
@@ -37,11 +34,11 @@ public class Booking extends Model {
 	
 	@Constraints.Required
 	@Formats.DateTime(pattern="yyyy-MM-dd")
-	public Date dateFrom;
+	public DateTime dateFrom;
 
 	@Constraints.Required
 	@Formats.DateTime(pattern="yyyy-MM-dd")
-	public Date dateTo;
+	public DateTime dateTo;
 	
 	/** Time of order contains information about when the booking took place as timestamp long **/
 	public Long timeOfBooking;
@@ -105,7 +102,7 @@ public class Booking extends Model {
 	 */
 	public boolean isAbleToCancel() {
 		//This logic should probably be placed somewhere else?
-		if(DateTime.now().plusDays(7).isAfter(this.dateFrom.getTime())) {
+		if(DateTime.now().plusDays(CANCELLATION_LIMIT).isAfter(this.dateFrom.getMillis())) {
 			return false;
 		}
 		else {
@@ -124,10 +121,10 @@ public class Booking extends Model {
 	 */
 	@JSON(include = false)
 	public String getDeliveryDate() {
-		DateTime orderTime = new DateTime(this.dateFrom.getTime());
+		DateTime orderTime = dateFrom;
 		DateTime now = DateTime.now();
 		if(now.plusMonths(3).isAfter(orderTime)) {
-			return DateHelper.dtToYYYYMMDDString(new DateTime(this.dateFrom.getTime()));
+			return DateHelper.dtToYYYYMMDDString(dateFrom);
 		}
 		else {
 			return DateHelper.dtToYYYYMMDDString(now.plusMonths(3));
@@ -194,7 +191,7 @@ public class Booking extends Model {
 	}
 	
 	
-	public static Booking createBooking(Long userId, Date dateFrom, Date dateTo, 
+	public static Booking createBooking(Long userId, DateTime dateFrom, DateTime dateTo, 
 			Long cabinId,
 			List<Bed> beds) {
 
