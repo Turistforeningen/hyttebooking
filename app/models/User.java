@@ -6,6 +6,8 @@ import play.db.ebean.Model;
 
 import javax.persistence.*;
 
+import org.joda.time.DateTime;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import flexjson.JSON;
@@ -14,7 +16,6 @@ import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -68,7 +69,7 @@ public class User extends Model {
     public String fullName;
 
     @Constraints.Required
-    public Date dob;
+    public DateTime dob;
     
     @Constraints.Required
     public String address;
@@ -83,7 +84,7 @@ public class User extends Model {
     public String zipCode;
     
     @Column(nullable = false)
-    public Date creationDate;
+    public DateTime creationDate;
 
     public String createToken() {
         authToken = UUID.randomUUID().toString();
@@ -101,14 +102,14 @@ public class User extends Model {
 	public List<Booking> bookings = new ArrayList<Booking>();
     
     public User() {
-        this.creationDate = new Date();
+        this.creationDate = new DateTime();
     }
 
     public User(String emailAddress, String password, String fullName) {
         setEmailAddress(emailAddress);
         setPassword(password);
         this.fullName = fullName;
-        this.creationDate = new Date();
+        this.creationDate = new DateTime();
     }
     public int getNrOfBookings() {
     	return this.bookings.size();

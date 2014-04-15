@@ -35,25 +35,25 @@ public class ControllerTest extends WithApplication {
 		user.save();
 
 		/** add different bookings and test **/
-		Date s1 = new DateTime("2014-03-01").toDate();
-		Date e1 = new DateTime("2014-03-03").toDate();
+		DateTime s1 = new DateTime("2014-03-01");
+		DateTime e1 = new DateTime("2014-03-03");
 		Booking b1 = Booking.createBooking(user.id, s1, e1, sCabin.id, null);
 		b1.save();
 		b1.status = Booking.CANCELLED;
 		b1.update();
 		
-		Date s2 = new DateTime("2014-04-25").toDate();
-		Date e2 = new DateTime("2014-04-30").toDate();
+		DateTime s2 = new DateTime("2014-04-25");
+		DateTime e2 = new DateTime("2014-04-30");
 		Booking b2 = Booking.createBooking(user.id, s2, e2, sCabin.id, null);
 		b2.save();
 
-		Date s3 = new DateTime("2014-04-15").toDate();
-		Date e3 = new DateTime("2014-04-10").toDate();
+		DateTime s3 = new DateTime("2014-04-15");
+		DateTime e3 = new DateTime("2014-04-10");
 		Booking b3 = Booking.createBooking(user.id, s3, e3, sCabin.id, null);
 		b3.save();
 
-		Date s4 = new DateTime("2014-03-29").toDate();
-		Date e4 = new DateTime("2014-04-05").toDate();
+		DateTime s4 = new DateTime("2014-03-29");
+		DateTime e4 = new DateTime("2014-04-05");
 		Booking b4 = Booking.createBooking(user.id, s4, e4, sCabin.id, null);
 		b4.save();
 
@@ -118,20 +118,20 @@ public class ControllerTest extends WithApplication {
 		String actualResult;
 
 		/** add different bookings and test **/
-		Date s1 = new DateTime("2015-03-01").toDate();
-		Date e1 = new DateTime("2015-03-03").toDate();
+		DateTime s1 = new DateTime("2015-03-01");
+		DateTime e1 = new DateTime("2015-03-03");
 		List<Bed> arrBeds1 = ((LargeCabin) lCabin).book(1, new DateTime(s1), new DateTime(e1));
 		Booking b1 = Booking.createBooking(user.id, s1, e1, lCabin.id, arrBeds1);
 		b1.save();
 
-		Date s2 = new DateTime("2015-03-09").toDate();
-		Date e2 = new DateTime("2015-03-13").toDate();
+		DateTime s2 = new DateTime("2015-03-09");
+		DateTime e2 = new DateTime("2015-03-13");
 		List<Bed> arrBeds2 = ((LargeCabin) lCabin).book(2, new DateTime(s2), new DateTime(e2));
 		Booking b2 = Booking.createBooking(user.id, s2, e2, lCabin.id, arrBeds2);
 		b2.save();
 
-		Date s3 = new DateTime("2015-03-23").toDate();
-		Date e3 = new DateTime("2015-03-28").toDate();
+		DateTime s3 = new DateTime("2015-03-23");
+		DateTime e3 = new DateTime("2015-03-28");
 		List<Bed> arrBeds3 = ((LargeCabin) lCabin).book(3, new DateTime(s3), new DateTime(e3));
 		Booking b3 = Booking.createBooking(user.id, s3, e3, lCabin.id, arrBeds3);
 		b3.save();

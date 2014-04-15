@@ -1,22 +1,14 @@
 package models;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-
 import javax.persistence.*;
-
 import org.joda.time.DateTime;
-
-
-
-
 import play.data.validation.Constraints;
 
 @Entity
 @DiscriminatorValue("LARGE_CABIN")
 public class LargeCabin extends Cabin {
-	
 	
 	@Constraints.Required
 	@OneToMany(mappedBy="largeCabin", cascade = CascadeType.ALL, orphanRemoval=true)
@@ -81,20 +73,6 @@ public class LargeCabin extends Cabin {
 		beds.remove(0);
 	}
 	
-	public boolean isAvailable(Date date, int numberOfBeds) {
-		
-		int count = 0; //counts number of beds available for given date
-		for(Bed b: beds) {
-			if(b.isAvailable(date))
-				count++;
-		}
-		
-		if(count >= numberOfBeds)
-			return true;
-		else
-			return false; //TODO
-	}
-
 	@Override
 	public String getcabinType() {
 		return "large";
@@ -110,7 +88,7 @@ public class LargeCabin extends Cabin {
 		return Booking.find
 				.where()
 				.eq("beds.largeCabin", this)
-				.gt("dateFrom", DateTime.now().toDate())
+				.gt("dateFrom", DateTime.now())
 				.ne("status", Booking.CANCELLED)
 				.findRowCount();
 	}

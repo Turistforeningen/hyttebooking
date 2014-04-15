@@ -53,10 +53,8 @@ public class Booking extends Model {
 	
 	public Integer status = new Integer(0);
 	
-	
 	@OneToOne
 	public Payment payment;
-	
 	
 	@ManyToOne
 	public SmallCabin smallCabin;
@@ -66,10 +64,8 @@ public class Booking extends Model {
 	
 	public void addBed(Bed b) {
 		beds.add(b);
-		//b.update();
-		
+		//b.update(); //TODO shouldn't update run here?
 	}
-	
 	
 	/**
 	 * Will return a smallcabin or a bigcabin depending on booking type.
@@ -206,7 +202,6 @@ public class Booking extends Model {
 			for(Bed bed: beds) {
 				b.addBed(bed);	
 			}
-
 		}
 
 		b.dateTo = dateTo;
@@ -215,8 +210,6 @@ public class Booking extends Model {
 
 		return b;
 	}
-	
-	
 }
 
 
