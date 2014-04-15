@@ -1,17 +1,11 @@
 package models;
 
-
 import play.data.validation.Constraints;
 import play.db.ebean.Model;
-
 import javax.persistence.*;
-
 import org.joda.time.DateTime;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import flexjson.JSON;
-
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
