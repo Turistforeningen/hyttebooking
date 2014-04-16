@@ -1,6 +1,19 @@
 'use strict';
 
 /**
+ * @ngdoc overview
+ * @name dntBookingModule
+ * @description 
+ * # dntBookingModule
+ * dntBookingModule contains all the ui elements used for booking, like 
+ * {@link dntBookingModule.directive:dntSelector dntSelector} which provide
+ *  the selection of attendees for booking, and {@link dntBookingModule.directive:dntPriceViewer dntPriceViewer} showing the total price for 
+ * the booking. 
+ */
+angular.module('dntBookingModule', []);
+
+
+/**
  * @ngdoc directive
  * @name dntBookingModule.directive:dntSelector
  * @element div
@@ -18,21 +31,27 @@
  * **Note:** PersonType should be of the form [{"type": "x", "price": "x", "nr":"x"}, ... , {"type": "x", "price": "x", "nr":"x"}]
  *
  * @example
- * <p>Selector</p>
- * <example module="sx">
-        <file name="script.js">
-            angular.module('sx', []);
-            function ctrl($scope) {
-                $scope.guests = [{"nr": 0,"price": 300,"type": "Voksen, medlem"},{"nr": 0,"price": 150,"type": "Ungdom, medlem"}];
-            }
-        </file>
-        <file name="index.html">
- * <div ng-controller="ctrl">
- * <dnt-selector person-types="guests" hide-type-index="4"
-									number-of-beds="20"></dnt-selector><p>{{ guests }}</p>
- *</div></file></example>
+   	<example module="dntApp">
+   		<file name="script.js">
+             angular.module('dntApp', ['ui.bootstrap','dntBookingModule'])
+             .controller('selectCtrl', ['$scope',function ($scope) { 
+                 $scope.guests = [{"nr": 0,"price": 300,"type": "Voksen, medlem"},{"nr": 0,"price": 150,"type": "Ungdom, medlem"},{"nr": 0,"price": 150,"type": "Ungdom"}];
+            		$scope.beds = 20;
+            		$scope.hide = 2;
+             }]);
+         </file>
+         <file name="index.html">
+   			<div ng-controller="selectCtrl">
+ 
+   				<div dnt-selector person-types="guests" hide-type-index="hide" number-of-beds="beds">
+   				</div>
+   				</div>
+  				
+			
+		</file>
+ 	</example>
  */
-angular.module('dntBookingModule', ['ui.bootstrap'])
+angular.module('dntBookingModule', [])
 .directive('dntSelector', function() {
 	return {
 		restrict: 'AE',
@@ -71,7 +90,7 @@ angular.module('dntBookingModule', ['ui.bootstrap'])
 			'</div>'+
 			'</div>',
 
-		controller: ['$scope', function($scope) {
+		controller: ['$scope','$log', function($scope,$log) {
 				$scope.person = {};
 				$scope.isCollapsed = true;
 
@@ -80,6 +99,7 @@ angular.module('dntBookingModule', ['ui.bootstrap'])
 					//When a user shuts down this collapse all entries inside collapse should be erased here
 				};
 				$scope.setPerson = function(person) {
+					$log.info("lol");
 					$scope.person = person;
 				};
 				$scope.getPerson = function(person) {
@@ -120,7 +140,9 @@ angular.module('dntBookingModule', ['ui.bootstrap'])
 			}],
 
 		link: function(scope, elem, attrs) {
+			console.log("JEG ER HER JO!");
 				scope.setPerson(scope.data);
+				
 				scope.$watch('data', function(newValue, oldValue) {
 					if (newValue) {
 						scope.setPerson(newValue);
@@ -151,8 +173,34 @@ angular.module('dntBookingModule', ['ui.bootstrap'])
  *	AND be the reference the same model as dntSelector to work properly.
  *
  * @example
-   <dnt-price-viewer person-types="[{"type": "ungdom, medlem", "price": "300", "amount":"2"}]">
-   </dnt-price-viewer>
+   	<example module="dntApp">
+   		<file name="script.js">
+             angular.module('dntApp', ['ui.bootstrap','dntBookingModule'])
+             .controller('viewerCtrl', ['$scope',function ($scope) { 
+                 $scope.guests = [{"nr": 0,"price": 300,"type": "Voksen, medlem"},{"nr": 0,"price": 150,"type": "Ungdom, medlem"},{"nr": 0,"price": 150,"type": "Ungdom"}];
+            		$scope.from = '2014-04-22';
+            		$scope.to = '2014-04-23';
+            		$scope.iterate = function(number) {
+            			$scope.guests[1].nr+=number;
+            		};
+            		$scope.iterateAnother = function(number) {
+            			$scope.guests[2].nr+=number;
+            		};
+             }]);
+         </file>
+         <file name="index.html">
+   			<div ng-controller="viewerCtrl">
+ 				
+   				<div dnt-price-viewer person-types="guests" from-date="from" to-date="to">
+   				</div>
+   				
+   				<p>===========CONTROLS==============</p>
+   				<a ng-click="iterate(1)">pluss one person</a><span> </span><a ng-click="iterateAnother(1)">pluss another one person
+   				<input type="text" class="form-control" datepicker-popup ng-model="to"/>
+   				<br><br><br><br>
+   			</div>
+		</file>
+ 	</example>
  */
 angular.module('dntBookingModule')
 .directive('dntPriceViewer', function() {
@@ -165,7 +213,7 @@ angular.module('dntBookingModule')
 
 		},
 
-		template:
+		template:	
 			'<div class="row" style="min-height: 250px;">' +
 			'<table class="table table-condensed">' +
 			'<tr ng-repeat="person in personType" ng-show="person.nr>0">'+
@@ -273,12 +321,36 @@ angular.module('dntBookingModule')
  * 
  * @description dntBookingModule, contain the different ui elements needed for booking, like dnt-selector and dnt-viewer, a to-from date picker and error display.
  * The directive is responsible for these ui elements, and validation of user input. Any result from user input will be present in
- * the 
+ * the the bookingModel
  * 
  *
  * **Note:** {"cabinId":"1","dateFrom":"2014-04-19","guests":[{"nr":1,"price":300,"type":"Voksen, medlem"},{"nr":1,"price":150,"type":"Ungdom, medlem"},{"nr":0,"price":100,"type":"Barn, medlem"},{"nr":0,"price":0,"type":"Spedbarn"},{"nr":0,"price":400,"type":"Voksen"},{"nr":0,"price":200,"type":"ungdom"},{"nr":0,"price":150,"type":"barn"}]}
- *
+ * @example
+   	<example module="dntApp">
+   		<file name="script.js">
+             angular.module('dntApp', ['ui.bootstrap','dntBookingModule'])
+             .controller('selectCtrl', ['$scope',function ($scope) { 
+                 $scope.booking = {"cabinId":"1","guests":[{"nr": 0,"price": 300,"type": "Voksen, medlem"},{"nr": 0,"price": 150,"type": "Ungdom, medlem"},{"nr": 0,"price": 150,"type": "Ungdom"}]};
+                 $scope.message = "";
+                 $scope.called = "";
+                 $scope.call = function() {
+                 	$scope.called="I've been called because you click the book button";
+                 }
+             }]);
+         </file>
+         <file name="index.html">
+   			<div ng-controller="selectCtrl">
+    			<div class="container">
+   				<dnt-booking-module onBook="call()" booking-model="booking" number-of-beds="{{20}}" cabin-type="{{large}}" error-message="message">
+   				</dnt-booking-module>
+   				<p>{{called}}</p>
+   				</div>
+  				</div>
+			
+		</file>
+ 	</example>
  */
+ 
 angular.module('dntBookingModule')
 .directive('dntBookingModule', function() {
 	return {

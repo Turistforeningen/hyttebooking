@@ -1,7 +1,13 @@
 'use strict';
-/*
- * Controller for admin view. Responsible for showing global
+
+
+/**
+ * @ngdoc object
+ * 
+ * @name dntApp.controller:adminViewController
+ * @description Controller for admin view. Responsible for showing global
  * statistics, adding cabins and overview of cabins.
+ * 
  */
 angular.module('dntApp').controller('adminViewController',['$scope', '$location','$routeParams',  'api', '$log',
                                                            function ($scope, $location,$routeParams,  api, $log) {
@@ -28,9 +34,14 @@ angular.module('dntApp').controller('adminViewController',['$scope', '$location'
 	init();
 }]);
 
-/*
- * Table controller for overview of cabins. Resposible
+
+/**
+ * @ngdoc object
+ * 
+ * @name dntApp.controller:cabinTableController
+ * @description Table controller for overview of cabins. Responsible
  * for populating table with cabins.
+ * 
  */
 angular.module('dntApp').controller('cabinTableController', ['$scope', '$location', '$routeParams', 'cabinService', 'api', '$log',
                                                              function ($scope, $location, $routeParams, cabinService, api, $log) {
@@ -79,8 +90,13 @@ angular.module('dntApp').controller('cabinTableController', ['$scope', '$locatio
 	init();
 }]);
 
-/*
- * Table controller for overview of bookings for a given cabin 
+
+/**
+ * @ngdoc object
+ * 
+ * @name dntApp.controller:cabinDetailsController
+ * @description  Table controller for overview of bookings for a given cabin .
+ * 
  */
 angular.module('dntApp').controller('cabinDetailsController', ['$scope', '$location', '$routeParams', 'cabinService', 'api', '$log',
                                                                function ($scope, $location, $routeParams, cabinService, api, $log) {
@@ -123,6 +139,7 @@ angular.module('dntApp').controller('cabinDetailsController', ['$scope', '$locat
 		}
 	};
 }]);
+
 
 angular.module('dntApp').controller('cabinFormController', ['$scope', '$location', '$routeParams', 'cabinService', 'api', '$log',
                                                             function ($scope, $location, $routeParams, cabinService, api, $log) {
