@@ -1,6 +1,19 @@
 'use strict';
 
 /**
+ * @ngdoc overview
+ * @name dntBookingModule
+ * @description 
+ * # dntBookingModule
+ * dntBookingModule contains all the ui elements used for booking, like 
+ * {@link dntBookingModule.directive:dntSelector dntSelector} which provide
+ *  the selection of attendees for booking, and {@link dntBookingModule.directive:dntPriceViewer dntPriceViewer} showing the total price for 
+ * the booking. 
+ */
+angular.module('dntBookingModule', []);
+
+
+/**
  * @ngdoc directive
  * @name dntBookingModule.directive:dntSelector
  * @element div
@@ -308,7 +321,7 @@ angular.module('dntBookingModule')
  * 
  * @description dntBookingModule, contain the different ui elements needed for booking, like dnt-selector and dnt-viewer, a to-from date picker and error display.
  * The directive is responsible for these ui elements, and validation of user input. Any result from user input will be present in
- * the 
+ * the the bookingModel
  * 
  *
  * **Note:** {"cabinId":"1","dateFrom":"2014-04-19","guests":[{"nr":1,"price":300,"type":"Voksen, medlem"},{"nr":1,"price":150,"type":"Ungdom, medlem"},{"nr":0,"price":100,"type":"Barn, medlem"},{"nr":0,"price":0,"type":"Spedbarn"},{"nr":0,"price":400,"type":"Voksen"},{"nr":0,"price":200,"type":"ungdom"},{"nr":0,"price":150,"type":"barn"}]}

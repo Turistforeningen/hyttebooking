@@ -1,7 +1,13 @@
 'use strict';
-/*
- * Controller for the ordersView. Sends a get request for orderHistory to the server.
- * Methods for getting and cancelling bookings.
+
+/**
+ * @ngdoc object
+ * 
+ * @name dntApp.controller:orderController
+ * @requires dntApp.ordersService
+ * @description Controller for the ordersView. Sends a get request for orderHistory to the server.
+ * Contains methods for getting and canceling bookings.
+ * 
  */
 angular.module('dntApp').controller('orderController', ['$scope','$location','$routeParams','ordersService', '$log',
                                                         function ($scope, $location, $routeParams, ordersService, $log) {
@@ -14,7 +20,6 @@ angular.module('dntApp').controller('orderController', ['$scope','$location','$r
 	};
 
 	$scope.getOrders = function(page) {
-		$log.info('inni her ja');
 		ordersService.getOrders(page, $scope.itemsPerPage)
 		.success(function (userOrders) {
 			$scope.currentPage = page +1;
@@ -23,7 +28,6 @@ angular.module('dntApp').controller('orderController', ['$scope','$location','$r
 
 		})
 		.error(function (error) {
-			$log.info('problem');
 			$scope.status = 'unable to load customer data' + error.message;
 		});
 	};
@@ -43,7 +47,6 @@ angular.module('dntApp').controller('orderController', ['$scope','$location','$r
 
 
 	function init() {
-		$log.info('inni init');
 		var pageNo = parseInt($routeParams.page);
 		if(pageNo) {
 			$scope.getOrders(pageNo-1);
@@ -59,22 +62,23 @@ angular.module('dntApp').controller('orderController', ['$scope','$location','$r
  * Controller for testView.
  */
 angular.module('dntApp').controller('testController', ['$scope','$window', function ($scope, $window) {
-	$scope.testExternalView =function() {
-		$window.location.href ='http://www.vg.no';
-	};
-
-
-
+	
 	function init() {
 
 	}
 	init();
 }]);
 
-/*
- * Controller for 
-View. The method postBooking uses the ordersService to 
- * post the booking to the server.
+
+/**
+ * @ngdoc object
+ * 
+ * @name dntApp.controller:bookingController
+ * @requires dntApp.ordersService
+ * @description Controller for the booking that works as the glue beetween the posting of bookings to the server,
+ *  paymentflow, reading query parameters and opening of modals. Important for the {@link dntBookingModule.directive:dntBookingModule dntBookingModule} directive to work.
+ *  
+ * 
  */
 angular.module('dntApp').controller('bookingController', ['$modal','$rootScope','$scope','ordersService','$log','$routeParams','$window',
                                                           function ($modal, $rootScope, $scope, ordersService, $log, $routeParams, $window) {
@@ -82,7 +86,12 @@ angular.module('dntApp').controller('bookingController', ['$modal','$rootScope',
 	$scope.booking ={};
 	$scope.beds = 0;
 	
-	
+	/**
+     * @ngdoc method
+     * @name dntApp.object#postBooking
+     * @methodOf dntApp.controller:bookingController
+     * @description Posts booking to database, and depending on answer from server the pay method is run or an error message is put into scope.errorMessage
+     */
 	$scope.postBooking = function(booking) {
 		ordersService.postOrder(booking)
 		.success(function (data) {
@@ -94,7 +103,12 @@ angular.module('dntApp').controller('bookingController', ['$modal','$rootScope',
 		});
 	};
 
-	
+	/**
+     * @ngdoc method
+     * @name dntApp.object#pay
+     * @methodOf dntApp.controller:bookingController
+     * @description When called tries to retrieve transactionId from server, and if successful redirects to external payment site
+     */
 	$scope.pay = function(bookingId) {
 		ordersService.startPayment(bookingId)
 		.success(function(data) {
@@ -105,7 +119,12 @@ angular.module('dntApp').controller('bookingController', ['$modal','$rootScope',
 		});
 	};
 	
-	
+	/**
+     * @ngdoc method
+     * @name dntApp.object#getPrices
+     * @methodOf dntApp.controller:bookingController
+     * @description Method retrieves price matrix from back end, and store them in $scope.booking which should be used by dntBookingModule directive
+     */
 	$scope.getPrices = function(id) {
 		ordersService.getPrices(id)
 		.success(function (data) {
@@ -116,7 +135,13 @@ angular.module('dntApp').controller('bookingController', ['$modal','$rootScope',
 		});
 	};
 
-	
+	/**
+     * @ngdoc method
+     * @name dntApp.object#authenticatePayment
+     * @methodOf dntApp.controller:bookingController
+     * @description When external payment site redirect back to app, this method should be called. It will try to authenticate payment at the backend,
+     * and open a modal showing status of payment.
+     */
 	$scope.authenticatePayment = function(transactionId, responseCode) {
 		ordersService.authenticatePayment(transactionId, responseCode)
 		.success(function(data) {
@@ -154,7 +179,13 @@ angular.module('dntApp').controller('bookingController', ['$modal','$rootScope',
 		return modalInstance
 	};
 
-	
+	/**
+     * @ngdoc method
+     * @name dntApp.object#init
+     * @methodOf dntApp.controller:bookingController
+     * @description Every time an instance of bookingController starts the init function will run. It checks the url for
+     * different parameters and query parameters and depending on these set the initial state of the booking view.
+     */
 	function init() {
 		var id = $routeParams.id;
 		var type =$routeParams.type;
@@ -180,8 +211,14 @@ angular.module('dntApp').controller('bookingController', ['$modal','$rootScope',
 	init();
 }]);
 
-/*
- * The authController is the controller of authView and is responsible for 
+
+/**
+ * @ngdoc object
+ * 
+ * @name dntApp.controller:authController
+ * @requires dntApp.api 
+ * @requires dntApp.authorization
+ * @description The authController is the controller of authView and is responsible for 
  * sending user credentials to server and take care of a authentication token return by the server.
  * 
  */
@@ -227,9 +264,13 @@ angular.module('dntApp').controller('authController', ['$log','$rootScope','$sco
 }]);
 
 
-/*
- * Controller used by navbar in indexAngular.html to set 
- * active tab, and to decide what to show in navbar
+/**
+ * @ngdoc object
+ * 
+ * @name dntApp.controller:headerController
+ * @description Controller used by navbar  to set 
+ * active tab, and to decide whether to show log in button or a drop down with options if user is logged in.
+ * 
  */
 angular.module('dntApp').controller('headerController', ['$scope','$rootScope', '$location', '$cookieStore' ,
                                                          function ($scope,$rootScope, $location, $cookieStore) {
