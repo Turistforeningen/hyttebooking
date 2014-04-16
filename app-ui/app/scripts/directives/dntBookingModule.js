@@ -312,8 +312,32 @@ angular.module('dntBookingModule')
  * 
  *
  * **Note:** {"cabinId":"1","dateFrom":"2014-04-19","guests":[{"nr":1,"price":300,"type":"Voksen, medlem"},{"nr":1,"price":150,"type":"Ungdom, medlem"},{"nr":0,"price":100,"type":"Barn, medlem"},{"nr":0,"price":0,"type":"Spedbarn"},{"nr":0,"price":400,"type":"Voksen"},{"nr":0,"price":200,"type":"ungdom"},{"nr":0,"price":150,"type":"barn"}]}
- *
+ * @example
+   	<example module="dntApp">
+   		<file name="script.js">
+             angular.module('dntApp', ['ui.bootstrap','dntBookingModule'])
+             .controller('selectCtrl', ['$scope',function ($scope) { 
+                 $scope.booking = {"cabinId":"1","guests":[{"nr": 0,"price": 300,"type": "Voksen, medlem"},{"nr": 0,"price": 150,"type": "Ungdom, medlem"},{"nr": 0,"price": 150,"type": "Ungdom"}]};
+                 $scope.message = "";
+                 $scope.called = "";
+                 $scope.call = function() {
+                 	$scope.called="I've been called because you click the book button";
+                 }
+             }]);
+         </file>
+         <file name="index.html">
+   			<div ng-controller="selectCtrl">
+    			<div class="container">
+   				<dnt-booking-module onBook="call()" booking-model="booking" number-of-beds="{{20}}" cabin-type="{{large}}" error-message="message">
+   				</dnt-booking-module>
+   				<p>{{called}}</p>
+   				</div>
+  				</div>
+			
+		</file>
+ 	</example>
  */
+ 
 angular.module('dntBookingModule')
 .directive('dntBookingModule', function() {
 	return {
