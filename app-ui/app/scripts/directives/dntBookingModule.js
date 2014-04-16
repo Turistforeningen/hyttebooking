@@ -293,30 +293,66 @@ angular.module('dntBookingModule')
 
 		templateUrl:  'views/bookingComponent.html',
 
-		controller: ['$scope', '$log','$filter', function($scope, $log ,$filter) {
+		controller: ['$scope', '$log','$filter', 'ordersService', function($scope, $log ,$filter, ordersService) {
             	$scope.errorMessage;
             	$scope.now = new Date();
 
+            	$scope.getAvailability = function() {
+            		orderService.getAvailability($scope.booking.cabinId, 
+            				$scope.booking.dateFrom, $scope.booking.dateTo)
+            		.success(function(data) {
+            			$scope.availability = data;
+            			
+            			//TODO maybe call refill method here?
+            		})
+            		.error(function(error) {
+            			$log.info(error.message);
+            		});
+            	};
+            	
             	// Disable weekend selection
             	$scope.disabled = function(date, mode) {
-            		return ( mode === 'day' && ( date.getDay() === 0 || date.getDay() === 6 ) );
+            		var diff = getDifferenceDays(date, $scope.booking.dateFrom);
+            		if(diff >= 0)
+            			if($scope.availability[diff] > 0 && mode === 'day') //TODO set threshold if largecabin
+            				return true;
+            		return false;
+            		//return ( mode === 'day' && ( date.getDay() === 0 || date.getDay() === 6 ) );
             	};
             	
             	//More internal date logic can be put here.
             	/** Track changes from the datepicker calendars and display the from/to dates **/
             	$scope.$watch('booking.dateTo', function(){
             		$scope.booking.dateTo= $filter('date')($scope.booking.dateTo,'yyyy-MM-dd');
+            		$scope.getAvailability();
             	});
 
             	
             	$scope.$watch('booking.dateFrom', function(){
             		if ($scope.booking.dateTo < $scope.booking.dateFrom){
-            			$scope.booking.dateTo = $scope.booking.dateFrom;
+            			$scope.booking.dateTo = $scope.booking.dateFrom; //set dateTo to +1 day instead TODO
             		}
             		$scope.booking.dateFrom= $filter('date')($scope.booking.dateFrom,'yyyy-MM-dd');
+            		$scope.getAvailability();
             	});
             	
+            	var getDifferenceDays = function(date1, date2) {
+            		return Math.floor((date2-date1)/(1000*60*60*24));
+            	}
             	
+            	/*var getDatesList = function(avail) {
+            		var s = $scope.booking.dateFrom;
+            		var e = $scope.booking.dateTo;
+            		var a = [date1];
+
+            		while(s < e) {
+            	        a.push(s);
+            	        s = new Date(s.setDate(
+            	            s.getDate() + 1
+            	        ))
+            	    }
+            		return a;
+            	};*/
 			}],
 
 		link: function(scope, elem, attrs) {
