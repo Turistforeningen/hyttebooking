@@ -7,8 +7,8 @@
  * @function
  * @restrict AE
  * @param  {json array} personTypes  json array with supported guest types for cabin
- * @param  {number} hideTypeIndex  If there is many categories, a number can be used to hide the rest of the categories
- * @param  {number} numberOfBeds  The max bed capacity of the cabin. Avoids user to select more beds than can be actually booked.
+ * @param  {number} hideTypeIndex  If there are many categories, a number can be used to hide the rest of the categories
+ * @param  {number} numberOfBeds  The max bed capacity of the cabin. Prohibits user from selecting more beds than can be actually booked.
  * @description
  * Displays a number of selects decided by the number of guestTypes.
  * It will prevent the user from selecting guests from each category such that

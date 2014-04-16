@@ -40,7 +40,7 @@ create table guest (
 create table payment (
   id                        bigint not null,
   amount                    double,
-  date                      date,
+  date                      timestamp,
   transaction_id            varchar(255),
   constraint pk_payment primary key (id))
 ;
