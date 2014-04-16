@@ -43,7 +43,7 @@ import utilities.BookingForm;
 import utilities.JsonMessage;
 import utilities.Page;
 
-@With(SecurityController.class)
+//@With(SecurityController.class)
 public class BookingController extends Controller {
 
 	/**
@@ -52,64 +52,66 @@ public class BookingController extends Controller {
 	 * So startDate 1. April and endDate 5. April gives array [0, 0, 0, 0, 0] for a cabin with zero beds available.
 	 * For small cabins the entire cabin is treated as one bed, so 1 is available and 0 is not available.
 	 */
-	public static Result getAvailabilityForTimePeriod() {
+	public static Result getAvailabilityForTimePeriod(long cabinId) {
 		ObjectNode result = Json.newObject();
-		JsonNode json = request().body().asJson();
-		if(json == null) {
-			return badRequest(JsonMessage.error(Messages.get("json.expected")));
-		}
-		else {
-			DateTime startDate = utilities.DateHelper.toDt(json.get("startDate").asText()); //must be format YYYY-MM-DD standard ISO date
-			DateTime endDate = utilities.DateHelper.toDt(json.get("endDate").asText()); //must be format YYYY-MM-DD standard ISO date
+		
+		String from = request().getQueryString("startDate");
+		String to = request().getQueryString("endDate");
+		
+		if(from == null || to == null)
+			return badRequest();
+		
+		DateTime startDate = utilities.DateHelper.toDt(from); //must be format YYYY-MM-DD standard ISO date
+		DateTime endDate = utilities.DateHelper.toDt(to); //must be format YYYY-MM-DD standard ISO date
 
-			long cabinId = json.get("cabinId").asLong(); 
+		//long cabinId = json.get("cabinId").asLong(); passing as parameter instead
 
-			int[] bookedDays = new int[Math.abs(Days.daysBetween(startDate, endDate).getDays())+1];
-			JSONSerializer serializer = new JSONSerializer();
+		int[] bookedDays = new int[Math.abs(Days.daysBetween(startDate, endDate).getDays())+1];
+		JSONSerializer serializer = new JSONSerializer();
 
-			Cabin cabin = Cabin.find.byId(cabinId);
+		Cabin cabin = Cabin.find.byId(cabinId);
+		if(cabin instanceof LargeCabin) {
 			if(cabin instanceof LargeCabin) {
-				if(cabin instanceof LargeCabin) {
-					for(Bed beds : ((LargeCabin) cabin).beds) {
-						for(Booking b : beds.bookings) {
-							if(b.status<Booking.CANCELLED) { //if booking isn't cancelled or timedout
-								int[] indices = utilities.DateHelper.getIndex(startDate, new DateTime(b.dateFrom), new DateTime(b.dateTo));
-								if(indices[0] < 0) //if b.dateFrom precedes startDate, skip to startDate 
-									indices[0] = 0;
-								for(int i = indices[0]; i<=indices[1]; i++) {
-									bookedDays[i] += 1; //blankets daterange with +1 to indicate that 1 extra bed is taken during that period
-								}
+				for(Bed beds : ((LargeCabin) cabin).beds) {
+					for(Booking b : beds.bookings) {
+						if(b.status<Booking.CANCELLED) { //if booking isn't cancelled or timedout
+							int[] indices = utilities.DateHelper.getIndex(startDate, new DateTime(b.dateFrom), new DateTime(b.dateTo));
+							if(indices[0] < 0) //if b.dateFrom precedes startDate, skip to startDate 
+								indices[0] = 0;
+							for(int i = indices[0]; i<=indices[1]; i++) {
+								bookedDays[i] += 1; //blankets daterange with +1 to indicate that 1 extra bed is taken during that period
 							}
 						}
 					}
 				}
+			}
+			result.put("bookedDays", serializer.serialize(bookedDays));
+			return ok(result);
+		} else if(cabin instanceof SmallCabin) {
+			List<Booking> bookings = SmallCabin.findAllBookingsForCabinGivenDate(cabinId, startDate, endDate);
+
+			if(!bookings.isEmpty()) {
+				for(Booking b: bookings) {
+					//for each booking set bookedDays[i] = +1 for range startDate-endDate
+					int[] indices = utilities.DateHelper.getIndex(startDate, new DateTime(b.dateFrom), new DateTime(b.dateTo)); /** indices[0] startIndex in bookedDays, [1] is endIndex **/
+					if(indices[0] < 0) //if b.dateFrom precedes startDate, skip to startDate 
+						indices[0] = 0;
+					for(int i = indices[0]; i<=indices[1]; i++){
+						bookedDays[i] = 1;						}
+				}
 				result.put("bookedDays", serializer.serialize(bookedDays));
 				return ok(result);
-			} else if(cabin instanceof SmallCabin) {
-				List<Booking> bookings = SmallCabin.findAllBookingsForCabinGivenDate(cabinId, startDate, endDate);
-
-				if(!bookings.isEmpty()) {
-					for(Booking b: bookings) {
-						//for each booking set bookedDays[i] = +1 for range startDate-endDate
-						int[] indices = utilities.DateHelper.getIndex(startDate, new DateTime(b.dateFrom), new DateTime(b.dateTo)); /** indices[0] startIndex in bookedDays, [1] is endIndex **/
-						if(indices[0] < 0) //if b.dateFrom precedes startDate, skip to startDate 
-							indices[0] = 0;
-						for(int i = indices[0]; i<=indices[1]; i++){
-							bookedDays[i] = 1;						}
-					}
-					result.put("bookedDays", serializer.serialize(bookedDays));
-					return ok(result);
-				} else { //Either something is wrong or the entire given daterange shows available for given cabin
-					result.put("bookedDays", serializer.serialize(bookedDays));
-					return ok(result);	
-				}
-			} else {
-				result.put("status", "KO");
-				result.put("message", Messages.get("date.invalid"));
-				return badRequest(result);
+			} else { //Either something is wrong or the entire given daterange shows available for given cabin
+				result.put("bookedDays", serializer.serialize(bookedDays));
+				return ok(result);	
 			}
+		} else {
+			result.put("status", "KO");
+			result.put("message", Messages.get("date.invalid"));
+			return badRequest(result);
 		}
 	}
+
 
 	/**
 	 * Controller method that use a the custom subclass bookingForm to 
@@ -289,7 +291,6 @@ public class BookingController extends Controller {
 		//If query parameters page or size not present, default values will be used
 		int page = Page.pageHelper(request().getQueryString("page"));
 		int pageSize = Page.pageSizeHelper(request().getQueryString("size"));
-
 
 		Page<Booking> bookings = Booking.getBookingPageByUser(SecurityController.getUser(), page, pageSize);
 

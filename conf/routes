@@ -18,6 +18,7 @@ GET     /api/cabins                             controllers.AdminController.getC
 GET     /api/cabins/:id                         controllers.AdminController.getCabinDetails(id: Long)
 POST    /api/cabins                             controllers.AdminController.submitCabin()
 GET     /api/cabins/:id/prices                  controllers.BookingController.getPriceForCabin(id: Long) 
+GET		/api/cabins/:id/availability			controllers.BookingController.getAvailabilityForTimePeriod(id: Long)
 GET     /api/bookings/:id/payment               controllers.PaymentController.registerPayment(id: Long)   
 POST    /api/payment/authenticate               controllers.PaymentController.authenticatePayment()  
 

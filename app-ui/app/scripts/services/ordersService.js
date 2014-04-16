@@ -83,5 +83,10 @@ angular.module('dntApp').service('ordersService', ['$http','$log', function ($ht
 		var data = {'responseCode' :response, 'transactionId' : paymentId};
 		return $http.post(url, data);
 	};
+	
+	this.getAvailability = function(cabinId, startDate, endDate) {
+		var url = '/api/cabins/'+cabinId+'/availability?startDate='+startDate+'&endDate='+endDate;
+		return $http.get(url);
+	};
 }]);
 

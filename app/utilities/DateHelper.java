@@ -10,8 +10,10 @@ import org.joda.time.format.DateTimeFormatter;
 public class DateHelper {
 
 	/** takes string "dd-MM-YYYY" and return DateTime object corresponding to it **/
+	//TODO fix and set up test for this method
 	public static DateTime toDt(String date) {
 		
+		try {		
 		String[] d = date.split("-");
 		if(d.length < 3) return null;
 		DateTime dt = new DateTime(Integer.parseInt(d[0]), //int year
@@ -21,6 +23,10 @@ public class DateHelper {
 				0						//int minute
 				);
 		return dt;
+		} catch (Exception e) {
+			System.out.println("Datehelper toDt exception: bad string: "+e);
+			return null;
+		}
 	}
 	
 	/**
