@@ -297,6 +297,11 @@ angular.module('dntBookingModule')
             	$scope.errorMessage;
             	$scope.now = new Date();
 
+            	// Disable weekend selection
+            	$scope.disabled = function(date, mode) {
+            		return ( mode === 'day' && ( date.getDay() === 0 || date.getDay() === 6 ) );
+            	};
+            	
             	//More internal date logic can be put here.
             	/** Track changes from the datepicker calendars and display the from/to dates **/
             	$scope.$watch('booking.dateTo', function(){
