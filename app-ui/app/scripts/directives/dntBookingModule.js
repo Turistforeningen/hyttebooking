@@ -298,7 +298,7 @@ angular.module('dntBookingModule')
             	$scope.now = new Date();
 
             	$scope.getAvailability = function() {
-            		orderService.getAvailability($scope.booking.cabinId, 
+            		ordersService.getAvailability($scope.booking.cabinId, 
             				$scope.booking.dateFrom, $scope.booking.dateTo)
             		.success(function(data) {
             			$scope.availability = data;

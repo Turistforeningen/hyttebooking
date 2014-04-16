@@ -86,6 +86,7 @@ angular.module('dntApp').service('ordersService', ['$http','$log', function ($ht
 	
 	this.getAvailability = function(cabinId, startDate, endDate) {
 		var url = '/api/cabins/'+cabinId+'/availability?startDate='+startDate+'&endDate='+endDate;
+		console.log("StartDate: "+startDate+ "endDate is: "+endDate);
 		return $http.get(url);
 	};
 }]);
