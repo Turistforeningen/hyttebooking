@@ -2,8 +2,11 @@ package models;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.persistence.*;
+
 import org.joda.time.DateTime;
+
 import play.db.ebean.Model;
 import utilities.Page;
 
@@ -31,9 +34,9 @@ public abstract class Cabin extends Model {
 	public abstract String getcabinType();
 
 	public abstract String getNrOfBeds();
-	
+
 	public abstract String getCabinUrl();
-	
+
 	public static Finder<Long, Cabin> find = new Finder<Long, Cabin>(Long.class, Cabin.class);
 
 
@@ -69,36 +72,6 @@ public abstract class Cabin extends Model {
 			return bookingPage;
 		}
 		return null;
-	}
-
-	/**
-	 * Returns all bookings that overlap with given startDate and endDate (used in dynamic calendar display) that are NOT cancelled
-	 * @return A list of all bookings found within given cabinId within startDate-endDate
-	 */
-	public static List<Booking> findAllBookingsForCabinGivenDate(long cabinId, DateTime startDate, DateTime endDate)
-	{
-		Cabin cabin = Cabin.find.byId(cabinId);
-		List<Booking> bookings = new ArrayList<Booking>();
-
-		if(cabin instanceof SmallCabin) {
-			bookings = Booking.find.where()
-					.eq("smallCabin", cabin) //TODO optimization consider optimizing query only for specified dates
-					.findList();
-		
-		} else if(cabin instanceof LargeCabin) {
-			bookings = Booking.find.where()
-					.eq("beds.largeCabin", cabin)
-					.findList(); //TODO optimization consider optimizing query only for specified dates
-		}
-		
-		List<Booking> rBookings = new ArrayList<Booking>();
-		for(Booking b: bookings) {
-			if(b.status == 2)
-				continue;
-			if(utilities.DateHelper.isOverlap(b.dateFrom, b.dateTo, startDate, endDate))
-					rBookings.add(b);
-		}
-			return rBookings;
 	}
 
 	public static Page<Cabin> findAllCabins(int page, int pageSize) {

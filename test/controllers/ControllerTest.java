@@ -73,7 +73,7 @@ public class ControllerTest extends WithApplication {
 
 		Cabin cabin = Cabin.find.byId(cabinId);
 		if(cabin instanceof SmallCabin) {
-			List<Booking> bookings = Cabin.findAllBookingsForCabinGivenDate(cabinId, startDate, endDate);
+			List<Booking> bookings = SmallCabin.findAllBookingsForCabinGivenDate(cabinId, startDate, endDate);
 
 			if(!bookings.isEmpty()) {
 				for(Booking b: bookings) {

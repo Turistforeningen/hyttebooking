@@ -2,18 +2,10 @@ package models;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-
 import javax.persistence.*;
-import javax.validation.Constraint;
-
 import org.joda.time.DateTime;
-
-import com.avaje.ebean.Ebean;
 import com.avaje.ebean.Expr;
-import com.avaje.ebean.Expression;
-
 import flexjson.JSON;
 import play.data.format.Formats;
 import play.data.validation.Constraints;
@@ -23,6 +15,7 @@ import utilities.Page;
 
 @Entity
 public class Booking extends Model {
+	//TODO maybe should be using enumerator in utilities package instead?
 	public static final int CANCELLATION_LIMIT = 7; /** If booking takes place in less than or equal to seven days; cannot cancel **/
 	public static Integer TIMEDOUT = new Integer(3);
 	public static Integer CANCELLED = new Integer(2);

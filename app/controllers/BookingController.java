@@ -72,11 +72,13 @@ public class BookingController extends Controller {
 				if(cabin instanceof LargeCabin) {
 					for(Bed beds : ((LargeCabin) cabin).beds) {
 						for(Booking b : beds.bookings) {
-							int[] indices = utilities.DateHelper.getIndex(startDate, new DateTime(b.dateFrom), new DateTime(b.dateTo));
-							if(indices[0] < 0) //if b.dateFrom precedes startDate, skip to startDate 
-								indices[0] = 0;
-							for(int i = indices[0]; i<=indices[1]; i++) {
-								bookedDays[i] += 1; //blankets daterange with +1 to indicate that 1 extra bed is taken during that period
+							if(b.status<Booking.CANCELLED) { //if booking isn't cancelled or timedout
+								int[] indices = utilities.DateHelper.getIndex(startDate, new DateTime(b.dateFrom), new DateTime(b.dateTo));
+								if(indices[0] < 0) //if b.dateFrom precedes startDate, skip to startDate 
+									indices[0] = 0;
+								for(int i = indices[0]; i<=indices[1]; i++) {
+									bookedDays[i] += 1; //blankets daterange with +1 to indicate that 1 extra bed is taken during that period
+								}
 							}
 						}
 					}
@@ -84,7 +86,7 @@ public class BookingController extends Controller {
 				result.put("bookedDays", serializer.serialize(bookedDays));
 				return ok(result);
 			} else if(cabin instanceof SmallCabin) {
-				List<Booking> bookings = Cabin.findAllBookingsForCabinGivenDate(cabinId, startDate, endDate);
+				List<Booking> bookings = SmallCabin.findAllBookingsForCabinGivenDate(cabinId, startDate, endDate);
 
 				if(!bookings.isEmpty()) {
 					for(Booking b: bookings) {

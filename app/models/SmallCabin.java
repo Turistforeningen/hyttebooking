@@ -1,5 +1,6 @@
 package models;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.*;
@@ -63,4 +64,34 @@ public class SmallCabin extends Cabin {
 		// TODO Auto-generated method stub
 		return this.id + "?type=small&beds=hele";
 	}	
+	
+	/**
+	 * Returns all bookings that overlap with given startDate and endDate (used in dynamic calendar display) that are NOT cancelled
+	 * @return A list of all bookings found within given cabinId within startDate-endDate
+	 */
+	public static List<Booking> findAllBookingsForCabinGivenDate(long cabinId, DateTime startDate, DateTime endDate)
+	{
+		Cabin cabin = Cabin.find.byId(cabinId);
+		List<Booking> bookings = new ArrayList<Booking>();
+
+		if(cabin instanceof SmallCabin) {
+			bookings = Booking.find.where()
+					.eq("smallCabin", cabin) //TODO optimization consider optimizing query only for specified dates
+					.findList();
+
+		} else if(cabin instanceof LargeCabin) {
+			bookings = Booking.find.where()
+					.eq("beds.largeCabin", cabin)
+					.findList(); //TODO optimization consider optimizing query only for specified dates
+		}
+
+		List<Booking> rBookings = new ArrayList<Booking>();
+		for(Booking b: bookings) {
+			if(b.status<Booking.CANCELLED) { //if booking isn't cancelled or timedout
+				if(utilities.DateHelper.isOverlap(b.dateFrom, b.dateTo, startDate, endDate)) 
+					rBookings.add(b);
+			}
+		}
+		return rBookings;
+	}
 }
