@@ -368,14 +368,16 @@ angular.module('dntBookingModule')
 		controller: ['$scope', '$log','$filter', 'ordersService', function($scope, $log ,$filter, ordersService) {
             	$scope.errorMessage;
             	$scope.now = new Date();
-            	$scope.availability = [];
+            	$scope.availability = {};
+            	$scope.fdm = new Date();
             	
             	$scope.getAvailability = function(from, to) {
             		ordersService.getAvailability($scope.booking.cabinId, 
             				from, to)
             		.success(function(data) {
-            			$scope.availability = data;
+            			$scope.availability = JSON.parse(data.bookedDays);
             			$log.info($scope.availability);
+            			$scope.$broadcast('date:availability');
             			//TODO maybe call refill method here?
             		})
             		.error(function(error) {
@@ -387,11 +389,13 @@ angular.module('dntBookingModule')
             		var lastDayOfMonth = new Date(year, month+1, 0);
             		$log.info(lastDayOfMonth);
             		$scope.getAvailability($filter('date')(firstDayOfMonth,'yyyy-MM-dd'), $filter('date')(lastDayOfMonth,'yyyy-MM-dd'));
+            		$scope.fdm = firstDayOfMonth;
             	});  
             	
             	// Disable weekend selection
             	$scope.disabled = function(date, mode) {
-            		var diff = getDifferenceDays(date, $scope.booking.dateFrom);
+            		var diff = getDifferenceDays(date, $scope.fdm);
+            		console.log("btnDate: "+date+ " firstDayOfMonth: "+$scope.fdm+" diff: "+diff);
             		if(diff >= 0)
             			if($scope.availability[diff] > 0 && mode === 'day') //TODO set threshold if largecabin
             				return true;
@@ -415,7 +419,7 @@ angular.module('dntBookingModule')
             	});
             	
             	var getDifferenceDays = function(date1, date2) {
-            		return Math.floor((date2-date1)/(1000*60*60*24));
+            		return Math.floor((date1-date2)/(1000*60*60*24));
             	}
             	
             	/*var getDatesList = function(avail) {

@@ -1070,6 +1070,9 @@ angular.module('ui.bootstrap.datepicker', ['ui.bootstrap.position'])
         scope.$emit('date:change', selected);
         refill();
       };
+      scope.$on('date:availability', function(event) {
+    	 refill(); 
+      });
       
       scope.toggleMode = function() {
         setMode( (mode + 1) % datepickferCtrl.modes.length );
