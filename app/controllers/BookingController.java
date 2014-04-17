@@ -43,7 +43,7 @@ import utilities.BookingForm;
 import utilities.JsonMessage;
 import utilities.Page;
 
-//@With(SecurityController.class)
+@With(SecurityController.class)
 public class BookingController extends Controller {
 
 	/**
