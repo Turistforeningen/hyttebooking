@@ -395,7 +395,7 @@ angular.module('dntBookingModule')
             	// Disable weekend selection
             	$scope.disabled = function(date, mode) {
             		var diff = getDifferenceDays(date, $scope.fdm);
-            		console.log("btnDate: "+date+ " firstDayOfMonth: "+$scope.fdm+" diff: "+diff);
+            		//console.log("btnDate: "+date+ " firstDayOfMonth: "+$scope.fdm+" diff: "+diff);
             		if(diff >= 0)
             			if($scope.availability[diff] > 0 && mode === 'day') //TODO set threshold if largecabin
             				return true;
@@ -413,7 +413,12 @@ angular.module('dntBookingModule')
             	
             	$scope.$watch('booking.dateFrom', function(){
             		if ($scope.booking.dateTo < $scope.booking.dateFrom){
-            			$scope.booking.dateTo = $scope.booking.dateFrom; //set dateTo to +1 day instead TODO
+            			//$scope.booking.dateTo = $scope.booking.dateFrom; //set dateTo to +1 day instead TODO because of filtering! reconvert
+            			//console.log("STRING: "+$scope.booking.dateTo);
+            			var d = new Date($scope.booking.dateTo);
+            			d.setDate(d.getDate()+1);
+            			$scope.booking.dateTo = $filter(d);
+            			//console.log("DATE: "+d);
             		}
             		$scope.booking.dateFrom= $filter('date')($scope.booking.dateFrom,'yyyy-MM-dd');
             	});
