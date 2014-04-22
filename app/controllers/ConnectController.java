@@ -3,6 +3,7 @@ package controllers;
 import org.joda.time.Instant;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import javax.xml.bind.DatatypeConverter;
 
@@ -60,13 +61,15 @@ public class ConnectController extends Controller {
 	 * @response ("er_autentisert" : false) The user isn't authenticated, 
 	 * @response ("er_autentisert" : true) The user was authenticated and has usable information
 	 */
-	public static Promise<Result> processLogin() throws Exception {
+	public static String setUpLogin() throws Exception {
 		AESBouncyCastle aes = new AESBouncyCastle(SECRETKEY); /** The encryption helper class **/
-		String jsonString = "{\"timestamp\": "+getTimeStamp()+"}"; /** The JSON payload to be sent containing timestamp **/
-		Payload payload = aes.encrypt(jsonString.getBytes("UTF-8")); /** Payload encrypted **/
+		ObjectNode json = Json.newObject();
+		json.put("timestamp", getTimeStamp()); //not containing redirect URL right now, add "put("redirect_url", getRedirectUrl()" as needed
+		Payload payload = aes.encrypt(json.asText().getBytes("UTF-8")); /** Payload encrypted **/
 		String encrJson64 = DatatypeConverter.printBase64Binary(payload.getCipherText()); /** Base64 encoding of encrypted payload **/
 		
-		final Promise<Result> resultPromise = WS.url(SIGNON).
+		return encrJson64;
+		/*final Promise<Result> resultPromise = WS.url(SIGNON).
 				setQueryParameter("client", CLIENT).
 				setQueryParameter("data", encrJson64).
 				get().map(
@@ -91,6 +94,7 @@ public class ConnectController extends Controller {
 						}
 						);
 		return resultPromise;
+		*/
 	}
 
 	/**
