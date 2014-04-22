@@ -77,9 +77,9 @@ public class BookingController extends Controller {
 						int[] indices = utilities.DateHelper.getIndex(startDate, new DateTime(b.dateFrom), new DateTime(b.dateTo));
 						if(indices[0] < 0) //if b.dateFrom precedes startDate, skip to startDate 
 							indices[0] = 0;
-						if(indices[1] > bookedDays.length) //if b.dateTo extends beyond endDate
+						if(indices[1] > bookedDays.length) //if b.dateTo extends beyond endDate we set the last index of the daterange to be plussed
 							indices[1] = bookedDays.length-1;
-						for(int i = indices[0]; i<=indices[1]; i++) {
+						for(int i = indices[0]; i < indices[1]; i++) { //setting i < indices[1] because the last day is the exit day, and therefore isn't actually booked
 							bookedDays[i] += 1; //blankets daterange with +1 to indicate that 1 extra bed is taken during that period
 						}
 					}
@@ -95,9 +95,11 @@ public class BookingController extends Controller {
 				for(Booking b: bookings) {
 					//for each booking set bookedDays[i] = +1 for range startDate-endDate
 					int[] indices = utilities.DateHelper.getIndex(startDate, new DateTime(b.dateFrom), new DateTime(b.dateTo)); /** indices[0] startIndex in bookedDays, [1] is endIndex **/
-					if(indices[0] < 0) //if b.dateFrom precedes startDate, skip to startDate 
+					if(indices[0] < 0) //if b.dateFrom precedes startDate, we set startDate as the first index of the daterange to be set as true (1) 
 						indices[0] = 0;
-					for(int i = indices[0]; i<=indices[1]; i++){
+					if(indices[1] > bookedDays.length) //if b.dateTo extends beyond endDate we set the last index of the daterange to be set as true (1)
+						indices[1] = bookedDays.length-1;
+					for(int i = indices[0]; i < indices[1]; i++){ //setting i < indices[1] because the last day is the exit day, and therefore isn't actually booked
 						bookedDays[i] = 1;						}
 				}
 				result.put("bookedDays", serializer.serialize(bookedDays));
