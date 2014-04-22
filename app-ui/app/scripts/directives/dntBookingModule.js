@@ -368,17 +368,14 @@ angular.module('dntBookingModule')
 		controller: ['$scope', '$log','$filter', 'ordersService', function($scope, $log ,$filter, ordersService) {
             	$scope.errorMessage;
             	$scope.now = new Date();
-            	$scope.availability = {};
-            	$scope.fdm = new Date();
+            	var availability = {};
             	
-            	$scope.getAvailability = function(from, to) {
+            	$scope.getAvailability = function(from, to, key) {
             		ordersService.getAvailability($scope.booking.cabinId, 
             				from, to)
             		.success(function(data) {
-            			$scope.availability = JSON.parse(data.bookedDays);
-            			//$log.info($scope.availability);
+            			availability[key] = JSON.parse(data.bookedDays);
             			$scope.$broadcast('date:availability');
-            			//TODO maybe call refill method here?
             		})
             		.error(function(error) {
             			$log.info(error.message);
@@ -387,20 +384,19 @@ angular.module('dntBookingModule')
             	$scope.$on('date:change', function(event, date) {
             		var year = date.getFullYear(), month = date.getMonth(), firstDayOfMonth = new Date(year, month, 1);
             		var lastDayOfMonth = new Date(year, month+1, 0);
-            		//$log.info(lastDayOfMonth);
-            		$scope.getAvailability($filter('date')(firstDayOfMonth,'yyyy-MM-dd'), $filter('date')(lastDayOfMonth,'yyyy-MM-dd'));
-            		$scope.fdm = firstDayOfMonth;
+            		var key = year + ' ' + month;
+            		$scope.getAvailability($filter('date')(firstDayOfMonth,'yyyy-MM-dd'), $filter('date')(lastDayOfMonth,'yyyy-MM-dd'), key);
             	});  
             	
             	// Disable weekend selection
             	$scope.disabled = function(date, mode) {
-            		var diff = getDifferenceDays(date, $scope.fdm);
-            		//console.log("btnDate: "+date+ " firstDayOfMonth: "+$scope.fdm+" diff: "+diff);
-            		if(diff >= 0)
-            			if($scope.availability[diff] > 0 && mode === 'day') //TODO set threshold if largecabin
+            		var dayOfMonth = date.getDate()-1;
+            		var key = date.getFullYear() + ' ' + date.getMonth();
+            		//console.log("btnDate: "+date+ " firstDayOfMonth: "+new Date(date.getFullYear(), date.getMonth(), 1)+" diff: "+diff);
+            		if(dayOfMonth >= 0 && availability[key])
+            			if(availability[key][dayOfMonth] > 0 && mode === 'day') //TODO set threshold if largecabin
             				return true;
             		return false;
-            		//return ( mode === 'day' && ( date.getDay() === 0 || date.getDay() === 6 ) );
             	};
             	
             	//More internal date logic can be put here.
@@ -423,23 +419,6 @@ angular.module('dntBookingModule')
             		$scope.booking.dateFrom= $filter('date')($scope.booking.dateFrom,'yyyy-MM-dd');
             	});
             	
-            	var getDifferenceDays = function(date1, date2) {
-            		return Math.floor((date1-date2)/(1000*60*60*24));
-            	}
-            	
-            	/*var getDatesList = function(avail) {
-            		var s = $scope.booking.dateFrom;
-            		var e = $scope.booking.dateTo;
-            		var a = [date1];
-
-            		while(s < e) {
-            	        a.push(s);
-            	        s = new Date(s.setDate(
-            	            s.getDate() + 1
-            	        ))
-            	    }
-            		return a;
-            	};*/
 			}],
 
 		link: function(scope, elem, attrs) {
