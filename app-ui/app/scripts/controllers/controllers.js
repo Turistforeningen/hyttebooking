@@ -103,6 +103,7 @@ angular.module('dntApp').controller('bookingController', ['$modal','$rootScope',
 		});
 	};
 
+
 	/**
      * @ngdoc method
      * @name dntApp.object#pay
@@ -229,6 +230,15 @@ angular.module('dntApp').controller('authController', ['$log','$rootScope','$sco
 		$scope.logout();
 
 	});
+	
+	/**
+	 * @ngdoc method
+	 * @name dntApp.object#login
+	 * @methodOf dntApp.controller:authController
+	 * @description When user is trying to login, redirect to DNT connect
+	 */
+	
+	
 
 	$scope.login = function (credentials) {
 		var success = function (data) {
