@@ -98,16 +98,12 @@ angular.module('dntBookingModule', [])
 					$scope.isCollapsed = !$scope.isCollapsed;
 					//When a user shuts down this collapse all entries inside collapse should be erased here
 				};
-				$scope.setPerson = function(person) {
-					$log.info("lol");
+				$scope.setPerson = function(person) {;
 					$scope.person = person;
+					constructRange();
 				};
-				$scope.getPerson = function(person) {
-					return $scope.person;
-				};
-
+				
 				$scope.bedsLeft = function() {
-
 					var left = $scope.beds;
 					angular.forEach($scope.person, function(value, key) {
 						left = left -value.nr;
@@ -119,33 +115,43 @@ angular.module('dntBookingModule', [])
 						return 0;
 					}
 				};
-				var oldBedsLeft =0;
-				$scope.range = function(value) {
-					
-					var bedsLeft = $scope.bedsLeft();
-					
-					var nrOfBedsChosen = $scope.beds - bedsLeft;
-					if(oldBedsLeft != bedsLeft) {
-						$scope.$emit('nrOfBedsChosenEvent', nrOfBedsChosen);
-					}
-					oldBedsLeft = bedsLeft;
-					var end = bedsLeft;
-					if((value !== null || value>0) && end<=value) {
-						end = value + bedsLeft;
-					}
-
-					var result = [];
-					for (var i = 0; i <= end; i++) {
-						result.push(i);
-					}
-
-					return result;
+				
+				//Called at least once during a digest cycle. Returns appropriate options for pull down
+				$scope.range = function(NumberValueChosen) {
+					return ranges[NumberValueChosen];
 				};
+				
+				var ranges = [];
+				//constructs all the different ranges/options for the different drop downs
+				var constructRange = function() {
+					var bedsLeft = $scope.bedsLeft();
+					var nrOfBedsChosen = $scope.beds - bedsLeft;
+					$scope.$emit('nrOfBedsChosenEvent', nrOfBedsChosen);
+					
+					angular.forEach($scope.person, function(value, key){
+						var end = bedsLeft;
+						if((value.nr !== null || value.nr>0) && end<=value.nr) {
+							end = value.nr + bedsLeft;
+						}
 
+						var result = [];
+						for (var i = 0; i <= end; i++) {
+							result.push(i);
+						}
+						ranges[value.nr] = result; 
+					 });
+				}
+				
+				//Every time there has been a change in the person model (i.e a new number of persons attending), 
+				//drop down options has to be updated
+				$scope.$watch('person', function() {
+					constructRange();
+					
+				}, true);
+				
 			}],
 
 		link: function(scope, elem, attrs) {
-			console.log("JEG ER HER JO!");
 				scope.setPerson(scope.data);
 				
 				scope.$watch('data', function(newValue, oldValue) {
@@ -380,7 +386,8 @@ angular.module('dntBookingModule')
             				from, to)
             		.success(function(data) {
             			availability[key] = JSON.parse(data.bookedDays);
-            			$scope.$broadcast('date:availability');
+            			$log.info(availability[key]);
+            			$scope.$broadcast('date:updateAvailability');
             		})
             		.error(function(error) {
             			$log.info(error.message);
@@ -396,18 +403,27 @@ angular.module('dntBookingModule')
             	var nrOfBedsChosen = 0;
             	$scope.$on('nrOfBedsChosenEvent', function(event, data) {
             		nrOfBedsChosen = data;
-            		$scope.$broadcast('date:availability');
+            		$scope.$broadcast('date:updateAvailability');
             	});  
             	
             	// Disable weekend selection
             	$scope.disabled = function(date, mode) {
             		var dayOfMonth = date.getDate()-1;
             		var key = date.getFullYear() + ' ' + date.getMonth();
-            		//console.log("btnDate: "+date+ " firstDayOfMonth: "+new Date(date.getFullYear(), date.getMonth(), 1)+" diff: "+diff);
-            		if(dayOfMonth >= 0 && availability[key])
-            			if(($scope.beds - availability[key][dayOfMonth] < nrOfBedsChosen) && mode === 'day') {//TODO set threshold if largecabin
-            				return true;
+            		if(dayOfMonth >= 0 && availability[key]) {
+            			if($scope.beds >0) {
+            				//largeCabin
+            				if(($scope.beds - availability[key][dayOfMonth] < nrOfBedsChosen) && mode === 'day') {
+                				return true;
+                			}
             			}
+            			else {
+            				//smallcabin
+            				if((availability[key][dayOfMonth]) && mode === 'day') {
+                				return true;
+                			}
+            			}	
+            		}	
             		return false;
             	};
             	
@@ -419,12 +435,6 @@ angular.module('dntBookingModule')
 
             	$scope.$watch('booking.dateFrom', function(){
             		if ($scope.booking.dateTo < $scope.booking.dateFrom){
-            			//$scope.booking.dateTo = $scope.booking.dateFrom; //set dateTo to +1 day instead TODO because of filtering! reconvert
-            			//console.log("STRING: "+$scope.booking.dateTo);
-            			//var d = new Date($scope.booking.dateTo);
-            			//d.setDate(d.getDate()+1);
-            			//$scope.booking.dateTo = $filter(d);
-            			//console.log("DATE: "+d);
             		}
             		$scope.booking.dateFrom= $filter('date')($scope.booking.dateFrom,'yyyy-MM-dd');
             	});

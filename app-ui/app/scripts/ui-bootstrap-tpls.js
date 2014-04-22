@@ -1070,7 +1070,7 @@ angular.module('ui.bootstrap.datepicker', ['ui.bootstrap.position'])
         scope.$emit('date:change', selected);
         refill();
       };
-      scope.$on('date:availability', function(event) {
+      scope.$on('date:updateAvailability', function(event) {
     	 refill(); 
       });
       
