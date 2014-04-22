@@ -395,7 +395,6 @@ angular.module('dntBookingModule')
  
             	var nrOfBedsChosen = 0;
             	$scope.$on('nrOfBedsChosenEvent', function(event, data) {
-            		$log.info("lol")
             		nrOfBedsChosen = data;
             		$scope.$broadcast('date:availability');
             	});  
@@ -406,8 +405,7 @@ angular.module('dntBookingModule')
             		var key = date.getFullYear() + ' ' + date.getMonth();
             		//console.log("btnDate: "+date+ " firstDayOfMonth: "+new Date(date.getFullYear(), date.getMonth(), 1)+" diff: "+diff);
             		if(dayOfMonth >= 0 && availability[key])
-            			if(availability[key][dayOfMonth] < nrOfBedsChosen && mode === 'day') {//TODO set threshold if largecabin
-            				console.log("numberOfBeds: "+nrOfBedsChosen + " avail " + availability[key][dayOfMonth]);
+            			if(($scope.beds - availability[key][dayOfMonth] < nrOfBedsChosen) && mode === 'day') {//TODO set threshold if largecabin
             				return true;
             			}
             		return false;
