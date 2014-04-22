@@ -278,7 +278,6 @@ angular.module('dntBookingModule')
 							$scope.days = 1;
 						}
 						else {
-							$log.info(days);
 							//ceiling will fail if a booking span serveral years.
 							//days method not 100% accurate, but close.
 							$scope.days = Math.ceil(days);
@@ -386,7 +385,6 @@ angular.module('dntBookingModule')
             				from, to)
             		.success(function(data) {
             			availability[key] = JSON.parse(data.bookedDays);
-            			$log.info(availability[key]);
             			$scope.$broadcast('date:updateAvailability');
             		})
             		.error(function(error) {

@@ -884,19 +884,19 @@ angular.module('ui.bootstrap.datepicker', ['ui.bootstrap.position'])
     return dates;
   }
 
-  function makeDate(date, format, isSelected, isSecondary) {
-    return { date: date, label: dateFilter(date, format), selected: !!isSelected, secondary: !!isSecondary };
+  function makeDate(date, format, isSelected, isSecondary, isInRange) {
+    return { date: date, label: dateFilter(date, format), selected: !!isSelected, secondary: !!isSecondary, inRange: !!isInRange};
   }
-
+  //added isInRange to create color beetween two dates to show a range selection
   this.modes = [
     {
       name: 'day',
-      getVisibleDates: function(date, selected) {
+      getVisibleDates: function(date, selected, otherDateInRange) {
         var year = date.getFullYear(), month = date.getMonth(), firstDayOfMonth = new Date(year, month, 1);
         var difference = startingDay - firstDayOfMonth.getDay(),
         numDisplayedFromPreviousMonth = (difference > 0) ? 7 - difference : - difference,
         firstDate = new Date(firstDayOfMonth), numDates = 0;
-
+        
         if ( numDisplayedFromPreviousMonth > 0 ) {
           firstDate.setDate( - numDisplayedFromPreviousMonth + 1 );
           numDates += numDisplayedFromPreviousMonth; // Previous
@@ -906,8 +906,10 @@ angular.module('ui.bootstrap.datepicker', ['ui.bootstrap.position'])
 
         var days = getDates(firstDate, numDates), labels = new Array(7);
         for (var i = 0; i < numDates; i ++) {
+         
           var dt = new Date(days[i]);
-          days[i] = makeDate(dt, format.day, (selected && selected.getDate() === dt.getDate() && selected.getMonth() === dt.getMonth() && selected.getFullYear() === dt.getFullYear()), dt.getMonth() !== month);
+          var isInRange = (dt >= selected && dt <= otherDateInRange) || (dt <= selected && dt >= otherDateInRange);
+          days[i] = makeDate(dt, format.day, (selected && selected.getDate() === dt.getDate() && selected.getMonth() === dt.getMonth() && selected.getFullYear() === dt.getFullYear()), dt.getMonth() !== month, isInRange);
         }
         for (var j = 0; j < 7; j++) {
           labels[j] = dateFilter(days[j].date, format.dayHeader);
@@ -966,7 +968,8 @@ angular.module('ui.bootstrap.datepicker', ['ui.bootstrap.position'])
     replace: true,
     templateUrl: 'template/datepicker/datepicker.html',
     scope: {
-      dateDisabled: '&'
+      dateDisabled: '&',
+      dateInRange: '=',
     },
     require: ['datepicker', '?^ngModel'],
     controller: 'DatepickerController',
@@ -1016,8 +1019,8 @@ angular.module('ui.bootstrap.datepicker', ['ui.bootstrap.position'])
       }
 
       function refill( updateSelected ) {
-        var date = null, valid = true;
-
+        var date = null, valid = true; var rangeDate = null;	
+        rangeDate = new Date( scope.dateInRange );
         if ( ngModel.$modelValue ) {
           date = new Date( ngModel.$modelValue );
 
@@ -1029,8 +1032,8 @@ angular.module('ui.bootstrap.datepicker', ['ui.bootstrap.position'])
           }
         }
         ngModel.$setValidity('date', valid);
-
-        var currentMode = datepickerCtrl.modes[mode], data = currentMode.getVisibleDates(selected, date);
+        
+        var currentMode = datepickerCtrl.modes[mode], data = currentMode.getVisibleDates(selected, date, rangeDate);
         angular.forEach(data.objects, function(obj) {
           obj.disabled = datepickerCtrl.isDisabled(obj.date, mode);
         });
@@ -1074,8 +1077,12 @@ angular.module('ui.bootstrap.datepicker', ['ui.bootstrap.position'])
     	 refill(); 
       });
       
+      scope.$watch('dateInRange', function() {
+     	 refill(); 
+       });
+      
       scope.toggleMode = function() {
-        setMode( (mode + 1) % datepickferCtrl.modes.length );
+        setMode( (mode + 1) % datepickerCtrl.modes.length );
       };
       scope.getWeekNumber = function(row) {
         return ( mode === 0 && scope.showWeekNumbers && row.length === 7 ) ? getISO8601WeekNumber(row[0].date) : null;
@@ -3502,7 +3509,7 @@ angular.module("template/datepicker/datepicker.html", []).run(["$templateCache",
     "    <tr ng-repeat=\"row in rows\">\n" +
     "      <td ng-show=\"showWeekNumbers\" class=\"text-center\"><em>{{ getWeekNumber(row) }}</em></td>\n" +
     "      <td ng-repeat=\"dt in row\" class=\"text-center\">\n" +
-    "        <button type=\"button\" style=\"width:100%;\" class=\"btn btn-default btn-sm\" ng-class=\"{'btn-info': dt.selected}\" ng-click=\"select(dt.date)\" ng-disabled=\"dt.disabled\"><span ng-class=\"{'text-muted': dt.secondary}\">{{dt.label}}</span></button>\n" +
+    "        <button type=\"button\" style=\"width:100%;\" class=\"btn btn-default btn-sm default-calendar-button\" ng-class=\"{'btn-info': dt.selected,'btn-in-range': dt.inRange && !dt.selected}\" ng-click=\"select(dt.date)\" ng-disabled=\"dt.disabled\"><span ng-class=\"{'text-muted': dt.secondary}\">{{dt.label}}</span></button>\n" +
     "      </td>\n" +
     "    </tr>\n" +
     "  </tbody>\n" +
