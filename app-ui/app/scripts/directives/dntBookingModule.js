@@ -365,36 +365,85 @@ angular.module('dntBookingModule')
 
 		templateUrl:  'views/bookingComponent.html',
 
-		controller: ['$scope', '$log','$filter', function($scope, $log ,$filter) {
+		controller: ['$scope', '$log','$filter', 'ordersService', function($scope, $log ,$filter, ordersService) {
             	$scope.errorMessage;
             	$scope.now = new Date();
-
+            	$scope.availability = {};
+            	$scope.fdm = new Date();
+            	
+            	$scope.getAvailability = function(from, to) {
+            		ordersService.getAvailability($scope.booking.cabinId, 
+            				from, to)
+            		.success(function(data) {
+            			$scope.availability = JSON.parse(data.bookedDays);
+            			//$log.info($scope.availability);
+            			$scope.$broadcast('date:availability');
+            			//TODO maybe call refill method here?
+            		})
+            		.error(function(error) {
+            			$log.info(error.message);
+            		});
+            	};
+            	$scope.$on('date:change', function(event, date) {
+            		var year = date.getFullYear(), month = date.getMonth(), firstDayOfMonth = new Date(year, month, 1);
+            		var lastDayOfMonth = new Date(year, month+1, 0);
+            		//$log.info(lastDayOfMonth);
+            		$scope.getAvailability($filter('date')(firstDayOfMonth,'yyyy-MM-dd'), $filter('date')(lastDayOfMonth,'yyyy-MM-dd'));
+            		$scope.fdm = firstDayOfMonth;
+            	});  
+            	
             	// Disable weekend selection
             	$scope.disabled = function(date, mode) {
-            		return ( mode === 'day' && ( date.getDay() === 0 || date.getDay() === 6 ) );
+            		var diff = getDifferenceDays(date, $scope.fdm);
+            		//console.log("btnDate: "+date+ " firstDayOfMonth: "+$scope.fdm+" diff: "+diff);
+            		if(diff >= 0)
+            			if($scope.availability[diff] > 0 && mode === 'day') //TODO set threshold if largecabin
+            				return true;
+            		return false;
+            		//return ( mode === 'day' && ( date.getDay() === 0 || date.getDay() === 6 ) );
             	};
             	
             	//More internal date logic can be put here.
             	/** Track changes from the datepicker calendars and display the from/to dates **/
             	$scope.$watch('booking.dateTo', function(){
             		$scope.booking.dateTo= $filter('date')($scope.booking.dateTo,'yyyy-MM-dd');
+            		
             	});
 
             	
             	$scope.$watch('booking.dateFrom', function(){
             		if ($scope.booking.dateTo < $scope.booking.dateFrom){
-            			$scope.booking.dateTo = $scope.booking.dateFrom;
+            			//$scope.booking.dateTo = $scope.booking.dateFrom; //set dateTo to +1 day instead TODO because of filtering! reconvert
+            			//console.log("STRING: "+$scope.booking.dateTo);
+            			//var d = new Date($scope.booking.dateTo);
+            			//d.setDate(d.getDate()+1);
+            			//$scope.booking.dateTo = $filter(d);
+            			//console.log("DATE: "+d);
             		}
             		$scope.booking.dateFrom= $filter('date')($scope.booking.dateFrom,'yyyy-MM-dd');
             	});
             	
+            	var getDifferenceDays = function(date1, date2) {
+            		return Math.floor((date1-date2)/(1000*60*60*24));
+            	}
             	
+            	/*var getDatesList = function(avail) {
+            		var s = $scope.booking.dateFrom;
+            		var e = $scope.booking.dateTo;
+            		var a = [date1];
+
+            		while(s < e) {
+            	        a.push(s);
+            	        s = new Date(s.setDate(
+            	            s.getDate() + 1
+            	        ))
+            	    }
+            		return a;
+            	};*/
 			}],
 
 		link: function(scope, elem, attrs) {
-			//check all variables, validation on input?
-				
-				
+			scope.$broadcast('date:change', new Date());
 			}
 	};
 });

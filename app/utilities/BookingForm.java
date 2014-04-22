@@ -69,7 +69,7 @@ public class BookingForm extends AbstractForm<Booking> {
 					return null;
 				}
 			}
-			
+			System.out.println(SecurityController.getUser().id);
 			Booking booking = Booking.createBooking(
 					SecurityController.getUser().id, 
 					startDt,
@@ -95,6 +95,7 @@ public class BookingForm extends AbstractForm<Booking> {
 	 */
 	@Override
 	public boolean validate() {
+		//A user should be logged in before booking.
 		if(cabinId == null) {
 			addError(Messages.get("booking.misssingCabinId"));
 			return false;
@@ -133,7 +134,7 @@ public class BookingForm extends AbstractForm<Booking> {
 			return false;
 		}
 		
-		if(startDt.isBeforeNow() || endDt.isBeforeNow() || !startDt.isBefore(endDt))  {
+		if(startDt.	isBeforeNow() || endDt.isBeforeNow() || !startDt.isBefore(endDt))  {
 			System.out.println(startDt +" "+ endDt);
 			addError(Messages.get("booking.invalidDateRange"));
 			return false;	
