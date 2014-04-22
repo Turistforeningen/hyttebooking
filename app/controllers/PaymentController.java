@@ -116,7 +116,7 @@ public class PaymentController extends Controller {
 			return Promise.pure((Result)badRequest(JsonMessage.error("No transactionId sent"))); 
 		}
 		//check if p contains a booking (Check if the transactionId is a valid id at all.
-		Payment p = Payment.find.where().eq("transactionId", transactionId).findUnique();
+		final Payment p = Payment.find.where().eq("transactionId", transactionId).findUnique();
 		if(p.booking.status.equals(Booking.TIMEDOUT)) {
 			return Promise.pure((Result)badRequest(JsonMessage.error("You took to long to pay, booking timed out"))); 
 		}
@@ -145,6 +145,8 @@ public class PaymentController extends Controller {
 
 								String exception = XPath.selectText("//Exception", dom);
 								if(exception.equals("")) {
+									p.booking.status = Booking.PAID;
+									p.booking.update();
 									return ok(JsonMessage.success("payment authenicated"));
 								}
 								else {

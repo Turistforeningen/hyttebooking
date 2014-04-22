@@ -376,7 +376,7 @@ angular.module('dntBookingModule')
             				from, to)
             		.success(function(data) {
             			$scope.availability = JSON.parse(data.bookedDays);
-            			$log.info($scope.availability);
+            			//$log.info($scope.availability);
             			$scope.$broadcast('date:availability');
             			//TODO maybe call refill method here?
             		})
@@ -387,7 +387,7 @@ angular.module('dntBookingModule')
             	$scope.$on('date:change', function(event, date) {
             		var year = date.getFullYear(), month = date.getMonth(), firstDayOfMonth = new Date(year, month, 1);
             		var lastDayOfMonth = new Date(year, month+1, 0);
-            		$log.info(lastDayOfMonth);
+            		//$log.info(lastDayOfMonth);
             		$scope.getAvailability($filter('date')(firstDayOfMonth,'yyyy-MM-dd'), $filter('date')(lastDayOfMonth,'yyyy-MM-dd'));
             		$scope.fdm = firstDayOfMonth;
             	});  
@@ -395,7 +395,7 @@ angular.module('dntBookingModule')
             	// Disable weekend selection
             	$scope.disabled = function(date, mode) {
             		var diff = getDifferenceDays(date, $scope.fdm);
-            		console.log("btnDate: "+date+ " firstDayOfMonth: "+$scope.fdm+" diff: "+diff);
+            		//console.log("btnDate: "+date+ " firstDayOfMonth: "+$scope.fdm+" diff: "+diff);
             		if(diff >= 0)
             			if($scope.availability[diff] > 0 && mode === 'day') //TODO set threshold if largecabin
             				return true;
@@ -438,9 +438,7 @@ angular.module('dntBookingModule')
 			}],
 
 		link: function(scope, elem, attrs) {
-			//check all variables, validation on input?
-				
-				
+			scope.$broadcast('date:change', new Date());
 			}
 	};
 });
