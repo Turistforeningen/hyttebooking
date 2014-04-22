@@ -77,6 +77,8 @@ public class BookingController extends Controller {
 						int[] indices = utilities.DateHelper.getIndex(startDate, new DateTime(b.dateFrom), new DateTime(b.dateTo));
 						if(indices[0] < 0) //if b.dateFrom precedes startDate, skip to startDate 
 							indices[0] = 0;
+						if(indices[1] > bookedDays.length) //if b.dateTo extends beyond endDate
+							indices[1] = bookedDays.length-1;
 						for(int i = indices[0]; i<=indices[1]; i++) {
 							bookedDays[i] += 1; //blankets daterange with +1 to indicate that 1 extra bed is taken during that period
 						}
