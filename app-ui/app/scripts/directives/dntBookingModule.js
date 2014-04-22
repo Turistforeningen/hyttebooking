@@ -116,7 +116,6 @@ angular.module('dntBookingModule', [])
 						return left;
 					}
 					else {
-
 						return 0;
 					}
 				};
@@ -124,6 +123,8 @@ angular.module('dntBookingModule', [])
 				$scope.range = function(value) {
 
 					var bedsLeft = $scope.bedsLeft();
+					var nrOfBedsChosen = $scope.beds - bedsLeft;
+					$scope.$emit('nrBedsChosenEvent', nrOfBedsChosen);
 					var end = bedsLeft;
 					if((value !== null || value>0) && end<=value) {
 						end = value + bedsLeft;
@@ -387,6 +388,12 @@ angular.module('dntBookingModule')
             		var key = year + ' ' + month;
             		$scope.getAvailability($filter('date')(firstDayOfMonth,'yyyy-MM-dd'), $filter('date')(lastDayOfMonth,'yyyy-MM-dd'), key);
             	});  
+ 
+            	var nrOfBedsChosen;
+            	$scope.$on('nrOfBedsChosenEvent', function(event, date) {
+            		nrOfBedsChosen = data;
+            		$scope.$broadcast('date:availability');
+            	});  
             	
             	// Disable weekend selection
             	$scope.disabled = function(date, mode) {
@@ -394,8 +401,10 @@ angular.module('dntBookingModule')
             		var key = date.getFullYear() + ' ' + date.getMonth();
             		//console.log("btnDate: "+date+ " firstDayOfMonth: "+new Date(date.getFullYear(), date.getMonth(), 1)+" diff: "+diff);
             		if(dayOfMonth >= 0 && availability[key])
-            			if(availability[key][dayOfMonth] > 0 && mode === 'day') //TODO set threshold if largecabin
+            			if(availability[key][dayOfMonth] > nrOfBedsChosen && mode === 'day') {//TODO set threshold if largecabin
+            				console.log("numberOfBeds: "+nrOfBedsChosen);
             				return true;
+            			}
             		return false;
             	};
             	
@@ -403,10 +412,8 @@ angular.module('dntBookingModule')
             	/** Track changes from the datepicker calendars and display the from/to dates **/
             	$scope.$watch('booking.dateTo', function(){
             		$scope.booking.dateTo= $filter('date')($scope.booking.dateTo,'yyyy-MM-dd');
-            		
             	});
 
-            	
             	$scope.$watch('booking.dateFrom', function(){
             		if ($scope.booking.dateTo < $scope.booking.dateFrom){
             			//$scope.booking.dateTo = $scope.booking.dateFrom; //set dateTo to +1 day instead TODO because of filtering! reconvert
