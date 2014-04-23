@@ -22,7 +22,7 @@ import utilities.Payload;
  * @author Jama
  */
 public class ConnectController extends Controller {
-	private static final String SIGNON = "https://www.turistforeningen.no/connect/signon/";
+	private static final String SIGNON = "https://www.turistforeningen.no/connect/signon/?client=myApp&data=";
 	private static final String CLIENT = "Booking";
 	private static final byte[] SECRETKEY = DatatypeConverter.parseBase64Binary(play.Play.application().configuration().getString("application.secretKey"));
 	//private static final String REDIRECT_URL TODO: Currently leaving out redirect in order to have default redirect url
@@ -61,14 +61,18 @@ public class ConnectController extends Controller {
 	 * @response ("er_autentisert" : false) The user isn't authenticated, 
 	 * @response ("er_autentisert" : true) The user was authenticated and has usable information
 	 */
-	public static String setUpLogin() throws Exception {
+	public static Result setupLogin() throws Exception {
 		AESBouncyCastle aes = new AESBouncyCastle(SECRETKEY); /** The encryption helper class **/
 		ObjectNode json = Json.newObject();
 		json.put("timestamp", getTimeStamp()); //not containing redirect URL right now, add "put("redirect_url", getRedirectUrl()" as needed
 		Payload payload = aes.encrypt(json.asText().getBytes("UTF-8")); /** Payload encrypted **/
 		String encrJson64 = DatatypeConverter.printBase64Binary(payload.getCipherText()); /** Base64 encoding of encrypted payload **/
 		
-		return encrJson64;
+		ObjectNode retNode = Json.newObject();
+		json.put("redirectUrl", ""+SIGNON+encrJson64);
+		return ok(retNode);
+		
+		
 		/*final Promise<Result> resultPromise = WS.url(SIGNON).
 				setQueryParameter("client", CLIENT).
 				setQueryParameter("data", encrJson64).

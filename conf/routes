@@ -21,6 +21,7 @@ GET     /api/cabins/:id/prices                  controllers.BookingController.ge
 GET		/api/cabins/:id/availability			controllers.BookingController.getAvailabilityForTimePeriod(id: Long)
 GET     /api/bookings/:id/payment               controllers.PaymentController.registerPayment(id: Long)   
 POST    /api/payment/authenticate               controllers.PaymentController.authenticatePayment()  
+GET		/api/login/setup						controllers.ConnectController.setupLogin()
 
 #Docs routes -temp uses bootstrap etc but is its own folder
 GET     /api                             controllers.Assets.at(path="/app-ui/docs", file="index.html")

@@ -237,14 +237,18 @@ angular.module('dntApp').controller('authController', ['$log','$rootScope','$sco
 	 * @methodOf dntApp.controller:authController
 	 * @description When user is trying to login, redirect to DNT connect
 	 */
-	$scope.newLogin() = function () {
-		.success(function(data) {
+	$scope.newLogin = function () {
+	
+		var success = function(data) {
 			$window.location.href = data.redirectUrl;
-		})
-		.error(function(error) {
-			$scope.errorMessage = error.message;¨
+		};
+		var error = function(error) {
+			$scope.errorMessage = error.message;
 			$log.info("Could not connect to DNTConnect");
-		});
+			$log.info(error);
+		};
+		
+		authorization.newLogin().success(success).error(error);
 	}
 	
 

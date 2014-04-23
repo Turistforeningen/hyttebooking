@@ -9,6 +9,10 @@
 angular.module('dntApp').factory('authorization', ['$http', function ($http) {
 
 	return {
+		newLogin: function() {
+			return $http.get('api/login/setup');
+		},
+		
 		login: function (credentials) {
 			return $http.post('/login', credentials);
 		},
@@ -17,6 +21,8 @@ angular.module('dntApp').factory('authorization', ['$http', function ($http) {
 			return $http.post('/logout');
 		}
 	};
+	
+	
 }]);
 
 /*
