@@ -106,7 +106,6 @@ body{
 	height: 30px;
 }
 
-
 .calenderDivStyle{
 	min-height: 345px;
 	border-left: 1px solid #ccc;
@@ -126,7 +125,13 @@ body{
 .tooltip-inner {
     max-width: 600px;
 }
-
+/*---------Custom calendar buttons ---------*/
+.default-calendar-button {
+    
+}
+.btn-in-range {
+	background-color: #def2f8;
+}
 /*--------Custom navbar--------*/
 /* navbar */
 .navbar-default {
