@@ -62,6 +62,8 @@ public class ConnectController extends Controller {
 	 * @response ("er_autentisert" : true) The user was authenticated and has usable information
 	 */
 	public static Result setupLogin() throws Exception {
+		System.out.println("SECRET KEY " +play.Play.application().configuration().getString("application.secretKey"));
+		System.out.println("SECRET KEY " +SECRETKEY);
 		AESBouncyCastle aes = new AESBouncyCastle(SECRETKEY); /** The encryption helper class **/
 		ObjectNode json = Json.newObject();
 		json.put("timestamp", getTimeStamp()); //not containing redirect URL right now, add "put("redirect_url", getRedirectUrl()" as needed
