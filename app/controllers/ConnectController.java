@@ -24,8 +24,8 @@ import utilities.Payload;
  * @author Jama
  */
 public class ConnectController extends Controller {
-	private static final String SIGNON = "https://www.turistforeningen.no/connect/signon/?client=myApp&data=";
-	private static final String CLIENT = "Booking";
+	private static final String CLIENT = "?client=hyttebooking=";
+	private static final String SIGNON = "https://www.turistforeningen.no/connect/signon/" +CLIENT + "&data=";
 	private static final byte[] SECRETKEY = DatatypeConverter.parseBase64Binary(play.Play.application().configuration().getString("application.secretKey"));
 	//private static final String REDIRECT_URL TODO: Currently leaving out redirect in order to have default redirect url
 
