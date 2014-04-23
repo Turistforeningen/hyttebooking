@@ -1,23 +1,21 @@
 package controllers;
 
-import java.io.UnsupportedEncodingException;
+import java.io.IOException;
 
-import org.bouncycastle.crypto.DataLengthException;
-import org.bouncycastle.crypto.InvalidCipherTextException;
-import org.joda.time.DateTime;
 import org.joda.time.Instant;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import javax.xml.bind.DatatypeConverter;
 
-import flexjson.JSON;
 import play.libs.Json;
 import play.libs.WS;
 import play.libs.F.Function;
 import play.libs.F.Promise;
 import play.mvc.Controller;
 import play.mvc.Result;
+import sun.misc.BASE64Decoder;
 import utilities.AESBouncyCastle;
 import utilities.Payload;
 
@@ -27,8 +25,8 @@ import utilities.Payload;
  * @author Jama
  */
 public class ConnectController extends Controller {
-	private static final String SIGNON = "https://www.turistforeningen.no/connect/signon/";
-	private static final String CLIENT = "Booking";
+	private static final String CLIENT = "?client=hyttebooking";
+	private static final String SIGNON = "https://www.turistforeningen.no/connect/signon/" +CLIENT + "&data=";
 	private static final byte[] SECRETKEY = DatatypeConverter.parseBase64Binary(play.Play.application().configuration().getString("application.secretKey"));
 	//private static final String REDIRECT_URL TODO: Currently leaving out redirect in order to have default redirect url
 
@@ -60,19 +58,35 @@ public class ConnectController extends Controller {
 						);
 		return resultPromise;
 	}
+	public static String EncodeURL(String url) throws java.io.UnsupportedEncodingException {
+	    url = java.net.URLEncoder.encode(url, "UTF-8");
+	    return url;
+	}
 	
 	/** Handles user login, the "https://www.turistforeningen.no/connect/signon/" url is used
 	 * The response is an encrypted JSON
 	 * @response ("er_autentisert" : false) The user isn't authenticated, 
 	 * @response ("er_autentisert" : true) The user was authenticated and has usable information
 	 */
-	public static Promise<Result> processLogin() throws Exception {
-		AESBouncyCastle aes = new AESBouncyCastle(SECRETKEY); /** The encryption helper class **/
-		String jsonString = "{\"timestamp\": "+getTimeStamp()+"}"; /** The JSON payload to be sent containing timestamp **/
-		Payload payload = aes.encrypt(jsonString.getBytes("UTF-8")); /** Payload encrypted **/
+	public static Result setupLogin() throws Exception {
+		String code = play.Play.application().configuration().getString("application.secretKey");
+		System.out.println("SECRET KEY " +code);
+		System.out.println("SECRET KEY " +SECRETKEY);
+		BASE64Decoder decoder = new BASE64Decoder();
+		byte[] decodedBytes = decoder.decodeBuffer(code);
+		System.out.println("SECRET KEY " +decodedBytes);
+		AESBouncyCastle aes = new AESBouncyCastle(decodedBytes); /** The encryption helper class **/
+		ObjectNode data = Json.newObject();
+		data.put("timestamp", getTimeStamp()); //not containing redirect URL right now, add "put("redirect_url", getRedirectUrl()" as needed
+		Payload payload = aes.encrypt(data.asText().getBytes("UTF-8")); /** Payload encrypted **/
 		String encrJson64 = DatatypeConverter.printBase64Binary(payload.getCipherText()); /** Base64 encoding of encrypted payload **/
 		
-		final Promise<Result> resultPromise = WS.url(SIGNON).
+		ObjectNode retNode = Json.newObject();
+		retNode.put("redirectUrl", ""+SIGNON+EncodeURL(encrJson64));
+		return ok(retNode);
+		
+		
+		/*final Promise<Result> resultPromise = WS.url(SIGNON).
 				setQueryParameter("client", CLIENT).
 				setQueryParameter("data", encrJson64).
 				get().map(
@@ -97,6 +111,7 @@ public class ConnectController extends Controller {
 						}
 						);
 		return resultPromise;
+		*/
 	}
 
 	/**

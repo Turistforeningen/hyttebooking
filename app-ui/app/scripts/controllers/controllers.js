@@ -103,6 +103,7 @@ angular.module('dntApp').controller('bookingController', ['$modal','$rootScope',
 		});
 	};
 
+
 	/**
      * @ngdoc method
      * @name dntApp.object#pay
@@ -222,13 +223,35 @@ angular.module('dntApp').controller('bookingController', ['$modal','$rootScope',
  * sending user credentials to server and take care of a authentication token return by the server.
  * 
  */
-angular.module('dntApp').controller('authController', ['$log','$rootScope','$scope','$location','$cookieStore','authorization','api',
-                                                       function ($log, $rootScope, $scope, $location, $cookieStore, authorization, api) {
+angular.module('dntApp').controller('authController', ['$log','$rootScope','$scope','$location','$cookieStore','authorization','api','$window',
+                                                       function ($log, $rootScope, $scope, $location, $cookieStore, authorization, api, $window) {
 
 	$rootScope.$on('event:loggingOut', function(event, data) {
 		$scope.logout();
 
 	});
+	
+	/**
+	 * @ngdoc method
+	 * @name dntApp.object#login
+	 * @methodOf dntApp.controller:authController
+	 * @description When user is trying to login, redirect to DNT connect
+	 */
+	$scope.newLogin = function () {
+	
+		var success = function(data) {
+			$log.info(data);
+			$window.location.href = data.redirectUrl;
+		};
+		var error = function(error) {
+			$scope.errorMessage = error.message;
+			$log.info("Could not connect to DNTConnect");
+			$log.info(error);
+		};
+		
+		authorization.newLogin().success(success).error(error);
+	}
+	
 
 	$scope.login = function (credentials) {
 		var success = function (data) {
