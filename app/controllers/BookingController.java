@@ -28,7 +28,6 @@ import utilities.BookingForm;
 import utilities.JsonMessage;
 import utilities.Page;
 
-@With(SecurityController.class)
 public class BookingController extends Controller {
 
 	/**
@@ -107,6 +106,7 @@ public class BookingController extends Controller {
 	 * 
 	 * @return json string describing what went wrong. Validation or booked to capacity etc
 	 */
+	@With(SecurityController.class)
 	public static Result submitBooking() {
 
 		BookingForm form = BookingForm
@@ -163,6 +163,7 @@ public class BookingController extends Controller {
 	 * @param bookingID
 	 * @return Result response
 	 */
+	@With(SecurityController.class)
 	public static Result cancelBooking(String bookingId) {
 		Booking booking = Booking.getBookingById(bookingId);
 
@@ -272,6 +273,7 @@ public class BookingController extends Controller {
 	 * order-history. The bookings are serialized to a json string.
 	 * @return Json with a page of orderHistory
 	 */
+	@With(SecurityController.class)
 	public static Result getOrderHistory() {
 
 		//If query parameters page or size not present, default values will be used
