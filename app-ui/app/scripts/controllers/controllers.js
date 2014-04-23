@@ -240,6 +240,7 @@ angular.module('dntApp').controller('authController', ['$log','$rootScope','$sco
 	$scope.newLogin = function () {
 	
 		var success = function(data) {
+			$log.info(data);
 			$window.location.href = data.redirectUrl;
 		};
 		var error = function(error) {

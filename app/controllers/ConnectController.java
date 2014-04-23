@@ -1,5 +1,7 @@
 package controllers;
 
+import java.io.IOException;
+
 import org.joda.time.Instant;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -56,6 +58,7 @@ public class ConnectController extends Controller {
 		return resultPromise;
 	}
 	
+	
 	/** Handles user login, the "https://www.turistforeningen.no/connect/signon/" url is used
 	 * The response is an encrypted JSON
 	 * @response ("er_autentisert" : false) The user isn't authenticated, 
@@ -71,7 +74,7 @@ public class ConnectController extends Controller {
 		String encrJson64 = DatatypeConverter.printBase64Binary(payload.getCipherText()); /** Base64 encoding of encrypted payload **/
 		
 		ObjectNode retNode = Json.newObject();
-		json.put("redirectUrl", ""+SIGNON+encrJson64);
+		retNode.put("redirectUrl", ""+SIGNON+encrJson64);
 		return ok(retNode);
 		
 		
