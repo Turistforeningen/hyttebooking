@@ -130,7 +130,7 @@ angular.module('dntBookingModule', [])
 					
 					angular.forEach($scope.person, function(value, key){
 						var end = bedsLeft;
-						if((value.nr !== null || value.nr>0) && end<=value.nr) {
+						if(value.nr !== null || value.nr>0) {
 							end = value.nr + bedsLeft;
 						}
 
