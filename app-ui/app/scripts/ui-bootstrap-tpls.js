@@ -892,6 +892,8 @@ angular.module('ui.bootstrap.datepicker', ['ui.bootstrap.position'])
     {
       name: 'day',
       getVisibleDates: function(date, selected, otherDateInRange) {
+    	var otherDate = new Date(otherDateInRange.getFullYear(), otherDateInRange.getMonth(), otherDateInRange.getDate());
+    	
         var year = date.getFullYear(), month = date.getMonth(), firstDayOfMonth = new Date(year, month, 1);
         var difference = startingDay - firstDayOfMonth.getDay(),
         numDisplayedFromPreviousMonth = (difference > 0) ? 7 - difference : - difference,
@@ -903,13 +905,15 @@ angular.module('ui.bootstrap.datepicker', ['ui.bootstrap.position'])
         }
         numDates += getDaysInMonth(year, month + 1); // Current
         numDates += (7 - numDates % 7) % 7; // Next
-
+        
         var days = getDates(firstDate, numDates), labels = new Array(7);
         for (var i = 0; i < numDates; i ++) {
          
-          var dt = new Date(days[i]);
-          var isInRange = (dt >= selected && dt <= otherDateInRange) || (dt <= selected && dt >= otherDateInRange);
+          var dt = new Date(days[i]); 
+          
+          var isInRange = (dt >= selected && dt <= otherDate) || (dt <= selected && dt >= otherDate);
           var isManuallyDisabled = $scope.dateDisabled({date: dt, mode: 'day'});
+          
           days[i] = makeDate(dt, format.day, (selected && selected.getDate() === dt.getDate() && selected.getMonth() === dt.getMonth() && selected.getFullYear() === dt.getFullYear()), dt.getMonth() !== month, isInRange, isManuallyDisabled);
         }
         for (var j = 0; j < 7; j++) {
