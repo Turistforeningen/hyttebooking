@@ -155,15 +155,15 @@ angular.module('dntApp').controller('bookingController', ['$modal','$rootScope',
 	
 	
 	$scope.openBookingConfirmDialog = function() {
+		$scope.booking.termsAndConditions = false;
 		var modalInstance = $scope.openDialog('/views/bookingModal.html', $scope.booking);
 
-		    modalInstance.result.then(function (selectedItem) {
-		      $scope.selected = selectedItem;
-		      $scope.postBooking($scope.booking);
-		    }, function () {
-		      $log.info('Modal dismissed at: ' + new Date());
-		      
-		    });
+		modalInstance.result.then(function () {
+			$scope.postBooking($scope.booking);
+		}, function () {
+			$log.info('Modal dismissed at: ' + new Date());
+
+		});
 	};
 	
 	
