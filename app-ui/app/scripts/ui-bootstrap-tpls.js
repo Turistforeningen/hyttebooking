@@ -884,8 +884,8 @@ angular.module('ui.bootstrap.datepicker', ['ui.bootstrap.position'])
     return dates;
   }
 
-  function makeDate(date, format, isSelected, isSecondary, isInRange) {
-    return { date: date, label: dateFilter(date, format), selected: !!isSelected, secondary: !!isSecondary, inRange: !!isInRange};
+  function makeDate(date, format, isSelected, isSecondary, isInRange, isDisabled) {
+    return { date: date, label: dateFilter(date, format), selected: !!isSelected, secondary: !!isSecondary, inRange: !!isInRange, isDisabled: !!isDisabled};
   }
   //added isInRange to create color beetween two dates to show a range selection
   this.modes = [
@@ -909,7 +909,8 @@ angular.module('ui.bootstrap.datepicker', ['ui.bootstrap.position'])
          
           var dt = new Date(days[i]);
           var isInRange = (dt >= selected && dt <= otherDateInRange) || (dt <= selected && dt >= otherDateInRange);
-          days[i] = makeDate(dt, format.day, (selected && selected.getDate() === dt.getDate() && selected.getMonth() === dt.getMonth() && selected.getFullYear() === dt.getFullYear()), dt.getMonth() !== month, isInRange);
+          var isManuallyDisabled = $scope.dateDisabled({date: dt, mode: 'day'});
+          days[i] = makeDate(dt, format.day, (selected && selected.getDate() === dt.getDate() && selected.getMonth() === dt.getMonth() && selected.getFullYear() === dt.getFullYear()), dt.getMonth() !== month, isInRange, isManuallyDisabled);
         }
         for (var j = 0; j < 7; j++) {
           labels[j] = dateFilter(days[j].date, format.dayHeader);
@@ -958,7 +959,7 @@ angular.module('ui.bootstrap.datepicker', ['ui.bootstrap.position'])
 
   this.isDisabled = function(date, mode) {
     var currentMode = this.modes[mode || 0];
-    return ((this.minDate && currentMode.compare(date, this.minDate) < 0) || (this.maxDate && currentMode.compare(date, this.maxDate) > 0) || ($scope.dateDisabled && $scope.dateDisabled({date: date, mode: currentMode.name})));
+    return ((this.minDate && currentMode.compare(date, this.minDate) < 0) || (this.maxDate && currentMode.compare(date, this.maxDate) > 0));
   };
 }])
 
@@ -3509,7 +3510,7 @@ angular.module("template/datepicker/datepicker.html", []).run(["$templateCache",
     "    <tr ng-repeat=\"row in rows\">\n" +
     "      <td ng-show=\"showWeekNumbers\" class=\"text-center\"><em>{{ getWeekNumber(row) }}</em></td>\n" +
     "      <td ng-repeat=\"dt in row\" class=\"text-center\">\n" +
-    "        <button type=\"button\" style=\"width:100%;\" class=\"btn btn-default btn-sm default-calendar-button\" ng-class=\"{'btn-info': dt.selected,'btn-in-range': dt.inRange && !dt.selected}\" ng-click=\"select(dt.date)\" ng-disabled=\"dt.disabled\"><span ng-class=\"{'text-muted': dt.secondary}\">{{dt.label}}</span></button>\n" +
+    "        <button type=\"button\" style=\"width:100%;\" class=\"btn btn-default btn-sm default-calendar-button\" ng-class=\"{'btn-info': dt.selected,'btn-in-range': dt.inRange && !dt.selected, 'btn-user-disabled': dt.isDisabled}\" ng-click=\"select(dt.date)\" ng-disabled=\"dt.disabled || dt.isDisabled\"><span ng-class=\"{'text-muted': dt.secondary}\">{{dt.label}}</span></button>\n" +
     "      </td>\n" +
     "    </tr>\n" +
     "  </tbody>\n" +
