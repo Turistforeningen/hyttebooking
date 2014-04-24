@@ -15,29 +15,7 @@ public class ModelsTest extends WithApplication{
 		start(fakeApplication(inMemoryDatabase()));
 	}
 	
-	@Test
-	public void DeleteBookingWontDeleteBed() {
-		
-		LargeCabin cabin = new LargeCabin("t", 10);
-		cabin.save();
-		Long id = cabin.id;
-		cabin = (LargeCabin)Cabin.find.byId(id);
-		List<Bed> beds = cabin.beds;
-		int nr = beds.size();
-		long bId = beds.get(0).id;
-		Booking book = Booking.createBooking(new Long(1), new DateTime(), new DateTime(), id, beds);
-		
-		long bookId = book.id;
-		book.delete();
-		
-		LargeCabin cabin2 = (LargeCabin)(LargeCabin.find.byId(id));
-		assertEquals(nr, cabin.beds.size());
-		System.out.println((nr == cabin.beds.size())+ " : true");
-		assertNull(Booking.find.byId(new Long(bookId)));
-		assertNotNull(Bed.find.byId(new Long(bId)));
-		System.out.println((Booking.find.byId(new Long(bookId)) == null)+ ": book er null nå");
-	}
-	
+
 	
 	@Test
 	public void checkBookingCustomerRelationship() {
@@ -58,9 +36,6 @@ public class ModelsTest extends WithApplication{
 		List<Bed> b= b1.beds;
 		assertNotEquals(b.size(), 0);
 		System.out.println(b.size() +" bed size");
-		
-		
-		
 	}
 	
 	@Test
@@ -72,7 +47,6 @@ public class ModelsTest extends WithApplication{
 		cabin = (LargeCabin)Cabin.find.byId(id);
 		List<Bed> b = cabin.beds;
 		assertNotNull(b.get(0).largeCabin);
-		
 	}
 	
 	@Test
@@ -89,45 +63,6 @@ public class ModelsTest extends WithApplication{
 		System.out.println("bedDeleted");
 		assertNull(Bed.find.byId(bedId));
 		
-	}
-	
-	@Test
-	public void TestBedsDeletedDoesNotDeleteCabin() {
-		
-		LargeCabin cabin = new LargeCabin("jordet", 10);
-		cabin.save();
-		long id = cabin.id;
-		cabin = (LargeCabin)Cabin.find.byId(id);
-		assertNotNull(cabin);
-		System.out.println(cabin.name);
-		long bedId = cabin.beds.get(0).id;
-		Bed b = Bed.find.byId(bedId);
-		//two lines below makes sure that cabin is not deleted apparently.
-		b.largeCabin = null;
-		b.update();
-		//end
-		b.delete();
-		
-		assertNotNull(Cabin.find.byId(id));
-		System.out.println((Bed.find.byId(bedId)) + " : bed is null");
-		assertNull(Bed.find.byId(bedId));
-		
-		
-	}
-	
-	@Test
-	public void DeleteBedWontDeleteBooking() {
-		
-		LargeCabin cabin = new LargeCabin("treet", 10);
-		cabin.save();
-		Long id = cabin.id;
-		cabin = (LargeCabin)Cabin.find.byId(id);
-		List<Bed> beds = cabin.beds;
-		Booking book = Booking.createBooking(new Long(1), new DateTime(), new DateTime(), id, beds);
-		
-		long bId = book.id;
-		beds.get(0).delete();
-		assertNotNull(Booking.find.byId(bId));
 	}
 	
 	@Test
