@@ -58,7 +58,7 @@ describe('dntApp', function () {
             scope.getOrders(1);
             
             // Assert
-            expect(service.getOrders).toHaveBeenCalledWith('Franz', 'Kafka');
+            expect(service.Arrive).toHaveBeenCalledWith('Franz', 'Kafka');
         });
     });
 });
