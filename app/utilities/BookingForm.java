@@ -31,6 +31,7 @@ public class BookingForm extends AbstractForm<Booking> {
 	public String dateTo;
 	public List<PriceForm> guests;
 	private int nrOfGuests = 0;
+	public boolean termsAndConditions;
 	/**
 	 * FlexJson needs an constructor even if its empty
 	 */
@@ -95,6 +96,10 @@ public class BookingForm extends AbstractForm<Booking> {
 	 */
 	@Override
 	public boolean validate() {
+		if(termsAndConditions == false) {
+			addError(Messages.get("booking.termsAndConditions"));
+			return false;
+		}
 		//A user should be logged in before booking.
 		if(cabinId == null) {
 			addError(Messages.get("booking.misssingCabinId"));
@@ -154,6 +159,7 @@ public class BookingForm extends AbstractForm<Booking> {
 	 */
 	public static BookingForm deserializeJson(String jsonBooking) {
 		BookingForm bookingData = null;
+		System.out.println(jsonBooking);
 		try {
 			JSONDeserializer<BookingForm> deserializer = new JSONDeserializer<BookingForm>()
 					.use("guests.values", PriceForm.class);

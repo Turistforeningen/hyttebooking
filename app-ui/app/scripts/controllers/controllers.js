@@ -155,15 +155,15 @@ angular.module('dntApp').controller('bookingController', ['$modal','$rootScope',
 	
 	
 	$scope.openBookingConfirmDialog = function() {
+		$scope.booking.termsAndConditions = false;
 		var modalInstance = $scope.openDialog('/views/bookingModal.html', $scope.booking);
 
-		    modalInstance.result.then(function (selectedItem) {
-		      $scope.selected = selectedItem;
-		      $scope.postBooking($scope.booking);
-		    }, function () {
-		      $log.info('Modal dismissed at: ' + new Date());
-		      
-		    });
+		modalInstance.result.then(function () {
+			$scope.postBooking($scope.booking);
+		}, function () {
+			$log.info('Modal dismissed at: ' + new Date());
+
+		});
 	};
 	
 	
@@ -184,7 +184,7 @@ angular.module('dntApp').controller('bookingController', ['$modal','$rootScope',
      * @ngdoc method
      * @name dntApp.object#init
      * @methodOf dntApp.controller:bookingController
-     * @description Every time an instance of bookingController starts the init function will run. It checks the url for
+     * @description Every time an instance of bookingController starts, the init function will run. It checks the url for
      * different parameters and query parameters and depending on these set the initial state of the booking view.
      */
 	function init() {

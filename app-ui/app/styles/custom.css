@@ -132,6 +132,10 @@ body{
 .btn-in-range {
 	background-color: #def2f8;
 }
+
+.btn-user-disabled:disabled {
+	background-color: #bd362f;
+}
 /*--------Custom navbar--------*/
 /* navbar */
 .navbar-default {

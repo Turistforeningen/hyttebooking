@@ -30,7 +30,7 @@
 	<div class="modal-body" style="border-top: 1px solid #ccc;">
 		<h4>Bekreft reservasjon</h4>
 		<p>
-			<a ng-click="cancel()" href="#/termsAndConditions">Les og bekreft
+			<a target="_blank" href="#/termsAndConditions">Les og bekreft
 				kjøpsvilkår.</a>
 		</p>
 		<!-- This still does not work -->
@@ -42,7 +42,7 @@
                       'has-success': termForm.$submitted && termForm.cond.$valid}">
 
 			<input id="checkbox1" type="checkbox" name="cond" value="read"
-				ng-model="conditions" ng-required="!conditions"> <label
+				ng-model="booking.termsAndConditions" ng-required="!booking.termsAndConditions"> <label
 				class="control-label" for="checkbox1"> <p><i>Jeg har lest
 					og godkjenner Deres vilkår.</i></p></label>
 		</div>

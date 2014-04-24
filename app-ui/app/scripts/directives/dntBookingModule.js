@@ -130,7 +130,7 @@ angular.module('dntBookingModule', [])
 					
 					angular.forEach($scope.person, function(value, key){
 						var end = bedsLeft;
-						if((value.nr !== null || value.nr>0) && end<=value.nr) {
+						if(value.nr !== null || value.nr>0) {
 							end = value.nr + bedsLeft;
 						}
 
@@ -366,18 +366,20 @@ angular.module('dntBookingModule')
 	return {
 		restrict: 'AE',
 
-		scope: {'cabinType': '@',
-			'beds': '@numberOfBeds',
+		scope: {'cabinType'	: '@',
+			'beds'			: '@numberOfBeds',
 			'booking'		: '=bookingModel',
-			'onBook'	: '&',
-			'errorMessage' : '=errorModel'
+			'onBook'		: '&',
+			'errorMessage'	: '=errorModel'
 		},
 
 		templateUrl:  'views/bookingComponent.html',
 
 		controller: ['$scope', '$log','$filter', 'ordersService', function($scope, $log ,$filter, ordersService) {
             	$scope.errorMessage;
-            	$scope.now = new Date();
+            	$scope.minimumBookableDate = new Date();
+            	//Dates in calendar disabled up to and including today
+            	$scope.minimumBookableDate.setDate($scope.minimumBookableDate.getDate() +1);
             	var availability = {};
             	
             	$scope.getAvailability = function(from, to, key) {
