@@ -163,7 +163,9 @@ public class Booking extends Model {
 			         .orderBy("dateFrom asc")
 			         .findPagingList(pageSize)
 			         .getPage(page).getList();
-			 bookingPage.totalItems = user.getNrOfBookings();
+			 bookingPage.totalItems = find.where()
+			         .and(Expr.eq("user", user), Expr.le("status", PAID))
+			         .findRowCount();
 			 return bookingPage;
 		}
 		return new Page<Booking>();
@@ -178,11 +180,11 @@ public class Booking extends Model {
 	public static Booking getBookingById(String bookingId) {
 		return Booking.find.where().eq("id", bookingId).findUnique();
 	}
-	
+	@JSON(include = true)
 	public Long getDateFrom() {
 		return this.dateFrom.getMillis();
 	}
-	
+	@JSON(include = true)
 	public Long getDateTo() {
 		return this.dateTo.getMillis();
 	}
