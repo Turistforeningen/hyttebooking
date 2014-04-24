@@ -184,7 +184,7 @@ angular.module('dntApp').controller('bookingController', ['$modal','$rootScope',
      * @ngdoc method
      * @name dntApp.object#init
      * @methodOf dntApp.controller:bookingController
-     * @description Every time an instance of bookingController starts the init function will run. It checks the url for
+     * @description Every time an instance of bookingController starts, the init function will run. It checks the url for
      * different parameters and query parameters and depending on these set the initial state of the booking view.
      */
 	function init() {

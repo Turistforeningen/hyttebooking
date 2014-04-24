@@ -85,7 +85,7 @@
                             <div ng-controller="TooltipDemoCtrl" tooltip-placement="left"
                                 tooltip-html-unsafe="{{tooltipArrival}}"
                                 tooltip-popup-delay="1200">
-                                <datepicker ng-model="booking.dateFrom" min="now"
+                                <datepicker ng-model="booking.dateFrom" min="minimumBookableDate"
                                     show-weeks="showWeeks" date-disabled="disabled(date, mode)" date-in-range="booking.dateTo"></datepicker>
                             </div>
                             <!-- /well -->
