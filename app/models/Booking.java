@@ -180,14 +180,6 @@ public class Booking extends Model {
 	public static Booking getBookingById(String bookingId) {
 		return Booking.find.where().eq("id", bookingId).findUnique();
 	}
-	@JSON(include = true)
-	public Long getDateFrom() {
-		return this.dateFrom.getMillis();
-	}
-	@JSON(include = true)
-	public Long getDateTo() {
-		return this.dateTo.getMillis();
-	}
 	
 	public static Booking createBooking(Long userId, DateTime dateFrom, DateTime dateTo, 
 			Long cabinId,

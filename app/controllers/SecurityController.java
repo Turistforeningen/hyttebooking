@@ -84,7 +84,10 @@ public class SecurityController extends Action.Simple {
 	@With(SecurityController.class)
 	public static Result logout() {
 		response().discardCookie(AUTH_TOKEN);
-		getUser().deleteAuthToken();
+		User u = getUser();
+		if(u == null){
+			u.deleteAuthToken();
+		}
 		return redirect("/");
 	}
 

@@ -123,24 +123,25 @@
 					</div>
 				</div>
 			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-10">
-				<pagination on-select-page="setPage(page)" total-items="totalItems"
-					page="currentPage" items-per-page="itemsPerPage"></pagination>
-			</div>
+			<div class="row">
+            <div class="col-md-10">
+                <pagination on-select-page="setPage(page)" total-items="totalItems"
+                    page="currentPage" items-per-page="itemsPerPage"></pagination>
+            </div>
 
-			<div class="col-md-2">
-				<div style="margin: 20px">
-					<select class="form-control" ng-model="itemsPerPage"
-						ng-change="getOrders(page)">
-						<option>10</option>
-						<option>20</option>
-						<option>50</option>
-					</select>
-				</div>
-			</div>
+            <div class="col-md-2">
+                <div style="margin: 20px">
+                    <select class="form-control" ng-model="itemsPerPage"
+                        ng-change="getOrders(page)">
+                        <option>10</option>
+                        <option>20</option>
+                        <option>50</option>
+                    </select>
+                </div>
+            </div>
+        </div>
 		</div>
+		
 	</div>
 	<pre>{{orders}}</pre>
 </div>

@@ -7,7 +7,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.joda.time.DateTime;
 import org.joda.time.Days;
-import com.fasterxml.jackson.databind.JsonNode;
+
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import flexjson.JSONSerializer;
@@ -25,6 +25,7 @@ import play.mvc.Results;
 import play.mvc.With;
 import scala.concurrent.duration.Duration;
 import utilities.BookingForm;
+import utilities.DateTimeTransformer;
 import utilities.JsonMessage;
 import utilities.Page;
 
@@ -287,7 +288,8 @@ public class BookingController extends Controller {
 		JSONSerializer orderDetailsSerializer = new JSONSerializer()
 		.include("data", "data.cabin" )
 		.exclude("*.class", "data.beds", "data.user", "data.smallCabin", "data.cabin.type", "data.cabin.nrOfBeds", "data.cabin.nrBookings"
-				, "data.cabin.cabinUrl", "data.cabin.nrOfBookings", "data.deliveryDate");
+				, "data.cabin.cabinUrl", "data.cabin.nrOfBookings", "data.deliveryDate")
+				 .transform(new DateTimeTransformer(), DateTime.class);
 		return Results.ok(orderDetailsSerializer.serialize(bookings));
 	}
 
