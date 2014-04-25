@@ -57,15 +57,12 @@ angular.module('dntApp').controller('cabinTableController', ['$scope', '$locatio
 	$scope.getCabins = function(page) {
 
 		cabinService.getCabins(page, $scope.itemsPerPage)
-		.success(function (cabins) {
-			$scope.cabins = cabins.data;
-
-			$scope.totalItems = cabins.totalItems;
-
-		})
-		.error(function (error) {
-			$log.info('problem');
-			$scope.error = error;
+		.then(function(data){
+			$scope.cabins 		= data.data;
+			$scope.totalItems 	= data.totalItems;
+		},
+		function(errorMessage){
+			$scope.error=errorMessage;
 		});
 	};
 
@@ -110,16 +107,14 @@ angular.module('dntApp').controller('cabinDetailsController', ['$scope', '$locat
 	
 	$scope.getDetails = function(page, cabinId) {
 		cabinService.getCabinDetails(page, $scope.itemsPerPage, cabinId)
-		.success(function (details) {
-			$scope.cabinDetails = details.data;
-			$scope.totalItems = details.totalItems;
-
-		})
-		.error(function (error) {
-			$log.info('problem');
-			$scope.error = error;
+		.then(function(data){
+			$scope.cabinDetails = data.data;
+			$scope.totalItems = data.totalItems;
+		}, function(errorMessage){
+			$scope.error=errorMessage;
 		});
 	};
+
 
 	$scope.$on('retrieveCabin', function(event, id) {
 		$scope.id = id;
@@ -147,12 +142,6 @@ angular.module('dntApp').controller('cabinFormController', ['$scope', '$location
 
 	$scope.addCabin = function(newCabin) {
 		cabinService.postCabin(newCabin)
-		.success(function (data) {
-			$log.info('posted');
-		})
-		.error(function (error) {
-			$log.info('not posted' + error.message);
-		});
 	};
 
 

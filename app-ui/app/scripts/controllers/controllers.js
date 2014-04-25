@@ -4,13 +4,13 @@
  * @ngdoc object
  * 
  * @name dntApp.controller:orderController
- * @requires dntApp.ordersService
+ * @requires dntApp.bookingService
  * @description Controller for the ordersView. Sends a get request for orderHistory to the server.
  * Contains methods for getting and canceling bookings.
  * 
  */
-angular.module('dntApp').controller('orderController', ['$scope','$location','$routeParams','ordersService', '$log',
-                                                        function ($scope, $location, $routeParams, ordersService, $log) {
+angular.module('dntApp').controller('orderController', ['$scope','$location','$routeParams','bookingService', '$log',
+                                                        function ($scope, $location, $routeParams, bookingService, $log) {
 	$scope.currentPage =1;
 	$scope.totalItems = 10;
 	$scope.itemsPerPage = 10;
@@ -20,32 +20,30 @@ angular.module('dntApp').controller('orderController', ['$scope','$location','$r
 	};
 
 	$scope.getOrders = function(page) {
-		ordersService.getOrders(page, $scope.itemsPerPage)
-		.success(function (userOrders) {
+		bookingService.getOrders(page, $scope.itemsPerPage)
+		.then(function(userBookings){
 			$scope.currentPage = page +1;
-			$scope.orders = userOrders.data;
-			$scope.totalItems = userOrders.totalItems;
-
-		})
-		.error(function (error) {
-			$scope.status = 'unable to load customer data' + error.message;
+			$scope.orders = userBookings.data;
+			$scope.totalItems = userBookings.totalItems;
+		},
+		function(error){
+			$scope.status='unable to load customer data' + error.message;
 		});
 	};
 
 
 	$scope.cancelOrder = function (order) {
-		ordersService.cancelOrder(order.id)
-		.success(function (data) {
+		bookingService.cancelOrder(order.id)
+		.then(function(data){
 			var index = $scope.orders.indexOf(order);
 			$scope.orders.splice(index, 1);
-		})
-		.error(function (error) {
+		},
+		function(error){
 			$scope.status = 'not found' + error.message;
 		});
 	};
 
-
-
+	
 	function init() {
 		var pageNo = parseInt($routeParams.page);
 		if(pageNo) {
@@ -74,14 +72,14 @@ angular.module('dntApp').controller('testController', ['$scope','$window', funct
  * @ngdoc object
  * 
  * @name dntApp.controller:bookingController
- * @requires dntApp.ordersService
+ * @requires dntApp.bookingService
  * @description Controller for the booking that works as the glue beetween the posting of bookings to the server,
  *  paymentflow, reading query parameters and opening of modals. Important for the {@link dntBookingModule.directive:dntBookingModule dntBookingModule} directive to work.
  *  
  * 
  */
-angular.module('dntApp').controller('bookingController', ['$modal','$rootScope','$scope','ordersService','$log','$routeParams','$window',
-                                                          function ($modal, $rootScope, $scope, ordersService, $log, $routeParams, $window) {
+angular.module('dntApp').controller('bookingController', ['$modal','$rootScope','$scope','bookingService','$log','$routeParams','$window',
+                                                          function ($modal, $rootScope, $scope, bookingService, $log, $routeParams, $window) {
 	$scope.errorMessage;
 	$scope.booking ={};
 	$scope.beds = 0;
@@ -93,13 +91,12 @@ angular.module('dntApp').controller('bookingController', ['$modal','$rootScope',
      * @description Posts booking to database, and depending on answer from server the pay method is run or an error message is put into scope.errorMessage
      */
 	$scope.postBooking = function(booking) {
-		ordersService.postOrder(booking)
-		.success(function (data) {
+		bookingService.postOrder(booking)
+		.then(function(data){
 			$scope.pay(data.id);
-		})
-		.error(function (error) {
+		},
+		function(error){
 			$scope.errorMessage = error.message;
-
 		});
 	};
 
@@ -111,11 +108,11 @@ angular.module('dntApp').controller('bookingController', ['$modal','$rootScope',
      * @description When called tries to retrieve transactionId from server, and if successful redirects to external payment site
      */
 	$scope.pay = function(bookingId) {
-		ordersService.startPayment(bookingId)
-		.success(function(data) {
+		bookingService.startPayment(bookingId)
+		.then(function(data){
 			$window.location.href =data.redirectUrl;
-		})
-		.error(function(error) {
+		},
+		function(error){
 			$scope.errorMessage = error.message;
 		});
 	};
@@ -127,12 +124,12 @@ angular.module('dntApp').controller('bookingController', ['$modal','$rootScope',
      * @description Method retrieves price matrix from back end, and store them in $scope.booking which should be used by dntBookingModule directive
      */
 	$scope.getPrices = function(id) {
-		ordersService.getPrices(id)
-		.success(function (data) {
+		bookingService.getPrices(id)
+		.then(function(data){
 			$scope.booking.guests = data;
-		})
-		.error(function(error) {
-			$log.info(error.message);
+		},
+		function(error){
+			$scope.errorMessage = error.message;
 		});
 	};
 
@@ -144,11 +141,11 @@ angular.module('dntApp').controller('bookingController', ['$modal','$rootScope',
      * and open a modal showing status of payment.
      */
 	$scope.authenticatePayment = function(transactionId, responseCode) {
-		ordersService.authenticatePayment(transactionId, responseCode)
-		.success(function(data) {
+		bookingService.authenticatePayment(transactionId, responseCode)
+		.then(function(data){
 			$scope.openDialog('/views/statusModalSuccess.html');
-		})
-		.error(function(error) {
+		},
+		function(error){
 			$scope.openDialog('/views/statusModalError.html');
 		});
 	};

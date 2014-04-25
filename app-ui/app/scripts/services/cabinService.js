@@ -6,38 +6,64 @@
  * All data returned from the server should be json strings.
  * @requires $http 
 **/
-angular.module('dntApp').service('cabinService', ['$http','$log', function ($http, $log) {
-
-	/**
-     * @ngdoc method
-     * @name dntApp.service#getCabins
-     * @methodOf dntApp.cabinService
-     * @returns {json} A list containing some properties for a subset of the cabins in the system.
-     */
-	this.getCabins = function (page, pageSize) {
-		var url = '/api/cabins?page=' + page + '&size=' + pageSize;
-		return $http.get(url);
-	};
+angular.module('dntApp').factory('cabinService', ['$http', '$q','$log', function ($http, $q, $log) {
 	
-	/**
-     * @ngdoc method
-     * @name dntApp.service#getCabinDetails
-     * @methodOf dntApp.cabinService
-     * @returns {json} A list of bookings belonging to the cabin specified by cabinId
-     */
-	this.getCabinDetails = function (page, pageSize, cabinId) {
-		var url = '/api/cabins/' + cabinId+'?page=' + page + '&size=' + pageSize;
-		return $http.get(url);
-	};
+	return {
+		/**
+	     * @ngdoc method
+	     * @name dntApp.service#getCabins
+	     * @methodOf dntApp.cabinService
+	     * @returns {json} A list containing some properties for a subset of the cabins in the system.
+	     */
+		getCabins: function(page, pageSize) {
+			var deferred = $q.defer();
+			var url = '/api/cabins?page=' + page + '&size=' + pageSize;
+			$http.get(url).success(function(data){
+		          //Passing data to deferred's resolve function on successful completion
+		          deferred.resolve(data);
+		      }).error(function(error){
+		 
+		        //Sending a friendly error message in case of failure
+		        deferred.reject(error);
+		      });
+			 return deferred.promise;
+		},
+		
+		/**
+	     * @ngdoc method
+	     * @name dntApp.service#getCabinDetails
+	     * @methodOf dntApp.cabinService
+	     * @returns {json} A list of bookings belonging to the cabin specified by cabinId
+	     */
+		getCabinDetails: function(page, pageSize, cabinId) {
+			var deferred = $q.defer();
+			var url = '/api/cabins/' + cabinId+'?page=' + page + '&size=' + pageSize;
+			$http.get(url).success(function(data){
+				deferred.resolve(data);
+			}).error(function(error){
 	
-	/**
-     * @ngdoc method
-     * @name dntApp.service#postCabin
-     * @methodOf dntApp.cabinService
-     * @returns {null} NOT SURE 
-     */
-	this.postCabin = function (newCabin) {
-		var url = '/api/cabins';
-		return $http.post(url, newCabin);
-	};
+				deferred.reject(error);
+			});
+			return deferred.promise;
+		},
+		
+		/**
+	     * @ngdoc method
+	     * @name dntApp.service#postCabin
+	     * @methodOf dntApp.cabinService
+	     * @returns {null} NOT SURE 
+	     */
+		postCabin: function(newCabin) {
+			var deferred = $q.defer();
+			var url = '/api/cabins';
+			$http.post(url, newCabin).success(function(data){
+				deferred.resolve(data);
+			}).error(function(error){
+	
+				deferred.reject(error);
+			});
+			return deferred.promise;
+		}
+	}
+	
 }]);

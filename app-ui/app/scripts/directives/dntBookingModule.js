@@ -375,7 +375,7 @@ angular.module('dntBookingModule')
 
 		templateUrl:  'views/bookingComponent.html',
 
-		controller: ['$scope', '$log','$filter', 'ordersService', function($scope, $log ,$filter, ordersService) {
+		controller: ['$scope', '$log','$filter', 'bookingService', function($scope, $log ,$filter, bookingService) {
             	$scope.errorMessage;
             	$scope.minimumBookableDate = new Date();
             	//Dates in calendar disabled up to and including today
@@ -383,14 +383,10 @@ angular.module('dntBookingModule')
             	var availability = {};
             	
             	$scope.getAvailability = function(from, to, key) {
-            		ordersService.getAvailability($scope.booking.cabinId, 
-            				from, to)
-            		.success(function(data) {
+            		bookingService.getAvailability($scope.booking.cabinId, from, to)
+            		.then(function(data){
             			availability[key] = JSON.parse(data.bookedDays);
             			$scope.$broadcast('date:updateAvailability');
-            		})
-            		.error(function(error) {
-            			$log.info(error.message);
             		});
             	};
             	$scope.$on('date:change', function(event, date) {
