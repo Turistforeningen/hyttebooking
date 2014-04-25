@@ -14,9 +14,12 @@ angular.module('dntApp').controller('orderController', ['$scope','$modal','$rout
 	$scope.currentPage =1;
 	$scope.totalItems = 10;
 	$scope.itemsPerPage = 10;
-
+	$scope.orders;
+	
 	$scope.setPage = function(pageNo) {
-		$scope.getOrders(pageNo-1);
+		if(pageNo>0) {
+			$scope.getOrders(pageNo-1);
+		}
 	};
 
 	$scope.getOrders = function(page) {
