@@ -9,14 +9,17 @@
  * Contains methods for getting and canceling bookings.
  * 
  */
-angular.module('dntApp').controller('orderController', ['$scope','$location','$routeParams','bookingService', '$log',
-                                                        function ($scope, $location, $routeParams, bookingService, $log) {
+angular.module('dntApp').controller('orderController', ['$scope','$routeParams','bookingService',
+                                                        function ($scope, $routeParams, bookingService) {
 	$scope.currentPage =1;
 	$scope.totalItems = 10;
 	$scope.itemsPerPage = 10;
-
+	$scope.orders;
+	
 	$scope.setPage = function(pageNo) {
-		$scope.getOrders(pageNo-1);
+		if(pageNo>0) {
+			$scope.getOrders(pageNo-1);
+		}
 	};
 
 	$scope.getOrders = function(page) {
