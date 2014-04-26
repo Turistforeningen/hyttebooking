@@ -14,5 +14,5 @@ import org.joda.time.DateTime;
 public class RDate {
 
 	final static String NEXT_YEAR = "2015"; /** Change this to always be set as next year **/
-	final static DateTime fDt = new DateTime(NEXT_YEAR+"-01-01"); /** Always set to jan 1 of the next year **/
+	final static DateTime fDt = new DateTime(NEXT_YEAR+"-01-01").withTimeAtStartOfDay(); /** Always set to jan 1 of the next year **/
 }

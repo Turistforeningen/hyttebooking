@@ -29,8 +29,6 @@ public class BedTest extends WithApplication{
 		u.save();
 	}
 
-
-
 	@Test
 	/**
 	 * Tests if isAvailable returns true when it shouldn't:
@@ -46,21 +44,53 @@ public class BedTest extends WithApplication{
 		u = User.find.byId(cId);
 		List<Bed> beds = c.beds;
 
-		DateTime from = RDate.fDt.plusDays(2);
-		DateTime to = RDate.fDt.plusDays(10);
+		DateTime from1 = RDate.fDt.plusDays(2);
+		DateTime to1 = RDate.fDt.plusDays(10);
+		
+		DateTime from2 = RDate.fDt.plusMonths(1);
+		DateTime to2 = RDate.fDt.plusMonths(1).plusDays(10);
 
 		//booking should save that beds are booked in the dateRange
-		Booking b = Booking.createBooking(u.id, from, to, c.id, beds);
-		List<Bed> newBeds = b.beds;
+		Booking b1 = Booking.createBooking(u.id, from1, to1, c.id, beds);
+		//create booking that we time out
+		Booking b2 = Booking.createBooking(u.id, from2, to2, c.id, beds);
+		b2.status = Booking.CANCELLED;
+		b2.update();
+		
+		List<Bed> beds1 = b1.beds;
+		List<Bed> beds2 = b2.beds;
 
-		for(Bed be: newBeds) {
+		for(Bed be: beds1) {
+			//booking exists in range fromDate-toDate
+			assertFalse(be.isAvailable(from1.minusDays(1), to1.plusDays(1)));
+			assertFalse(be.isAvailable(from1, to1));
+			assertFalse(be.isAvailable(from1.plusDays(1), to1.minusDays(1)));
 			
-			assertFalse(be.isAvailable(from.minusDays(1), to.plusDays(1)));
-			assertFalse(be.isAvailable(from, to));
-			assertFalse(be.isAvailable(from.plusDays(1), to.minusDays(1)));
-
-			assertTrue(be.isAvailable(from.minusWeeks(1), from.minusDays(1)));
-			assertTrue(be.isAvailable(to, to.plusDays(2)));
+			//booking doesn't exist in range fromDate-toDate 
+			assertTrue(be.isAvailable(from1.minusWeeks(1), from1.minusDays(1)));
+			assertTrue(be.isAvailable(to1, to1.plusDays(2)));
 		}
+		
+		for(Bed be: beds2) {
+			//booking exists but is timedout/cancelled
+			assertTrue(be.isAvailable(from2, to2)); 
+		}
+	}
+	
+	@Test
+	/**
+	 * Tests that delete functions, deletes the bed
+	 */
+	public void testDelete() {
+		LargeCabin ca = new LargeCabin("testDeleteBedCabin", 2);
+		ca.save();
+		List<Bed> beds = ca.beds;
+		
+		for(Bed b: beds){
+			b.delete();
+		}
+		
+		LargeCabin caI = (LargeCabin)Cabin.find.byId(ca.id);
+		assertTrue(caI.beds.isEmpty());
 	}
 }
