@@ -21,9 +21,13 @@ import utilities.Page;
 
 public class ComponentTest extends WithApplication {
 	
+	private User u;
+	
 	@Before
 	public void setUp() {
 		start(fakeApplication(inMemoryDatabase()));
+		u = new User("u@u.no", "password1", "ComponentTestUser");
+		u.save();
 	}
 	
 	@Test
@@ -34,7 +38,7 @@ public class ComponentTest extends WithApplication {
 		Long id = cabin.id;
 		cabin = (LargeCabin)Cabin.find.byId(id);
 		List<Bed> beds = cabin.beds;
-		Booking book = Booking.createBooking(new Long(1), new DateTime(), new DateTime(), id, beds);
+		Booking book = Booking.createBooking(u.id, RDate.fDt, RDate.fDt.plusDays(4), id, beds);
 		
 		long bId = book.id;
 		beds.get(0).delete();
@@ -51,7 +55,7 @@ public class ComponentTest extends WithApplication {
 		List<Bed> beds = cabin.beds;
 		int nr = beds.size();
 		long bId = beds.get(0).id;
-		Booking book = Booking.createBooking(new Long(1), new DateTime(), new DateTime(), id, beds);
+		Booking book = Booking.createBooking(u.id, RDate.fDt, RDate.fDt.plusDays(4), id, beds);
 		
 		long bookId = book.id;
 		book.delete();
@@ -103,7 +107,7 @@ public class ComponentTest extends WithApplication {
 		List<Bed> beds = new ArrayList<Bed>();
 		beds.add(cabin.beds.get(0));
 		beds.add(cabin.beds.get(1));
-		Booking b1 = Booking.createBooking(new Long(1), new DateTime(), new DateTime(),cabin.id, beds);
+		Booking b1 = Booking.createBooking(u.id, RDate.fDt, RDate.fDt.plusDays(4), cabin.id, beds);
 		
 		Long id = b1.id;
 		
@@ -124,7 +128,7 @@ public class ComponentTest extends WithApplication {
 		List<Bed> beds = new ArrayList<Bed>();
 		beds.add(cabin.beds.get(0));
 		beds.add(cabin.beds.get(1));
-		Booking b1 = Booking.createBooking(new Long(1), new DateTime(), new DateTime(),cabin.id, beds);
+		Booking b1 = Booking.createBooking(u.id, RDate.fDt, RDate.fDt.plusDays(4), cabin.id, beds);
 		
 		Long id = b1.id;
 		
@@ -187,7 +191,7 @@ public class ComponentTest extends WithApplication {
 		sCabin.save();
 		User user = new User("q@t","w", "t");
 		user.save();
-		Booking b = Booking.createBooking(user.id, new DateTime(), new DateTime(), sCabin.id, null);
+		Booking b = Booking.createBooking(user.id, RDate.fDt, RDate.fDt.plusDays(4), sCabin.id, null);
 		
 		int bookingSizeForUser = Booking.find.where().eq("user", user).findList().size();
 		b.status = Booking.CANCELLED;
@@ -204,12 +208,10 @@ public class ComponentTest extends WithApplication {
 	public void TestFindAllBookingsForCabinGivenDate() {
 		SmallCabin sCabin = new SmallCabin("ErBookinglistHytte");
 		sCabin.save();
-		User user = new User("q@t","w", "t");
-		user.save();
-		Booking b = Booking.createBooking(user.id, DateTime.now(), DateTime.now().plusDays(5), sCabin.id, null);
+		Booking b = Booking.createBooking(u.id, RDate.fDt, RDate.fDt.plusDays(5), sCabin.id, null);
 		
-		List<Booking> bookingsShouldBeEmpty = sCabin.findAllBookingsForCabinGivenDate(sCabin.id, DateTime.now().plusWeeks(1), DateTime.now().plusWeeks(2));
-		List<Booking> bookingsNotEmpty = sCabin.findAllBookingsForCabinGivenDate(sCabin.id, DateTime.now().plusDays(5), DateTime.now().plusDays(15));
+		List<Booking> bookingsShouldBeEmpty = sCabin.findAllBookingsForCabinGivenDate(sCabin.id, RDate.fDt.plusWeeks(1), RDate.fDt.plusWeeks(2));
+		List<Booking> bookingsNotEmpty = sCabin.findAllBookingsForCabinGivenDate(sCabin.id, RDate.fDt.plusDays(5), RDate.fDt.plusDays(15));
 				
 		assertTrue(bookingsShouldBeEmpty.isEmpty());
 		assertFalse(bookingsNotEmpty.isEmpty()); 
