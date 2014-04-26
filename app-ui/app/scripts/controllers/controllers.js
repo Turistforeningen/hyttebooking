@@ -99,6 +99,7 @@ angular.module('dntApp').controller('testController', ['$scope','$window', funct
  */
 angular.module('dntApp').controller('bookingController', ['$modal','$rootScope','$scope','bookingService','$log','$routeParams','$window',
                                                           function ($modal, $rootScope, $scope, bookingService, $log, $routeParams, $window) {
+	$scope.validState = true;
 	$scope.errorMessage;
 	$scope.booking ={};
 	$scope.beds = 0;
@@ -110,15 +111,41 @@ angular.module('dntApp').controller('bookingController', ['$modal','$rootScope',
      * @description Posts booking to database, and depending on answer from server the pay method is run or an error message is put into scope.errorMessage
      */
 	$scope.postBooking = function(booking) {
-		bookingService.postOrder(booking)
-		.then(function(data){
-			$scope.pay(data.id);
-		},
-		function(error){
-			$scope.errorMessage = error.message;
-		});
+		if(validateBooking(booking)) {
+			bookingService.postOrder(booking)
+			.then(function(data){
+				$scope.pay(data.id);
+			},
+			function(error){
+				$scope.errorMessage = error.message;
+			});
+		}
+		
 	};
-
+	
+	var validateBooking = function(booking) {
+		if(!$scope.validState) {
+			$scope.errorMessage = "Ingen hytteId spesifisert";
+			return false;
+		}
+		else if(angular.isUndefined(booking.dateFrom)) {
+			$scope.errorMessage = "Du må velge ankomstdato for å kunne reservere";
+			return false;
+		}
+		else if(angular.isUndefined(booking.dateTo)) {
+			$scope.errorMessage = "Du må velge avreisedato for å kunne reservere";
+			return false;
+		}
+		var personCount = 0;
+		angular.forEach(booking.guests, function(value, key) {
+			personCount += value.nr;
+		});
+		if(personCount <= 0) {
+			$scope.errorMessage = "du må velge minst en person for å kunne reservere";
+			return false
+		}
+		return true;
+	}
 
 	/**
      * @ngdoc method
@@ -171,6 +198,7 @@ angular.module('dntApp').controller('bookingController', ['$modal','$rootScope',
 	
 	
 	$scope.openBookingConfirmDialog = function() {
+		if(validateBooking($scope.booking)) {
 		$scope.booking.termsAndConditions = false;
 		var modalInstance = $scope.openDialog('/views/bookingModal.html', $scope.booking);
 
@@ -180,6 +208,7 @@ angular.module('dntApp').controller('bookingController', ['$modal','$rootScope',
 			$log.info('Modal dismissed at: ' + new Date());
 
 		});
+		}
 	};
 	
 	
@@ -204,6 +233,7 @@ angular.module('dntApp').controller('bookingController', ['$modal','$rootScope',
      * different parameters and query parameters and depending on these set the initial state of the booking view.
      */
 	function init() {
+		//should probably refuse showing booking if routeParams is invalid
 		var id = $routeParams.id;
 		var type =$routeParams.type;
 		var beds = $routeParams.beds;
@@ -211,8 +241,13 @@ angular.module('dntApp').controller('bookingController', ['$modal','$rootScope',
 			$scope.cabinType = type;
 			$scope.booking.cabinId = id;
 			$scope.personType =$scope.getPrices(id);
-			if(type==='large' && beds !== null) {
-				$scope.beds = beds;
+			if(type==='large') {
+				if(beds) {
+					$scope.beds = beds;
+				}
+				else {
+					$scope.validState = false;
+				}
 			}
 			if($routeParams.responseCode) {
 				if($routeParams.responseCode === 'OK') {
@@ -223,6 +258,9 @@ angular.module('dntApp').controller('bookingController', ['$modal','$rootScope',
 					$scope.authenticatePayment($routeParams.transactionId, $routeParams.responseCode);
 				}
 			}
+		}
+		else {
+			$scope.validState = false;
 		}
 	}
 	init();

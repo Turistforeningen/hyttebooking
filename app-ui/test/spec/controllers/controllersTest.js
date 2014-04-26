@@ -160,13 +160,18 @@ describe('bookingController', function () {
 	                                            "price": 150,
 	                                            "type": "barn"
 	                                          }]};
-	            deferred.resolve(returnData);
+	            if(id>0) {
+	            	deferred.resolve(returnData);
+	            }
+	            else {
+	            	deferred.reject({message: "not working"});
+	            }
 	            return deferred.promise;
 	        },
 	        postOrder: function (booking) {
 	            deferred = q.defer();
 	            // Place the fake return object here
-	            var returnData = {};
+	            var returnData = {'id' :20};
 	            deferred.resolve(returnData);
 	            return deferred.promise;
 	        }
@@ -218,19 +223,77 @@ describe('bookingController', function () {
     	
     	controller = $controller('bookingController', { $scope: scope, $routeParams : routeParams, bookingService: mockService });
     	scope.$apply();
-    	expect(scope.valid).not.toBe(true); //fail
+    	expect(scope.validState).toBe(false); //fail
     }));
     
-    it('error message should be put ', inject(function($controller) {
+    it('error message should be put into scope.errorMessage', inject(function($controller) {
         // Before $apply is called the promise hasn't resolved
     	routeParams.id = -1;
     	routeParams.type = 'large';
     	routeParams.beds = 20;
+    	
+    	expect(scope.errorMessage).toBeUndefined();
     	controller = $controller('bookingController', { $scope: scope, $routeParams : routeParams, bookingService: mockService });
     	scope.$apply();
-    	expect(scope.errorMessage).toBe("no prices for cabin");
+    	//if server cant process price request because of invalid parameters etc, errorMessage should be set
+    	expect(scope.errorMessage).toBe("not working");
+    	expect(mockService.getPrices).toHaveBeenCalled();
     	//tests to see if bookingModule is available or not
     }));
+    
+    it('should not post booking via postBooking unless booking contains datefrom and dateTo', function($controller) {
+    	expect(scope.errorMessage).toBeUndefined();
+    	scope.$apply();
+    	var booking = {};
+    	scope.postBooking(booking);
+    	expect(mockService.postOrder).not.toHaveBeenCalled();
+    	expect(scope.errorMessage).not.toBeUndefined;
+    	
+    });
+    
+    it('should not open booking confirm dialog unless booking contains at least one person, datefrom, dateTo', function($controller) {
+    	spyOn(scope, 'openBookingConfirmDialog').andCallThrough();
+    	spyOn(scope, 'postBooking').andCallThrough();
+    	spyOn(scope, 'openDialog').andCallThrough();
+    	//assume the bookingController is in a valid state
+    	scope.validState = true;
+    	expect(scope.errorMessage).toBeUndefined();
+    	scope.$apply();
+    	scope.booking = {"cabinId":1, "dateFrom" : 2030404, "dateTo" : 2030404};
+    	scope.$apply();
+    	expect(scope.booking.guests).toBeUndefined();
+    	scope.openBookingConfirmDialog();
+    	scope.$apply();
+    	expect(scope.openBookingConfirmDialog).toHaveBeenCalled();
+    	expect(scope.booking).toEqual({"cabinId":1,"dateFrom" : 2030404, "dateTo" : 2030404});
+    	expect(mockService.postOrder).not.toHaveBeenCalled();
+    	expect(scope.postBooking).not.toHaveBeenCalled();
+    	expect(scope.errorMessage).not.toBeUndefined;
+    	scope.$apply();
+    	expect(scope.errorMessage).toEqual("du må velge minst en person for å kunne reservere");
+    });
+    
+    it('should let user post booking if dateFrom, dateTo and date', function($controller) {
+    	var resultId = -1;
+    	//Mock scope.pay function, and test if method parameter is correct
+    	spyOn(scope, "pay").andCallFake(function(bookingId) {
+    	     resultId = bookingId; 
+    	});
+    	expect(scope.errorMessage).toBeUndefined();
+    	//assume bookingController is in a valid state
+    	scope.validState = true;
+    	scope.$apply();
+    	scope.booking = {"cabinId":1, "dateFrom" : 2030404, "dateTo" : 2030404, "guests" : [{"nr": 1}, {"nr" : 2}]};
+    	scope.$apply();
+    	expect(scope.booking.guests).not.toBeUndefined();
+    	scope.postBooking(scope.booking);
+    	scope.$apply();
+    	expect(mockService.postOrder).toHaveBeenCalled();
+    	expect(mockService.postOrder).toHaveBeenCalledWith(scope.booking);
+    	expect(scope.errorMessage).toBeUndefined;
+    	expect(resultId).toBe(20);
+    	
+    });
     
 });
 
