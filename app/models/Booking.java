@@ -91,7 +91,7 @@ public class Booking extends Model {
 	 */
 	public boolean isAbleToCancel() {
 		//This logic should probably be placed somewhere else?
-		if(DateTime.now().plusDays(CANCELLATION_LIMIT).isAfter(this.dateFrom.getMillis())) {
+		if(DateTime.now().plusDays(CANCELLATION_LIMIT).withTimeAtStartOfDay().isAfter(this.dateFrom.getMillis())) {
 			return false;
 		}
 		else {

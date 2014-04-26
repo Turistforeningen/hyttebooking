@@ -95,8 +95,8 @@ public class ControllerTest extends WithApplication {
 			System.out.println("Bad request: "+actualResult);
 		}
 		
-		System.out.println("ACTUAL: "+Arrays.toString(smallCabinBookedDays));
-		System.out.println("EXPECTED: "+Arrays.toString(expectedResultArray));
+		//System.out.println("ACTUAL: "+Arrays.toString(smallCabinBookedDays));
+		//System.out.println("EXPECTED: "+Arrays.toString(expectedResultArray));
 		assertArrayEquals(smallCabinBookedDays, expectedResultArray);
 	}
 
@@ -157,8 +157,8 @@ public class ControllerTest extends WithApplication {
 			System.out.println("Bad request: "+actualResult);
 		}
 
-		System.out.println("ACTUAL: "+Arrays.toString(largeCabinBookedDays));
-		System.out.println("EXPECTED: "+Arrays.toString(expectedResultArray));
+		//System.out.println("ACTUAL: "+Arrays.toString(largeCabinBookedDays));
+		//System.out.println("EXPECTED: "+Arrays.toString(expectedResultArray));
 		assertArrayEquals(expectedResultArray, largeCabinBookedDays);
 	}
 }

@@ -131,7 +131,7 @@ public class ComponentTest extends WithApplication {
 		b1 = Booking.find.byId(id);
 		List<Bed> b= b1.beds;
 		assertNotEquals(b.size(), 0);
-		System.out.println(b.size() +" bed size");
+		//System.out.println(b.size() +" bed size");
 	}
 	
 	@Test
@@ -154,9 +154,9 @@ public class ComponentTest extends WithApplication {
 		cabin = (LargeCabin)Cabin.find.byId(id);
 		long bedId = cabin.beds.get(0).id;
 		cabin.delete();
-		System.out.println("cabin deleted?");
+		//System.out.println("cabin deleted?");
 		assertNull(Cabin.find.byId(id));
-		System.out.println("bedDeleted");
+		//System.out.println("bedDeleted");
 		assertNull(Bed.find.byId(bedId));
 		
 	}
@@ -175,7 +175,7 @@ public class ComponentTest extends WithApplication {
 		cabin.delete();
 		
 		for(Long i : ids) {
-			System.out.println("Bed should not be null: " + Bed.find.byId(i));
+			//System.out.println("Bed should not be null: " + Bed.find.byId(i));
 			assertNull(Bed.find.byId(i));
 		}
 	}
@@ -193,8 +193,8 @@ public class ComponentTest extends WithApplication {
 		b.status = Booking.CANCELLED;
 		b.save();
 		int bookingNewSize = Booking.getBookingPageByUser(user, 0, 10).totalItems;
-		System.out.println(bookingSizeForUser + " --------");
-		System.out.println(bookingNewSize + " --------");
+		//System.out.println(bookingSizeForUser + " --------");
+		//System.out.println(bookingNewSize + " --------");
 		assertNotEquals(bookingSizeForUser, bookingNewSize);
 	
 	}
@@ -254,9 +254,9 @@ public class ComponentTest extends WithApplication {
 			}
 			
 			Page<Booking> bookings = Booking.getBookingPageByUser(user1, 0, 6);
-			System.out.println(bookings.data.size());
+			//System.out.println(bookings.data.size());
 			for(Booking b : bookings.data) {
-				System.out.println(b.getCabin().name + "-----------------------");
+				//System.out.println(b.getCabin().name + "-----------------------");
 				assertNotNull(b.getCabin().name);
 			}
 			
