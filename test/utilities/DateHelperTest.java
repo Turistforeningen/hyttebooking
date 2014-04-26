@@ -1,0 +1,50 @@
+package utilities;
+
+import static org.junit.Assert.*;
+import static play.test.Helpers.fakeApplication;
+import static play.test.Helpers.inMemoryDatabase;
+import play.test.WithApplication;
+
+import org.joda.time.DateTime;
+import org.junit.Before;
+import org.junit.Test;
+
+public class DateHelperTest extends WithApplication  {
+
+	@Before
+	public void setUp() {
+		start(fakeApplication(inMemoryDatabase()));
+	}
+	
+	@Test
+	public void testWithinDate() {
+		DateTime a = new DateTime().now();
+		DateTime b = new DateTime().now().plus(5);
+		
+		DateTime p1 = new DateTime().now().plus(2); //within = true
+		DateTime p2 = new DateTime().now().plus(5); //within = true
+		DateTime p3 = new DateTime().now(); //within = true
+		DateTime p4 = new DateTime().now().plus(6); //within = false
+		DateTime p5 = new DateTime().now().minus(1); //within = false
+		
+		assertTrue(utilities.DateHelper.withinDate(p1, a, b));
+		assertTrue(utilities.DateHelper.withinDate(p2, a, b));
+		assertTrue(utilities.DateHelper.withinDate(p3, a, b));
+		assertFalse(utilities.DateHelper.withinDate(p4, a, b));
+		assertFalse(utilities.DateHelper.withinDate(p5, a, b));
+	}
+	
+	@Test
+	public void testGetIndex() {
+		DateTime start = new DateTime().now(); //this is 0
+		
+		DateTime a = new DateTime().now().plusDays(1); // +1
+		DateTime b = new DateTime().now().minusDays(1); // -1
+		DateTime c = new DateTime().now(); // 0
+
+		assertEquals(1, utilities.DateHelper.getIndex(start, a, b)[0]); //days between start and a
+		assertEquals(-1, utilities.DateHelper.getIndex(start, a, b)[1]); //days between start and b
+		assertEquals(0, utilities.DateHelper.getIndex(start, a, c)[1]); //days between start and c
+	}
+	
+}

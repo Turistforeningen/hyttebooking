@@ -1,21 +1,117 @@
 package models;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static play.test.Helpers.fakeApplication;
+import static play.test.Helpers.inMemoryDatabase;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import org.joda.time.DateTime;
-import org.junit.*;
-import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
+
 import play.test.WithApplication;
 import utilities.Page;
-import static play.test.Helpers.*;
 
-public class ModelsTest extends WithApplication{
+public class ComponentTest extends WithApplication {
+	
 	@Before
 	public void setUp() {
 		start(fakeApplication(inMemoryDatabase()));
 	}
 	
-
+	@Test
+	public void deleteBedWontDeleteBooking() {
+		
+		LargeCabin cabin = new LargeCabin("treet", 10);
+		cabin.save();
+		Long id = cabin.id;
+		cabin = (LargeCabin)Cabin.find.byId(id);
+		List<Bed> beds = cabin.beds;
+		Booking book = Booking.createBooking(new Long(1), new DateTime(), new DateTime(), id, beds);
+		
+		long bId = book.id;
+		beds.get(0).delete();
+		assertNotNull(Booking.find.byId(bId));
+	}
+	
+	@Test
+	public void deleteBookingWontDeleteBed() {
+		
+		LargeCabin cabin = new LargeCabin("t", 10);
+		cabin.save();
+		Long id = cabin.id;
+		cabin = (LargeCabin)Cabin.find.byId(id);
+		List<Bed> beds = cabin.beds;
+		int nr = beds.size();
+		long bId = beds.get(0).id;
+		Booking book = Booking.createBooking(new Long(1), new DateTime(), new DateTime(), id, beds);
+		
+		long bookId = book.id;
+		book.delete();
+		
+		LargeCabin cabin2 = (LargeCabin)(LargeCabin.find.byId(id));
+		assertEquals(nr, cabin.beds.size());
+		//System.out.println((nr == cabin.beds.size())+ " : true");
+		assertNull(Booking.find.byId(new Long(bookId)));
+		assertNotNull(Bed.find.byId(new Long(bId)));
+		//System.out.println((Booking.find.byId(new Long(bookId)) == null)+ ": book er null nå");
+	}
+	
+	@Test
+	/**
+	 * Delete
+	 */
+	public void deleteBedsWontDeleteCabin() {
+		
+		LargeCabin cabin = new LargeCabin("jordet", 10);
+		cabin.save();
+		long id = cabin.id;
+		cabin = (LargeCabin)Cabin.find.byId(id);
+		assertNotNull(cabin);
+		//System.out.println(cabin.name);
+		long bedId = cabin.beds.get(0).id;
+		Bed b = Bed.find.byId(bedId);
+		//two lines below makes sure that cabin is not deleted apparently.
+		b.largeCabin = null;
+		b.update();
+		//end
+		b.delete();
+		
+		assertNotNull(Cabin.find.byId(id));
+		//System.out.println((Bed.find.byId(bedId)) + " : bed is null");
+		assertNull(Bed.find.byId(bedId));
+	}
+	
+	@Test
+	/**
+	 * Creates a booking and tests if the booking adds the beds to itself
+	 */
+	public void createBookingWillAddBeds() {
+		LargeCabin cabin = new LargeCabin("p", 10);
+		cabin.save();
+		Bed one = new Bed();
+		one.save();
+		Bed two = new Bed();
+		two.save();
+		List<Bed> beds = new ArrayList<Bed>();
+		beds.add(cabin.beds.get(0));
+		beds.add(cabin.beds.get(1));
+		Booking b1 = Booking.createBooking(new Long(1), new DateTime(), new DateTime(),cabin.id, beds);
+		
+		Long id = b1.id;
+		
+		b1 = Booking.find.byId(id);
+		List<Bed> b= b1.beds;
+		assertNotEquals(b.size(), 0);
+		//System.out.println(b.size() +" bed size");
+	}
 	
 	@Test
 	public void checkBookingCustomerRelationship() {
@@ -120,37 +216,6 @@ public class ModelsTest extends WithApplication{
 	}
 	
 	@Test
-	public void TestWithinDate() {
-		DateTime a = new DateTime().now();
-		DateTime b = new DateTime().now().plus(5);
-		
-		DateTime p1 = new DateTime().now().plus(2); //within = true
-		DateTime p2 = new DateTime().now().plus(5); //within = true
-		DateTime p3 = new DateTime().now(); //within = true
-		DateTime p4 = new DateTime().now().plus(6); //within = false
-		DateTime p5 = new DateTime().now().minus(1); //within = false
-		
-		assertTrue(utilities.DateHelper.withinDate(p1, a, b));
-		assertTrue(utilities.DateHelper.withinDate(p2, a, b));
-		assertTrue(utilities.DateHelper.withinDate(p3, a, b));
-		assertFalse(utilities.DateHelper.withinDate(p4, a, b));
-		assertFalse(utilities.DateHelper.withinDate(p5, a, b));
-	}
-	
-	@Test
-	public void TestGetIndex() {
-		DateTime start = new DateTime().now(); //this is 0
-		
-		DateTime a = new DateTime().now().plusDays(1); // +1
-		DateTime b = new DateTime().now().minusDays(1); // -1
-		DateTime c = new DateTime().now(); // 0
-
-		assertEquals(1, utilities.DateHelper.getIndex(start, a, b)[0]); //days between start and a
-		assertEquals(-1, utilities.DateHelper.getIndex(start, a, b)[1]); //days between start and b
-		assertEquals(0, utilities.DateHelper.getIndex(start, a, c)[1]); //days between start and c
-	}
-	
-	@Test
 	public void TestMakeServeralBookingsForDifferentCabins() {
 		
 		User user1 = new User("tt", "ww", "John Doe");
@@ -197,4 +262,5 @@ public class ModelsTest extends WithApplication{
 			
 			//Conclusion: b.update in Booking addBed a bad idea.
 	}
+	
 }
