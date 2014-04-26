@@ -427,13 +427,19 @@ angular.module('dntBookingModule')
             	/** Track changes from the datepicker calendars and display the from/to dates **/
             	$scope.$watch('booking.dateTo', function(){
             		$scope.booking.dateTo= $filter('date')($scope.booking.dateTo,'yyyy-MM-dd');
+            		$scope.errorMessage = null;
             	});
 
             	$scope.$watch('booking.dateFrom', function(){
             		if ($scope.booking.dateTo < $scope.booking.dateFrom){
             		}
             		$scope.booking.dateFrom= $filter('date')($scope.booking.dateFrom,'yyyy-MM-dd');
+            		$scope.errorMessage = null;
             	});
+            	
+            	$scope.$watch('booking.guests', function(){
+            		$scope.errorMessage = null;
+            	}, true);
             	
 			}],
 
