@@ -74,10 +74,6 @@ public class BookingTest extends WithApplication {
 		DateTime from4 = DateTime.now().plusDays(7).withTimeAtStartOfDay();
 		DateTime to4 = DateTime.now().plusWeeks(2);
 
-		System.out.println("From4: "+from4 + ": To4"+to4);
-		System.out.println("Is "+DateTime.now().plusDays(7)+" after "+from4+"?"); //7 here is cancellation limit, but arbitrary so doesn't really matter
-		System.out.println(DateTime.now().plusDays(7).isAfter(from4.getMillis()));
-
 		Booking b1 = Booking.createBooking(u.id, from1, to1, c.id, c.beds);
 		Booking b2 = Booking.createBooking(u.id, from2, to2, c.id, c.beds);
 		Booking b3 = Booking.createBooking(u.id, from3, to3, c.id, c.beds);
@@ -90,32 +86,25 @@ public class BookingTest extends WithApplication {
 	}
 
 	@Test
-	public void testGetDeliveryDate() {
-
-		//TODO
-	}
-
-	@Test
-	public void testGetNrOfBeds() {
-
-		//TODO
-	}
-
-	@Test
-	public void testGetBookingPageByUser() {
-
-		//TODO
-	}
-
-	@Test
-	public void testGetBookingById() {
-
-		//TODO
-	}
-
-	@Test
+	/**
+	 * Test that createBooking doesn't create booking if beds is null and cabin type is largeCabin
+	 * Test that createBooking doesn't create booking if user with userId not found
+	 * Test that createBooking doesn't create booking if dateFrom predates dateTo
+	 * Test that createBooking doesn't create booking if dateFrom is before today
+	 * Test that after a booking is created, finder retrieves object
+	 */
 	public void testCreateBooking() {
-		//userId, dateFrom, dateTo, cabinId, beds
-		//TODO
+		Booking b1 = Booking.createBooking(u.id, RDate.fDt, RDate.fDt.plusDays(4), c.id, null);
+		Booking b2 = Booking.createBooking(new Long(1131), RDate.fDt.plusWeeks(1), RDate.fDt.plusWeeks(2), c.id, c.beds);
+		Booking b3 = Booking.createBooking(u.id, RDate.fDt.plusMonths(1), RDate.fDt.plusWeeks(3), c.id, c.beds);
+		Booking b4 = Booking.createBooking(u.id, DateTime.now().minusDays(1), DateTime.now().plusDays(1), c.id, c.beds);
+		Booking b5 = Booking.createBooking(u.id, RDate.fDt.plusMonths(2), RDate.fDt.plusWeeks(8), c.id, c.beds);
+		
+		assertNull(b1); //Test that createBooking doesn't create booking if beds is null and cabin type is largeCabin
+		assertNull(b2); //Test that createBooking doesn't create booking if user with userId not found
+		assertNull(b3); //Test that createBooking doesn't create booking if dateFrom predates dateTo
+		assertNull(b4); //Test that createBooking doesn't create booking if dateFrom before today
+		
+		//assertNotNull(Booking.find.byId(b5.id)); TODO find out why this doesn't work
 	}
 }

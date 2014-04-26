@@ -25,7 +25,6 @@ public class SmallCabin extends Cabin {
 		super(name);
 	}
 
-	
 	public boolean isAvailable(DateTime fromDate, DateTime toDate) {
 		for(Booking booking: this.bookings) {
 			if(utilities.DateHelper.isOverlap(fromDate, toDate, booking.dateFrom, booking.dateTo) && booking.status<Booking.CANCELLED)

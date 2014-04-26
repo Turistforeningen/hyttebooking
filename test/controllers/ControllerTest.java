@@ -20,40 +20,54 @@ import play.test.WithApplication;
 import static play.test.Helpers.*;
 
 public class ControllerTest extends WithApplication {
+	
+	SmallCabin sCabin;
+	LargeCabin lCabin;
+	User user;
+	
 	@Before
 	public void setUp() {
 		start(fakeApplication(inMemoryDatabase()));
+		sCabin = new SmallCabin("AvailabilityTestSmallCabin");
+		
+		lCabin = new LargeCabin("AvailabilityTestLargeCabin", 8);
+		user = new User("q@t","w", "t");
+
+		sCabin.save();
+		lCabin.save();
+		user.save();
+
+		System.out.println("SCabin is null?:"+(sCabin == null));
+		System.out.println("lCabin is null?:"+(lCabin == null));
+		System.out.println("user is null?:"+(user == null));
 	}
 
 	@Test
 	/** Note: Doesn't actually test the controllers, just copied the entire code and testing within here **/
 	public void TestGetAvailabilityForTimePeriodSmallCabin() {
 		//make smallCabin with zero bookings
-		SmallCabin sCabin = new SmallCabin("AvailabilityTest");
-		sCabin.save();
-		User user = new User("q@t","w", "t");
-		user.save();
 
 		/** add different bookings and test **/
-		DateTime s1 = new DateTime("2014-03-01");
-		DateTime e1 = new DateTime("2014-03-03");
+		DateTime s1 = new DateTime("2015-03-01");
+		DateTime e1 = new DateTime("2015-03-03");
+		System.out.println("BUT NOW! userisNull ="+(user == null) +" sCabinisNull ="+ (sCabin == null) );
 		Booking b1 = Booking.createBooking(user.id, s1, e1, sCabin.id, null);
 		b1.save();
 		b1.status = Booking.CANCELLED;
 		b1.update();
 		
-		DateTime s2 = new DateTime("2014-04-25");
-		DateTime e2 = new DateTime("2014-04-30");
+		DateTime s2 = new DateTime("2015-04-25");
+		DateTime e2 = new DateTime("2015-04-30");
 		Booking b2 = Booking.createBooking(user.id, s2, e2, sCabin.id, null);
 		b2.save();
 
-		DateTime s3 = new DateTime("2014-04-15");
-		DateTime e3 = new DateTime("2014-04-10");
-		Booking b3 = Booking.createBooking(user.id, s3, e3, sCabin.id, null);
-		b3.save();
+		//DateTime s3 = new DateTime("2015-04-15");
+		//DateTime e3 = new DateTime("2015-04-10");
+		//Booking b3 = Booking.createBooking(user.id, s3, e3, sCabin.id, null); Booking can't ha
+		//b3.save();
 
-		DateTime s4 = new DateTime("2014-03-29");
-		DateTime e4 = new DateTime("2014-04-05");
+		DateTime s4 = new DateTime("2015-03-29");
+		DateTime e4 = new DateTime("2015-04-05");
 		Booking b4 = Booking.createBooking(user.id, s4, e4, sCabin.id, null);
 		b4.save();
 
@@ -61,9 +75,9 @@ public class ControllerTest extends WithApplication {
 		String expectedResultString = "bookedDays "+expectedResultArray;
 		/** END adding bookings **/
 
-		//parameters that should be gotten from JSON object
-		DateTime startDate = new DateTime("2014-03-01");
-		DateTime endDate = new DateTime("2014-04-30");
+		//parameters that should be gotten from calendar module (query parameters)
+		DateTime startDate = new DateTime("2015-03-01");
+		DateTime endDate = new DateTime("2015-04-30");
 		long cabinId = sCabin.id;
 
 		/**Start of test code, any debugging here should be transferred to BookingController method**/
@@ -103,11 +117,7 @@ public class ControllerTest extends WithApplication {
 	/** Note: Doesn't actually test the controllers, just copied the entire code and testing within here **/
 	@Test
 	public void TestGetAvailabilityForTimePeriodLargeCabin() {
-		LargeCabin lCabin = new LargeCabin("AvailabilityTest", 8);
-		lCabin.save();
-		User user = new User("q@t","w", "t");
-		user.save();
-
+	
 		//parameters that should be gotten from JSON object
 		DateTime startDate = new DateTime("2015-03-01");
 		DateTime endDate = new DateTime("2015-03-28");
