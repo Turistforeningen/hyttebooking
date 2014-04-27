@@ -9,8 +9,8 @@
  * Contains methods for getting and canceling bookings.
  * 
  */
-angular.module('dntApp').controller('orderController', ['$scope','$location','$routeParams','bookingService', '$log',
-                                                        function ($scope, $location, $routeParams, bookingService, $log) {
+angular.module('dntApp').controller('orderController', ['$scope','$modal','$routeParams','bookingService', '$log',
+                                                        function ($scope, $modal, $routeParams, bookingService, $log) {
 	$scope.currentPage =1;
 	$scope.totalItems = 10;
 	$scope.itemsPerPage = 10;
@@ -42,7 +42,23 @@ angular.module('dntApp').controller('orderController', ['$scope','$location','$r
 			$scope.status = 'not found' + error.message;
 		});
 	};
-
+	
+	/*
+	 * send in url to template and json data the 
+	 * template will utilize
+	 */
+	$scope.openDialog = function (url, data) {
+		var modalInstance = $modal.open({
+			templateUrl: url,
+			controller: 'ModalInstanceCtrl',
+			resolve: {
+		        item: function () {
+		          return data;
+		        }
+		    }
+		});
+		return modalInstance
+	};
 	
 	function init() {
 		var pageNo = parseInt($routeParams.page);

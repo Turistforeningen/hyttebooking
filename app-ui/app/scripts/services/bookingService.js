@@ -37,6 +37,20 @@ angular.module('dntApp').factory('bookingService', ['$http', '$q','$log', functi
 		return deferred.promise;
 	},
 	
+	getOrderSummary: function(bookingId) {
+		var deferred = $q.defer();
+		var url = '/api/bookings/' + bookingId;
+		$http.get(url).success(function(data){
+			//Passing data to deferred's resolve function on successful completion
+			deferred.resolve(data);
+		}).error(function(error){
+
+			//Sending a friendly error message in case of failure
+			deferred.reject(error);
+		});
+		return deferred.promise;
+	},
+	
 	/**
      * @ngdoc method
      * @name dntApp.service#cancelOrder
