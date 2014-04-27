@@ -1,3 +1,5 @@
+'use strict';
+
 beforeEach(module('dntApp'));
 describe('headerController', function(){
 	var $scope, $location, $rootScope, createController;
@@ -23,13 +25,10 @@ describe('headerController', function(){
     });
 });
 
-
-'use strict';
-
 describe('orderController', function () {
 
 
-    var scope, fakeFactory, controller, q, deferred, routeParams;
+    var scope, fakeFactory, controller, q, deferred, routeParams, mockService;
 
     //Prepare the fake factory
     beforeEach(function () {
@@ -95,7 +94,7 @@ describe('orderController', function () {
 
 describe('bookingController', function () {
 	//unit test for bookingController
-	var scope, fakeFactory, controller, q, deferred, routeparams;
+	var scope, fakeFactory, controller, q, deferred, routeParams, mockService;
 
 	//Prepare the fake factory
     beforeEach(function () {
@@ -188,8 +187,9 @@ describe('bookingController', function () {
     beforeEach(inject(function ($rootScope, $controller, $q, $routeParams) {
         scope = $rootScope.$new();
         q = $q;
-        controller = $controller('bookingController', { $scope: scope, bookingService: mockService });
         routeParams = {};
+        controller = $controller('bookingController', { $scope: scope,$routeParams : routeParams, bookingService: mockService });
+        
     }));
 
     it('Check initial state of variables', function () {
