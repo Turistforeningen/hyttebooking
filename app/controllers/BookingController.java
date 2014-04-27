@@ -292,5 +292,18 @@ public class BookingController extends Controller {
 				 .transform(new DateTimeTransformer(), DateTime.class);
 		return Results.ok(orderDetailsSerializer.serialize(bookings));
 	}
+	
+	//@With(SecurityController.class)
+	public static Result getOrderSummary(Long bookingId) {
+		Booking b = Booking.find.byId(bookingId);
+		/*if(b.user.id.equals(SecurityController.getUser().id)) {
+			return Results.badRequest();
+		}*/
+		JSONSerializer orderDetailsSerializer = new JSONSerializer()
+		.include( )
+		.exclude("*.class", "user", "smallCabin")
+				 .transform(new DateTimeTransformer(), DateTime.class);
+		return Results.ok(orderDetailsSerializer.serialize(b));
+	}
 
 }

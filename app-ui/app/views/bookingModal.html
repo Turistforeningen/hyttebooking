@@ -42,7 +42,7 @@
                       'has-success': termForm.$submitted && termForm.cond.$valid}">
 
 			<input id="checkbox1" type="checkbox" name="cond" value="read"
-				ng-model="booking.termsAndConditions" ng-required="!booking.termsAndConditions"> <label
+				ng-model="data.termsAndConditions" ng-required="!data.termsAndConditions"> <label
 				class="control-label" for="checkbox1"> <p><i>Jeg har lest
 					og godkjenner Deres vilkår.</i></p></label>
 		</div>
@@ -54,8 +54,8 @@
 	<div class="row">
 		<div class="col-lg-8">
 			<div class="col-lg-12">
-				<dnt-price-viewer person-types="booking.guests"
-					from-date="booking.dateFrom" to-date="booking.dateTo"></dnt-price-viewer>
+				<dnt-price-viewer person-types="data.guests"
+					from-date="data.dateFrom" to-date="data.dateTo"></dnt-price-viewer>
 			</div>
 		</div>
 	</div>

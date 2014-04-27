@@ -3,9 +3,9 @@
 
 angular.module('dntApp').controller( 'ModalInstanceCtrl', ['$scope','$modalInstance','$log','item',
                          function ($scope, $modalInstance,$log, item) {
-	$scope.booking = item;
+	$scope.data = item;
 	$scope.selected = {
-			item: $scope.booking
+			item: $scope.data
 		};
 
 	$scope.ok = function () {
