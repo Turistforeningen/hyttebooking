@@ -26,6 +26,8 @@ public class SmallCabin extends Cabin {
 	}
 
 	public boolean isAvailable(DateTime fromDate, DateTime toDate) {
+		if(!utilities.DateHelper.valid(fromDate, toDate))
+			return false;
 		for(Booking booking: this.bookings) {
 			if(utilities.DateHelper.isOverlap(fromDate, toDate, booking.dateFrom, booking.dateTo) && booking.status<Booking.CANCELLED)
 				return false;
@@ -70,6 +72,9 @@ public class SmallCabin extends Cabin {
 	 */
 	public static List<Booking> findAllBookingsForCabinGivenDate(long cabinId, DateTime fromDate, DateTime toDate)
 	{
+		if(!utilities.DateHelper.valid(fromDate, toDate))
+			return null; //return empty list? TODO
+		
 		Cabin cabin = Cabin.find.byId(cabinId);
 		List<Booking> bookings = new ArrayList<Booking>();
 

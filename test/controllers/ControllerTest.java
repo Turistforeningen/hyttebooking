@@ -46,7 +46,7 @@ public class ControllerTest extends WithApplication {
 		/** add different bookings and test **/
 		DateTime s1 = new DateTime("2015-03-01");
 		DateTime e1 = new DateTime("2015-03-03");
-		System.out.println("BUT NOW! userisNull ="+(user == null) +" sCabinisNull ="+ (sCabin == null) );
+
 		Booking b1 = Booking.createBooking(user.id, s1, e1, sCabin.id, null);
 		b1.save();
 		b1.status = Booking.CANCELLED;
@@ -107,7 +107,7 @@ public class ControllerTest extends WithApplication {
 		
 		//System.out.println("ACTUAL: "+Arrays.toString(smallCabinBookedDays));
 		//System.out.println("EXPECTED: "+Arrays.toString(expectedResultArray));
-		assertArrayEquals(smallCabinBookedDays, expectedResultArray);
+		assertArrayEquals(expectedResultArray, smallCabinBookedDays);
 	}
 
 	/** Note: Doesn't actually test the controllers, just copied the entire code and testing within here **/

@@ -118,6 +118,7 @@ public class ComponentTest extends WithApplication {
 	}
 	
 	@Test
+	//TODO already tested customer-booking linking in Payment, consider removing
 	public void checkBookingCustomerRelationship() {
 		LargeCabin cabin = new LargeCabin("p", 10);
 		cabin.save();
@@ -148,25 +149,9 @@ public class ComponentTest extends WithApplication {
 		List<Bed> b = cabin.beds;
 		assertNotNull(b.get(0).largeCabin);
 	}
-	
-	@Test
-	public void TestCabinDeleteToSeeIfBedsAreDeleted() {
 		
-		LargeCabin cabin = new LargeCabin("bladet", 10);
-		cabin.save();
-		long id = cabin.id;
-		cabin = (LargeCabin)Cabin.find.byId(id);
-		long bedId = cabin.beds.get(0).id;
-		cabin.delete();
-		//System.out.println("cabin deleted?");
-		assertNull(Cabin.find.byId(id));
-		//System.out.println("bedDeleted");
-		assertNull(Bed.find.byId(bedId));
-		
-	}
-	
 	@Test
-	public void DeleteCabinWillDeleteBedsCheck() {
+	public void deleteCabinWillDeleteBeds() {
 		LargeCabin cabin = new LargeCabin("fjorden", 10);
 		cabin.save();
 		Long id = cabin.id;
@@ -185,7 +170,7 @@ public class ComponentTest extends WithApplication {
 	}
 	
 	@Test
-	public void CancelledBookingWillNotBeReturnedInOrderHistory() {
+	public void cancelledBookingWillNotBeReturnedInOrderHistory() {
 		
 		SmallCabin sCabin = new SmallCabin("Hei");
 		sCabin.save();
@@ -200,10 +185,10 @@ public class ComponentTest extends WithApplication {
 		//System.out.println(bookingSizeForUser + " --------");
 		//System.out.println(bookingNewSize + " --------");
 		assertNotEquals(bookingSizeForUser, bookingNewSize);
-	
 	}
 	
-	/** Tests that findAllBookingsForCabinGivenDate in Cabin returns correct lists within given daterange **/
+	/*
+	/** Tests that findAllBookingsForCabinGivenDate in Cabin returns correct lists within given daterange 
 	@Test
 	public void TestFindAllBookingsForCabinGivenDate() {
 		SmallCabin sCabin = new SmallCabin("ErBookinglistHytte");
@@ -216,9 +201,11 @@ public class ComponentTest extends WithApplication {
 		assertTrue(bookingsShouldBeEmpty.isEmpty());
 		assertFalse(bookingsNotEmpty.isEmpty()); 
 	}
+	*/
 	
 	@Test
-	public void TestMakeServeralBookingsForDifferentCabins() {
+	//TODO maybe replace
+	public void TestMakeSeveralBookingsForDifferentCabins() {
 		
 		User user1 = new User("tt", "ww", "John Doe");
 		user1.save();
