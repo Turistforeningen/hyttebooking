@@ -152,6 +152,7 @@ angular.module('dntBookingModule', [])
 			}],
 
 		link: function(scope, elem, attrs) {
+				
 				scope.setPerson(scope.data);
 				
 				scope.$watch('data', function(newValue, oldValue) {
