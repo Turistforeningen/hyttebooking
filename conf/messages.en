@@ -23,3 +23,9 @@ cabin.invalidType           = Type parameter invalid
 cabin.missingName           = Missing name parameter in json
 
 payment.bookingNotFound     = Booking your trying to pay for, not found
+payment.registerException   = Could not register payment with Nets
+payment.authenticateException= Could not authenticate payment with Nets
+payment.authenticateSuccess = Payment successful
+Payment.missingTransId      = Missing transactionId needed for authentication
+payment.timedOut            = You took to long to pay, booking timed out
+payment.cantContactNets     = Can't get proper response from nets

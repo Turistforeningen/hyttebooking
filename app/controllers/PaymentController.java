@@ -88,7 +88,7 @@ public class PaymentController extends Controller {
 							return ok(result);
 						}
 						else {
-							return badRequest(JsonMessage.error(exception));	
+							return badRequest(JsonMessage.error(Messages.get("payment.registerException")));	
 						}
 					}
 				}
@@ -113,17 +113,17 @@ public class PaymentController extends Controller {
 		
 		String transactionId = json.get("transactionId").asText();
 		if(transactionId == null) {
-			return Promise.pure((Result)badRequest(JsonMessage.error("No transactionId sent"))); 
+			return Promise.pure((Result)badRequest(JsonMessage.error(Messages.get("payment.missingTransId")))); 
 		}
 		//check if p contains a booking (Check if the transactionId is a valid id at all.
 		final Payment p = Payment.find.where().eq("transactionId", transactionId).findUnique();
 		if(p.booking.status.equals(Booking.TIMEDOUT)) {
-			return Promise.pure((Result)badRequest(JsonMessage.error("You took to long to pay, booking timed out"))); 
+			return Promise.pure((Result)badRequest(JsonMessage.error(Messages.get("payment.timedOut")))); 
 		}
 		
 		String responseCode = json.get("responseCode").asText();
 		if(!responseCode.equals("OK")) {
-			return Promise.pure((Result)badRequest(JsonMessage.error("Problem with payment, cannot authenticate payment"))); 
+			return Promise.pure((Result)badRequest(JsonMessage.error(Messages.get("payment.authenticateException")))); 
 		}
 		
 		//async  call to netAxcept
@@ -140,17 +140,17 @@ public class PaymentController extends Controller {
 								Document dom = response.asXml();
 
 								if(dom == null) {
-									return badRequest(JsonMessage.error("Cant get proper response from nets"));
+									return badRequest(JsonMessage.error(Messages.get("payment.cantContactNets ")));
 								}
 
 								String exception = XPath.selectText("//Exception", dom);
 								if(exception.equals("")) {
 									p.booking.status = Booking.PAID;
 									p.booking.update();
-									return ok(JsonMessage.success("payment authenicated"));
+									return ok(JsonMessage.success(Messages.get("payment.authenticateSuccess")));
 								}
 								else {
-									return badRequest(JsonMessage.error(XPath.selectText("//Message", dom)));
+									return badRequest(JsonMessage.error(Messages.get("payment.authenticateException")));
 
 								}
 							}
