@@ -36,10 +36,6 @@ public class ControllerTest extends WithApplication {
 		sCabin.save();
 		lCabin.save();
 		user.save();
-
-		System.out.println("SCabin is null?:"+(sCabin == null));
-		System.out.println("lCabin is null?:"+(lCabin == null));
-		System.out.println("user is null?:"+(user == null));
 	}
 
 	@Test

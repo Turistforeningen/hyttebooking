@@ -46,7 +46,13 @@ public class Payment extends Model {
 		return this.transactionId;
 	}
 	
-	public static void createPaymentForBooking(User user, Booking b, double amount) {
+	public static Payment createPaymentForBooking(User user, Booking b, double amount) {
+		if(user == null || b == null || amount < 0.0) {
+			return null;
+		}
+		if(b.user.id != user.id) {
+			return null;
+		}
 		Payment p = new Payment();
 		p.date = DateTime.now();
 		p.user = user;
@@ -55,5 +61,7 @@ public class Payment extends Model {
 		p.save();
 		b.payment = p;
 		b.update();
+	
+		return p;
 	}
 }
