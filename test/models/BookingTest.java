@@ -98,13 +98,12 @@ public class BookingTest extends WithApplication {
 		Booking b2 = Booking.createBooking(new Long(1131), RDate.fDt.plusWeeks(1), RDate.fDt.plusWeeks(2), c.id, c.beds);
 		Booking b3 = Booking.createBooking(u.id, RDate.fDt.plusMonths(1), RDate.fDt.plusWeeks(3), c.id, c.beds);
 		Booking b4 = Booking.createBooking(u.id, DateTime.now().minusDays(1), DateTime.now().plusDays(1), c.id, c.beds);
-		Booking b5 = Booking.createBooking(u.id, RDate.fDt.plusMonths(2), RDate.fDt.plusWeeks(8), c.id, c.beds);
+		Booking b5 = Booking.createBooking(u.id, RDate.fDt.plusMonths(1), RDate.fDt.plusWeeks(8), c.id, c.beds);
 		
 		assertNull(b1); //Test that createBooking doesn't create booking if beds is null and cabin type is largeCabin
 		assertNull(b2); //Test that createBooking doesn't create booking if user with userId not found
 		assertNull(b3); //Test that createBooking doesn't create booking if dateFrom predates dateTo
 		assertNull(b4); //Test that createBooking doesn't create booking if dateFrom before today
-		
-		//assertNotNull(Booking.find.byId(b5.id)); TODO find out why this doesn't work
+		assertEquals(b5.id, Booking.find.byId(b5.id).id); //Test that after a booking is created, finder retrieves object
 	}
 }

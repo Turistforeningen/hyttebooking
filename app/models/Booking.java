@@ -191,7 +191,7 @@ public class Booking extends Model {
 
 		if ( b.user == null )
 			return null;
-		if ( dateTo.isBefore(dateFrom) || dateFrom.isBefore(DateTime.now()) )
+		if (!utilities.DateHelper.valid(dateFrom, dateTo)) //if date isn't valid
 			return null;
 		if( cabin instanceof SmallCabin ) {
 			b.smallCabin = (SmallCabin)cabin;

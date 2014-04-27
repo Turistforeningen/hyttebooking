@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 import static play.test.Helpers.fakeApplication;
 import static play.test.Helpers.inMemoryDatabase;
 import play.test.WithApplication;
+import models.RDate;
 
 import org.joda.time.DateTime;
 import org.junit.Before;
@@ -47,4 +48,14 @@ public class DateHelperTest extends WithApplication  {
 		assertEquals(0, utilities.DateHelper.getIndex(start, a, c)[1]); //days between start and c
 	}
 	
+	@Test
+	public void testValid() {
+		DateTime pivot = RDate.fDt;
+		DateTime after = RDate.fDt.plusDays(10);
+		DateTime before = RDate.fDt.minusDays(10);
+		
+		assertTrue(utilities.DateHelper.valid(pivot, after));
+		assertFalse(utilities.DateHelper.valid(pivot, before));
+		assertTrue(utilities.DateHelper.valid(DateTime.now().withTimeAtStartOfDay().plus(1), after));
+	}
 }

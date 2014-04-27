@@ -37,6 +37,8 @@ public class Bed extends Model  {
 	 */
 	public boolean isAvailable(DateTime fromDate, DateTime toDate) {
 
+		if(!utilities.DateHelper.valid(fromDate, toDate)) //if date not valid
+			return false;
 		for(Booking booking: bookings) //check through all bookings related to this bed and see if daterange overlap
 			if(utilities.DateHelper.isOverlap(fromDate, toDate, booking.dateFrom, booking.dateTo) && booking.status<Booking.CANCELLED)
 				return false;

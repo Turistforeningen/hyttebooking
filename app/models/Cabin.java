@@ -50,6 +50,9 @@ public abstract class Cabin extends Model {
 	 * @return
 	 */
 	public static Page<Booking> findAllBookingsForCabin(Long cabinId, int page, int pageSize) {
+		if(page < 0 || pageSize < 0) 
+			return null;
+		
 		Cabin cabin = Cabin.find.byId(cabinId);
 		Page<Booking> bookingPage = new Page<Booking>();
 		if(cabin instanceof SmallCabin) {
@@ -75,6 +78,9 @@ public abstract class Cabin extends Model {
 	}
 
 	public static Page<Cabin> findAllCabins(int page, int pageSize) {
+		if(page < 0 || pageSize < 0)
+			return null;
+		
 		Page<Cabin> cabins = new Page<Cabin>();
 		cabins.data = Cabin.find.where()
 				.findPagingList(pageSize)
