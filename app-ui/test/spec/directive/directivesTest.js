@@ -58,7 +58,8 @@ describe('dntSelector', function () {
         beforeEach(function() {
             compileDirective();
         });
-        // a single test example, check the produced DOM
+       //all tests below only checks correct behavior for controller.
+        //view and controller together will be tested using E2E tests
         it('watch should detect changes nr of the person types json', function() {
         	var dirScope = elm.isolateScope()
         	spyOn(dirScope, 'constructRange').andCallThrough();
@@ -86,6 +87,23 @@ describe('dntSelector', function () {
         	expect(dirScope.range(0).length).toBe(1);
         	expect(dirScope.range(10).length).toBe(11);
         });
+        
+        it('should return an array from 0 - x value', function() {
+        	var dirScope = elm.isolateScope()
+        	var randNrSelected = Math.floor((Math.random()*10)+1);
+        	console.log(randNrSelected + " ,random number selected for test")
+        	dirScope.person[0].nr = randNrSelected;
+        	scope.$digest();
+        	var range = dirScope.range(0);
+        	for (var i= 0; i<=randNrSelected; i++) {
+        		expect(range[i]).toBe(i);
+        	}
+        	var range2 = dirScope.range(randNrSelected);
+        	for (var i = 0; i<=10; i++) {
+        		expect(range2[i]).toBe(i);
+        	}
+        });
+        
         
         
     });
