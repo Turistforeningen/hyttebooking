@@ -24,3 +24,9 @@ cabin.invalidType           = Type parameter ugyldig
 cabin.missingName           = Mangler name-parameter i json
 
 payment.bookingNotFound     = Reservasjon du prøver å betale finnes ikke
+payment.registerException   = Klarte ikke å registrere betalingen hos Nets
+payment.authenticateException= Klarte ikke å autentisere betalingen hos Nets
+payment.authenticateSuccess = Betaling autentisert
+payment.missingTransId      = Mangler transaksjons id
+payment.timedOut            = Du brukte for lang tid på å betale, ingen reservasjon er blitt gjort
+payment.cantContactNets     = Klarer ikke å opprette kontakt med Nets
