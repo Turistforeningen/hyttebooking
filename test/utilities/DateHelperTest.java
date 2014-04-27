@@ -58,4 +58,19 @@ public class DateHelperTest extends WithApplication  {
 		assertFalse(utilities.DateHelper.valid(pivot, before));
 		assertTrue(utilities.DateHelper.valid(DateTime.now().withTimeAtStartOfDay().plus(1), after));
 	}
+	
+	@Test
+	public void testIsOverLap() {
+		//TODO 
+		//La oss det finnes en booking fra fredag til søndag
+		//Også søker vi om det finnes bookings i tidsrommet mandag-fredag 
+		//burde den bookingen fra fredag til søndag returnere true?
+		
+		/*
+		 * ##### BOOKING: 20150305 #-# 20150402
+		 * ##### SEARCH: 20150101 #-# 20150305
+		 * ##### OVERLAP? false
+		 * Do we want this to be true?
+		 */
+	}
 }
