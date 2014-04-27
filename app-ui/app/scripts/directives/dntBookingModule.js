@@ -73,7 +73,7 @@ angular.module('dntBookingModule', [])
 			'<div class="row">'+
 			'<div class="col-lg-12 col-md-12">'+
 			'<br>'+
-			'<a ng-click="toggleCollapsed()" href="" ng-controller="TooltipDemoCtrl" tooltip-placement="top" tooltip-html-unsafe="{{tooltipNoneMember}}" tooltip-popup-delay="1200">Ikke medlem?</a>'+
+			'<a id="toggle" ng-click="toggleCollapsed()" href="" ng-controller="TooltipDemoCtrl" tooltip-placement="top" tooltip-html-unsafe="{{tooltipNoneMember}}" tooltip-popup-delay="1200">Ikke medlem?</a>'+
 			'<br><br>'+
 			'<div collapse="isCollapsed">'+
 			'<div class="row" ng-repeat="per in person.slice(hider)">'+
@@ -100,7 +100,7 @@ angular.module('dntBookingModule', [])
 				};
 				$scope.setPerson = function(person) {;
 					$scope.person = person;
-					constructRange();
+					$scope.constructRange();
 				};
 				
 				$scope.bedsLeft = function() {
@@ -118,12 +118,12 @@ angular.module('dntBookingModule', [])
 				
 				//Called at least once during a digest cycle. Returns appropriate options for pull down
 				$scope.range = function(NumberValueChosen) {
-					return ranges[NumberValueChosen];
+					return $scope.ranges[NumberValueChosen];
 				};
 				
-				var ranges = [];
+				$scope.ranges = [];
 				//constructs all the different ranges/options for the different drop downs
-				var constructRange = function() {
+				$scope.constructRange = function() {
 					var bedsLeft = $scope.bedsLeft();
 					var nrOfBedsChosen = $scope.beds - bedsLeft;
 					$scope.$emit('nrOfBedsChosenEvent', nrOfBedsChosen);
@@ -138,14 +138,14 @@ angular.module('dntBookingModule', [])
 						for (var i = 0; i <= end; i++) {
 							result.push(i);
 						}
-						ranges[value.nr] = result; 
+						$scope.ranges[value.nr] = result; 
 					 });
 				}
 				
 				//Every time there has been a change in the person model (i.e a new number of persons attending), 
 				//drop down options has to be updated
 				$scope.$watch('person', function() {
-					constructRange();
+					$scope.constructRange();
 					
 				}, true);
 				
