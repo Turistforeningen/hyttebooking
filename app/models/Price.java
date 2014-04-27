@@ -28,8 +28,7 @@ public class Price extends Model {
 	@Constraints.Required
 	public double memberPrice;
 	
-	public Price(Long id, String guestType, String ageRange, double nonMemberPrice, double memberPrice) {
-		this.id = id;
+	public Price(String guestType, String ageRange, double nonMemberPrice, double memberPrice) {
 		this.guestType = guestType;
 		this.ageRange = ageRange;
 		this.nonMemberPrice = nonMemberPrice;

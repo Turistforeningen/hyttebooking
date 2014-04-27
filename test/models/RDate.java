@@ -11,5 +11,5 @@ import org.joda.time.DateTime;
  */
 public class RDate {
 
-	final static DateTime fDt = new DateTime(DateTime.now().getYear()+1+"-01-01").withTimeAtStartOfDay(); /** Always set to jan 1 of the next year **/
+	public final static DateTime fDt = new DateTime(DateTime.now().getYear()+1+"-01-01").withTimeAtStartOfDay(); /** Always set to jan 1 of the next year **/
 }

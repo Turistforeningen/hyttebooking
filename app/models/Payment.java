@@ -16,7 +16,6 @@ public class Payment extends Model {
 	@Id 
 	public Long id;
 	
-	
 	@Constraints.Required
 	public double amount;
 	
@@ -57,6 +56,4 @@ public class Payment extends Model {
 		b.payment = p;
 		b.update();
 	}
-	
-	
 }
