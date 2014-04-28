@@ -34,7 +34,6 @@ public class ConnectController extends Controller {
 	 * @response ("er_autentisert" : true) The user was authenticated and has usable information
 	 */
 	public static Result setupLogin() throws Exception {
-		//System.out.println("SECRET KEY " +decodedBytes);
 		AESBouncyCastle aes = new AESBouncyCastle(SECRETKEY); /** The encryption helper class **/
 		ObjectNode data = Json.newObject();
 		data.put("timestamp", getTimeStamp()); //not containing redirect URL right now, add "put("redirect_url", getRedirectUrl()" as needed
@@ -45,34 +44,6 @@ public class ConnectController extends Controller {
 		ObjectNode retNode = Json.newObject();
 		retNode.put("redirectUrl", ""+SIGNON+EncodeURL(encrJson64));
 		return ok(retNode);
-		
-		
-		/*final Promise<Result> resultPromise = WS.url(SIGNON).
-				setQueryParameter("client", CLIENT).
-				setQueryParameter("data", encrJson64).
-				get().map(
-						new Function<WS.Response, Result>() {
-							public Result apply(WS.Response response) throws Exception {
-								AESBouncyCastle aes = new AESBouncyCastle(SECRETKEY);
-								//Here we decrypt the JSON
-								int ctLength = 0; //TODO WE NEED TO KNOW HOW LONG THE PLAINTEXT IS BEFORE DECRYPTING, ASK DNT!
-								String encrJson64 = response.getBody();
-								byte[] encrJson = DatatypeConverter.parseBase64Binary(encrJson64); //decode base64
-								String jsonString = new String(aes.decrypt(ctLength, encrJson));
-								JsonNode json = Json.parse(jsonString);
-								if(authenticated(json)) {
-									//user was authenticated, from here on we have a sherpa id to associate with our own user id
-									//TODO
-								} else {
-									return unauthorized();
-								}
-								System.out.println(response.getBody());
-								return ok(response.getBody());
-							}
-						}
-						);
-		return resultPromise;
-		*/
 	}
 
 	/**
