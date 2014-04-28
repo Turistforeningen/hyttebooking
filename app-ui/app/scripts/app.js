@@ -35,15 +35,11 @@ angular.module('dntApp').config(['$routeProvider', '$locationProvider', '$httpPr
 	})
 	.when('/admin', {
 		controller: 'adminViewController',
-		templateUrl: '/views/adminView.html'
+		templateUrl: '/views/admin/adminView.html'
 	})
 	.when('/admin/cabin/:id', {
-		controller: 'adminViewController',
-		templateUrl: '/views/adminView.html'
-	})
-	.when('/calendar', {
-		controller: 'bookingController',
-		templateUrl: '/views/calendar.html'
+		controller: 'cabinDetailsController',
+		templateUrl: '/views/admin/cabinDetails.html'
 	})
 	.when('/termsAndConditions', {
 		controller: '',

@@ -2,14 +2,18 @@ package controllers;
 
 
 
+import java.util.HashMap;
+
+import org.joda.time.DateTime;
+
 import models.Booking;
 import models.Cabin;
-
 import flexjson.JSONSerializer;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.With;
 import utilities.CabinForm;
+import utilities.DateTimeTransformer;
 import utilities.Page;
 
 @With(SecurityController.class)
@@ -36,7 +40,8 @@ public class AdminController extends Controller {
 		return ok(cabinSerializer.serialize(cabins));
 	}
 	
-	
+	//TODO: Possibly split into getCabin and getCabinBookings ... rest: /api/cabins/:id/bookings and /api/cabins/:id
+	//what is more efficient
 	/**
 	 * Controller method can only be accessed by users with
 	 * admin privileges. Finds all bookings for a given cabin
@@ -52,11 +57,16 @@ public class AdminController extends Controller {
 		int pageSize = Page.pageSizeHelper(request().getQueryString("size"));
 		 System.out.println(pageSize + " ------------------");
 		Page<Booking> bookingsAtCabin = Cabin.findAllBookingsForCabin(id, page, pageSize);
+		Cabin cabin = Cabin.find.byId(id);
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		map.put("cabin", cabin);
+		map.put("bookingList", bookingsAtCabin);
 		JSONSerializer bookingSerializer = new JSONSerializer()
 		.include("data" )
-		.exclude("*.class", "data.smallCabin", "data.cabin");
+		.exclude("*.class", "bookingList.data.smallCabin", "bookingList.data.cabin")
+		.transform(new DateTimeTransformer(), DateTime.class);
 		
-		return ok(bookingSerializer.serialize(bookingsAtCabin));
+		return ok(bookingSerializer.serialize(map));
 	}
 	
 	/**

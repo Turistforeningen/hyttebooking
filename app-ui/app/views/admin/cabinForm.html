@@ -1,0 +1,46 @@
+<div class="row" ng-controller="cabinFormController">
+	<div ng-show="show" class="well well-lg">
+	<div class ="row">
+		<div class="row">
+			<div class="col-md-8">
+				<label for="cabinId">DNT cabin Id</label> <input id="cabinId"
+					type="text" class="form-control" placeholder="id"
+					ng-model="newCabin.id">
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-4">
+				<label for="cabinName">cabin name</label> <input id="cabinName"
+					type="text" class="form-control" placeholder="name"
+					ng-model="newCabin.name">
+			</div>
+			<div class="col-md-4">
+				<label for="beds">Number of beds in cabin</label> <input id="beds"
+					type="number" class="form-control" placeholder="beds"
+					ng-model="newCabin.beds">
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-4">
+				<div class="radio">
+					<label> <input type="radio" name="cabinType" id="type1"
+						value="SmallCabin" checked ng-model="newCabin.type"> small
+						cabin (Only booked as a whole)
+					</label>
+				</div>
+
+				<div class="radio">
+					<label> <input type="radio" name="cabinType" id="type2"
+						value="LargeCabin" ng-model="newCabin.type"> large cabin
+						(Booked by beds)
+					</label>
+				</div>
+			</div>
+			
+				
+			
+		</div>
+		<button type="submit" class="btn btn-primary"
+                    ng-click="addCabin(newCabin)">Add</button>
+	</div>
+</div>

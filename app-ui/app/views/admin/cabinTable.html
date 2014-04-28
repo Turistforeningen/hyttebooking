@@ -1,0 +1,48 @@
+<div class="row rowSpace">
+    <div class="col-md-6"><h2 class="vertAlign">Cabins</h2></div>
+    <div class="col-md-6">
+    <button type="button" class="btn btn-primary pull-right" ng-click="showCabinForm()"> add
+  <span class="glyphicon glyphicon-plus"></span></button></div>
+   
+</div>
+ <ng-include src="'/views/admin/cabinForm.html'">
+        </ng-include>
+<div class="row">
+	<table class="table table-hover">
+		<thead>
+			<tr>
+				<th>ID</th>
+				<th>Name</th>
+				<th>Type</th>
+				<th>Beds</th>
+				<th>Active bookings</th>
+				<th class="text-right">Options</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="cabin in cabins">
+				<td>{{cabin.id}}</td>
+				<td>{{cabin.name}}</td>
+				<td>{{cabin.cabinType}}</td>
+				<td>{{cabin.nrOfBeds}}</td>
+				<td>{{cabin.nrActiveBookings}}</td>
+				<td class="text-right">
+					<button class="btn btn-default" ng-click="viewCabin(cabin.id)">
+						View details</button>
+					
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+</div>
+<div class="row">
+	<div class="row" ng-if="totalItems > itemsPerPage">
+		<pagination on-select-page="setPage(page)" total-items="totalItems"
+			page="currentPage" items-per-page="itemsPerPage"></pagination>
+	</div>
+</div>
+
+</div>
+
+

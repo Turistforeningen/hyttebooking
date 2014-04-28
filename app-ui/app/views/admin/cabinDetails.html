@@ -1,0 +1,100 @@
+<div class="container whole">
+	<div class="row">
+		    <h1>{{cabinDetails.name}}</h1>
+		    <div class="row well">
+		    <div class="col-md-4 text-center"><p>number of active bookings <span class="label label-success">{{cabinDetails.nrActiveBookings}}</span></p></div>
+		    <div class="col-md-4 text-center"><p>type <span class="label label-success">{{cabinDetails.cabinType}}</span></p></div>
+            <div class="col-md-4 text-center"><p>number of bookable beds <span class="label label-success">{{cabinDetails.nrOfBeds}}</span></p></div>
+            </div>
+		    <a href="#/admin">admin home</a>
+			<h2>Price categories</h2>
+			<table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>id</th>
+                    <th>type</th>
+                    <th>member price</th>
+                    <th>non-member price</th>
+                    <th class="text-right">options</th>                 
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="p in priceCategories">
+                    <td>{{p.id}}</td>
+                    <td>{{p.guestType}}</td>
+                    <td>{{p.memberPrice}}</td>
+                    <td>{{p.nonMemberPrice}}</td>
+                    <td class="text-right">
+                        <div class="btn-group text-left">
+                            <button type="button" class="btn btn-default dropdown-toggle"
+                                data-toggle="dropdown">
+                                Options <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu " role="menu">
+                                <li><a ng-click="">Change prices</a></li>
+                                <li><a ng-click="">Remove category</a></li>
+                            </ul>
+                        </div>
+                    </td> 
+                </tr>
+            </tbody>
+        </table>
+	
+		<h2>Active bookings</h2>
+		<table class="table table-hover">
+			<thead>
+				<tr>
+					<th>id</th>
+					<th>creation</th>
+					<th>name</th>
+					<th>from</th>
+					<th>to</th>
+					<th># of beds</th>
+					<th>status</th>
+					<th class="text-right">Options</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="booking in cabinBookings">
+					<td>{{booking.id}}</td>
+					<td>{{booking.timeOfBooking |date}}</td>
+					<td>{{booking.user.emailAddress}}</td>
+					<td>{{booking.dateFrom | date}}</td>
+					<td>{{booking.dateTo | date}}</td>
+					<td>{{booking.nrOfBeds}}</td>
+					<td ng-if="booking.status == 0"><span
+						class="label label-warning">Booked</span></td>
+					<td ng-if="booking.status == 1"><span
+						class="label label-success">Paid</span></td>
+					<td ng-if="booking.status == 2"><span
+						class="label label-danger">Cancelled</span></td>
+					<td ng-if="booking.status == 3"><span
+						class="label label-default">Timed out</span></td>
+					<td class="text-right">
+						<div class="btn-group text-left">
+							<button type="button" class="btn btn-default dropdown-toggle"
+								data-toggle="dropdown">
+								Options <span class="caret"></span>
+							</button>
+							<ul class="dropdown-menu" role="menu">
+								<li><a ng-click="">view receipt</a></li>
+								<li><a ng-click="">send e-mail</a></li>
+								<li class="divider"></li>
+								<li><a ng-click="">cancel booking</a></li>
+							</ul>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<div class="row" ng-if="totalItems > itemsPerPage">
+		<pagination on-select-page="setPage(page)" total-items="totalItems"
+			page="currentPage" items-per-page="itemsPerPage"></pagination>
+	</div>
+	
+	<div ng-if="cabinDetails.cabinType != 'small" class="row">
+	   <h2>Cabin options</h2>
+	   <p>Add bed<p> <p>remove bed</p> <p>
+	</div>
+</div>

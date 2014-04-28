@@ -54,7 +54,7 @@ public class SmallCabin extends Cabin {
 				.where()
 				.eq("smallCabin", this)
 				.gt("dateFrom", DateTime.now())
-				.ne("status", Booking.CANCELLED)
+				.lt("status", Booking.CANCELLED)
 				.findRowCount();
 	}
 
