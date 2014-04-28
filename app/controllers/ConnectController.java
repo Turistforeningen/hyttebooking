@@ -1,7 +1,5 @@
 package controllers;
 
-import java.io.IOException;
-
 import org.joda.time.Instant;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -17,7 +15,6 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import sun.misc.BASE64Decoder;
 import utilities.AESBouncyCastle;
-import utilities.Payload;
 
 /**
  * Controller class for DNT Connect for logging users in.
@@ -29,35 +26,7 @@ public class ConnectController extends Controller {
 	private static final String SIGNON = "https://www.turistforeningen.no/connect/signon/" +CLIENT + "&data=";
 	private static final byte[] SECRETKEY = DatatypeConverter.parseBase64Binary(play.Play.application().configuration().getString("application.secretKey"));
 	//private static final String REDIRECT_URL TODO: Currently leaving out redirect in order to have default redirect url
-
-	/**
-	 * Method used for testing connection to DNT connect, currently not working due to paylad
-	 * encryption not being complete.
-	 * @return
-	 */
-	public static Promise<Result> testConnect() throws Exception { 
-		AESBouncyCastle aes = new AESBouncyCastle(SECRETKEY);
-
-		String jsonString = "{\"timestamp\": "+getTimeStamp()+"}";
-		System.out.println("Json: "+jsonString);
-		
-		byte[] encr = aes.encrypt(jsonString.getBytes("UTF-8"));
-		String data = DatatypeConverter.printBase64Binary(encr);
-		System.out.println("encrJsonBase64: "+data);
-		
-		final Promise<Result> resultPromise = WS.url(SIGNON).
-				setQueryParameter("client", CLIENT).
-				setQueryParameter("data", data).
-				get().map(
-						new Function<WS.Response, Result>() {
-							public Result apply(WS.Response response) {
-								System.out.println(response.getBody());
-								return ok(response.getBody());
-							}
-						}
-						);
-		return resultPromise;
-	}
+	
 	public static String EncodeURL(String url) throws java.io.UnsupportedEncodingException {
 	    url = java.net.URLEncoder.encode(url, "UTF-8");
 	    return url;
