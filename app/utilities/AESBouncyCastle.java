@@ -18,6 +18,7 @@ import javax.xml.bind.DatatypeConverter;
  */
 public class AESBouncyCastle {
 	
+	byte[] iv = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 	public final static int IV_BLOCK_SIZE = 16;
 	SecretKeySpec key;
 	Cipher cipher;
@@ -29,15 +30,18 @@ public class AESBouncyCastle {
 		Security.addProvider(new BouncyCastleProvider());
 
 		this.key = new SecretKeySpec(keyBytes, "AES");
+		System.out.println("##### KEY SIZE = "+keyBytes.length*8+" bit #####");
 		this.cipher = Cipher.getInstance("AES/ECB/PKCS7Padding", "BC");
+		if(iv.length != IV_BLOCK_SIZE)
+			System.out.println("######## WARNING! iv AND IV_BLOCK_SIZE DIFFER! #########");
 	}
 	
 	/**
 	 * Gets iv, encrypts input array and appends the iv to the encrypted array
 	 */
 	public byte[] encrypt(byte[] input) throws Exception {
-		cipher.init(Cipher.ENCRYPT_MODE, key);
-		byte[] iv = cipher.getIV();
+		
+		cipher.init(Cipher.ENCRYPT_MODE, key, new IvParameterSpec(iv));
 		byte[] data = cipher.doFinal(input);
 		byte[] cipherText = new byte[iv.length+data.length];
 		
