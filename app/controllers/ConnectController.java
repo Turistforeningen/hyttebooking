@@ -41,8 +41,8 @@ public class ConnectController extends Controller {
 		String jsonString = "{\"timestamp\": "+getTimeStamp()+"}";
 		System.out.println("Json: "+jsonString);
 		
-		Payload payload = aes.encrypt(jsonString.getBytes("UTF-8"));
-		String data = DatatypeConverter.printBase64Binary(payload.getCipherText());
+		byte[] encr = aes.encrypt(jsonString.getBytes("UTF-8"));
+		String data = DatatypeConverter.printBase64Binary(encr);
 		System.out.println("encrJsonBase64: "+data);
 		
 		final Promise<Result> resultPromise = WS.url(SIGNON).
@@ -78,8 +78,8 @@ public class ConnectController extends Controller {
 		AESBouncyCastle aes = new AESBouncyCastle(decodedBytes); /** The encryption helper class **/
 		ObjectNode data = Json.newObject();
 		data.put("timestamp", getTimeStamp()); //not containing redirect URL right now, add "put("redirect_url", getRedirectUrl()" as needed
-		Payload payload = aes.encrypt(data.asText().getBytes("UTF-8")); /** Payload encrypted **/
-		String encrJson64 = DatatypeConverter.printBase64Binary(payload.getCipherText()); /** Base64 encoding of encrypted payload **/
+		byte[] encr = aes.encrypt(data.asText().getBytes("UTF-8")); /** Payload encrypted **/
+		String encrJson64 = DatatypeConverter.printBase64Binary(encr); /** Base64 encoding of encrypted payload **/
 		
 		ObjectNode retNode = Json.newObject();
 		retNode.put("redirectUrl", ""+SIGNON+EncodeURL(encrJson64));
