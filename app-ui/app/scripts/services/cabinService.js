@@ -49,6 +49,24 @@ angular.module('dntApp').factory('cabinService', ['$http', '$q','$log', function
 		
 		/**
 	     * @ngdoc method
+	     * @name dntApp.service#postOrder
+	     * @methodOf dntApp.bookingService
+	     * @returns {json} A array containing different guesttypes and price accepted at cabin specified by cabinId
+	     */
+		getPrices: function(cabinId) {
+			var deferred = $q.defer();
+			var url = '/api/cabins/' + cabinId +'/prices';
+			$http.get(url).success(function(data){
+				deferred.resolve(data);
+			}).error(function(error){
+
+				deferred.reject(error);
+			});
+			return deferred.promise;
+		},
+		
+		/**
+	     * @ngdoc method
 	     * @name dntApp.service#postCabin
 	     * @methodOf dntApp.cabinService
 	     * @returns {null} NOT SURE 

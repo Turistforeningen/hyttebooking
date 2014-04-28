@@ -130,7 +130,7 @@ public class BookingController extends Controller {
 					@Override
 					public void run() {
 						Booking b = Booking.getBookingById(id+"");
-						if(!b.status.equals(Booking.PAID)) {
+						if(b.status.equals(Booking.BOOKED)) {
 							System.out.println("Oh no your didnt!");
 							//cancel booking and unlock beds or cabin for other customers
 							//What happens if customer leaves for half an hour and comes

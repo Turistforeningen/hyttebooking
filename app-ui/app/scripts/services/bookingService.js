@@ -85,7 +85,7 @@ angular.module('dntApp').factory('bookingService', ['$http', '$q','$log', functi
 		});
 		return deferred.promise;
 	},
-	
+	//should be in cabinService --delete later (refactor dntBookingModule)
 	/**
      * @ngdoc method
      * @name dntApp.service#postOrder

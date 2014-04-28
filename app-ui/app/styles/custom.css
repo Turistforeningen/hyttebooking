@@ -74,7 +74,8 @@ body{
 
 
 /*-----------Text mods-----------*/
-
+.vertAlign { margin:0}
+.rowSpace { margin-bottom:20px}
 .modCenterText{
 	text-align: center;
 }
