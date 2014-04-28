@@ -21,7 +21,7 @@ public class Price extends Model {
     @Id
     public Long id;
 	
-    @ManyToMany(mappedBy = "priceMatrix", cascade = CascadeType.ALL)
+    @ManyToMany( cascade = CascadeType.ALL)
     public List<Cabin> cabins = new ArrayList<Cabin>();
     
     /** The name of the category, e.g. "Honnør", "Skoleungdom" **/
