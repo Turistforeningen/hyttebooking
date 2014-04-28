@@ -1,9 +1,11 @@
 package utilities;
 import javax.crypto.Cipher;
+
 import java.security.Security;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
+import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
 
@@ -16,6 +18,7 @@ import javax.xml.bind.DatatypeConverter;
  */
 public class AESBouncyCastle {
 	
+	public final static int IV_BLOCK_SIZE = 16;
 	SecretKeySpec key;
 	Cipher cipher;
 	
@@ -30,30 +33,34 @@ public class AESBouncyCastle {
 	}
 	
 	/**
-	 * @return the length of the plaintext and 
-	 * Note, does not encode to base64, just encrypts
+	 * Gets iv, encrypts input array and appends the iv to the encrypted array
 	 */
-	public Payload encrypt(byte[] input) throws Exception {
+	public byte[] encrypt(byte[] input) throws Exception {
 		cipher.init(Cipher.ENCRYPT_MODE, key);
-		byte[] cipherText = new byte[cipher.getOutputSize(input.length)];
-		int ctLength 	= cipher.update(input, 0, input.length, cipherText, 0);
-		ctLength 		+= cipher.doFinal(cipherText, ctLength);
+		byte[] iv = cipher.getIV();
+		byte[] data = cipher.doFinal(input);
+		byte[] cipherText = new byte[iv.length+data.length];
+		
+		System.arraycopy(iv, 0, cipherText, 0, iv.length);
+		System.arraycopy(data, 0, cipherText, iv.length, data.length);
 		
 		//System.out.println("cipher: " + DatatypeConverter.printBase64Binary(cipherText)
 			//	+ " bytes: " + ctLength);
 		
-		return new Payload(ctLength, cipherText);
+		return cipherText;
 	}
 	
 	/**
 	 * @return the decrypted bytes
 	 * Note, does not decode base64, just decrypts
 	 */
-	public byte[] decrypt(int ctLength, byte[] cipherText) throws Exception {
-		cipher.init(Cipher.DECRYPT_MODE, key);
-		byte[] plainText = new byte[cipher.getOutputSize(ctLength)];
-		int ptLength = cipher.update(cipherText, 0, ctLength, plainText, 0);
-		ptLength += cipher.doFinal(plainText, ptLength);
+	public byte[] decrypt(int ctLength, byte[] ivAndCipherText) throws Exception {
+		byte[] iv = new byte[IV_BLOCK_SIZE]; 
+		byte[] cipherText = new byte[ivAndCipherText.length-iv.length];
+		System.arraycopy(ivAndCipherText, 0, iv, 0, IV_BLOCK_SIZE); //iv always the starting 16 blocks
+		System.arraycopy(ivAndCipherText, 16, cipherText, 0, ivAndCipherText.length-iv.length);
+		cipher.init(Cipher.DECRYPT_MODE, key, new IvParameterSpec(iv));
+		byte[] plainText = cipher.doFinal(cipherText);
 		
 		//System.out.println("plain : " + new String(plainText, "UTF-8")
 			//	+ " bytes: " + ptLength);
