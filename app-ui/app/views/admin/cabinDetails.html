@@ -7,7 +7,12 @@
             <div class="col-md-4 text-center"><p>number of bookable beds <span class="label label-success">{{cabinDetails.nrOfBeds}}</span></p></div>
             </div>
 		    <a href="#/admin">admin home</a>
-			<h2>Price categories</h2>
+		    <div class="row">
+		     <div class="col-md-6"><h2 class="vertAlign">Price categories</h2></div>
+            <div class="col-md-6">
+			<button type="button" class="btn btn-primary pull-right" ng-click=""> change
+            <span class="glyphicon glyphicon-plus"></span></button></div>
+            </div>
 			<table class="table table-hover">
             <thead>
                 <tr>
@@ -15,7 +20,7 @@
                     <th>type</th>
                     <th>member price</th>
                     <th>non-member price</th>
-                    <th class="text-right">options</th>                 
+                    <th>age range</th>                 
                 </tr>
             </thead>
             <tbody>
@@ -24,17 +29,8 @@
                     <td>{{p.guestType}}</td>
                     <td>{{p.memberPrice}}</td>
                     <td>{{p.nonMemberPrice}}</td>
-                    <td class="text-right">
-                        <div class="btn-group text-left">
-                            <button type="button" class="btn btn-default dropdown-toggle"
-                                data-toggle="dropdown">
-                                Options <span class="caret"></span>
-                            </button>
-                            <ul class="dropdown-menu " role="menu">
-                                <li><a ng-click="">Change prices</a></li>
-                                <li><a ng-click="">Remove category</a></li>
-                            </ul>
-                        </div>
+                    <td>
+                        {{p.ageRange}}
                     </td> 
                 </tr>
             </tbody>
