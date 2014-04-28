@@ -13,6 +13,7 @@ import javax.crypto.spec.SecretKeySpec;
 /**
  * http://www.bouncycastle.org/wiki/display/JA1/Frequently+Asked+Questions
  * YOU MUST INSTALL Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy Files
+ * TODO: make it CBC!!!
  */
 public class AESBouncyCastle {
 	
