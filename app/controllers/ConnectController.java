@@ -8,12 +8,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import javax.xml.bind.DatatypeConverter;
 
 import play.libs.Json;
-import play.libs.WS;
-import play.libs.F.Function;
-import play.libs.F.Promise;
 import play.mvc.Controller;
 import play.mvc.Result;
-import sun.misc.BASE64Decoder;
 import utilities.AESBouncyCastle;
 
 /**
@@ -38,15 +34,11 @@ public class ConnectController extends Controller {
 	 * @response ("er_autentisert" : true) The user was authenticated and has usable information
 	 */
 	public static Result setupLogin() throws Exception {
-		String code = play.Play.application().configuration().getString("application.secretKey");
-		System.out.println("SECRET KEY " +code);
-		System.out.println("SECRET KEY " +SECRETKEY);
-		BASE64Decoder decoder = new BASE64Decoder();
-		byte[] decodedBytes = decoder.decodeBuffer(code);
-		System.out.println("SECRET KEY " +decodedBytes);
-		AESBouncyCastle aes = new AESBouncyCastle(decodedBytes); /** The encryption helper class **/
+		//System.out.println("SECRET KEY " +decodedBytes);
+		AESBouncyCastle aes = new AESBouncyCastle(SECRETKEY); /** The encryption helper class **/
 		ObjectNode data = Json.newObject();
 		data.put("timestamp", getTimeStamp()); //not containing redirect URL right now, add "put("redirect_url", getRedirectUrl()" as needed
+		System.out.println(data.asText());
 		byte[] encr = aes.encrypt(data.asText().getBytes("UTF-8")); /** Payload encrypted **/
 		String encrJson64 = DatatypeConverter.printBase64Binary(encr); /** Base64 encoding of encrypted payload **/
 		

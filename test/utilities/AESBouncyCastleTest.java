@@ -4,14 +4,15 @@ import static org.junit.Assert.*;
 import static play.test.Helpers.fakeApplication;
 import static play.test.Helpers.inMemoryDatabase;
 
-import javax.xml.bind.DatatypeConverter;
+import java.io.IOException;
 
-import models.Booking;
+import javax.xml.bind.DatatypeConverter;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import play.test.WithApplication;
+import sun.misc.BASE64Decoder;
 
 public class AESBouncyCastleTest extends WithApplication {
 
@@ -30,40 +31,68 @@ public class AESBouncyCastleTest extends WithApplication {
 		boolean eFlag = false;
 		try{
 			AESBouncyCastle aesWithException = new AESBouncyCastle("0123456789123456789".getBytes());
+			aesWithException.encrypt("test".getBytes("UTF-8"));
 		} catch (Exception e){
 			eFlag = true;
 		}
-		assertTrue(eFlag);
+		assertTrue("key is wrong size, but doesn't cause exception. Install unlimited strength policy files", eFlag);
 
 		eFlag = true;
 		try {
 			AESBouncyCastle aesNoException = new AESBouncyCastle(DatatypeConverter.parseBase64Binary(play.Play.application().configuration().getString("application.secretKey")));
+			aesNoException.encrypt("test".getBytes("UTF-8"));
 		} catch (Exception e) {
-			System.out.println(e.toString());
 			eFlag = false;
 		}
-		assertTrue(eFlag);	
+		assertTrue("key is right size but causes exception. Install unlimited strength policy files", eFlag);	
 	}
-	
 	
 	@Test
 	/**
-	 * 
+	 * Test that encrypted text is equal to decrypted text
 	 */
 	public void testEncrypt() {
 		try {
-			byte[] keyBytes = DatatypeConverter.parseBase64Binary(play.Play.application().configuration().getString("application.secretKey"));
-			assertEquals("keyBytes isn't 32 bytes long", 32, keyBytes.length);
 			AESBouncyCastle aes = new AESBouncyCastle(DatatypeConverter.parseBase64Binary(play.Play.application().configuration().getString("application.secretKey")));
-			assertNotNull("AES is null after constructor", aes);
-			
+
 			String string = "Hello world!";
 			byte[] encr = aes.encrypt(string.getBytes("UTF-8"));
 			String decr = new String(aes.decrypt(encr), "UTF-8");
 			assertTrue(encr + " doesn't equal "+ decr, string.equals(decr));
 		} catch (Exception e) {
 			e.printStackTrace();
-			assertEquals("EXCEPTION AT testENCRYPT! "+e, true, false); //i.e. if exception obviously something failed
+			assertTrue("EXCEPTION AT testENCRYPT! "+e, false); //i.e. if exception obviously something failed
 		}
+	}
+	
+	@Test
+	public void testBase64Differ() {
+		String code = play.Play.application().configuration().getString("application.secretKey");
+		String string = "Hello world!";
+		
+		BASE64Decoder decoder = new BASE64Decoder();
+		try {
+			byte[] data = string.getBytes("UTF-8");
+			AESBouncyCastle aesB64ONE = new AESBouncyCastle(decoder.decodeBuffer(code));
+			AESBouncyCastle aesB64TWO = new AESBouncyCastle(DatatypeConverter.parseBase64Binary(code));
+			
+			byte[] oneEncr = aesB64ONE.encrypt(data); //one's encryption
+			byte[] twoEncr = aesB64TWO.encrypt(data); //two's encryption
+			
+			String oneToOneDecr = new String(aesB64ONE.decrypt(oneEncr),"UTF-8"); //one decrypting one's encryption
+			String oneToTwoDecr = new String(aesB64ONE.decrypt(twoEncr),"UTF-8"); //one decrypting two's encryption
+			
+			String twoToTwoDecr = new String(aesB64TWO.decrypt(twoEncr),"UTF-8"); //two decrypting two's encryption
+			String twoToOneDecr = new String(aesB64TWO.decrypt(oneEncr),"UTF-8"); //two decrypting one's encryption
+			
+			assertEquals("B64ONE couldn't decrypt B64ONE's encryption", string, oneToOneDecr);
+			assertEquals("B64ONE couldn't decrypt B64TWO's encryption", string, oneToTwoDecr);
+			assertEquals("B64TWO couldn't decrypt B64TWO's encryption", string, twoToTwoDecr);
+			assertEquals("B64TWO couldn't decrypt B64ONE's encryption", string, twoToOneDecr);
+			
+		} catch (Exception e) {
+			assertTrue("Exception happened: "+e, false);
+		}
+		
 	}
 }
