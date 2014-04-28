@@ -158,6 +158,7 @@ public class Booking extends Model {
 		System.out.println(page + " " + pageSize);
 		if(user != null) {
 			Page<Booking> bookingPage = new Page<Booking>();
+<<<<<<< HEAD
 			 bookingPage.data = find.where()
 			         .and(Expr.eq("user", user), Expr.le("status", PAID))
 			         .orderBy("dateFrom asc")
@@ -167,6 +168,15 @@ public class Booking extends Model {
 			         .and(Expr.eq("user", user), Expr.le("status", PAID))
 			         .findRowCount();
 			 return bookingPage;
+=======
+			bookingPage.data = find.where()
+					.and(Expr.eq("user", user), Expr.le("status", PAID))
+					.orderBy("dateFrom asc")
+					.findPagingList(pageSize)
+					.getPage(page).getList();
+			bookingPage.totalItems = user.getNrOfBookings();
+			return bookingPage;
+>>>>>>> 00aa1cd6aef93639f3b97d59323caa13b955e50b
 		}
 		return new Page<Booking>();
 	}
@@ -180,7 +190,27 @@ public class Booking extends Model {
 	public static Booking getBookingById(String bookingId) {
 		return Booking.find.where().eq("id", bookingId).findUnique();
 	}
+<<<<<<< HEAD
 	
+=======
+
+	public Long getDateFrom() {
+		return this.dateFrom.getMillis();
+	}
+
+	public Long getDateTo() {
+		return this.dateTo.getMillis();
+	}
+
+	/**
+	 * @param userId The userId that is conducting the booking, if invalid id returns null
+	 * @param dateFrom Must be before dateTo
+	 * @param dateTo Must be after dateFrom
+	 * @param cabinId Must be of either SmallCabin or LargeCabin type
+	 * @param beds The beds list that booking is for, if null then cabin should be small, otherwise returns null
+	 * @return Booking if successfully created, null otherwise
+	 */
+>>>>>>> 00aa1cd6aef93639f3b97d59323caa13b955e50b
 	public static Booking createBooking(Long userId, DateTime dateFrom, DateTime dateTo, 
 			Long cabinId,
 			List<Bed> beds) {
