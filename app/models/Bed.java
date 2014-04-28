@@ -23,13 +23,13 @@ public class Bed extends Model  {
 
 	@ManyToMany( cascade = CascadeType.ALL)
 	public List<Booking> bookings = new ArrayList<Booking>();
-	
+
 	public void addBooking(Booking b) {
 		if (this.bookings == null) {
 			bookings = new ArrayList<Booking>();
 		}
 		bookings.add(b);
-}
+	}
 
 	/**
 	 * Used for checking if bed is available for given date range
@@ -37,17 +37,19 @@ public class Bed extends Model  {
 	 */
 	public boolean isAvailable(DateTime fromDate, DateTime toDate) {
 
+		if(!utilities.DateHelper.valid(fromDate, toDate)) //if date not valid
+			return false;
 		for(Booking booking: bookings) //check through all bookings related to this bed and see if daterange overlap
-				if(utilities.DateHelper.isOverlap(fromDate, toDate, booking.dateFrom, booking.dateTo) && booking.status<Booking.CANCELLED)
-					return false;
-	
+			if(utilities.DateHelper.isOverlap(fromDate, toDate, booking.dateFrom, booking.dateTo) && booking.status<Booking.CANCELLED)
+				return false;
+
 		return true;
 	}
 
 	public static Finder<Long,Bed> find = new Finder<Long,Bed>(
 			Long.class, Bed.class
 			); 
-	
+
 	public void delete() {
 		this.largeCabin = null;
 		this.update();

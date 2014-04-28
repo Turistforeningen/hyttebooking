@@ -50,6 +50,9 @@ public class LargeCabin extends Cabin {
 	 * @return null if availBeds.size() < numberOfBeds, else availBeds 
 	 */
 	public List<Bed> book(int numberOfBeds, DateTime fromDate, DateTime toDate) {
+		if(numberOfBeds < 0 || !utilities.DateHelper.valid(fromDate, toDate))
+			return null;
+		
 		ArrayList<Bed> availBeds = new ArrayList<Bed>(); /** Consider using auto-sorted collection **/
 		for(Bed b: beds)
 		{
@@ -69,8 +72,9 @@ public class LargeCabin extends Cabin {
 		if (beds.size() <= 1) {
 			return;
 		}
-		//add support for removing a spesific bed
-		beds.remove(0);
+		//add support for removing a specific bed
+		Bed b = beds.remove(0);
+		b.delete();
 	}
 	
 	@Override
@@ -93,8 +97,24 @@ public class LargeCabin extends Cabin {
 				.findRowCount();
 	}
 	
-	public void addPrice(Long id, String guestType, String ageRange, double nonMemberPrice, double memberPrice) {
-		Price price = new Price(id, guestType, ageRange, nonMemberPrice, memberPrice);
+	/**
+	 * 
+	 * @param guestType CANNOT be null or empty
+	 * @param ageRange Can be null, but cannot be empty
+	 * @param nonMemberPrice Cannot be negative
+	 * @param memberPrice Cannot be negative
+	 */
+	public void addPrice(String guestType, String ageRange, double nonMemberPrice, double memberPrice) {
+		if(nonMemberPrice < 0 || memberPrice < 0 || guestType == null || guestType.length() == 0)
+			return;
+		if(ageRange != null)
+			if(ageRange.length() == 0)
+				return;
+		
+		Price price = new Price(guestType, ageRange, nonMemberPrice, memberPrice);
+		if(priceMatrix == null)
+			this.priceMatrix = new ArrayList<Price>();
+		
 		priceMatrix.add(price);
 	}
 

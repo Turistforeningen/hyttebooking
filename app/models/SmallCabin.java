@@ -25,8 +25,9 @@ public class SmallCabin extends Cabin {
 		super(name);
 	}
 
-	
 	public boolean isAvailable(DateTime fromDate, DateTime toDate) {
+		if(!utilities.DateHelper.valid(fromDate, toDate))
+			return false;
 		for(Booking booking: this.bookings) {
 			if(utilities.DateHelper.isOverlap(fromDate, toDate, booking.dateFrom, booking.dateTo) && booking.status<Booking.CANCELLED)
 				return false;
@@ -69,8 +70,11 @@ public class SmallCabin extends Cabin {
 	 * Returns all bookings that overlap with given startDate and endDate (used in dynamic calendar display) that are NOT cancelled
 	 * @return A list of all bookings found within given cabinId within startDate-endDate
 	 */
-	public static List<Booking> findAllBookingsForCabinGivenDate(long cabinId, DateTime startDate, DateTime endDate)
+	public static List<Booking> findAllBookingsForCabinGivenDate(long cabinId, DateTime fromDate, DateTime toDate)
 	{
+		if(!utilities.DateHelper.valid(fromDate, toDate))
+			return null; //return empty list? TODO
+		
 		Cabin cabin = Cabin.find.byId(cabinId);
 		List<Booking> bookings = new ArrayList<Booking>();
 
@@ -88,7 +92,7 @@ public class SmallCabin extends Cabin {
 		List<Booking> rBookings = new ArrayList<Booking>();
 		for(Booking b: bookings) {
 			if(b.status<Booking.CANCELLED) { //if booking isn't cancelled or timedout
-				if(utilities.DateHelper.isOverlap(b.dateFrom, b.dateTo, startDate, endDate)) 
+				if(utilities.DateHelper.isOverlap(b.dateFrom, b.dateTo, fromDate, toDate)) 
 					rBookings.add(b);
 			}
 		}
