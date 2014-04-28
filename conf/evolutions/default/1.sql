@@ -45,6 +45,15 @@ create table payment (
   constraint pk_payment primary key (id))
 ;
 
+create table price (
+  id                        bigint not null,
+  guest_type                varchar(255),
+  age_range                 varchar(255),
+  non_member_price          double,
+  member_price              double,
+  constraint pk_price primary key (id))
+;
+
 create table user (
   id                        bigint not null,
   auth_token                varchar(255),
@@ -67,6 +76,12 @@ create table bed_booking (
   booking_id                     bigint not null,
   constraint pk_bed_booking primary key (bed_id, booking_id))
 ;
+
+create table price_cabin (
+  price_id                       bigint not null,
+  cabin_id                       bigint not null,
+  constraint pk_price_cabin primary key (price_id, cabin_id))
+;
 create sequence bed_seq;
 
 create sequence booking_seq;
@@ -76,6 +91,8 @@ create sequence cabin_seq;
 create sequence guest_seq;
 
 create sequence payment_seq;
+
+create sequence price_seq;
 
 create sequence user_seq;
 
@@ -96,6 +113,10 @@ alter table bed_booking add constraint fk_bed_booking_bed_01 foreign key (bed_id
 
 alter table bed_booking add constraint fk_bed_booking_booking_02 foreign key (booking_id) references booking (id) on delete restrict on update restrict;
 
+alter table price_cabin add constraint fk_price_cabin_price_01 foreign key (price_id) references price (id) on delete restrict on update restrict;
+
+alter table price_cabin add constraint fk_price_cabin_cabin_02 foreign key (cabin_id) references cabin (id) on delete restrict on update restrict;
+
 # --- !Downs
 
 SET REFERENTIAL_INTEGRITY FALSE;
@@ -108,9 +129,13 @@ drop table if exists booking;
 
 drop table if exists cabin;
 
+drop table if exists price_cabin;
+
 drop table if exists guest;
 
 drop table if exists payment;
+
+drop table if exists price;
 
 drop table if exists user;
 
@@ -125,6 +150,8 @@ drop sequence if exists cabin_seq;
 drop sequence if exists guest_seq;
 
 drop sequence if exists payment_seq;
+
+drop sequence if exists price_seq;
 
 drop sequence if exists user_seq;
 

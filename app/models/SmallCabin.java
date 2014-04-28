@@ -21,6 +21,7 @@ public class SmallCabin extends Cabin {
 	@OneToMany
 	public List<Booking> bookings;
 	
+	
 	public SmallCabin(String name) {
 		super(name);
 	}
@@ -97,5 +98,23 @@ public class SmallCabin extends Cabin {
 			}
 		}
 		return rBookings;
+	}
+	//muligens setPrice her men ja
+	public void addPrice(String guestType, String ageRange, double nonMemberPrice, double memberPrice) {
+		if(nonMemberPrice < 0 || memberPrice < 0 || guestType == null || guestType.length() == 0)
+			return;
+		if(ageRange != null)
+			if(ageRange.length() == 0)
+				return;
+		
+		if(priceMatrix.size() == 1) {
+			priceMatrix.remove(0);
+		}
+		Price price = new Price(guestType, ageRange, nonMemberPrice, memberPrice);
+		
+		price.save();
+		
+		priceMatrix.add(price);
+		
 	}
 }

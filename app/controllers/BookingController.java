@@ -205,12 +205,14 @@ public class BookingController extends Controller {
 	 * memberPrice and nonMemberPrice
 	 */
 	public static Result getPriceForCabin(Long id) {
-		/*
+		
 		ObjectNode result = Json.newObject();
 
 		Cabin cabin = Cabin.find.byId(id);
-
+		System.out.println(cabin.name);
+		System.out.println(cabin.priceMatrix.size());
 		if(cabin instanceof LargeCabin) {
+			
 			JSONSerializer priceSerializer = new JSONSerializer()
 			.include()
 			.exclude("*.class");
@@ -223,12 +225,12 @@ public class BookingController extends Controller {
 		} else {
 			result.put("Status", "KO");
 			result.put("message", "To late to cancel");
-			return badRequest(result);
+			return badRequest(JsonMessage.error("No prices found"));
 		}
-		 */
+		 
 
 
-		/** DELETE AFTER debugging getPriceForCabin **/
+		/*
 		class ListItem implements Serializable {
 			public int nr;
 			public String type;
