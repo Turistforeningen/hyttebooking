@@ -25,8 +25,7 @@ create table cabin (
   DTYPE                     varchar(31) not null,
   id                        bigint not null,
   name                      varchar(255),
-  member_price              double,
-  non_member_price          double,
+  price_for_cabin_id        bigint,
   constraint pk_cabin primary key (id))
 ;
 
@@ -77,10 +76,10 @@ create table bed_booking (
   constraint pk_bed_booking primary key (bed_id, booking_id))
 ;
 
-create table price_cabin (
-  price_id                       bigint not null,
+create table cabin_price (
   cabin_id                       bigint not null,
-  constraint pk_price_cabin primary key (price_id, cabin_id))
+  price_id                       bigint not null,
+  constraint pk_cabin_price primary key (cabin_id, price_id))
 ;
 create sequence bed_seq;
 
@@ -104,8 +103,10 @@ alter table booking add constraint fk_booking_payment_3 foreign key (payment_id)
 create index ix_booking_payment_3 on booking (payment_id);
 alter table booking add constraint fk_booking_smallCabin_4 foreign key (small_cabin_id) references cabin (id) on delete restrict on update restrict;
 create index ix_booking_smallCabin_4 on booking (small_cabin_id);
-alter table guest add constraint fk_guest_booking_5 foreign key (booking_id) references booking (id) on delete restrict on update restrict;
-create index ix_guest_booking_5 on guest (booking_id);
+alter table cabin add constraint fk_cabin_priceForCabin_5 foreign key (price_for_cabin_id) references price (id) on delete restrict on update restrict;
+create index ix_cabin_priceForCabin_5 on cabin (price_for_cabin_id);
+alter table guest add constraint fk_guest_booking_6 foreign key (booking_id) references booking (id) on delete restrict on update restrict;
+create index ix_guest_booking_6 on guest (booking_id);
 
 
 
@@ -113,9 +114,9 @@ alter table bed_booking add constraint fk_bed_booking_bed_01 foreign key (bed_id
 
 alter table bed_booking add constraint fk_bed_booking_booking_02 foreign key (booking_id) references booking (id) on delete restrict on update restrict;
 
-alter table price_cabin add constraint fk_price_cabin_price_01 foreign key (price_id) references price (id) on delete restrict on update restrict;
+alter table cabin_price add constraint fk_cabin_price_cabin_01 foreign key (cabin_id) references cabin (id) on delete restrict on update restrict;
 
-alter table price_cabin add constraint fk_price_cabin_cabin_02 foreign key (cabin_id) references cabin (id) on delete restrict on update restrict;
+alter table cabin_price add constraint fk_cabin_price_price_02 foreign key (price_id) references price (id) on delete restrict on update restrict;
 
 # --- !Downs
 
@@ -129,13 +130,13 @@ drop table if exists booking;
 
 drop table if exists cabin;
 
-drop table if exists price_cabin;
-
 drop table if exists guest;
 
 drop table if exists payment;
 
 drop table if exists price;
+
+drop table if exists cabin_price;
 
 drop table if exists user;
 

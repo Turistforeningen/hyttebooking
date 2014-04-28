@@ -60,11 +60,11 @@ public class Global extends GlobalSettings {
 		lc2.save();
 
 		SmallCabin sc1 = new SmallCabin("Helfjord");
-		sc1.addPrice("Hele", "", 1000, 800);
+		sc1.setPrice("Hele", " ", 1000, 800);
 		sc1.save();
 
 		SmallCabin sc2 = new SmallCabin("Fjordlistølen");
-		sc2.addPrice("Hele", "", 1000, 800);
+		sc2.setPrice("Hele", " ", 1000, 800);
 		sc2.save();
 
 		Cabin[] cabins = {lc1,sc1 ,sc2 , lc2};

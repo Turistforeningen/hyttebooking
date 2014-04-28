@@ -6,14 +6,21 @@ import java.util.HashMap;
 
 import org.joda.time.DateTime;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import models.Booking;
 import models.Cabin;
+import models.LargeCabin;
+import models.SmallCabin;
 import flexjson.JSONSerializer;
+import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
+import play.mvc.Results;
 import play.mvc.With;
 import utilities.CabinForm;
 import utilities.DateTimeTransformer;
+import utilities.JsonMessage;
 import utilities.Page;
 
 @With(SecurityController.class)
@@ -68,6 +75,7 @@ public class AdminController extends Controller {
 		
 		return ok(bookingSerializer.serialize(map));
 	}
+	
 	
 	/**
 	 * A cabin can be added to the booking system by running submitCabin.

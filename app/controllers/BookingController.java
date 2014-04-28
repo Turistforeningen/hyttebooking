@@ -205,71 +205,19 @@ public class BookingController extends Controller {
 	 * memberPrice and nonMemberPrice
 	 */
 	public static Result getPriceForCabin(Long id) {
-		
-		ObjectNode result = Json.newObject();
-
 		Cabin cabin = Cabin.find.byId(id);
-		System.out.println(cabin.name);
-		System.out.println(cabin.priceMatrix.size());
+		JSONSerializer priceSerializer = new JSONSerializer()
+		.include()
+		.exclude("*.class", "smallCabin");
 		if(cabin instanceof LargeCabin) {
-			
-			JSONSerializer priceSerializer = new JSONSerializer()
-			.include()
-			.exclude("*.class");
 			return Results.ok(priceSerializer.serialize(((LargeCabin) cabin).priceMatrix));
 		} else if(cabin instanceof SmallCabin) {
-			JSONSerializer priceSerializer = new JSONSerializer()
-			.include()
-			.exclude("*.class");
-			return TODO; //TODO 
+			Object[] list = new Object[1];
+			list[0] = ((SmallCabin) cabin).priceForCabin;
+			return Results.ok(priceSerializer.serialize(list));
 		} else {
-			result.put("Status", "KO");
-			result.put("message", "To late to cancel");
 			return badRequest(JsonMessage.error("No prices found"));
 		}
-		 
-
-
-		/*
-		class ListItem implements Serializable {
-			public int nr;
-			public String type;
-			public int price;
-
-			public ListItem(int nr, String type, int price) {
-				this.nr = nr;
-				this.type = type;
-				this.price = price;
-			}
-		}
-
-		Cabin cabin = Cabin.find.byId(id);
-		if(cabin == null) {
-			return Results.badRequest();
-		}
-
-		List<ListItem> list = new ArrayList<ListItem>();
-		if(cabin instanceof LargeCabin) {
-			list.add(new ListItem(0, "Voksen, medlem", 300));
-			list.add(new ListItem(0, "Ungdom, medlem", 150));
-			list.add(new ListItem(0, "Barn, medlem", 100));
-			list.add(new ListItem(0, "Spedbarn", 0));
-			list.add(new ListItem(0, "Voksen", 400));
-			list.add(new ListItem(0, "ungdom", 200));
-			list.add(new ListItem(0, "barn", 150));
-			JSONSerializer priceSerializer = new JSONSerializer()
-			.include()
-			.exclude("*.class");
-			return Results.ok(priceSerializer.serialize(list));
-		}
-		else {
-			list.add(new ListItem(1, "Hele", 1000));
-			JSONSerializer priceSerializer = new JSONSerializer()
-			.include()
-			.exclude("*.class");
-			return Results.ok(priceSerializer.serialize(list));
-		}
-		/***/
 	}
 
 	/**

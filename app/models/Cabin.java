@@ -10,7 +10,7 @@ import org.joda.time.DateTime;
 import play.db.ebean.Model;
 import utilities.Page;
 
-@Entity
+@Entity 
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "DTYPE", discriminatorType = DiscriminatorType.STRING)
 public abstract class Cabin extends Model {
@@ -20,9 +20,7 @@ public abstract class Cabin extends Model {
 
 	public String name;
 	
-	@ManyToMany(mappedBy = "cabins",cascade = CascadeType.ALL)
-	public List<Price> priceMatrix  = new ArrayList<Price>();
-	/** TODO add Constraints.Required right here**/
+	
 	
 	public Cabin(String name) {
 		this.name = name;	
@@ -40,7 +38,7 @@ public abstract class Cabin extends Model {
 	public abstract String getNrOfBeds();
 
 	public abstract String getCabinUrl();
-	public abstract void addPrice(String guestType, String ageRange, double nonMemberPrice, double memberPrice);
+
 	public static Finder<Long, Cabin> find = new Finder<Long, Cabin>(Long.class, Cabin.class);
 
 

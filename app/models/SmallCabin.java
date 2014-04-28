@@ -13,14 +13,11 @@ import play.data.validation.Constraints;
 @DiscriminatorValue("SMALL_CABIN")
 public class SmallCabin extends Cabin {
 	
-	@Constraints.Required
-	public double memberPrice;
-	@Constraints.Required
-	public double nonMemberPrice;
-	
 	@OneToMany
 	public List<Booking> bookings;
 	
+	@OneToOne
+	public Price priceForCabin;
 	
 	public SmallCabin(String name) {
 		super(name);
@@ -67,6 +64,20 @@ public class SmallCabin extends Cabin {
 		return this.id + "?type=small&beds=hele";
 	}	
 	
+	public void setPrice(String guestType, String ageRange, double nonMemberPrice, double memberPrice) {
+		if(nonMemberPrice < 0 || memberPrice < 0 || guestType == null || guestType.length() == 0)
+			return;
+		if(ageRange != null)
+			if(ageRange.length() == 0)
+				return;
+		
+		Price price = new Price(guestType, ageRange, nonMemberPrice, memberPrice);
+		price.save();
+		
+		this.priceForCabin = price;
+		
+	}
+	
 	/**
 	 * Returns all bookings that overlap with given startDate and endDate (used in dynamic calendar display) that are NOT cancelled
 	 * @return A list of all bookings found within given cabinId within startDate-endDate
@@ -98,23 +109,5 @@ public class SmallCabin extends Cabin {
 			}
 		}
 		return rBookings;
-	}
-	//muligens setPrice her men ja
-	public void addPrice(String guestType, String ageRange, double nonMemberPrice, double memberPrice) {
-		if(nonMemberPrice < 0 || memberPrice < 0 || guestType == null || guestType.length() == 0)
-			return;
-		if(ageRange != null)
-			if(ageRange.length() == 0)
-				return;
-		
-		if(priceMatrix.size() == 1) {
-			priceMatrix.remove(0);
-		}
-		Price price = new Price(guestType, ageRange, nonMemberPrice, memberPrice);
-		
-		price.save();
-		
-		priceMatrix.add(price);
-		
 	}
 }

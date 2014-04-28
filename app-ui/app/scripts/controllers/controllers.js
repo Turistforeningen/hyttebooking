@@ -172,13 +172,40 @@ angular.module('dntApp').controller('bookingController', ['$modal','$rootScope',
 	$scope.getPrices = function(id) {
 		bookingService.getPrices(id)
 		.then(function(data){
-			$scope.booking.guests = data;
+			$scope.booking.guests = processPriceMatrix(data);
 		},
 		function(error){
 			$scope.errorMessage = error.message;
 		});
 	};
-
+	
+	//split categories into json suitable for view
+	var processPriceMatrix = function(matrix) {
+		var nonMemberGuests = [];
+		var allGuests = [];
+		angular.forEach(matrix, function(value){
+			
+			var guestTypeMember = {};
+			var guestType = {};
+			guestTypeMember.id = value.id;
+			guestTypeMember.ageRange = value.ageRange;
+			guestTypeMember.guestType = value.guestType + ', medlem';
+			guestTypeMember.nr = 0;
+			guestTypeMember.price = value.memberPrice;
+			
+			guestType.id = value.id;
+			guestType.ageRange = value.ageRange;
+			guestType.guestType = value.guestType + ', ikke-medlem';
+			guestType.nr = 0;
+			guestType.price = value.nonMemberPrice;
+			
+			allGuests.push(guestTypeMember)
+			nonMemberGuests.push(guestType)
+		 });
+		allGuests.push.apply(allGuests, nonMemberGuests)
+		
+		return allGuests;
+	};
 	/**
      * @ngdoc method
      * @name dntApp.object#authenticatePayment
