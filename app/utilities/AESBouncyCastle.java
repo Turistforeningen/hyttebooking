@@ -35,9 +35,11 @@ public class AESBouncyCastle {
 	 */
 	public Payload encrypt(byte[] input) throws Exception {
 		cipher.init(Cipher.ENCRYPT_MODE, key);
-		byte[] cipherText = new byte[cipher.getOutputSize(input.length)];
+		byte[] iv = cipher.getIV();
+		byte[] cipherText = new byte[cipher.getOutputSize(input.length)+iv.length];
+		System.arraycopy(iv, 0, cipherText, 0, iv.length);
 		int ctLength 	= cipher.update(input, 0, input.length, cipherText, 0);
-		ctLength 		+= cipher.doFinal(cipherText, ctLength);
+		ctLength += cipher.doFinal(cipherText, ctLength);
 		
 		//System.out.println("cipher: " + DatatypeConverter.printBase64Binary(cipherText)
 			//	+ " bytes: " + ctLength);
@@ -49,9 +51,13 @@ public class AESBouncyCastle {
 	 * @return the decrypted bytes
 	 * Note, does not decode base64, just decrypts
 	 */
-	public byte[] decrypt(int ctLength, byte[] cipherText) throws Exception {
+	public byte[] decrypt(int ctLength, byte[] ivAndCipherText) throws Exception {
 		cipher.init(Cipher.DECRYPT_MODE, key);
-		byte[] plainText = new byte[cipher.getOutputSize(ctLength)];
+		cipher.init(Cipher.DECRYPT_MODE, key, ); //get IV ?TODO
+		byte[] iv = new byte[cipher.getIV().length];
+		byte[] cipherText = new byte[ivAndCipherText.length-cipher.getIV().length];
+		byte[] plainText = new byte[cipherText.length];
+		System.arraycopy(cipherText, cipher.getIV().length, plainText, 0, plainText.length);
 		int ptLength = cipher.update(cipherText, 0, ctLength, plainText, 0);
 		ptLength += cipher.doFinal(plainText, ptLength);
 		
