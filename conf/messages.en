@@ -17,6 +17,7 @@ booking.bedsNotAvailable    = Not enough beds available for time period
 booking.notFound            = No such booking found
 booking.noAccess            = Not your booking
 booking.termsAndConditions  = You have not accepted the terms and conditions for booking at DNT
+booking.guestArrayInvalid   = Guest list is inconsistent with the system
 
 cabin.missingType           = Missing type parameter in json
 cabin.invalidType           = Type parameter invalid

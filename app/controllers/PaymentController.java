@@ -61,7 +61,7 @@ public class PaymentController extends Controller {
 				.setQueryParameter("merchantId", MERCHANT_ID)
 				.setQueryParameter("token", SECRET_MERCHANT)
 				.setQueryParameter("orderNumber", b.id+"")
-				.setQueryParameter("amount", b.payment.getAmount())
+				.setQueryParameter("amount", b.payment.getNetsAmount())
 				.setQueryParameter("CurrencyCode", "NOK")
 				.setQueryParameter("redirectUrl", SERVER_URL + "#/booking/" + b.getCabin().getCabinUrl())
 				.setQueryParameter("deliveryDate", b.getDeliveryDate())
