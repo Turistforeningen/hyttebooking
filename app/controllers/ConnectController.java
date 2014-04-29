@@ -37,8 +37,7 @@ public class ConnectController extends Controller {
 		AESBouncyCastle aes = new AESBouncyCastle(SECRETKEY); /** The encryption helper class **/
 		ObjectNode data = Json.newObject();
 		data.put("timestamp", getTimeStamp()); //not containing redirect URL right now, add "put("redirect_url", getRedirectUrl()" as needed
-		System.out.println(data.asText());
-		byte[] encr = aes.encrypt(data.asText().getBytes("UTF-8")); /** Payload encrypted **/
+		byte[] encr = aes.encrypt(data.toString().getBytes("UTF-8")); /** Payload encrypted **/
 		String encrJson64 = DatatypeConverter.printBase64Binary(encr); /** Base64 encoding of encrypted payload **/
 		
 		ObjectNode retNode = Json.newObject();

@@ -16,7 +16,6 @@ import sun.misc.BASE64Decoder;
 
 public class AESBouncyCastleTest extends WithApplication {
 
-	//no need for fakeApplication
 	@Before
 	public void setUp() {
 		start(fakeApplication(inMemoryDatabase()));
@@ -68,7 +67,7 @@ public class AESBouncyCastleTest extends WithApplication {
 	@Test
 	public void testBase64Differ() {
 		String code = play.Play.application().configuration().getString("application.secretKey");
-		String string = "Hello world!";
+		String string = "{\"timestamp\":1398764642}";
 		
 		BASE64Decoder decoder = new BASE64Decoder();
 		try {
@@ -93,6 +92,22 @@ public class AESBouncyCastleTest extends WithApplication {
 		} catch (Exception e) {
 			assertTrue("Exception happened: "+e, false);
 		}
+	}
+	
+	@Test
+	public void testDNTDiffer() {
+		String code = play.Play.application().configuration().getString("application.secretKey");
+		String string = "hei";
+		String expectedB64 = "R6ZfT2SqqgQAknG3VkuHEQ==";
 		
+		try {
+			byte[] data = string.getBytes("UTF-8");
+			AESBouncyCastle aes = new AESBouncyCastle(DatatypeConverter.parseBase64Binary(code));
+			
+			byte[] encr = aes.encrypt(data);
+			
+		} catch (Exception e) {
+			assertTrue("Exception happened: "+e, false);
+		}
 	}
 }

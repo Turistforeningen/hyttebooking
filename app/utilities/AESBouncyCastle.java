@@ -3,80 +3,94 @@ package utilities;
 import javax.crypto.Cipher;
 
 import java.security.Security;
-import java.util.Random;
+import java.util.Arrays;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+import javax.xml.bind.DatatypeConverter;
 
 /**
  * http://www.bouncycastle.org/wiki/display/JA1/Frequently+Asked+Questions
  * YOU MUST INSTALL Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy Files
- * TODO: make it CBC!!!
  */
 public class AESBouncyCastle {
 	
 	public final static int IV_BLOCK_SIZE = 16;
-	byte[] iv = new byte[IV_BLOCK_SIZE]; //default init is zero 
-	
-	SecretKeySpec key;
-	Cipher cipher;
+
+	private SecretKeySpec key;
+	private Cipher cipher;
+	private IvParameterSpec iv;
+	//TODO remove
+	private byte[] testIv = DatatypeConverter.parseBase64Binary("EdZ8Ivcfug+V3lsCdB2oVw==");
 	
 	public AESBouncyCastle(byte[] keyBytes) throws Exception  {
 		if(keyBytes.length != 32) 
 			throw new Exception("Incorrect key size : "+keyBytes.length);
 		
 		Security.addProvider(new BouncyCastleProvider());
-
-		this.cipher = Cipher.getInstance("AES/ECB/PKCS7Padding", "BC");
+		
+		
+		this.cipher = Cipher.getInstance("AES/CBC/PKCS7Padding", "BC");
 		this.key = new SecretKeySpec(keyBytes, "AES");
+		this.iv = new IvParameterSpec(new byte[IV_BLOCK_SIZE]);
 	}
 	
 	/**
-	 * Gets iv, encrypts input array and appends the iv to the encrypted array
+	 * Encrypts input and prepends iv
+	 * @return iv + cipherText byte array
 	 */
 	public byte[] encrypt(byte[] input) throws Exception {
-		new Random().nextBytes(iv); //randomize iv
-		
-		if(input == null) {
+		if(input == null || input.length < 1) {
 			System.err.println("Error: Data sent to be encrypted is null");
 			return null;
 		}
 		
-		cipher.init(Cipher.ENCRYPT_MODE, key);
-		byte[] data = cipher.doFinal(input);
-		byte[] cipherText = new byte[iv.length+data.length];
-		System.arraycopy(iv, 0, cipherText, 0, iv.length);
-		System.arraycopy(data, 0, cipherText, iv.length, data.length);
+		cipher.init(Cipher.ENCRYPT_MODE, key, new IvParameterSpec(testIv));
+		byte[] cipherText = cipher.doFinal(input);
+		byte[] iv = cipher.getIV();
+		byte[] ivAndCipherText = ArrayUtils.addAll(iv, cipherText);
 		
-		//System.out.println("cipher: " + DatatypeConverter.printBase64Binary(cipherText)
-			//	+ " bytes: " + ctLength);
+		System.out.println();
+		System.out.println("######## encryption start ########");
+		System.out.println("########## IV IS: "+DatatypeConverter.printBase64Binary(iv));
+		System.out.println("plainText size:"+input.length+" : "+new String(input, "UTF-8"));
+		System.out.println("cipherText size:"+cipherText.length+" : "+DatatypeConverter.printBase64Binary(cipherText));
+		System.out.println("ivAndCipherText:"+ivAndCipherText.length+" : "+DatatypeConverter.printBase64Binary(ivAndCipherText));
+		System.out.println("######## encryption end   ########");
+		System.out.println();
 		
-		return cipherText;
+		return ivAndCipherText;
 	}
 	
 	/**
-	 * @return the decrypted bytes
-	 * Note, does not decode base64, just decrypts
+	 * @return the decrypt as byte array
 	 */
 	public byte[] decrypt(byte[] ivAndCipherText) throws Exception {
-		if(ivAndCipherText == null) {
+		if(ivAndCipherText == null || ivAndCipherText.length < 1) {
 			System.err.println("Error: Data sent to be decrypted is null");
 			return null;
 		}
+	
 		
-		byte[] cipherText = new byte[ivAndCipherText.length-iv.length];
-		System.arraycopy(ivAndCipherText, 0, iv, 0, iv.length); 
-		System.arraycopy(ivAndCipherText, iv.length, cipherText, 0, cipherText.length);
-		cipher.init(Cipher.DECRYPT_MODE, key);
-		byte[] plainText = cipher.doFinal(cipherText);
+		byte[] iv = Arrays.copyOf(ivAndCipherText, IV_BLOCK_SIZE); //take first IV_BLOCK_SIZE bytes from ivAndCipherText
+		byte[] cipherText = Arrays.copyOfRange(ivAndCipherText, IV_BLOCK_SIZE, ivAndCipherText.length); //bytes fsrom IV_BLOCK_SIZE+1 and onwards (i.e. everything after prepended iv)
+		System.out.println("Iv size: "+iv.length);
+		System.out.println("cipherText size: "+cipherText.length);
+		System.out.println("ivAndCipherText size: "+ivAndCipherText.length);
+		cipher.init(Cipher.DECRYPT_MODE, key, new IvParameterSpec(iv)); 
+		byte[] plainText = cipher.doFinal(cipherText); 
 		
-		//System.out.println("plain : " + new String(plainText, "UTF-8")
-			//	+ " bytes: " + ptLength);
+		System.out.println();
+		System.out.println("######## decryption start ########");
+		System.out.println("ivAndCipherText: "+DatatypeConverter.printBase64Binary(ivAndCipherText));
+		System.out.println("cipherText: "+DatatypeConverter.printBase64Binary(cipherText));
+		System.out.println("plainText: "+new String(plainText, "UTF-8"));
+		System.out.println("######## encryption end   ########");
+		System.out.println();
 		
 		return plainText;
-	}
-	
-	
+	}	
 }
