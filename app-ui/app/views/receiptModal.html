@@ -14,29 +14,33 @@
 					<div class="row">
 						<div class="col-lg-4 ">
 							<p><strong>Hyttenavn</strong></p>
-							<p>Rundehytta</p>
+							<p>{{data.cabin.name}}</p>
 						</div>
 						<div class="col-lg-4">
 							<p><strong>Reservert</strong></p>
-							<p>06.05.15</p>
+							<p>{{data.timeOfBooking | date}}</p>
 						</div>
 					</div>	
 					<div class="row">
 						<div class="col-lg-4 ">
 							<p><strong>Ordrenummer</strong></p>
-							<p>123546</p>
+							<p>{{data.id}}</p>
 						</div>
-						<div class="col-lg-4 ">
+						<div class="col-lg-8 ">
 							<p><strong>Periode reservert</strong></p>
-							<p>15.05.15 - 17.05.15</p>
+							<p>{{data.dateFrom | date}} - {{data.dateTo |date}}</p>
 						</div>
 					</div>
 					<br>
 					<div class="row">
 						<div class="col-lg-12">
 							<div class="col-lg-12">
+							(Midlertidig) Sum: {{data.payment.amount}} NOK
+								<!-- {{ data | json }} -->
 								<!-- Bed summary should appear here -->
-								<dnt-price-viewer person-types="personType" from-date="booking.dateFrom" to-date="booking.dateTo"></dnt-price-viewer>
+								<dnt-price-viewer person-types="data.guests"
+									from-date="data.dateFrom" to-date="data.dateTo"></dnt-price-viewer>
+								</div>
 							</div>
 						</div>
 					</div>
