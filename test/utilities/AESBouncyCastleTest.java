@@ -97,14 +97,14 @@ public class AESBouncyCastleTest extends WithApplication {
 	@Test
 	public void testDNTDiffer() {
 		String code = play.Play.application().configuration().getString("application.secretKey");
-		String string = "hei";
+		String hei = "hei";
 		String expectedB64 = "EdZ8Ivcfug+V3lsCdB2oVym8QBofwbOpMYGuU8h7Mos=";
+		String expectedHash = "MGViYTM5MzA2YTRkN2Y4YWMwOGJkYzA0Y2M4ZWJjOGQ1ZmU3NTliNmU4OWUyZTU3M2Y0ZTA5YjZmZjE0MWY1ZGJlYWU4NWE4OTgzMjhhYjlkNTY0OGVhYmI3M2FjNDA3NDI1NTljN2RkNzlhMGFjYjVhMmY3OGQ1Yjk5OTY4Njc="; //TODO find what that is
 		
 		try {
-			byte[] data = string.getBytes("UTF-8");
 			AESBouncyCastle aes = new AESBouncyCastle(DatatypeConverter.parseBase64Binary(code));
+			String encr = DatatypeConverter.printBase64Binary(aes.encrypt(hei.getBytes("UTF-8"))); 
 			
-			String encr = DatatypeConverter.printBase64Binary(aes.encrypt(data));
 			assertEquals(expectedB64, encr);
 		} catch (Exception e) {
 			assertTrue("Exception happened: "+e, false);

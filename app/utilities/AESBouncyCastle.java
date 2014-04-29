@@ -78,7 +78,6 @@ public class AESBouncyCastle {
 			return null;
 		}
 	
-		
 		byte[] iv = Arrays.copyOf(ivAndCipherText, IV_BLOCK_SIZE); //take first IV_BLOCK_SIZE bytes from ivAndCipherText
 		byte[] cipherText = Arrays.copyOfRange(ivAndCipherText, IV_BLOCK_SIZE, ivAndCipherText.length); //bytes fsrom IV_BLOCK_SIZE+1 and onwards (i.e. everything after prepended iv)
 		cipher.init(Cipher.DECRYPT_MODE, key, new IvParameterSpec(iv)); 
