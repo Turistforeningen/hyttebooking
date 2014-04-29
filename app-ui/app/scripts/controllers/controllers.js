@@ -36,6 +36,7 @@ angular.module('dntApp').controller('orderController', ['$scope','$modal','$rout
 
 
 	$scope.cancelOrder = function (order) {
+		alert(JSON.stringify(order));/*
 		bookingService.cancelOrder(order.id)
 		.then(function(data){
 			var index = $scope.orders.indexOf(order);
@@ -43,8 +44,13 @@ angular.module('dntApp').controller('orderController', ['$scope','$modal','$rout
 		},
 		function(error){
 			$scope.status = 'not found' + error.message;
-		});
+		});*/
 	};
+	
+	$scope.open = function (order) {
+		//alert(modalToOpen);
+		var modalInstance = $scope.openDialog('/views/receiptModal.html', order);//, $scope.booking);
+	}
 	
 	/*
 	 * send in url to template and json data the 
