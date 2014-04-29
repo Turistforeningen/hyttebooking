@@ -31,8 +31,10 @@ create table cabin (
 
 create table guest (
   id                        bigint not null,
-  booking_id                bigint,
+  payment_id                bigint,
+  price_category_id         bigint,
   is_member                 boolean,
+  nr                        integer,
   constraint pk_guest primary key (id))
 ;
 
@@ -105,8 +107,10 @@ alter table booking add constraint fk_booking_smallCabin_4 foreign key (small_ca
 create index ix_booking_smallCabin_4 on booking (small_cabin_id);
 alter table cabin add constraint fk_cabin_priceForCabin_5 foreign key (price_for_cabin_id) references price (id) on delete restrict on update restrict;
 create index ix_cabin_priceForCabin_5 on cabin (price_for_cabin_id);
-alter table guest add constraint fk_guest_booking_6 foreign key (booking_id) references booking (id) on delete restrict on update restrict;
-create index ix_guest_booking_6 on guest (booking_id);
+alter table guest add constraint fk_guest_payment_6 foreign key (payment_id) references payment (id) on delete restrict on update restrict;
+create index ix_guest_payment_6 on guest (payment_id);
+alter table guest add constraint fk_guest_priceCategory_7 foreign key (price_category_id) references price (id) on delete restrict on update restrict;
+create index ix_guest_priceCategory_7 on guest (price_category_id);
 
 
 

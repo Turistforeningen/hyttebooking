@@ -198,12 +198,14 @@ angular.module('dntApp').controller('bookingController', ['$modal','$rootScope',
 			guestTypeMember.guestType = value.guestType + ', medlem';
 			guestTypeMember.nr = 0;
 			guestTypeMember.price = value.memberPrice;
+			guestTypeMember.isMember = true;
 			
 			guestType.id = value.id;
 			guestType.ageRange = value.ageRange;
 			guestType.guestType = value.guestType + ',';
 			guestType.nr = 0;
 			guestType.price = value.nonMemberPrice;
+			guestType.isMember = false;
 			
 			allGuests.push(guestTypeMember)
 			nonMemberGuests.push(guestType)

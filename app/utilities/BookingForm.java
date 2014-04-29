@@ -1,5 +1,6 @@
 package utilities;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.joda.time.DateTime;
@@ -8,6 +9,13 @@ import org.joda.time.Days;
 
 
 
+
+
+
+
+
+import com.fasterxml.jackson.databind.JsonNode;
+
 import play.i18n.Messages;
 import controllers.SecurityController;
 import flexjson.JSON;
@@ -15,8 +23,10 @@ import flexjson.JSONDeserializer;
 import models.Bed;
 import models.Booking;
 import models.Cabin;
+import models.Guest;
 import models.LargeCabin;
 import models.Payment;
+import models.Price;
 import models.SmallCabin;
 
 /**
@@ -32,11 +42,13 @@ public class BookingForm extends AbstractForm<Booking> {
 	public List<PriceForm> guests;
 	private int nrOfGuests = 0;
 	public boolean termsAndConditions;
+	private double amount;
+	private List<Guest> guestList;
 	/**
 	 * FlexJson needs an constructor even if its empty
 	 */
 	public BookingForm() {
-		
+		this.guestList = new ArrayList<Guest>();
 	}
 
 	
@@ -78,8 +90,9 @@ public class BookingForm extends AbstractForm<Booking> {
 					cabin.id,
 					beds);
 			
-			double amount = PriceHelper.calculateAmount(guests, Days.daysBetween(startDt, endDt).getDays());
-			Payment.createPaymentForBooking(SecurityController.getUser(), booking, amount);
+			double amount = this.amount;
+			System.out.println("guest size: " +this.guestList);
+			Payment.createPaymentForBooking(SecurityController.getUser(), booking, amount, this.guestList);
 			addSuccess("message", Messages.get("booking.successful"));
 			
 			
@@ -106,16 +119,6 @@ public class BookingForm extends AbstractForm<Booking> {
 			return false;
 		}
 		
-		if(guests == null) {
-			addError(Messages.get("booking.missingGuestArray"));
-			return false;
-		}
-		
-		this.nrOfGuests = PriceHelper.calculateNrOfBeds(this.guests);
-		if(this.nrOfGuests<=0) {
-			addError(Messages.get("booking.atLeastOnePerson"));
-			return false;
-		}
 		//check here if booking only contains children or babies, which should not be possible
 		Cabin cabin = Cabin.find.byId(cabinId);
 		if(cabin == null) {
@@ -140,15 +143,50 @@ public class BookingForm extends AbstractForm<Booking> {
 		}
 		
 		if(startDt.	isBeforeNow() || endDt.isBeforeNow() || !startDt.isBefore(endDt))  {
-			System.out.println(startDt +" "+ endDt);
 			addError(Messages.get("booking.invalidDateRange"));
 			return false;	
 		}
+		if(guests == null) {
+			addError(Messages.get("booking.missingGuestArray"));
+			return false;
+		}
 		
+		boolean proccessPrices = processGuestList(this.guests, this.cabinId, Days.daysBetween(startDt, endDt).getDays());
+		if(proccessPrices == false) {
+			addError(Messages.get("booking.guestArrayInvalid"));
+			return false;
+		}
 		
+		if(this.nrOfGuests<=0) {
+			addError(Messages.get("booking.atLeastOnePerson"));
+			return false;
+		}
+			
 		return true;
 	}
 	
+	private boolean processGuestList(List<PriceForm> guestList, Long cabinId, int days) {
+		double amount = 0;
+		int beds = 0;
+		
+		for(PriceForm guestType : guestList) {
+			Price price= Price.findPriceBelongingToCabin(cabinId, guestType.id);
+
+			if(price == null) {
+				return false;
+			}
+			beds += guestType.nr;
+			amount += days*guestType.nr*price.getPrice(guestType.isMember);
+			Guest g = new Guest(price, guestType.isMember, guestType.nr);
+			this.guestList.add(g);
+		}
+		for(Guest guest : this.guestList) {
+			guest.save();
+		}
+		this.nrOfGuests = beds;
+		this.amount = amount;
+		return true;
+	}
 	/**
 	 * jsonFlex is used to deserialize/unmarshall json String into a form containing
 	 * java classes like String, int, List<T>. If the deserializer cant complete,

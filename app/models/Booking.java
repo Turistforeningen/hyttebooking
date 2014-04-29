@@ -36,9 +36,6 @@ public class Booking extends Model {
 	/** Time of order contains information about when the booking took place as timestamp long **/
 	public Long timeOfBooking;
 
-	@Constraints.Required
-	@OneToMany(mappedBy="booking", cascade = CascadeType.ALL, orphanRemoval=true) //you were here a
-	public List<Guest> guests;
 
 	@Constraints.Required
 	@ManyToOne
