@@ -74,8 +74,7 @@ body{
 
 
 /*-----------Text mods-----------*/
-.vertAlign { margin:0}
-.rowSpace { margin-bottom:20px}
+
 .modCenterText{
 	text-align: center;
 }
@@ -99,6 +98,10 @@ body{
 }
 
 /*-----------Styling-----------*/
+
+.spaceLineEkstraSmall{
+	height: 7px;
+}
 
 .spaceLineSmall{
 	height: 15px;
@@ -126,17 +129,38 @@ body{
 .tooltip-inner {
     max-width: 600px;
 }
+
+.table-header{
+	background-color: #428bca;
+	color: #ffffff;
+}
+
+.bottom-border{
+	border-bottom: 2px solid #d6d6d6;
+}
+
+
 /*---------Custom calendar buttons ---------*/
 .default-calendar-button {
-    
 }
+
+.btn-available {
+	background-color: #73cc75;
+}
+
+.btn-not-available {
+	background-color: #e4656a;
+}
+
 .btn-in-range {
-	background-color: #def2f8;
+    background-color: #d8edf3;
 }
 
 .btn-user-disabled:disabled {
-	background-color: #bd362f;
+    background-color: #da161e;
+    color:#ffffff;
 }
+
 /*--------Custom navbar--------*/
 /* navbar */
 .navbar-default {

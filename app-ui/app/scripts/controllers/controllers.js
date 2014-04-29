@@ -201,7 +201,7 @@ angular.module('dntApp').controller('bookingController', ['$modal','$rootScope',
 			
 			guestType.id = value.id;
 			guestType.ageRange = value.ageRange;
-			guestType.guestType = value.guestType + ', ikke-medlem';
+			guestType.guestType = value.guestType + ',';
 			guestType.nr = 0;
 			guestType.price = value.nonMemberPrice;
 			
