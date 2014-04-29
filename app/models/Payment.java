@@ -17,7 +17,7 @@ public class Payment extends Model {
 	public Long id;
 	
 	@Constraints.Required
-	public double amount;
+	public Double amount;
 	
 	@Constraints.Required
 	public DateTime date;

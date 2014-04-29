@@ -250,8 +250,8 @@ public class BookingController extends Controller {
 			return Results.badRequest();
 		}*/
 		JSONSerializer orderDetailsSerializer = new JSONSerializer()
-		.include( )
-		.exclude("*.class", "user", "smallCabin")
+		.include("payment", "payment" )
+		.exclude("*.class", "user", "smallCabin", "payment.user")
 				 .transform(new DateTimeTransformer(), DateTime.class);
 		return Results.ok(orderDetailsSerializer.serialize(b));
 	}
