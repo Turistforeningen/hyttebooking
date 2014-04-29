@@ -38,8 +38,8 @@
 							(Midlertidig) Sum: {{data.payment.amount}} NOK
 								<!-- {{ data | json }} -->
 								<!-- Bed summary should appear here -->
-								<dnt-price-viewer person-types="data.guests"
-									from-date="data.dateFrom" to-date="data.dateTo"></dnt-price-viewer>
+								<dnt-price-viewer person-types="data.payment.guests"
+									from-date="data.dateFrom" to-date="data.dateTo" total-amount="data.payment.amount"></dnt-price-viewer>
 								</div>
 							</div>
 						</div>

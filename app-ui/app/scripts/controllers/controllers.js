@@ -34,7 +34,7 @@ angular.module('dntApp').controller('orderController', ['$scope','$modal','$rout
 		});
 	};
 
-
+	// Temporary replacing the code for canceling an order, instead showing the order information in an alert popup
 	$scope.cancelOrder = function (order) {
 		bookingService.getOrderSummary(order.id)
 			.then(function(ord){

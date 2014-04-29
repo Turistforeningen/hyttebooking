@@ -234,6 +234,7 @@ angular.module('dntBookingModule')
 			'fromDate': '=',
 			'toDate' : '='
 
+
 		},
 
 		template:
