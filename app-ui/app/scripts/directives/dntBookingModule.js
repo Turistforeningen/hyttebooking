@@ -62,14 +62,22 @@ angular.module('dntBookingModule', [])
 		},
 
 		template:
+			'<div class="row modBoldText bottom-border"><div class="col-lg-6">Kategori</div><div class="col-lg-2 modCenterText">Pris</div><div class="col-lg-4 modRightText">Antall</div></div>'+
+			'<div class="row spaceLineEkstraSmall"></div>'+
 			'<div class="row" ng-repeat="per in person.slice(0, hider)">'+
-			'<div class="col-lg-8 col-md-8">'+
-			'<p>{{per.guestType}}</p>'+
+			
+			'<div class="col-lg-6 col-md-6">'+
+			'<p ng-controller="TooltipDemoCtrl" tooltip-placement="top" tooltip-html-unsafe="{{tooltipAge + per.ageRange}}" tooltip-popup-delay="500">{{per.guestType}}</p>'+
 			'</div>'+
+			
+			'<div class="col-lg-2 col-md-2"> <p>{{per.price}}</p>'+
+			'</div>'+
+			
 			'<div class="col-lg-4 col-md-4 modRightText">'+
 			'<select class="selectNumber" ng-model="per.nr" ng-options="pe for pe in range(per.nr)"></select>'+
 			'</div>'+
 			'</div>'+
+			
 			'<div class="row">'+
 			'<div class="col-lg-12 col-md-12">'+
 			'<br>'+
@@ -77,10 +85,13 @@ angular.module('dntBookingModule', [])
 			'<br><br>'+
 			'<div collapse="isCollapsed">'+
 			'<div class="row" ng-repeat="per in person.slice(hider)">'+
-			'<div class="col-lg-8 col-md-8">'+
-			'<p>{{per.guestType}}</p>'+
-
+			'<div class="col-lg-6 col-md-6">'+
+			'<p ng-controller="TooltipDemoCtrl" tooltip-placement="top" tooltip-html-unsafe="{{tooltipAge + per.ageRange}}" tooltip-popup-delay="500">{{per.guestType}}</p>'+
 			'</div>'+
+			
+			'<div class="col-lg-2 col-md-2"> <p>{{per.price}}</p>'+
+			'</div>'+
+			
 			'<div class="col-lg-4 col-md-4 modRightText">'+
 			'<select class="selectNumber" ng-model="per.nr" ng-options="pe for pe in range(per.nr)"></select>'+
 			'</div>'+
@@ -225,16 +236,18 @@ angular.module('dntBookingModule')
 
 		},
 
-		template:	
+		template:
 			'<div class="row" style="min-height: 250px;">' +
 			'<table class="table table-condensed">' +
+			'<tbody>'+
 			'<tr ng-repeat="person in personType" ng-show="person.nr>0">'+
 			'<td>{{person.guestType}}</td>'+
 			'<td>x{{person.nr}}</td>' +
-			'<td>{{days}}</td>'+
 			'<td style="text-align:right">{{person.nr * person.price * days}} NOK</td>'+
 			'</tr>'+
+			'</tbody>'+
 			'</table>'+
+			
 			'</div>'+
 			'<div class=row>'+
 			'<table class="table table-condensed">' +
