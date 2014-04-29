@@ -64,7 +64,7 @@ angular.module('dntBookingModule', [])
 		template:
 			'<div class="row" ng-repeat="per in person.slice(0, hider)">'+
 			'<div class="col-lg-8 col-md-8">'+
-			'<p>{{per.type}}</p>'+
+			'<p>{{per.guestType}}</p>'+
 			'</div>'+
 			'<div class="col-lg-4 col-md-4 modRightText">'+
 			'<select class="selectNumber" ng-model="per.nr" ng-options="pe for pe in range(per.nr)"></select>'+
@@ -78,7 +78,7 @@ angular.module('dntBookingModule', [])
 			'<div collapse="isCollapsed">'+
 			'<div class="row" ng-repeat="per in person.slice(hider)">'+
 			'<div class="col-lg-8 col-md-8">'+
-			'<p>{{per.type}}</p>'+
+			'<p>{{per.guestType}}</p>'+
 
 			'</div>'+
 			'<div class="col-lg-4 col-md-4 modRightText">'+
@@ -229,7 +229,7 @@ angular.module('dntBookingModule')
 			'<div class="row" style="min-height: 250px;">' +
 			'<table class="table table-condensed">' +
 			'<tr ng-repeat="person in personType" ng-show="person.nr>0">'+
-			'<td>{{person.type}}</td>'+
+			'<td>{{person.guestType}}</td>'+
 			'<td>x{{person.nr}}</td>' +
 			'<td>{{days}}</td>'+
 			'<td style="text-align:right">{{person.nr * person.price * days}} NOK</td>'+

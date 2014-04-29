@@ -111,22 +111,7 @@ angular.module('dntApp').controller('cabinDetailsController', ['$scope', '$locat
 	$scope.getPrices = function(cabinId) {
 		cabinService.getPrices(cabinId)
 		.then(function(data){
-			var tempData = [
-			   {'id': 1, 'guestType': 'Voksen', 'nonMemberPrice': 400, 'memberPrice' : 300},
-			   {'id': 2, 'guestType': 'Ungdom', 'nonMemberPrice': 200, 'memberPrice' : 150},
-			   {'id': 3, 'guestType': 'Barn', 'nonMemberPrice': 150, 'memberPrice' : 100},
-			   {'id': 4, 'guestType': 'Spedbarn', 'nonMemberPrice': 0, 'memberPrice' : 0}
-			];
-			var tempDataSmall = [
-			 			   {'id': 5, 'guestType': 'whole', 'nonMemberPrice': 700, 'memberPrice' : 600},
-			 			   
-			 			];
-			if($scope.cabinDetails.cabinType == 'small') {
-				$scope.priceCategories = tempDataSmall;
-			}
-			else {
-				$scope.priceCategories = tempData;
-			}
+				$scope.priceCategories = data;
 		}, function(errorMessage){
 			$scope.error=errorMessage;
 		});

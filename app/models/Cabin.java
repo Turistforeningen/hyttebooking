@@ -10,7 +10,7 @@ import org.joda.time.DateTime;
 import play.db.ebean.Model;
 import utilities.Page;
 
-@Entity
+@Entity 
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "DTYPE", discriminatorType = DiscriminatorType.STRING)
 public abstract class Cabin extends Model {
@@ -19,7 +19,9 @@ public abstract class Cabin extends Model {
 	public Long id;
 
 	public String name;
-
+	
+	
+	
 	public Cabin(String name) {
 		this.name = name;	
 	}

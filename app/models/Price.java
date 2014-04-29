@@ -1,6 +1,16 @@
 package models;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+
 import play.data.validation.Constraints;
 import play.db.ebean.Model;
 
@@ -8,11 +18,18 @@ import play.db.ebean.Model;
  * Each cabin has a PriceMatrix, the administrators of each tourist agency can 
  * create their own personTypes and associated priceMatrices with them
  */
+@Entity 
 public class Price extends Model {
 	
     @Id
     public Long id;
 	
+    @ManyToMany(mappedBy = "priceMatrix")
+    public List<LargeCabin> largeCabins = new ArrayList<LargeCabin>();
+    
+    @OneToOne(mappedBy = "priceForCabin")
+	public SmallCabin smallCabin;
+    
     /** The name of the category, e.g. "Honnør", "Skoleungdom" **/
 	@Constraints.Required
 	public String guestType;

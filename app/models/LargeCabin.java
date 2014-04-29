@@ -2,9 +2,13 @@ package models;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.persistence.*;
+
 import org.joda.time.DateTime;
+
 import play.data.validation.Constraints;
+
 
 @Entity
 @DiscriminatorValue("LARGE_CABIN")
@@ -14,10 +18,9 @@ public class LargeCabin extends Cabin {
 	@OneToMany(mappedBy="largeCabin", cascade = CascadeType.ALL, orphanRemoval=true)
 	public List<Bed> beds;
 	
-	/*@ManyToMany*/
-	public List<Price> priceMatrix;
+	@ManyToMany
+	public List<Price> priceMatrix  = new ArrayList<Price>();
 	/** TODO add Constraints.Required right here**/
-	
 	/**
 	 * 
 	 * @param name
@@ -112,10 +115,10 @@ public class LargeCabin extends Cabin {
 				return;
 		
 		Price price = new Price(guestType, ageRange, nonMemberPrice, memberPrice);
-		if(priceMatrix == null)
-			this.priceMatrix = new ArrayList<Price>();
+		price.save();
 		
-		priceMatrix.add(price);
+		this.priceMatrix.add(price);
+		
 	}
 
 	@Override
