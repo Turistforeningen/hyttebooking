@@ -20,6 +20,7 @@ public class AESBouncyCastle {
 	
 	public final static int IV_BLOCK_SIZE = 16;
 
+	private byte[] keyBytes;
 	private SecretKeySpec key;
 	private Cipher cipher;
 	private IvParameterSpec iv;
@@ -27,6 +28,7 @@ public class AESBouncyCastle {
 	private byte[] prevIv;
 	//TODO remove
 	private byte[] testIv = DatatypeConverter.parseBase64Binary("EdZ8Ivcfug+V3lsCdB2oVw==");
+
 	
 	public AESBouncyCastle(byte[] keyBytes) throws Exception  {
 		if(keyBytes.length != 32) 
@@ -34,7 +36,7 @@ public class AESBouncyCastle {
 		
 		Security.addProvider(new BouncyCastleProvider());
 		
-		
+		this.keyBytes = keyBytes;
 		this.cipher = Cipher.getInstance("AES/CBC/PKCS7Padding", "BC");
 		this.key = new SecretKeySpec(keyBytes, "AES");
 		this.iv = new IvParameterSpec(new byte[IV_BLOCK_SIZE]);
@@ -79,7 +81,7 @@ public class AESBouncyCastle {
 		}
 	
 		byte[] iv = Arrays.copyOf(ivAndCipherText, IV_BLOCK_SIZE); //take first IV_BLOCK_SIZE bytes from ivAndCipherText
-		byte[] cipherText = Arrays.copyOfRange(ivAndCipherText, IV_BLOCK_SIZE, ivAndCipherText.length); //bytes fsrom IV_BLOCK_SIZE+1 and onwards (i.e. everything after prepended iv)
+		byte[] cipherText = Arrays.copyOfRange(ivAndCipherText, IV_BLOCK_SIZE, ivAndCipherText.length); //bytes from IV_BLOCK_SIZE+1 and onwards (i.e. everything after prepended iv)
 		cipher.init(Cipher.DECRYPT_MODE, key, new IvParameterSpec(iv)); 
 		byte[] plainText = cipher.doFinal(cipherText); 
 		
@@ -97,12 +99,16 @@ public class AESBouncyCastle {
 		return plainText;
 	}	
 	
+	/**
+	 * Hashes data and then base64 encodes it
+	 */
 	public String sha512AndBase64(byte[] data) {
 		MessageDigest md;
 		try {
 			md = MessageDigest.getInstance("SHA-512");
+			//md.update(keyBytes); maybe should be salted with key?
 			byte[] hash = md.digest(data);
-			System.out.println("hash: "+DatatypeConverter.printBase64Binary(hash));
+			//System.out.println("hash: "+DatatypeConverter.printBase64Binary(hash));
 			return DatatypeConverter.printBase64Binary(hash);
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
@@ -110,6 +116,9 @@ public class AESBouncyCastle {
 		}
 	}
 
+	/**
+	 * @return the iv and plaintext used for last encryption
+	 */
 	public byte[] getIvAndPlainText() {
 		if(prevIv == null || prevPText == null)
 			return null;

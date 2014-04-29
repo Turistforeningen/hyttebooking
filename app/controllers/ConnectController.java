@@ -1,5 +1,7 @@
 package controllers;
 
+import java.util.Arrays;
+
 import org.joda.time.Instant;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -14,8 +16,6 @@ import utilities.AESBouncyCastle;
 
 /**
  * Controller class for DNT Connect for logging users in.
- * 
- * @author Jama
  */
 public class ConnectController extends Controller {
 	private static final String CLIENT = "?client=hyttebooking";
@@ -40,11 +40,17 @@ public class ConnectController extends Controller {
 		byte[] encr = aes.encrypt(data.toString().getBytes("UTF-8")); /** Payload encrypted **/
 		String encrJson64 = DatatypeConverter.printBase64Binary(encr); /** Base64 encoding of encrypted payload **/
 		String hash = aes.sha512AndBase64(aes.getIvAndPlainText());
+		
+		String testP	= new String(Arrays.copyOfRange(aes.getIvAndPlainText(), 16, encr.length));//TODO remove
+		String tesIv	= DatatypeConverter.printBase64Binary(Arrays.copyOfRange(aes.getIvAndPlainText(), 0, 16));
+		System.out.println("########################## "+testP);
+		System.out.println("########################## "+tesIv);
 		System.out.println("FINAL data: "+encrJson64);
 		System.out.println("FINAL hash: "+hash);
 		ObjectNode retNode = Json.newObject();
 		retNode.put("redirectUrl", ""+SIGNON+EncodeURL(encrJson64)+"&hash="+EncodeURL(hash));
 		return ok(retNode);
+		
 	}
 
 	/**
