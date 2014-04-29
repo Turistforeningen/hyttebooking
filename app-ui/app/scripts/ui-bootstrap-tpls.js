@@ -3514,7 +3514,7 @@ angular.module("template/datepicker/datepicker.html", []).run(["$templateCache",
     "    <tr ng-repeat=\"row in rows\">\n" +
     "      <td ng-show=\"showWeekNumbers\" class=\"text-center\"><em>{{ getWeekNumber(row) }}</em></td>\n" +
     "      <td ng-repeat=\"dt in row\" class=\"text-center\">\n" +
-    "        <button type=\"button\" style=\"width:100%;\" class=\"btn btn-default btn-sm default-calendar-button\" ng-class=\"{'btn-info': dt.selected,'btn-in-range': dt.inRange && !dt.selected, 'btn-user-disabled': dt.isDisabled}\" ng-click=\"select(dt.date)\" ng-disabled=\"dt.disabled || dt.isDisabled\"><span ng-class=\"{'text-muted': dt.secondary}\">{{dt.label}}</span></button>\n" +
+    "        <button type=\"button\" style=\"width:100%;\" class=\"btn btn-default btn-sm default-calendar-button\" ng-class=\"{'btn-info': dt.selected,'btn-in-range': dt.inRange && !dt.selected, 'btn-user-disabled': dt.isDisabled, 'btn-available': !dt.isDisabled && !dt.selected && !dt.secondary && !dt.inRange}\" ng-click=\"select(dt.date)\" ng-disabled=\"dt.disabled || dt.isDisabled\"><span ng-class=\"{'text-muted': dt.secondary}\">{{dt.label}}</span></button>\n" +
     "      </td>\n" +
     "    </tr>\n" +
     "  </tbody>\n" +

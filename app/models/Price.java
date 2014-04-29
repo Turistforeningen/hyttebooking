@@ -13,6 +13,7 @@ import javax.persistence.Table;
 
 import play.data.validation.Constraints;
 import play.db.ebean.Model;
+import play.db.ebean.Model.Finder;
 
 /**
  * Each cabin has a PriceMatrix, the administrators of each tourist agency can 
@@ -50,5 +51,50 @@ public class Price extends Model {
 		this.ageRange = ageRange;
 		this.nonMemberPrice = nonMemberPrice;
 		this.memberPrice = memberPrice;
+	}
+	
+	public double getPrice(boolean isMember) {
+		if(isMember) {
+			return this.memberPrice;
+		}
+		else {
+			return this.nonMemberPrice;
+		}
+	}
+	
+	public String getGuestType(boolean isMember) {
+		if(isMember) {
+			return this.guestType +", medlem";
+		}
+		else {
+			return this.guestType;
+		}
+	}
+	
+	public static Finder<Long, Price> find = new Finder<Long, Price>(Long.class, Price.class);
+	
+	public static Price findPriceBelongingToCabin(Long cabinId, Long priceId) {
+		Cabin cabin = Cabin.find.byId(cabinId);
+		if(cabin instanceof LargeCabin) {
+			System.out.println(cabinId);
+			List<Price> prices = ((LargeCabin)cabin).priceMatrix;
+			for(Price p: prices) {
+				if(p.id.equals(priceId)) {
+					return p;
+				}
+			}
+			return null;
+		}
+		else if(cabin instanceof SmallCabin) {
+			Price price = null;
+			price = ((SmallCabin)cabin).priceForCabin;
+			if(price.id.equals(priceId)) {
+				return price;
+			}
+			else {
+				return null;
+			}
+		}
+		return null;
 	}
 }
