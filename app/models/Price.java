@@ -40,7 +40,7 @@ public class Price extends Model {
 	@Constraints.Required
 	public String ageRange;
 	
-	/** The price for the cabin for members and nonmembers**/
+	/** The price for the cabin for members and non-members**/
 	@Constraints.Required
 	public double nonMemberPrice;
 	@Constraints.Required

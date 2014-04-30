@@ -131,15 +131,15 @@ angular.module('dntApp').controller('bookingController', ['$modal','$rootScope',
 	
 	var validateBooking = function(booking) {
 		if(!$scope.validState) {
-			$scope.errorMessage = "Ingen hytteId spesifisert";
+			$scope.errorMessage = "Ingen hytteId spesifisert.";
 			return false;
 		}
 		else if(angular.isUndefined(booking.dateFrom)) {
-			$scope.errorMessage = "Du må velge ankomstdato for å kunne reservere";
+			$scope.errorMessage = "Du må velge ankomstdato for å kunne reservere.";
 			return false;
 		}
 		else if(angular.isUndefined(booking.dateTo)) {
-			$scope.errorMessage = "Du må velge avreisedato for å kunne reservere";
+			$scope.errorMessage = "Du må velge avreisedato for å kunne reservere.";
 			return false;
 		}
 		var personCount = 0;
@@ -147,7 +147,7 @@ angular.module('dntApp').controller('bookingController', ['$modal','$rootScope',
 			personCount += value.nr;
 		});
 		if(personCount <= 0) {
-			$scope.errorMessage = "du må velge minst en person for å kunne reservere";
+			$scope.errorMessage = "Du må velge minst en person for å kunne reservere.";
 			return false
 		}
 		return true;

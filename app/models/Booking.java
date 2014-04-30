@@ -98,11 +98,11 @@ public class Booking extends Model {
 
 	/**
 	 * The date a booking is regarded as delivered, and payment from user expected.
-	 * Since nets wont accept payments with deliverydate more than 3 months in the future, all
+	 * Since nets wont accept payments with delivery date more than 3 months in the future, all
 	 * bookings with start time more than three months in the future is collected after 3 months.
 	 * This can be changed to an authentication of payment, and a capture of payment manually.
 	 * 
-	 * ---What happpens if card payment is registered on is out of date on time of capture? ---
+	 * ---What happens if card payment is registered on is out of date on time of capture? ---
 	 * @return date of delivery
 	 */
 	@JSON(include = false)
@@ -118,7 +118,7 @@ public class Booking extends Model {
 
 	}
 	/**
-	 * A getter which return number of beds booked in a largeCabin. Used by frontend (json serialized)
+	 * A getter which return number of beds booked in a largeCabin. Used by front-end (json serialized)
 	 * @return String - number of beds in order or cabin 
 	 */
 	public String getNrOfBeds() {
