@@ -4,6 +4,9 @@ import static org.junit.Assert.*;
 import static play.test.Helpers.fakeApplication;
 import static play.test.Helpers.inMemoryDatabase;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -43,21 +46,22 @@ public class PaymentTest extends WithApplication {
 	public void testCreatePaymentForBooking() {
 		double valid 	= 1000.0;
 		double invalid 	= -1000.0;
+		List<Guest> guests = new ArrayList<Guest>();
 		
 		//Test that payment can't be created with negative amount
-		assertNull(Payment.createPaymentForBooking(u1, b1, invalid));
+		assertNull(Payment.createPaymentForBooking(u1, b1, invalid, guests));
 		
 		//Test that payment must be linked to booking (not null)
-		assertNull(Payment.createPaymentForBooking(u1, null, valid));
+		assertNull(Payment.createPaymentForBooking(u1, null, valid, guests));
 		
 		//Test that payment must be linked to user (not null)
-		assertNull(Payment.createPaymentForBooking(null, b1, valid));
+		assertNull(Payment.createPaymentForBooking(null, b1, valid, guests));
 		
 		//Test that booking is linked to user
-		assertNull(Payment.createPaymentForBooking(u2, b1, valid));
+		assertNull(Payment.createPaymentForBooking(u2, b1, valid, guests));
 		
 		//Test that booking has payment linked to it and vice versa
-		Payment p = Payment.createPaymentForBooking(u1, b1, valid);
+		Payment p = Payment.createPaymentForBooking(u1, b1, valid, guests);
 		assertNotNull(p);
 		assertEquals(p.booking.id, b1.id);
 		assertEquals(b1.payment.id, p.id);
