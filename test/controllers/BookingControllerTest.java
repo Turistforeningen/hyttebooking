@@ -12,10 +12,15 @@ import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.junit.*;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import flexjson.JSONSerializer;
 import static org.junit.Assert.*;
+import play.libs.Json;
 import play.mvc.Http.Status;
 import play.mvc.Result;
+import play.test.FakeRequest;
 import play.test.WithApplication;
 import static play.test.Helpers.*;
 
@@ -24,6 +29,20 @@ public class BookingControllerTest extends WithApplication {
 	SmallCabin sCabin;
 	LargeCabin lCabin;
 	User user;
+	
+	String jsonString = "{\"cabinId\":\"1\",\"dateTo\":\"2014-05-22\",\"dateFrom\":\"2014-05-15\","
+			+ "\"guests\":[{\"id\":1,\"ageRange\":\"26 og opp\",\"guestType\":\"Voksen, medlem\","
+			+ "\"nr\":3,\"price\":300,\"isMember\":true},{\"id\":2,\"ageRange\":\"13-25\","
+			+ "\"guestType\":\"Ungdom, medlem\",\"nr\":0,\"price\":200,\"isMember\":true},"
+			+ "{\"id\":3,\"ageRange\":\"4-12\",\"guestType\":\"Barn, medlem\",\"nr\":0,\"price\":100,"
+			+ "\"isMember\":true},{\"id\":4,\"ageRange\":\"0-4\",\"guestType\":\"Spedbarn, medlem\","
+			+ "\"nr\":0,\"price\":0,\"isMember\":true},{\"id\":1,\"ageRange\":\"26 og opp\","
+			+ "\"guestType\":\"Voksen,\",\"nr\":0,\"price\":400,\"isMember\":false},{\"id\":2,"
+			+ "\"ageRange\":\"13-25\",\"guestType\":\"Ungdom,\",\"nr\":0,\"price\":300,\"isMember\":false},"
+			+ "{\"id\":3,\"ageRange\":\"4-12\",\"guestType\":\"Barn,\",\"nr\":0,\"price\":200,"
+			+ "\"isMember\":false},{\"id\":4,\"ageRange\":\"0-4\",\"guestType\":\"Spedbarn,\","
+			+ "\"nr\":0,\"price\":0,\"isMember\":false}],\"termsAndConditions\":true}"; //working with static data for now
+	//surely a more dynamic and easy on the eyes way TODO find out
 	
 	@Before
 	public void setUp() {
@@ -42,11 +61,26 @@ public class BookingControllerTest extends WithApplication {
 	/**
 	 * Test that empty request returns null result
 	 * Test that booking with only minors/babies returns badRequest
-	 * 
+	 * Test that termsAndConditions false returns badRequest
+	 * http://www.playframework.com/documentation/2.1.x/api/java/play/test/FakeRequest.html
 	 */
 	public void testSubmitBooking() {
-		Result result = callAction(controllers.routes.BookingController.submitBooking());
+		FakeRequest fkRequest = fakeRequest();
+		JsonNode data = Json.parse(jsonString);
+		fkRequest.withJsonBody(data);
+		Result result = callAction(controllers.routes.BookingController.submitBooking()); 
+		//TODO how pass fakeRequest? 
+		//constructed fakeBody
+		//assertEquals(badRequest(), result); 
+		
 	}
+	
+	@Test
+	/**
+	 * Test that empty request returns badRequest
+	 * Test that attempt to cancel non-existant booking returns badRequest
+	 * 
+	 */
 	
 	@Test
 	/** Note: Doesn't test the actual controller, just copied the entire code and testing within here **/
