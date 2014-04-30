@@ -84,13 +84,13 @@
 										<p>
 											<strong>Reservert</strong>
 										</p>
-										<p>{{ order.dateFrom | date }} - {{ order.dateTo | date }}</p>
+										<p>{{ order.dateFrom | date }} - {{ order.dateTo | date }} ({{order.days}} dager)</p>
 									</div>
 									<div class="col-lg-2 col-md-2">
 										<p>
 											<strong>Ordrenummer</strong>
 										</p>
-										<p>12345</p>
+										<p>{{order.id}}</p>
 									</div>
 									<div class="col-lg-2 col-md-2">
 										<p>
