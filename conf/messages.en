@@ -30,3 +30,5 @@ payment.authenticateSuccess = Payment successful
 Payment.missingTransId      = Missing transactionId needed for authentication
 payment.timedOut            = You took to long to pay, booking timed out
 payment.cantContactNets     = Can't get proper response from nets
+
+admin.noAccess              =Your not an admin

@@ -13,6 +13,7 @@ import models.Cabin;
 import models.LargeCabin;
 import models.SmallCabin;
 import flexjson.JSONSerializer;
+import play.i18n.Messages;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -110,5 +111,32 @@ public class AdminController extends Controller {
 		else {
 			return badRequest(form.getError());
 		}
+	}
+	
+	@With(SecurityController.class)
+	public static Result adminCancelBooking(String bookingId) {
+		Booking booking = Booking.getBookingById(bookingId);
+
+		if(booking == null) {
+			return notFound(JsonMessage.error(Messages.get("booking.notFound")+ ": " + bookingId));
+		}
+
+		if(!SecurityController.getUser().admin) {
+			return badRequest(JsonMessage.error(Messages.get("admin.noAccess")));
+		}
+		System.out.println(booking.isAbleToCancel() + " " + booking.status);
+		//7 days before. Admin should still be able to cancel then
+		if(!booking.isAbleToCancel()) {
+			return notFound(JsonMessage.error(Messages.get("booking.notFound")));
+		}
+
+		//cancellogic to late to cancel?
+		
+		if(booking.status == Booking.PAID) {
+			PaymentController.cancelPayment(booking.payment.getTransactionId());
+		}
+		booking.status = Booking.CANCELLED;
+		booking.update();	
+		return ok(JsonMessage.success(""));
 	}
 }

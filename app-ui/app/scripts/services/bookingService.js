@@ -68,6 +68,25 @@ angular.module('dntApp').factory('bookingService', ['$http', '$q','$log', functi
 		});
 		return deferred.promise;
 	},
+	
+	/**
+     * @ngdoc method
+     * @name dntApp.service#adminCancelOrder
+     * @methodOf dntApp.bookingService
+     * @returns {json} An answer containing status and message from the server.
+     */
+	adminCancelOrder: function(id) {
+		var deferred = $q.defer();
+		var url = '/api/admin/bookings/' + id;
+		$http.delete(url).success(function(data){
+			deferred.resolve(data);
+		}).error(function(error){
+
+			deferred.reject(error);
+		});
+		return deferred.promise;
+	},
+	
 	/**
      * @ngdoc method
      * @name dntApp.service#postOrder

@@ -14,9 +14,10 @@ GET		/api/bookings				            controllers.BookingController.getOrderHistory(
 POST    /login                                  controllers.SecurityController.login()
 POST    /logout                                 controllers.SecurityController.logout()
 
-GET     /api/cabins                             controllers.AdminController.getCabins()
-GET     /api/cabins/:id                         controllers.AdminController.getCabinDetails(id: Long)
-POST    /api/cabins                             controllers.AdminController.submitCabin()
+GET     /api/admin/cabins                       controllers.AdminController.getCabins()
+GET     /api/admin/cabins/:id                   controllers.AdminController.getCabinDetails(id: Long)
+POST    /api/admin/cabins                       controllers.AdminController.submitCabin()
+DELETE  /api/admin/bookings/:id                 controllers.AdminController.adminCancelBooking(id: String)
 GET     /api/cabins/:id/prices                  controllers.BookingController.getPriceForCabin(id: Long) 
 GET		/api/cabins/:id/availability			controllers.BookingController.getAvailabilityForTimePeriod(id: Long)
 GET     /api/bookings/:id/payment               controllers.PaymentController.registerPayment(id: Long)   
