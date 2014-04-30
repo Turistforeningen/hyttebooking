@@ -259,7 +259,7 @@ angular.module('dntBookingModule')
 			'</table>'+
 			'</div></div>',
 
-		controller: ['$scope', '$log', function($scope, $log) {
+		controller: ['$scope', '$log', '$filter', function($scope, $log, $filter) {
 				$scope.personType = {};
 				$scope.days =1;
 				
@@ -282,8 +282,8 @@ angular.module('dntBookingModule')
 				$scope.newDateRange = function() {
 					if($scope.fromDate  && $scope.toDate) {
 
-						var d1 = new Date($scope.fromDate);
-						var d2 = new Date($scope.toDate);
+						var d1 = new Date($filter('date')($scope.fromDate,'yyyy-MM-dd'));
+						var d2 = new Date($filter('date')($scope.toDate,'yyyy-MM-dd'));
 						var miliseconds = d2-d1;
 						var seconds = miliseconds/1000;
 						var minutes = seconds/60;
