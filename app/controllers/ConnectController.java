@@ -66,10 +66,14 @@ public class ConnectController extends Controller {
 	 * @throws Exception 
 	 */
 	public static Result checkLogin() throws Exception {
-		System.out.println("WHY DON'T I GET HERE!!!!!!!!!!!!!!!!!!!");
-		String dataB64 = DecodeURL(request().body().asJson().get("data").asText());
-		String hmacB64 = DecodeURL(request().body().asJson().get("hmac").asText());
-		
+		System.out.println("---------------------------");
+		System.out.println(request().body().asJson().get("data").asText());
+		System.out.println("---------------------------");
+		String dataB64 = request().body().asJson().get("data").asText();
+		String hmacB64 = request().body().asJson().get("hmac").asText();
+		System.out.println("---------------------------");
+		System.out.println(dataB64);
+		System.out.println("---------------------------");
 		byte[] data = DatatypeConverter.parseBase64Binary(dataB64);
 		byte[] hmac = DatatypeConverter.parseBase64Binary(hmacB64);
 		
