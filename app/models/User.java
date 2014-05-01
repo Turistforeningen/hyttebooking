@@ -99,12 +99,25 @@ public class User extends Model {
         this.creationDate = new DateTime();
     }
 
+    @Deprecated
+    /**
+     * Use constructor with id in field, as any user has to log in via DNT connect first
+     * id is 1:1 associated with sherpa_id gotten
+     */
     public User(String emailAddress, String password, String fullName) {
         setEmailAddress(emailAddress);
         setPassword(password);
         this.fullName = fullName;
         this.creationDate = new DateTime();
     }
+    
+    public User(long sherpaId, String emailAddress, String fullName) {
+        setEmailAddress(emailAddress);
+        this.fullName = fullName;
+        this.creationDate = new DateTime();
+        this.id = sherpaId;
+    }
+    
     public int getNrOfBookings() {
     	return this.bookings.size();
     }
@@ -140,5 +153,9 @@ public class User extends Model {
         // todo: verify this query is correct.  Does it need an "and" statement?
         return find.where().eq("emailAddress", emailAddress.toLowerCase()).eq("shaPassword", getSha512(password)).findUnique();
     }
+
+	public static User findBySherpaId(long id) {
+		return find.byId(id);
+	}
     
 }

@@ -80,6 +80,14 @@ public class SecurityController extends Action.Simple {
 			return ok(authTokenJson);
 		}
 	}
+	
+	public static Status DNTLogin(User user) {
+		String authToken = user.createToken();
+		ObjectNode authTokenJson = Json.newObject();
+		authTokenJson.put(AUTH_TOKEN, authToken);
+		response().setCookie(AUTH_TOKEN, authToken);
+		return ok(authTokenJson);
+	}
 
 	@With(SecurityController.class)
 	public static Result logout() {

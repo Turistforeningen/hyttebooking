@@ -2,8 +2,9 @@ package controllers;
 
 import java.util.Arrays;
 
-import org.joda.time.Instant;
+import models.User;
 
+import org.joda.time.Instant;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -18,14 +19,18 @@ import utilities.AESBouncyCastle;
  * Controller class for DNT Connect for logging users in.
  */
 public class ConnectController extends Controller {
+	private static final String REDIRECT_URL = "http://localhost:9000/dev#/";
 	private static final String CLIENT = "?client=hyttebooking";
 	private static final String SIGNON = "https://www.turistforeningen.no/connect/signon/" +CLIENT + "&data=";
 	private static final byte[] SECRETKEY = DatatypeConverter.parseBase64Binary(play.Play.application().configuration().getString("application.secretKey"));
 	//private static final String REDIRECT_URL TODO: Currently leaving out redirect in order to have default redirect url
 	
 	public static String EncodeURL(String url) throws java.io.UnsupportedEncodingException {
-	    url = java.net.URLEncoder.encode(url, "UTF-8");
-	    return url;
+	    return java.net.URLEncoder.encode(url, "UTF-8");
+	}
+	
+	public static String DecodeURL(String url) throws java.io.UnsupportedEncodingException {
+		return java.net.URLDecoder.decode(url, "UTF-8");
 	}
 	
 	/** Handles user login, the "https://www.turistforeningen.no/connect/signon/" url is used
@@ -37,6 +42,7 @@ public class ConnectController extends Controller {
 		AESBouncyCastle aes = new AESBouncyCastle(SECRETKEY); /** The encryption helper class **/
 		ObjectNode data = Json.newObject();
 		data.put("timestamp", getTimeStamp()); //not containing redirect URL right now, add "put("redirect_url", getRedirectUrl()" as needed
+		data.put("redirect_url", REDIRECT_URL);
 		byte[] encr = aes.encrypt(data.toString().getBytes("UTF-8")); /** Payload encrypted **/
 		String encrJson64 = DatatypeConverter.printBase64Binary(encr); /** Base64 encoding of encrypted payload **/
 		String hmac = aes.sha512AndBase64(aes.getIvAndPlainText());
@@ -50,6 +56,41 @@ public class ConnectController extends Controller {
 		ObjectNode retNode = Json.newObject();
 		retNode.put("redirectUrl", ""+SIGNON+EncodeURL(encrJson64)+"&hmac="+EncodeURL(hmac));
 		return ok(retNode);
+	}
+	
+	/**
+	 * Two query parameters gotten, data and hmac
+	 * Decrypt data
+	 * Check if HMAC(iv+plainText) == hmac
+	 * Turn plainText into json object 
+	 * @return
+	 * @throws Exception 
+	 */
+	public static Result checkLogin() throws Exception {
+		String dataB64 = request().getQueryString("data");
+		String hmacB64 = request().getQueryString("hmac");
+		
+		byte[] data = DatatypeConverter.parseBase64Binary(dataB64);
+		byte[] hmac = DatatypeConverter.parseBase64Binary(hmacB64);
+		
+		AESBouncyCastle aes = new AESBouncyCastle(SECRETKEY);
+		byte[] plainText = aes.decrypt(data, hmac);
+		JsonNode login = Json.parse(new String(plainText, "UTF-8"));
+		
+		if(!login.get("er_autentisert").asBoolean())
+			return unauthorized(); //TODO maybe need better response
+		
+		long id 		= login.get("sherpa_id").asLong();
+		String email 	= login.get("epost").asText();
+		String fName 	= login.get("fornavn").asText();
+		String lName	= login.get("etternavn").asText();
+		
+		User user = User.findBySherpaId(id);
+		if(user == null) { //first time using booking solution, we need to register user internally
+			user = new User(id, email, fName+" "+lName); //TODO don't split fName and lName
+			user.save();
+		}
+		return SecurityController.DNTLogin(user);
 	}
 
 	/**
