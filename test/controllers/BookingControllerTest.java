@@ -12,8 +12,6 @@ import models.Cabin;
 import models.LargeCabin;
 import models.SmallCabin;
 import models.User;
-import modelsTests.*;
-
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.junit.*;

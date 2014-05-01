@@ -115,13 +115,16 @@ public class AESBouncyCastleTest extends WithApplication {
 	@Test
 	public void sha512AndBase64Test() {
 		try {
-			byte[] code = DatatypeConverter.parseBase64Binary(play.Play.application().configuration().getString("application.secretKey"));
+			String base64Code = play.Play.application().configuration().getString("application.secretKey");
+			byte[] code = DatatypeConverter.parseBase64Binary(base64Code);
+
 			String hei = "hei";
-			String expectedHiHash = "vo4yYsRXfkcWXPRb0JIatu6+sKHnrM78ffHZXEILPFEP54WcqRsySbfTysAYWMLdPknXg6Y6YJdnYrLy9/JusA==";
+			String expectedHiHash = "0rR22Cz0FoBx+qjLiJqHCEy6dVP4sUMfUpXnN+eYOT6Ocam+Wo+To3rSt+HZVisA5fCCzug1X4KNBkrv0wwItQ==";
+			//String expectedHiHashWithHex = "ZDI4YWNmZDBiZGNkNjFlMjEzMDk1OTM2NjkzZWU4MmMxMDIwYWY4ODJjODMxZjJmOThlMTIwMDhkMjA5Y2E5MmI2Nzk0YTA4YjVlMjI0NTYxYTA4MTk1ODNhZTBkMWEyZTNkZTA2NzI1MmYzNGZkNmRiY2M2ZDNiODFkNTg2ZWQ=";
 
 			AESBouncyCastle aes = new AESBouncyCastle(code);
 			String actualHiHash = aes.sha512AndBase64(hei.getBytes("UTF-8"));
-			System.out.println("### hi hash: "+expectedHiHash);
+			System.out.println("### expected hi hash: "+expectedHiHash);
 			System.out.println("### actual hi hash: "+actualHiHash);
 			assertEquals("Hi hash equalsTest", expectedHiHash, actualHiHash);
 		} catch (Exception e) {
