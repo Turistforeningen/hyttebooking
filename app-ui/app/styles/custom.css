@@ -97,6 +97,11 @@ body{
 	border: 1px solid #ccc;
 }
 
+.grey-text {
+	color: #BABABA;
+	font-weight: bold;
+	font-size:30px;
+}
 /*-----------Styling-----------*/
 
 .spaceLineEkstraSmall{

@@ -31,3 +31,5 @@ payment.authenticateSuccess = Betaling autentisert
 payment.missingTransId      = Mangler transaksjons id
 payment.timedOut            = Du brukte for lang tid på å betale, ingen reservasjon er blitt gjort
 payment.cantContactNets     = Klarer ikke å opprette kontakt med Nets
+
+admin.noAccess              = Du er ikke en admin

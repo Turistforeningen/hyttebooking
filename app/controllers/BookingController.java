@@ -182,21 +182,14 @@ public class BookingController extends Controller {
 			return notFound(JsonMessage.error(Messages.get("booking.notFound")));
 		}
 
-		if(booking.user.id != SecurityController.getUser().id) {
-			return badRequest(JsonMessage.error(Messages.get("booking.noAccess")));
-		}
-
-		if(!booking.isAbleToCancel()) {
-			return badRequest(JsonMessage.error(Messages.get("booking.cannotCancel")));
-		}
 		//cancellogic to late to cancel?
+		
+		if(booking.status == Booking.PAID) {
+			PaymentController.cancelPayment(booking.payment.getTransactionId());
+		}
 		booking.status = Booking.CANCELLED;
-		PaymentController.cancelPayment(booking.payment.getTransactionId());
-
 		booking.update();
-
-
-		booking.update();		
+		
 		return ok(JsonMessage.success(""));
 	}
 

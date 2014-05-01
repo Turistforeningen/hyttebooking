@@ -36,18 +36,16 @@ angular.module('dntApp').controller('orderController', ['$scope','$modal','$rout
 
 	// Temporary replacing the code for canceling an order, instead showing the order information in an alert popup
 	$scope.cancelOrder = function (order) {
-		bookingService.getOrderSummary(order.id)
-			.then(function(ord){
-				alert(JSON.stringify(ord));
-				});/*
-		bookingService.cancelOrder(order.id)
-		.then(function(data){
-			var index = $scope.orders.indexOf(order);
-			$scope.orders.splice(index, 1);
-		},
-		function(error){
-			$scope.status = 'not found' + error.message;
-		});*/
+		$scope.openDialog('/views/cancelConfirmModal.html', null).result.then(function () {
+			bookingService.cancelOrder(order.id)
+			.then(function(data){
+				var index = $scope.orders.indexOf(order);
+				$scope.orders.splice(index, 1);
+			},
+			function(error){
+				$scope.status = 'not found' + error.message;
+			});
+		});
 	};
 	
 	$scope.open = function (order) {

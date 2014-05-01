@@ -84,7 +84,8 @@
 										<p>
 											<strong>Reservert</strong>
 										</p>
-										<p>{{ order.dateFrom | date }} - {{ order.dateTo | date }} ({{order.days}} dager)</p>
+										<p>{{ order.dateFrom | date }} - {{ order.dateTo | date }}
+											({{order.days}} dager)</p>
 									</div>
 									<div class="col-lg-2 col-md-2">
 										<p>
@@ -102,53 +103,57 @@
 										<p>
 											<strong>Ordrebekreftelse</strong>
 										</p>
-										<button class="btn btn-primary"
-											ng-click="open( order )">Se kvittering</button>
+										<button class="btn btn-primary" ng-click="open( order )">Se
+											kvittering</button>
 									</div>
-									
+
 									<div class="col-lg-2 col-md-2" style="text-align: center;">
 										<p>
 											<strong>Kanseller</strong>
 										</p>
 										<div ng-if="order.ableToCancel">
-										<p>
-											<button class="btn btn-danger"
-												ng-click="cancelOrder( order )">Kanseller</button>
-										</p>
+											<p>
+												<button class="btn btn-danger"
+													ng-click="cancelOrder( order )">Kanseller</button>
+											</p>
 										</div>
 										<div ng-if="!order.ableToCancel">
 											<p>
-												<button type="button" disabled class="btn btn-default">Frist utgått</button>
+												<button type="button" disabled class="btn btn-default">Frist
+													utgått</button>
 											</p>
-											
+
 										</div>
 									</div>
 								</div>
-							<hr>
+								<hr>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-			<div class="row">
-            <div class="col-md-10">
-                <pagination on-select-page="setPage(page)" total-items="totalItems"
-                    page="currentPage" items-per-page="itemsPerPage"></pagination>
-            </div>
+			<div class="row" ng-show="orders.length >0">
+				<div class="col-md-10">
+					<pagination on-select-page="setPage(page)" total-items="totalItems"
+						page="currentPage" items-per-page="itemsPerPage"></pagination>
+				</div>
 
-            <div class="col-md-2">
-                <div style="margin: 20px">
-                    <select class="form-control" ng-model="itemsPerPage"
-                        ng-change="getOrders(page)">
-                        <option>10</option>
-                        <option>20</option>
-                        <option>50</option>
-                    </select>
+				<div class="col-md-2">
+					<div style="margin: 20px">
+						<select class="form-control" ng-model="itemsPerPage"
+							ng-change="getOrders(page)">
+							<option>10</option>
+							<option>20</option>
+							<option>50</option>
+						</select>
+					</div>
+				</div>
+			</div>
+			<div class="row well" style="min-height: 200px" ng-show="orders.length <=0">
+                    <p class="text-center grey-text" style="">Du har ingen reservasjoner</p>
                 </div>
-            </div>
-        </div>
 		</div>
-		
+
 	</div>
 	<pre>{{orders}}</pre>
 </div>

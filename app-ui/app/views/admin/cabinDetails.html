@@ -73,10 +73,10 @@
 								Options <span class="caret"></span>
 							</button>
 							<ul class="dropdown-menu" role="menu">
-								<li><a ng-click="">view receipt</a></li>
+								<li><a ng-click="open(booking.id)">view receipt</a></li>
 								<li><a ng-click="">send e-mail</a></li>
 								<li class="divider"></li>
-								<li><a ng-click="">cancel booking</a></li>
+								<li><a ng-click="cancelOrder(booking)">cancel booking</a></li>
 							</ul>
 						</div>
 					</td>
@@ -89,7 +89,7 @@
 			page="currentPage" items-per-page="itemsPerPage"></pagination>
 	</div>
 	
-	<div ng-if="cabinDetails.cabinType != 'small" class="row">
+	<div ng-if="cabinDetails.cabinType != 'small'" class="row">
 	   <h2>Cabin options</h2>
 	   <p>Add bed<p> <p>remove bed</p> <p>
 	</div>

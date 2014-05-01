@@ -82,8 +82,8 @@ angular.module('dntApp').controller('cabinTableController', ['$scope', '$locatio
  * @description  Table controller for overview of bookings for a given cabin .
  * 
  */
-angular.module('dntApp').controller('cabinDetailsController', ['$scope', '$location', '$routeParams', 'cabinService', '$log',
-                                                               function ($scope, $location, $routeParams, cabinService, $log) {
+angular.module('dntApp').controller('cabinDetailsController', ['$scope','$modal', '$location', '$routeParams','bookingService' ,'cabinService', '$log',
+                                                               function ($scope, $modal, $location, $routeParams,bookingService, cabinService, $log) {
 	$scope.currentPage = 1;
 	$scope.totalItems = 10;
 	$scope.itemsPerPage = 10;
@@ -99,7 +99,7 @@ angular.module('dntApp').controller('cabinDetailsController', ['$scope', '$locat
 			$scope.cabinBookings = data.bookingList.data;
 			$scope.totalItems = data.bookingList.totalItems;
 			$scope.cabinDetails = data.cabin;
-			if($scope.cabinDetails.cabinType === 'small') {
+			if($scope.cabinDetails.cabinType == 'small') {
 				$scope.cabinDetails.nrOfBeds = 'none';
 			}
 			$scope.getPrices(cabinId);
@@ -119,6 +119,38 @@ angular.module('dntApp').controller('cabinDetailsController', ['$scope', '$locat
 	
 	$scope.setPage = function(page) {
 		$scope.getDetails(page-1, $scope.id);
+	};
+	$scope.open = function (orderId) {
+		bookingService.getOrderSummary(orderId)
+		.then(function(order){
+			$scope.openDialog('/views/receiptModal.html', order);
+		});
+	};
+	
+	$scope.cancelOrder = function (order) {
+		$scope.openDialog('/views/cancelConfirmModal.html', null).result.then(function () {
+			bookingService.adminCancelOrder(order.id)
+			.then(function(data){
+				order.status = 2;
+			},
+			function(error){
+				$log.info(error);
+				$scope.status = 'not found' + error.message;
+			});
+		});
+	};
+	
+	$scope.openDialog = function (url, data) {
+		var modalInstance = $modal.open({
+			templateUrl: url,
+			controller: 'ModalInstanceCtrl',
+			resolve: {
+		        item: function () {
+		          return data;
+		        }
+		    }
+		});
+		return modalInstance
 	};
 	
 	function init() {

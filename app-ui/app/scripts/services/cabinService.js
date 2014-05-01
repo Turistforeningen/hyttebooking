@@ -17,7 +17,7 @@ angular.module('dntApp').factory('cabinService', ['$http', '$q','$log', function
 	     */
 		getCabins: function(page, pageSize) {
 			var deferred = $q.defer();
-			var url = '/api/cabins?page=' + page + '&size=' + pageSize;
+			var url = '/api/admin/cabins?page=' + page + '&size=' + pageSize;
 			$http.get(url).success(function(data){
 		          //Passing data to deferred's resolve function on successful completion
 		          deferred.resolve(data);
@@ -37,7 +37,7 @@ angular.module('dntApp').factory('cabinService', ['$http', '$q','$log', function
 	     */
 		getCabinDetails: function(page, pageSize, cabinId) {
 			var deferred = $q.defer();
-			var url = '/api/cabins/' + cabinId+'?page=' + page + '&size=' + pageSize;
+			var url = '/api/admin/cabins/' + cabinId+'?page=' + page + '&size=' + pageSize;
 			$http.get(url).success(function(data){
 				deferred.resolve(data);
 			}).error(function(error){
@@ -73,7 +73,7 @@ angular.module('dntApp').factory('cabinService', ['$http', '$q','$log', function
 	     */
 		postCabin: function(newCabin) {
 			var deferred = $q.defer();
-			var url = '/api/cabins';
+			var url = '/api/admin/cabins';
 			$http.post(url, newCabin).success(function(data){
 				deferred.resolve(data);
 			}).error(function(error){
