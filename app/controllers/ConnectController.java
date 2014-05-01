@@ -79,7 +79,7 @@ public class ConnectController extends Controller {
 		
 		AESBouncyCastle aes = new AESBouncyCastle(SECRETKEY);
 		byte[] plainText = aes.decrypt(data, hmac);
-		System.out.println("PLAINTEXT" + new String(plainText, "UTF-8"));
+		System.out.println("PLAINTEXT" + plainText);
 		JsonNode login = Json.parse(new String(plainText, "UTF-8"));
 		System.out.println("LOGIN RECIEVED: #########");
 		System.out.println(login.asText());
