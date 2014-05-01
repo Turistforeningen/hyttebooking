@@ -97,4 +97,11 @@ public class DateHelper {
 		return true;
 	}
 	
+	public static boolean isValidTimeStamp(long timeStamp) {
+		long min = DateTime.now().getMillis() / 1000 - 30;
+		long max = DateTime.now().getMillis() / 1000 + 30;
+		if(timeStamp > min && timeStamp < max)
+			return true;
+		return false;
+	}
 }

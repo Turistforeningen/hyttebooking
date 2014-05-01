@@ -1,29 +1,13 @@
 package controllers;
 
-import java.io.UnsupportedEncodingException;
-import java.security.NoSuchAlgorithmException;
-
-import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
-
-import org.bouncycastle.crypto.DataLengthException;
-import org.bouncycastle.crypto.InvalidCipherTextException;
-import org.bouncycastle.crypto.paddings.PKCS7Padding;
-import org.bouncycastle.util.encoders.Base64;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import models.User;
-import play.Logger;
-import play.data.Form;
 import play.data.validation.Constraints;
 import play.libs.F;
 import play.libs.F.Promise;
 import play.libs.Json;
 import play.mvc.*;
-import utilities.AESBouncyCastle;
-import static play.libs.Json.toJson;
 import static play.mvc.Controller.request;
 import static play.mvc.Controller.response;
 
@@ -80,13 +64,21 @@ public class SecurityController extends Action.Simple {
 			return ok(authTokenJson);
 		}
 	}
+	
+	public static Status DNTLogin(User user) {
+		String authToken = user.createToken();
+		ObjectNode authTokenJson = Json.newObject();
+		authTokenJson.put(AUTH_TOKEN, authToken);
+		response().setCookie(AUTH_TOKEN, authToken);
+		return ok(authTokenJson);
+	}
 
 	@With(SecurityController.class)
 	public static Result logout() {
 		response().discardCookie(AUTH_TOKEN);
 		User u = getUser();
 		if(u == null){
-			u.deleteAuthToken();
+			u.deleteAuthToken(); //won't this always be null? TODO @Olav
 		}
 		return redirect("/");
 	}

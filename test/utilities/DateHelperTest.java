@@ -73,4 +73,11 @@ public class DateHelperTest extends WithApplication  {
 		 * Do we want this to be true?
 		 */
 	}
+	
+	@Test
+	public void testIsValidTimeStamp() {
+		assertTrue(utilities.DateHelper.isValidTimeStamp(DateTime.now().getMillis() / 1000));
+		assertFalse(utilities.DateHelper.isValidTimeStamp(DateTime.now().getMillis() / 1000 + 65));
+		assertFalse(utilities.DateHelper.isValidTimeStamp(DateTime.now().getMillis() / 1000 - 65));
+	}
 }
