@@ -128,13 +128,15 @@ angular.module('dntApp').controller('cabinDetailsController', ['$scope','$modal'
 	};
 	
 	$scope.cancelOrder = function (order) {
-		bookingService.adminCancelOrder(order.id)
-		.then(function(data){
-			order.status = 2;
-		},
-		function(error){
-			$log.info(error);
-			$scope.status = 'not found' + error.message;
+		$scope.openDialog('/views/cancelConfirmModal.html', null).result.then(function () {
+			bookingService.adminCancelOrder(order.id)
+			.then(function(data){
+				order.status = 2;
+			},
+			function(error){
+				$log.info(error);
+				$scope.status = 'not found' + error.message;
+			});
 		});
 	};
 	

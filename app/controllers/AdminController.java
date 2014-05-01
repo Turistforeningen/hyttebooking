@@ -124,7 +124,7 @@ public class AdminController extends Controller {
 		if(!SecurityController.getUser().admin) {
 			return badRequest(JsonMessage.error(Messages.get("admin.noAccess")));
 		}
-		System.out.println(booking.isAbleToCancel() + " " + booking.status);
+
 		//7 days before. Admin should still be able to cancel then
 		if(!booking.isAbleToCancel()) {
 			return notFound(JsonMessage.error(Messages.get("booking.notFound")));
