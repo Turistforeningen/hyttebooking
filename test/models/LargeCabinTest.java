@@ -3,6 +3,9 @@ package models;
 import static play.test.Helpers.fakeApplication;
 import static play.test.Helpers.inMemoryDatabase;
 import static org.junit.Assert.*;
+import models.Bed;
+import models.LargeCabin;
+import models.User;
 
 import org.joda.time.DateTime;
 import org.junit.Before;

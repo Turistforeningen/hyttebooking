@@ -3,6 +3,11 @@ package models;
 import static org.junit.Assert.*;
 import static play.test.Helpers.fakeApplication;
 import static play.test.Helpers.inMemoryDatabase;
+import models.Booking;
+import models.Cabin;
+import models.LargeCabin;
+import models.SmallCabin;
+import models.User;
 
 import org.junit.Before;
 import org.junit.Test;

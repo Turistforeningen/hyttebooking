@@ -3,6 +3,7 @@ package utilities;
 import javax.crypto.Cipher;
 import javax.crypto.Mac;
 
+import java.nio.charset.Charset;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -23,6 +24,7 @@ import javax.xml.bind.DatatypeConverter;
 public class AESBouncyCastle {
 
 	public final static int IV_BLOCK_SIZE = 16;
+    private static final String HMAC_SHA512_ALGORITHM = "HmacSHA512";
 
 	private byte[] keyBytes;
 	private SecretKeySpec key;
@@ -30,7 +32,7 @@ public class AESBouncyCastle {
 	private IvParameterSpec iv;
 	private byte[] prevPText;
 	private byte[] prevIv;
-	//TODO remove
+	//TODO remove and make iv random yo
 	private byte[] testIv = DatatypeConverter.parseBase64Binary("EdZ8Ivcfug+V3lsCdB2oVw==");
 
 
@@ -107,31 +109,22 @@ public class AESBouncyCastle {
 	 * Hashes data and then base64 encodes it
 	 */
 	public String sha512AndBase64(byte[] data) {
+		String result = null;
 		try {
-			/*
-			md = MessageDigest.getInstance("SHA-512");
-			//md.update(keyBytes); maybe should be salted with key?
-			byte[] hash = md.digest(data);
-			Mac mac = Mac.getInstance("HmacSHA512");
-			mac.init(key);
-			hmacData = mac.doFinal(data);
-			//System.out.println("hash: "+DatatypeConverter.printBase64Binary(hash));
-			return DatatypeConverter.printBase64Binary(hmacData);
-			 */
+			SecretKeySpec secret_key = new SecretKeySpec(keyBytes, HMAC_SHA512_ALGORITHM);
 
-			Mac sha512_HMAC = Mac.getInstance("HmacSHA512");
-			SecretKeySpec secret_key = new SecretKeySpec(keyBytes, "HmacSHA512");
-			sha512_HMAC.init(secret_key);
+			Mac mac = Mac.getInstance(HMAC_SHA512_ALGORITHM);
+			mac.init(secret_key); 
 
-			String hash = DatatypeConverter.printBase64Binary((sha512_HMAC.doFinal(data)));
-			return hash;
+			byte[] rawHmac = mac.doFinal(data);
+
+			result = DatatypeConverter.printBase64Binary(rawHmac);
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
-			return null;
 		} catch (InvalidKeyException e) {
 			e.printStackTrace();
-			return null;
 		}
+		return result;
 	}
 
 	/**

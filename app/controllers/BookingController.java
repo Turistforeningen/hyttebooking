@@ -112,6 +112,16 @@ public class BookingController extends Controller {
 	@With(SecurityController.class)
 	public static Result submitBooking() {
 
+		//TODO DELETE; ONLY WANT TO SEE WHAT RESPONSEBODY LOOKS LIKE
+		System.out.println();
+		System.out.println("######## START REQUEST BODY ######");
+		System.out.println("Request: "+request());
+		//System.out.println("Body: "+request().body().asJson().asText());
+		System.out.println("######## END REQUEST BODY ######");
+		System.out.println();
+		
+		//TODO END DELETE
+		
 		BookingForm form = BookingForm
 				.deserializeJson(request().body().asJson().toString());
 		if(form.isValid()) {
@@ -131,14 +141,13 @@ public class BookingController extends Controller {
 					public void run() {
 						Booking b = Booking.getBookingById(id+"");
 						if(b.status.equals(Booking.BOOKED)) {
-							System.out.println("Oh no your didnt!");
+							System.out.println("Booking with id:"+b.id+" timing out!");
 							//cancel booking and unlock beds or cabin for other customers
 							//What happens if customer leaves for half an hour and comes
 							//back and finishes payment? QUETION
 							//remember that timeout should be also considered in isAvail methods
 							b.status = Booking.TIMEDOUT;
 							b.update();
-
 						}
 					}
 				}, Akka.system().dispatcher());
@@ -236,7 +245,7 @@ public class BookingController extends Controller {
 		return Results.ok(orderDetailsSerializer.serialize(bookings));
 	}
 	
-	//@With(SecurityController.class)
+	//@With(SecurityController.class) TODO should security controller be with?
 	public static Result getOrderSummary(Long bookingId) {
 		Booking b = Booking.find.byId(bookingId);
 		/*if(b.user.id.equals(SecurityController.getUser().id)) {
