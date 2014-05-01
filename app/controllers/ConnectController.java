@@ -19,7 +19,7 @@ import utilities.AESBouncyCastle;
  * Controller class for DNT Connect for logging users in.
  */
 public class ConnectController extends Controller {
-	private static final String REDIRECT_URL = "http://localhost:9000/dev#/api/login/checkLogin";
+	private static final String REDIRECT_URL = "http://localhost:9000/dev#/";
 	private static final String CLIENT = "?client=hyttebooking";
 	private static final String SIGNON = "https://www.turistforeningen.no/connect/signon/" +CLIENT + "&data=";
 	private static final byte[] SECRETKEY = DatatypeConverter.parseBase64Binary(play.Play.application().configuration().getString("application.secretKey"));
@@ -66,15 +66,20 @@ public class ConnectController extends Controller {
 	 * @throws Exception 
 	 */
 	public static Result checkLogin() throws Exception {
-		System.out.println("WHY DON'T I GET HERE!!!!!!!!!!!!!!!!!!!");
-		String dataB64 = request().getQueryString("data");
-		String hmacB64 = request().getQueryString("hmac");
-		
+		System.out.println("---------------------------");
+		System.out.println(request().body().asJson().get("data").asText());
+		System.out.println("---------------------------");
+		String dataB64 = request().body().asJson().get("data").asText();
+		String hmacB64 = request().body().asJson().get("hmac").asText();
+		System.out.println("---------------------------");
+		System.out.println(dataB64);
+		System.out.println("---------------------------");
 		byte[] data = DatatypeConverter.parseBase64Binary(dataB64);
 		byte[] hmac = DatatypeConverter.parseBase64Binary(hmacB64);
 		
 		AESBouncyCastle aes = new AESBouncyCastle(SECRETKEY);
 		byte[] plainText = aes.decrypt(data, hmac);
+		System.out.println("PLAINTEXT" + plainText);
 		JsonNode login = Json.parse(new String(plainText, "UTF-8"));
 		System.out.println("LOGIN RECIEVED: #########");
 		System.out.println(login.asText());

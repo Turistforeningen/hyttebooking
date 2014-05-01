@@ -89,10 +89,19 @@ angular.module('dntApp').controller('orderController', ['$scope','$modal','$rout
 /*
  * Controller for testView.
  */
-angular.module('dntApp').controller('testController', ['$scope','$window', function ($scope, $window) {
+angular.module('dntApp').controller('testController', ['$scope','$log','api', 'authorization', '$routeParams', function ($scope,$log, api, authorization,  $routeParams) {
 	
 	function init() {
-
+		var data = $routeParams.data;
+		var hmac = $routeParams.hmac;
+		$log.info("lol");
+		if(data && hmac) {
+			authorization.checkLogin(data, hmac).success(function(data) {
+				$log.info("det virket" + "data.name");
+			}).error(function(error) {
+				$log.info("det virket ikke");
+			})
+		}
 	}
 	init();
 }]);
@@ -353,8 +362,8 @@ angular.module('dntApp').controller('authController', ['$log','$rootScope','$sco
 			$scope.$emit('event:loggingIn', credentials.emailAdress);
 			var token = data.authToken;
 			api.init(token);
-			$cookieStore.put('token', token);
-			$cookieStore.put('name', credentials.emailAdress);
+			$cookieStore.put('token', data.token);
+			$cookieStore.put('name', data.name);
 			$location.path('/');
 		};
 

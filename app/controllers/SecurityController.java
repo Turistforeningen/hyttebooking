@@ -67,10 +67,11 @@ public class SecurityController extends Action.Simple {
 	
 	public static Status DNTLogin(User user) {
 		String authToken = user.createToken();
-		ObjectNode authTokenJson = Json.newObject();
-		authTokenJson.put(AUTH_TOKEN, authToken);
+		ObjectNode authTokenAndName= Json.newObject();
+		authTokenAndName.put(AUTH_TOKEN, authToken);
+		authTokenAndName.put("name", user.fullName);
 		response().setCookie(AUTH_TOKEN, authToken);
-		return ok(authTokenJson);
+		return ok(authTokenAndName);
 	}
 
 	@With(SecurityController.class)
