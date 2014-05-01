@@ -90,7 +90,7 @@ public class AESBouncyCastle {
 		byte[] iv = Arrays.copyOf(ivAndCipherText, IV_BLOCK_SIZE); //take first IV_BLOCK_SIZE bytes from ivAndCipherText
 		byte[] cipherText = Arrays.copyOfRange(ivAndCipherText, IV_BLOCK_SIZE, ivAndCipherText.length); //bytes from IV_BLOCK_SIZE+1 and onwards (i.e. everything after prepended iv)
 		cipher.init(Cipher.DECRYPT_MODE, key, new IvParameterSpec(iv)); 
-		byte[] plainText = cipher.doFinal(cipherText); //replaced cipherText TEST TODO
+		byte[] plainText = cipher.doFinal(cipherText);
 		byte[] hmacOfData = DatatypeConverter.parseBase64Binary(sha512AndBase64(ArrayUtils.addAll(iv, plainText)));
 		
 

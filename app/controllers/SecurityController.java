@@ -1,29 +1,13 @@
 package controllers;
 
-import java.io.UnsupportedEncodingException;
-import java.security.NoSuchAlgorithmException;
-
-import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
-
-import org.bouncycastle.crypto.DataLengthException;
-import org.bouncycastle.crypto.InvalidCipherTextException;
-import org.bouncycastle.crypto.paddings.PKCS7Padding;
-import org.bouncycastle.util.encoders.Base64;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import models.User;
-import play.Logger;
-import play.data.Form;
 import play.data.validation.Constraints;
 import play.libs.F;
 import play.libs.F.Promise;
 import play.libs.Json;
 import play.mvc.*;
-import utilities.AESBouncyCastle;
-import static play.libs.Json.toJson;
 import static play.mvc.Controller.request;
 import static play.mvc.Controller.response;
 
@@ -94,7 +78,7 @@ public class SecurityController extends Action.Simple {
 		response().discardCookie(AUTH_TOKEN);
 		User u = getUser();
 		if(u == null){
-			u.deleteAuthToken();
+			u.deleteAuthToken(); //won't this always be null? TODO @Olav
 		}
 		return redirect("/");
 	}
