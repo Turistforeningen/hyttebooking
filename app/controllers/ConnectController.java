@@ -39,16 +39,16 @@ public class ConnectController extends Controller {
 		data.put("timestamp", getTimeStamp()); //not containing redirect URL right now, add "put("redirect_url", getRedirectUrl()" as needed
 		byte[] encr = aes.encrypt(data.toString().getBytes("UTF-8")); /** Payload encrypted **/
 		String encrJson64 = DatatypeConverter.printBase64Binary(encr); /** Base64 encoding of encrypted payload **/
-		String hash = aes.sha512AndBase64(aes.getIvAndPlainText());
+		String hmac = aes.sha512AndBase64(aes.getIvAndPlainText());
 		
 		String testP	= new String(Arrays.copyOfRange(aes.getIvAndPlainText(), 16, encr.length));//TODO remove
 		String tesIv	= DatatypeConverter.printBase64Binary(Arrays.copyOfRange(aes.getIvAndPlainText(), 0, 16));
 		System.out.println("################ iv\t\t "+tesIv);
 		System.out.println("################ plaintext\t"+testP);
 		System.out.println("FINAL data: "+encrJson64);
-		System.out.println("FINAL hash: "+hash);
+		System.out.println("FINAL hash: "+hmac);
 		ObjectNode retNode = Json.newObject();
-		retNode.put("redirectUrl", ""+SIGNON+EncodeURL(encrJson64)+"&hash="+EncodeURL(hash));
+		retNode.put("redirectUrl", ""+SIGNON+EncodeURL(encrJson64)+"&hmac="+EncodeURL(hmac));
 		return ok(retNode);
 	}
 
