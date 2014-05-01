@@ -415,8 +415,22 @@ angular.module('dntBookingModule')
             	$scope.$on('nrOfBedsChosenEvent', function(event, data) {
             		nrOfBedsChosen = data;
             		$scope.$broadcast('date:updateAvailability');
-            	});  
+            	}); 
             	
+            	//should put a mode scope in dntSelector and put this method and small cabin selector into
+            	//that
+            	$scope.toggle = function(i) {
+            		if(i<=2  && $scope.cabinType == 'small') {
+            			if(i == 0) {
+            				$scope.booking.guests[0].nr = 1;
+            				$scope.booking.guests[1].nr = 0;
+            			}
+            			else {
+            				$scope.booking.guests[0].nr = 0;
+            				$scope.booking.guests[1].nr = 1;
+            			}
+            		}
+            	};
             	// Disable weekend selection
             	$scope.disabled = function(date, mode) {
             		var dayOfMonth = date.getDate()-1;
