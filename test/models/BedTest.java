@@ -1,12 +1,15 @@
 package models;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.*;
 import static play.test.Helpers.fakeApplication;
 import static play.test.Helpers.inMemoryDatabase;
 
 import java.util.List;
+
+import models.Bed;
+import models.Booking;
+import models.Cabin;
+import models.LargeCabin;
+import models.User;
 
 import org.joda.time.DateTime;
 import org.junit.Before;

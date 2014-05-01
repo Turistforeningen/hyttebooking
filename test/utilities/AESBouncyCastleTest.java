@@ -14,6 +14,7 @@ import org.junit.Test;
 
 import play.test.WithApplication;
 import sun.misc.BASE64Decoder;
+import utilities.AESBouncyCastle;
 
 public class AESBouncyCastleTest extends WithApplication {
 

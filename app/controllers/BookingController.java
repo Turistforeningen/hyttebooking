@@ -148,7 +148,6 @@ public class BookingController extends Controller {
 							//remember that timeout should be also considered in isAvail methods
 							b.status = Booking.TIMEDOUT;
 							b.update();
-
 						}
 					}
 				}, Akka.system().dispatcher());
@@ -253,7 +252,7 @@ public class BookingController extends Controller {
 		return Results.ok(orderDetailsSerializer.serialize(bookings));
 	}
 	
-	//@With(SecurityController.class)
+	//@With(SecurityController.class) TODO should security controller be with?
 	public static Result getOrderSummary(Long bookingId) {
 		Booking b = Booking.find.byId(bookingId);
 		/*if(b.user.id.equals(SecurityController.getUser().id)) {

@@ -12,6 +12,13 @@ import static play.test.Helpers.inMemoryDatabase;
 import java.util.ArrayList;
 import java.util.List;
 
+import models.Bed;
+import models.Booking;
+import models.Cabin;
+import models.LargeCabin;
+import models.SmallCabin;
+import models.User;
+
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
