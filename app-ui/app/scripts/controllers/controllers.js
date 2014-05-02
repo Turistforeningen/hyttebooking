@@ -342,7 +342,6 @@ angular.module('dntApp').controller('authController', ['$log', '$scope','$locati
 	
 
 	$scope.logout = function () {
-		$log.info('log ut');
 		appStateService.removeUserCredentials();
 		$scope.$emit('event:signedOut');
 		var success = function (data) {
