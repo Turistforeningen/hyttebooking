@@ -87,15 +87,24 @@ public class Booking extends Model {
 	 * @return boolean
 	 */
 	public boolean isAbleToCancel() {
+		return isAbleToCancel(CANCELLATION_LIMIT);
+	}
+	
+	@JSON(include = false)
+	private boolean isAbleToCancel(int days) {
 		//This logic should probably be placed somewhere else?
-		if(DateTime.now().plusDays(CANCELLATION_LIMIT).withTimeAtStartOfDay().isAfter(this.dateFrom.getMillis()) || this.status == CANCELLED) {
+		if(DateTime.now().plusDays(days).withTimeAtStartOfDay().isAfter(this.dateFrom.getMillis()) || this.status == CANCELLED) {
 			return false;
 		}
 		else {
 			return true;
 		}
 	}
-
+	
+	@JSON(include = false)
+	public boolean isAdminAbleToCancel() {
+		return isAbleToCancel(0);
+	}
 	/**
 	 * The date a booking is regarded as delivered, and payment from user expected.
 	 * Since nets wont accept payments with delivery date more than 3 months in the future, all

@@ -380,7 +380,10 @@ angular.module('dntApp').controller('authController', ['$log', '$scope','$locati
 			$scope.checkLogin(encryptedData, hmac);
 		}
 		else {
-			$scope.showLogin = true;
+			if($location.path() == '/login') {
+				$scope.showLogin = true;
+			}
+			
 		}
 	};
 	init();

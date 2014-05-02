@@ -71,6 +71,7 @@ angular.module('dntApp').factory('appStateService', ['$log','$cookieStore', '$lo
 			cred.token = 	$cookieStore.get('token');
 			cred.name = 	$cookieStore.get('name');
 			cred.isAdmin = 	$cookieStore.get('isAdmin');
+			return cred;
 		}
 		
 	};
@@ -121,7 +122,7 @@ angular.module('dntApp').factory('httpInterceptor', ['appStateService', '$q', '$
 angular.module('dntApp').factory('api', ['$http', 'appStateService', function ($http, appStateService) {
 	return {
 		init: function (token) {
-			$http.defaults.headers.common['X-AUTH-TOKEN'] = token || appStateService.getUserCredentials.token;
+			$http.defaults.headers.common['X-AUTH-TOKEN'] = token || appStateService.getUserCredentials().token;
 		}
 	};
 }]);
