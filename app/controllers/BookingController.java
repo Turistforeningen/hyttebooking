@@ -111,16 +111,6 @@ public class BookingController extends Controller {
 	 */
 	@With(SecurityController.class)
 	public static Result submitBooking() {
-
-		//TODO DELETE; ONLY WANT TO SEE WHAT RESPONSEBODY LOOKS LIKE
-		System.out.println();
-		System.out.println("######## START REQUEST BODY ######");
-		System.out.println("Request: "+request());
-		//System.out.println("Body: "+request().body().asJson().asText());
-		System.out.println("######## END REQUEST BODY ######");
-		System.out.println();
-		
-		//TODO END DELETE
 		
 		BookingForm form = BookingForm
 				.deserializeJson(request().body().asJson().toString());

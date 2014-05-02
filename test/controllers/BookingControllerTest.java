@@ -1,9 +1,5 @@
 package controllers;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import models.Bed;
@@ -17,12 +13,9 @@ import org.joda.time.Days;
 import org.junit.*;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import flexjson.JSONSerializer;
 import static org.junit.Assert.*;
 import play.libs.Json;
-import play.mvc.Http.Status;
 import play.mvc.Result;
 import play.test.FakeRequest;
 import play.test.WithApplication;
@@ -75,6 +68,8 @@ public class BookingControllerTest extends WithApplication {
 		FakeRequest fkRequest = new FakeRequest("/POST", "api/bookings/");
 		JsonNode data = Json.parse(jsonString);
 		fkRequest.withJsonBody(data);
+		
+		
 
 		//fkRequest
 		//TODO make one of these for each fakeRequest
@@ -99,7 +94,7 @@ public class BookingControllerTest extends WithApplication {
 		//don't need to use deprecated routeAndCall, 
 		//the appropriate call is automatically chosen with new route method 
 		Result res1 = route(fkRequest);
-		System.out.println(res1);
+		System.out.println("########### TESTING ROUTES ======="+res1);
 		//TODO make one of these for each fakeRequest
 		//Result result = callAction(controllers.routes.BookingController.cancelBooking(), fkRequest);
 		//TODO find out how controllers...cancelBooking() returns a handler reference
