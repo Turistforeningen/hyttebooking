@@ -65,9 +65,9 @@ public class BookingControllerTest extends WithApplication {
 		//TODO make one of these for each test
 		//FakeRequest can be configured to have any additional plugins, 
 		//configurations or globals (maybe even @WithSecurityControllor
-		FakeRequest fkRequest = new FakeRequest("/POST", "api/bookings/");
+		FakeRequest fkRequest = new FakeRequest(POST, "api/bookings/");
 		JsonNode data = Json.parse(jsonString);
-		fkRequest.withJsonBody(data);
+		//fkRequest.with
 		
 		
 
@@ -88,13 +88,15 @@ public class BookingControllerTest extends WithApplication {
 	 */
 	public void testCancelBooking()  {
 		//TODO make one of these for each test
-		FakeRequest fkRequest = new FakeRequest("/DELETE", "api/bookings/");
+		FakeRequest fkRequest = new FakeRequest(DELETE, "api/bookings/1");
+		
+		fkRequest.withHeader("authToken", user.createToken());
 		//TODO how do we add query parameter to the fake request?
 	
 		//don't need to use deprecated routeAndCall, 
 		//the appropriate call is automatically chosen with new route method 
 		Result res1 = route(fkRequest);
-		System.out.println("########### TESTING ROUTES ======="+res1);
+		System.out.println("########### RESULT FAKEREQUEST DELETE IS ======="+res1);
 		//TODO make one of these for each fakeRequest
 		//Result result = callAction(controllers.routes.BookingController.cancelBooking(), fkRequest);
 		//TODO find out how controllers...cancelBooking() returns a handler reference
