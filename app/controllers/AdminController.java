@@ -125,11 +125,10 @@ public class AdminController extends Controller {
 			return badRequest(JsonMessage.error(Messages.get("admin.noAccess")));
 		}
 
-		//7 days before. Admin should still be able to cancel then
-		if(!booking.isAbleToCancel()) {
+		if(!booking.isAdminAbleToCancel()) {
 			return notFound(JsonMessage.error(Messages.get("booking.notFound")));
 		}
-
+		//send mail
 		//cancellogic to late to cancel?
 		
 		if(booking.status == Booking.PAID) {

@@ -13,7 +13,6 @@ angular.module('dntApp').factory('authorization', ['$http','$location', function
 			return $http.get('api/login/setup');
 		},
 		checkLogin: function(data, hmac) {
-			console.log("kalles i auth")
 			var credentials = {'data' : data, 'hmac' : hmac}
 			return $http.post('/api/login/checkLogin', credentials);
 		},
@@ -34,9 +33,8 @@ angular.module('dntApp').factory('appStateService', ['$log','$cookieStore', '$lo
 
 	return {
 		saveAttemptUrl: function() {
-			$log.info($location.path());
 			if($location.path().toLowerCase() != '/login') {
-				$cookieStore.put('redirectUrl', $location.path());
+				$cookieStore.put('redirectUrl', $location.url());
 			}
 		},
 		
@@ -52,7 +50,7 @@ angular.module('dntApp').factory('appStateService', ['$log','$cookieStore', '$lo
 				$location.path('/');
 			}
 			else {
-				$location.path(url);
+				$location.url(url);
 			}
 		},
 		
@@ -73,6 +71,7 @@ angular.module('dntApp').factory('appStateService', ['$log','$cookieStore', '$lo
 			cred.token = 	$cookieStore.get('token');
 			cred.name = 	$cookieStore.get('name');
 			cred.isAdmin = 	$cookieStore.get('isAdmin');
+			return cred;
 		}
 		
 	};
@@ -123,7 +122,7 @@ angular.module('dntApp').factory('httpInterceptor', ['appStateService', '$q', '$
 angular.module('dntApp').factory('api', ['$http', 'appStateService', function ($http, appStateService) {
 	return {
 		init: function (token) {
-			$http.defaults.headers.common['X-AUTH-TOKEN'] = token || appStateService.getUserCredentials.token;
+			$http.defaults.headers.common['X-AUTH-TOKEN'] = token || appStateService.getUserCredentials().token;
 		}
 	};
 }]);
