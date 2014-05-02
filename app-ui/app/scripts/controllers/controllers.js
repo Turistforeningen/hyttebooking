@@ -319,7 +319,7 @@ angular.module('dntApp').controller('bookingController', ['$modal','$rootScope',
  */
 angular.module('dntApp').controller('authController', ['$log', '$scope','$location','appStateService','authorization','api','$window', '$routeParams',
                                                        function ($log, $scope, $location, appStateService, authorization, api, $window, $routeParams) {
-
+	$scope.showLogin = false;
 	/**
 	 * @ngdoc method
 	 * @name dntApp.object#login
@@ -379,6 +379,9 @@ angular.module('dntApp').controller('authController', ['$log', '$scope','$locati
 		var hmac = $routeParams.hmac;
 		if(encryptedData && hmac) {
 			$scope.checkLogin(encryptedData, hmac);
+		}
+		else {
+			$scope.showLogin = true;
 		}
 	};
 	init();
