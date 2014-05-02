@@ -369,11 +369,12 @@ angular.module('dntApp').controller('authController', ['$log', '$scope','$locati
 				var token = data.authToken;
 				var name = data.name || 'n/a';
 				if(!angular.isUndefined(token)) {
-					$scope.$emit('event:signedIn', data.name);
+					$scope.$emit('event:signedIn', data);
 					$log.info("hei der");
 					api.init(token);
 					$cookieStore.put('token', token);
 					$cookieStore.put('name', name);
+					$cookieStore.put('isAdmin', data.isAdmin);
 					$location.$$search = {};
 					$location.path('/');
 				}
@@ -401,16 +402,19 @@ angular.module('dntApp').controller('authController', ['$log', '$scope','$locati
 angular.module('dntApp').controller('headerController', ['$scope','$rootScope', '$location', '$cookieStore',
                                                          function ($scope,$rootScope, $location, $cookieStore) {
 	$scope.loggedIn = false;
+	$scope.isAdmin = false;
 	$scope.name ='';
 
 	$rootScope.$on('event:signedIn', function(event, data) {
 		$scope.loggedIn = true;
-		$scope.name = data;
+		$scope.name = data.name;
+		$scope.isAdmin = data.isAdmin;
 	});
 	
 	$rootScope.$on('event:signedOut', function(event, data) {
 		$scope.name ='';
 		$scope.loggedIn = false;
+		$scope.isAdmin = false;
 	});
 	
 	$scope.isActive = function (viewLocation) {
@@ -421,9 +425,11 @@ angular.module('dntApp').controller('headerController', ['$scope','$rootScope', 
 
 	function init() {
 		var name = $cookieStore.get('name');
+		var isAdmin = $cookieStore.get('isAdmin');
 		if(name) {
 			$scope.name = name;
 			$scope.loggedIn = true;
+			$scope.isAdmin = true;
 		}
 	}
 	init();

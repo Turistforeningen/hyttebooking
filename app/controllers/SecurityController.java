@@ -68,12 +68,13 @@ public class SecurityController extends Action.Simple {
 	public static Status DNTLogin(User user) {
 		if(user != null) {
 			String authToken = user.createToken();
-			ObjectNode authTokenAndName= Json.newObject();
-			authTokenAndName.put(AUTH_TOKEN, authToken);
-			authTokenAndName.put("name", user.fullName);
+			ObjectNode authTokenAndInfo= Json.newObject();
+			authTokenAndInfo.put(AUTH_TOKEN, authToken);
+			authTokenAndInfo.put("name", user.fullName);
+			authTokenAndInfo.put("isAdmin", user.admin);
 			response().setCookie(AUTH_TOKEN, authToken);
 			System.out.println("authToken ");
-			return ok(authTokenAndName);
+			return ok(authTokenAndInfo);
 		}
 		else {
 			return unauthorized();

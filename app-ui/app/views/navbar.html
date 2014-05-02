@@ -23,6 +23,8 @@
 					<ul class="dropdown-menu">
 						<li><a href="#/orderHistory"><span
 						class="glyphicon glyphicon-user"></span>&nbsp;Brukerprofil</a></li>
+						<li ng-if="isAdmin"><a href="#/admin"><span
+                        class="glyphicon glyphicon-wrench"></span>&nbsp;admin innstillinger</a></li>
 						<li class="divider"></li>
 						<li><a ng-click="logout()"><i class="fa fa-sign-out"></i>&nbsp;Logg ut</a></li>
 					</ul>
