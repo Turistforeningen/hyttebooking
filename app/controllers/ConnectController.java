@@ -67,6 +67,12 @@ public class ConnectController extends Controller {
 	 * @throws Exception 
 	 */
 	public static Result checkLogin() throws Exception {
+		System.out.println();
+		System.out.println("---------------------------");
+		System.out.println("---------------------------");
+
+		String dataB64 = request().body().asJson().get("data").asText();
+		String hmacB64 = request().body().asJson().get("hmac").asText();
 		
 		byte[] data = DatatypeConverter.parseBase64Binary(dataB64);
 		byte[] hmac = DatatypeConverter.parseBase64Binary(hmacB64);
