@@ -317,8 +317,8 @@ angular.module('dntApp').controller('bookingController', ['$modal','$rootScope',
  * sending user credentials to server and take care of a authentication token return by the server.
  * 
  */
-angular.module('dntApp').controller('authController', ['$log', '$scope','$location','$cookieStore','authorization','api','$window', '$routeParams',
-                                                       function ($log, $scope, $location, $cookieStore, authorization, api, $window, $routeParams) {
+angular.module('dntApp').controller('authController', ['$log', '$scope','$location','appStateService','authorization','api','$window', '$routeParams',
+                                                       function ($log, $scope, $location, appStateService, authorization, api, $window, $routeParams) {
 
 	/**
 	 * @ngdoc method
@@ -327,9 +327,8 @@ angular.module('dntApp').controller('authController', ['$log', '$scope','$locati
 	 * @description When user is trying to login, redirect to DNT connect
 	 */
 	$scope.newLogin = function () {
-	
+		appStateService.saveAttemptUrl();
 		var success = function(data) {
-			$log.info(data);
 			$window.location.href = data.redirectUrl;
 		};
 		var error = function(error) {
@@ -344,10 +343,10 @@ angular.module('dntApp').controller('authController', ['$log', '$scope','$locati
 
 	$scope.logout = function () {
 		$log.info('log ut');
-		authorization.removeUserCredentials();
+		appStateService.removeUserCredentials();
 		$scope.$emit('event:signedOut');
 		var success = function (data) {
-			$location.path('/');
+			
 		};
 
 		var error = function (error) {
@@ -356,29 +355,30 @@ angular.module('dntApp').controller('authController', ['$log', '$scope','$locati
 		authorization.logout().success(success).error(error);
 	};
 	
+	$scope.checkLogin = function(encryptedData, hmac) {
+		authorization.checkLogin(encryptedData, hmac).success(function(authData) {
+
+			var token = authData.authToken;
+			var name = authData.name || 'n/a';
+			if(!angular.isUndefined(token)) {
+				$scope.$emit('event:signedIn', authData);
+				api.init(token);
+				appStateService.insertUserCredentials(token, name, authData.isAdmin);
+				appStateService.redirectToAttemptedUrl();
+			}
+			else {
+				$log.info(token + " token undefined");
+			}
+		}).error(function(error) {
+			$log.info("det virket ikke");
+		});
+	};
 
 	var init = function() {
 		var encryptedData = $routeParams.data;
 		var hmac = $routeParams.hmac;
 		if(encryptedData && hmac) {
-			$log.info("ops da");
-			authorization.checkLogin(encryptedData, hmac).success(function(authData) {
-				
-				var token = authData.authToken;
-				var name = authData.name || 'n/a';
-				if(!angular.isUndefined(token)) {
-					$scope.$emit('event:signedIn', authData);
-					api.init(token);
-					authorization.insertUserCredentials(token, name, authData.isAdmin);
-					$location.$$search = {};
-					$location.path('/');
-				}
-				else {
-					$log.info(token + " token undefined");
-				}
-			}).error(function(error) {
-				$log.info("det virket ikke");
-			});
+			$scope.checkLogin(encryptedData, hmac);
 		}
 	};
 	init();
@@ -393,8 +393,8 @@ angular.module('dntApp').controller('authController', ['$log', '$scope','$locati
  * active tab, and to decide whether to show log in button or a drop down with options if user is logged in.
  * 
  */
-angular.module('dntApp').controller('headerController', ['$scope','$rootScope', '$location', 'authorization',
-                                                         function ($scope,$rootScope, $location, authorization) {
+angular.module('dntApp').controller('headerController', ['$scope','$rootScope', '$location', 'appStateService',
+                                                         function ($scope,$rootScope, $location, appStateService) {
 	$scope.loggedIn = false;
 	$scope.isAdmin = false;
 	$scope.name ='';
@@ -418,7 +418,7 @@ angular.module('dntApp').controller('headerController', ['$scope','$rootScope', 
 
 
 	function init() {
-		var userData = authorization.getUserCredentials();
+		var userData = appStateService.getUserCredentials();
 		if(!angular.isUndefined(userData)) {
 			$scope.name = userData.name;
 			$scope.loggedIn = true;

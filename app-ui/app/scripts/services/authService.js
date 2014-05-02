@@ -6,7 +6,7 @@
  * @description The authorization handles posting login and logout request to server.
  * @requires $http 
 **/
-angular.module('dntApp').factory('authorization', ['$http', '$cookieStore', function ($http, $cookieStore) {
+angular.module('dntApp').factory('authorization', ['$http','$location', function ($http, $location) {
 
 	return {
 		newLogin: function() {
@@ -24,6 +24,36 @@ angular.module('dntApp').factory('authorization', ['$http', '$cookieStore', func
 
 		logout: function () {
 			return $http.post('/logout');
+		},
+	};
+	
+	
+}]);
+
+angular.module('dntApp').factory('appStateService', ['$log','$cookieStore', '$location', function ($log,$cookieStore, $location) {
+
+	return {
+		saveAttemptUrl: function() {
+			$log.info($location.path());
+			if($location.path().toLowerCase() != '/login') {
+				$cookieStore.put('redirectUrl', $location.path());
+			}
+		},
+		
+		redirectToLogin: function() {
+				$location.path('/login');
+		},
+		
+		redirectToAttemptedUrl: function() {
+			$location.$$search = {};
+			var url = $cookieStore.get('redirectUrl');
+			$cookieStore.remove('redirectUrl');
+			if(angular.isUndefined(url)) {
+				$location.path('/');
+			}
+			else {
+				$location.path(url);
+			}
 		},
 		
 		removeUserCredentials: function () {
@@ -61,7 +91,7 @@ angular.module('dntApp').factory('authorization', ['$http', '$cookieStore', func
  * user to /login view.
  * @requires $http 
 **/
-angular.module('dntApp').factory('httpInterceptor', ['$q', '$window', '$location', function httpInterceptor ($q, $window, $location) {
+angular.module('dntApp').factory('httpInterceptor', ['appStateService', '$q', '$window',  function httpInterceptor (appStateService, $q, $window) {
 	return function (promise) {
 		var success = function (response) {
 			return response;
@@ -69,7 +99,8 @@ angular.module('dntApp').factory('httpInterceptor', ['$q', '$window', '$location
 
 		var error = function (response) {
 			if (response.status === 401) {
-				$location.url('/login');
+				appStateService.saveAttemptUrl();
+				appStateService.redirectToLogin();
 			}
 
 			return $q.reject(response);
@@ -89,10 +120,10 @@ angular.module('dntApp').factory('httpInterceptor', ['$q', '$window', '$location
  * or sent as a method parameter.
  * @requires $http 
 **/
-angular.module('dntApp').factory('api', ['$http', '$cookieStore', function ($http, $cookieStore) {
+angular.module('dntApp').factory('api', ['$http', 'appStateService', function ($http, appStateService) {
 	return {
 		init: function (token) {
-			$http.defaults.headers.common['X-AUTH-TOKEN'] = token || $cookieStore.get('token');
+			$http.defaults.headers.common['X-AUTH-TOKEN'] = token || appStateService.getUserCredentials.token;
 		}
 	};
 }]);
