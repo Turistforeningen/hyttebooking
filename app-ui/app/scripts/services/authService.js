@@ -13,7 +13,6 @@ angular.module('dntApp').factory('authorization', ['$http','$location', function
 			return $http.get('api/login/setup');
 		},
 		checkLogin: function(data, hmac) {
-			console.log("kalles i auth")
 			var credentials = {'data' : data, 'hmac' : hmac}
 			return $http.post('/api/login/checkLogin', credentials);
 		},
@@ -34,9 +33,8 @@ angular.module('dntApp').factory('appStateService', ['$log','$cookieStore', '$lo
 
 	return {
 		saveAttemptUrl: function() {
-			$log.info($location.path());
 			if($location.path().toLowerCase() != '/login') {
-				$cookieStore.put('redirectUrl', $location.path());
+				$cookieStore.put('redirectUrl', $location.url());
 			}
 		},
 		
@@ -52,7 +50,7 @@ angular.module('dntApp').factory('appStateService', ['$log','$cookieStore', '$lo
 				$location.path('/');
 			}
 			else {
-				$location.path(url);
+				$location.url(url);
 			}
 		},
 		
