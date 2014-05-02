@@ -23,7 +23,7 @@ public class ConnectController extends Controller {
 	private static final String CLIENT = "?client=hyttebooking";
 	private static final String SIGNON = "https://www.turistforeningen.no/connect/signon/" +CLIENT + "&data=";
 	private static final byte[] SECRETKEY = DatatypeConverter.parseBase64Binary(play.Play.application().configuration().getString("application.secretKey"));
-	private static final Long ADMIN_ID = play.Play.application().configuration().getLong("application.secretKey");
+	private static final long ADMIN_ID = play.Play.application().configuration().getLong("application.adminSherpaId").longValue();
 	
 	public static String EncodeURL(String url) throws java.io.UnsupportedEncodingException {
 	    return java.net.URLEncoder.encode(url, "UTF-8");
@@ -96,7 +96,7 @@ public class ConnectController extends Controller {
 		User user = User.findBySherpaId(id);
 		if(user == null) { //first time using booking solution, we need to register user internally
 			user = new User(id, email, fName+" "+lName); //TODO don't split fName and lName
-			if(id == ADMIN_ID.longValue()) {
+			if(id == ADMIN_ID) {
 				user.admin = true;
 			}
 			user.save();

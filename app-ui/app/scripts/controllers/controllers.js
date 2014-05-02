@@ -374,7 +374,7 @@ angular.module('dntApp').controller('authController', ['$log', '$scope','$locati
 					api.init(token);
 					$cookieStore.put('token', token);
 					$cookieStore.put('name', name);
-					//$location.$$search = {};
+					$location.$$search = {};
 					$location.path('/');
 				}
 				else {
