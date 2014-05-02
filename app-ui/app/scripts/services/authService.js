@@ -6,7 +6,7 @@
  * @description The authorization handles posting login and logout request to server.
  * @requires $http 
 **/
-angular.module('dntApp').factory('authorization', ['$http', function ($http) {
+angular.module('dntApp').factory('authorization', ['$http', '$cookieStore', function ($http, $cookieStore) {
 
 	return {
 		newLogin: function() {
@@ -24,7 +24,27 @@ angular.module('dntApp').factory('authorization', ['$http', function ($http) {
 
 		logout: function () {
 			return $http.post('/logout');
+		},
+		
+		removeUserCredentials: function () {
+			$cookieStore.remove('token');
+			$cookieStore.remove('name');
+			$cookieStore.remove('isAdmin');
+		},
+		
+		insertUserCredentials: function (token, name, isAdmin) {
+			$cookieStore.put('token', token);
+			$cookieStore.put('name', name);
+			$cookieStore.put('isAdmin', isAdmin);
+		},
+		
+		getUserCredentials: function () {
+			var cred = {};
+			cred.token = 	$cookieStore.get('token');
+			cred.name = 	$cookieStore.get('name');
+			cred.isAdmin = 	$cookieStore.get('isAdmin');
 		}
+		
 	};
 	
 	
@@ -72,7 +92,6 @@ angular.module('dntApp').factory('httpInterceptor', ['$q', '$window', '$location
 angular.module('dntApp').factory('api', ['$http', '$cookieStore', function ($http, $cookieStore) {
 	return {
 		init: function (token) {
-
 			$http.defaults.headers.common['X-AUTH-TOKEN'] = token || $cookieStore.get('token');
 		}
 	};

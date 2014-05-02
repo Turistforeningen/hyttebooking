@@ -344,8 +344,7 @@ angular.module('dntApp').controller('authController', ['$log', '$scope','$locati
 
 	$scope.logout = function () {
 		$log.info('log ut');
-		$cookieStore.remove('token');
-		$cookieStore.remove('name');
+		authorization.removeUserCredentials();
 		$scope.$emit('event:signedOut');
 		var success = function (data) {
 			$location.path('/');
@@ -359,28 +358,23 @@ angular.module('dntApp').controller('authController', ['$log', '$scope','$locati
 	
 
 	var init = function() {
-		var data = $routeParams.data;
+		var encryptedData = $routeParams.data;
 		var hmac = $routeParams.hmac;
-		$log.info("kalles");
-		if(data && hmac) {
+		if(encryptedData && hmac) {
 			$log.info("ops da");
-			authorization.checkLogin(data, hmac).success(function(data) {
+			authorization.checkLogin(encryptedData, hmac).success(function(authData) {
 				
-				var token = data.authToken;
-				var name = data.name || 'n/a';
+				var token = authData.authToken;
+				var name = authData.name || 'n/a';
 				if(!angular.isUndefined(token)) {
-					$scope.$emit('event:signedIn', data);
-					$log.info("hei der");
+					$scope.$emit('event:signedIn', authData);
 					api.init(token);
-					$cookieStore.put('token', token);
-					$cookieStore.put('name', name);
-					$cookieStore.put('isAdmin', data.isAdmin);
+					authorization.insertUserCredentials(token, name, authData.isAdmin);
 					$location.$$search = {};
 					$location.path('/');
 				}
 				else {
-					$log.info(token + " token");
-					$log.info(data.name + " data.name")
+					$log.info(token + " token undefined");
 				}
 			}).error(function(error) {
 				$log.info("det virket ikke");
@@ -399,8 +393,8 @@ angular.module('dntApp').controller('authController', ['$log', '$scope','$locati
  * active tab, and to decide whether to show log in button or a drop down with options if user is logged in.
  * 
  */
-angular.module('dntApp').controller('headerController', ['$scope','$rootScope', '$location', '$cookieStore',
-                                                         function ($scope,$rootScope, $location, $cookieStore) {
+angular.module('dntApp').controller('headerController', ['$scope','$rootScope', '$location', 'authorization',
+                                                         function ($scope,$rootScope, $location, authorization) {
 	$scope.loggedIn = false;
 	$scope.isAdmin = false;
 	$scope.name ='';
@@ -424,12 +418,11 @@ angular.module('dntApp').controller('headerController', ['$scope','$rootScope', 
 
 
 	function init() {
-		var name = $cookieStore.get('name');
-		var isAdmin = $cookieStore.get('isAdmin');
-		if(name) {
-			$scope.name = name;
+		var userData = authorization.getUserCredentials();
+		if(!angular.isUndefined(userData)) {
+			$scope.name = userData.name;
 			$scope.loggedIn = true;
-			$scope.isAdmin = true;
+			$scope.isAdmin = userData.isAdmin;
 		}
 	}
 	init();

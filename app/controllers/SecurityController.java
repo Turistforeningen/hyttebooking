@@ -2,6 +2,7 @@ package controllers;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import models.User;
 import play.data.validation.Constraints;
 import play.libs.F;
@@ -81,7 +82,8 @@ public class SecurityController extends Action.Simple {
 		}
 		
 	}
-
+	
+	@With(SecurityController.class)
 	public static Result logout() {
 		response().discardCookie(AUTH_TOKEN);
 		User u = getUser();
