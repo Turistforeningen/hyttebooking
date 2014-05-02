@@ -1,5 +1,6 @@
 package utilities;
 
+import static org.junit.Assert.*;
 import static play.test.Helpers.fakeApplication;
 import static play.test.Helpers.inMemoryDatabase;
 import models.LargeCabin;
@@ -54,7 +55,8 @@ public class JsonHelperTest extends WithApplication {
 	
 	@Test
 	public void testOutput() {
-		System.out.println(JsonHelper.getOkBooking().asText());
+		System.out.println("########### OK BOOKING HERE!!!!!!!!!\n"+JsonHelper.getOkBooking().asText());
+		assertTrue(false);
 	}
 	
 }

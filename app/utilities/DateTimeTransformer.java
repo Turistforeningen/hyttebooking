@@ -16,7 +16,4 @@ public class DateTimeTransformer extends AbstractTransformer {
 		DateTime d = (DateTime)object;
 		getContext().writeQuoted(d.getMillis()+"");
 	}
-
-
-
 }

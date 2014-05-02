@@ -11,7 +11,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import flexjson.JSONSerializer;
+import flexjson.transformer.AbstractTransformer;
 import play.libs.Json;
+import utilities.DateHelper;
 
 /**
  * Make sure largeCabin with id 1 and following prices exists!
@@ -19,7 +21,7 @@ import play.libs.Json;
  */
 public class JsonHelper {
 	
-	static JSONSerializer ser = new JSONSerializer();
+	
 
 	public final static String[] GUEST_TYPE_NAMES = {"Voksen, medlem","Ungdom, medlem","Barn, medlem","Spedbarn, medlem", "Voksen,", "Ungdom,", "Barn,", "Spedbarn,"};
 	public final static String[] AGE_RANGE_NAMES = {"26 og opp", "13-25", "4-12", "0-4", "26 og opp", "13-25", "4-12", "0-4"};
@@ -27,89 +29,20 @@ public class JsonHelper {
 	public final static boolean[] MEMBERSHIP = {true, true, true, true, false, false, false, false};
 	
 	
-	//EXAMPLE JSON PRODUCED WHEN STRINGIFIED
-	/*
-	 * http://pastebin.com/0gnxiKmU
-{
-   "cabinId":"1",
-   "dateTo":"2014-05-22",
-   "dateFrom":"2014-05-15",
-   "guests":[
-      {
-         "id":1,
-         "ageRange":"26 og opp",
-         "guestType":"Voksen, medlem",
-         "nr":3,
-         "price":300,
-         "isMember":true
-      },
-      {
-         "id":2,
-         "ageRange":"13-25",
-         "guestType":"Ungdom, medlem",
-         "nr":0,
-         "price":200,
-         "isMember":true
-      },
-      {
-         "id":3,
-         "ageRange":"4-12",
-         "guestType":"Barn, medlem",
-         "nr":0,
-         "price":100,
-         "isMember":true
-      },
-      {
-         "id":4,
-         "ageRange":"0-4",
-         "guestType":"Spedbarn, medlem",
-         "nr":0,
-         "price":0,
-         "isMember":true
-      },
-      {
-         "id":1,
-         "ageRange":"26 og opp",
-         "guestType":"Voksen,",
-         "nr":0,
-         "price":400,
-         "isMember":false
-      },
-      {
-         "id":2,
-         "ageRange":"13-25",
-         "guestType":"Ungdom,",
-         "nr":0,
-         "price":300,
-         "isMember":false
-      },
-      {
-         "id":3,
-         "ageRange":"4-12",
-         "guestType":"Barn,",
-         "nr":0,
-         "price":200,
-         "isMember":false
-      },
-      {
-         "id":4,
-         "ageRange":"0-4",
-         "guestType":"Spedbarn,",
-         "nr":0,
-         "price":0,
-         "isMember":false
-      }
-   ],
-   "termsAndConditions":true
-}
-	 */
+	
 	/**
 	 * Creates a valid cabin with id 1, reservation lasting 7 days and guests
 	 */
 	private static JsonNode getValidCabinJSON(ArrayList<GuestJson> guests) {
+		JSONSerializer ser = new JSONSerializer();
+		ser.include("CabinJson") //, "dateTo", "dateFrom", "guests", "termsAndConditions", "guests.id", "guests.ageRange", "guests.guestType", "guests.nr", "guests.price", "guests.isMember")
+		.exclude("*.class")
+		.transform(new DateTimeTransfomer2(), DateTime.class);
+
 		CabinJson cj = new CabinJson((long)1, RDate.fDt.plusWeeks(1), RDate.fDt.plusWeeks(2), guests, true);
 		ObjectNode node = Json.newObject();
 		String cjSerial = ser.serialize(cj);
+		System.out.println("SERIALIZED CABIN: "+cjSerial);
 		node.put("", cjSerial);
 		return node;
 	}
@@ -118,6 +51,11 @@ public class JsonHelper {
 	 * Creates invalid cabin due to termsAndConditions false
 	 */
 	private static JsonNode getInvalidCabinJson(ArrayList<GuestJson> guests) {
+		JSONSerializer ser = new JSONSerializer();
+		ser.include("CabinJson") //, "dateTo", "dateFrom", "guests", "termsAndConditions", "guests.id", "guests.ageRange", "guests.guestType", "guests.nr", "guests.price", "guests.isMember")
+		.exclude("*.class")
+		.transform(new DateTimeTransfomer2(), DateTime.class);
+		
 		CabinJson cj = new CabinJson((long)1, RDate.fDt.plusWeeks(1), RDate.fDt.plusWeeks(2), guests, false);
 		ObjectNode node = Json.newObject();
 		String cjSerial = ser.serialize(cj);
@@ -127,7 +65,6 @@ public class JsonHelper {
 
 	//example of a faulty json to be tested, similar methods to be created
 	public JsonNode getOnlyMemberBabiesBookingJSON() {
-
 		int[] nrOfGuests = {0, 0, 0, 3, 0, 0, 0, 0}; //specify here how many of each type of guest you want
 		//since this is a only baby booking, we set the nr of baby guests to 3 (arbitrary number)
 		
@@ -142,6 +79,8 @@ public class JsonHelper {
 		ArrayList<GuestJson> guests = GuestJson.addGuests(nrOfGuests);
 		JsonNode okBooking = getValidCabinJSON(guests);
 		
+		System.out.println("RETURNING OK BOOKING with SIZE: "+okBooking.size());
+		
 		return okBooking; 
 	}
 	
@@ -152,7 +91,7 @@ public class JsonHelper {
 		
 		return invalidBooking; 
 	}
-	//INSERT MORE METHODS HERE
+	//INSERT MORE METHODS PRODUCING DIFFERENT JSONS HERE
 	
 	//TODO method getOnlyNonMemberBabies
 	
@@ -164,7 +103,7 @@ public class JsonHelper {
 	
 	/** HELPER CLASSES **/
 	static class CabinJson {
-		/*
+		/* EXAMPLE
 		 * "cabinId":"1",
 	   "dateTo":"2014-05-22",
 	   "dateFrom":"2014-05-15",
@@ -187,7 +126,7 @@ public class JsonHelper {
 	}
 
 	static class GuestJson {
-		/*
+		/* EXAMPLE
 		 * "guests":[
 	      {
 	         "id":1,
@@ -219,12 +158,14 @@ public class JsonHelper {
 				System.err.println("ERROR: nrOfGuests array too short!");
 				return null;
 			}
-			ArrayList<GuestJson> guests = new ArrayList<GuestJson>();
+			ArrayList<GuestJson> guests = new ArrayList<GuestJson>(); 
 			for(int i = 0; i<GUEST_TYPE_NAMES.length; i++) {
+				System.out.println("ADDING: "+1+((long)i%4)+" - "+AGE_RANGE_NAMES[i]+" - "+GUEST_TYPE_NAMES[i]+" - "+nrOfGuests[i]+" - "+GUEST_PRICES[i]+" - "+MEMBERSHIP[i]);
 				guests.add(new GuestJson(1+((long)i%4) , AGE_RANGE_NAMES[i], GUEST_TYPE_NAMES[i], nrOfGuests[i], GUEST_PRICES[i], MEMBERSHIP[i]));
 			}
 			return guests;
 		}
 	}
-}
+	
 
+}
