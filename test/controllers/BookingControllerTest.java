@@ -6,13 +6,16 @@ import models.Bed;
 import models.Booking;
 import models.Cabin;
 import models.LargeCabin;
+import models.RDate;
 import models.SmallCabin;
 import models.User;
+
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.junit.*;
 
 import com.fasterxml.jackson.databind.JsonNode;
+
 import flexjson.JSONSerializer;
 import static org.junit.Assert.*;
 import play.libs.Json;
@@ -27,20 +30,6 @@ public class BookingControllerTest extends WithApplication {
 	LargeCabin lCabin;
 	User user;
 
-	String jsonString = "{\"cabinId\":\"1\",\"dateTo\":\"2014-05-22\",\"dateFrom\":\"2014-05-15\","
-			+ "\"guests\":[{\"id\":1,\"ageRange\":\"26 og opp\",\"guestType\":\"Voksen, medlem\","
-			+ "\"nr\":3,\"price\":300,\"isMember\":true},{\"id\":2,\"ageRange\":\"13-25\","
-			+ "\"guestType\":\"Ungdom, medlem\",\"nr\":0,\"price\":200,\"isMember\":true},"
-			+ "{\"id\":3,\"ageRange\":\"4-12\",\"guestType\":\"Barn, medlem\",\"nr\":0,\"price\":100,"
-			+ "\"isMember\":true},{\"id\":4,\"ageRange\":\"0-4\",\"guestType\":\"Spedbarn, medlem\","
-			+ "\"nr\":0,\"price\":0,\"isMember\":true},{\"id\":1,\"ageRange\":\"26 og opp\","
-			+ "\"guestType\":\"Voksen,\",\"nr\":0,\"price\":400,\"isMember\":false},{\"id\":2,"
-			+ "\"ageRange\":\"13-25\",\"guestType\":\"Ungdom,\",\"nr\":0,\"price\":300,\"isMember\":false},"
-			+ "{\"id\":3,\"ageRange\":\"4-12\",\"guestType\":\"Barn,\",\"nr\":0,\"price\":200,"
-			+ "\"isMember\":false},{\"id\":4,\"ageRange\":\"0-4\",\"guestType\":\"Spedbarn,\","
-			+ "\"nr\":0,\"price\":0,\"isMember\":false}],\"termsAndConditions\":true}"; //working with static data for now
-	//surely a more dynamic and easy on the eyes way TODO find out
-
 	@Before
 	public void setUp() {
 		start(fakeApplication(inMemoryDatabase()));
@@ -52,6 +41,8 @@ public class BookingControllerTest extends WithApplication {
 		sCabin.save();
 		lCabin.save();
 		user.save();
+		
+		Booking b1 = Booking.createBooking(user.id, RDate.fDt, RDate.fDt.plusDays(3), lCabin.id, lCabin.beds);
 	}
 
 	@Test
@@ -65,19 +56,23 @@ public class BookingControllerTest extends WithApplication {
 		//TODO make one of these for each test
 		//FakeRequest can be configured to have any additional plugins, 
 		//configurations or globals (maybe even @WithSecurityControllor
+		
+		//Ok booking for control
 		FakeRequest fkRequest = new FakeRequest(POST, "api/bookings/");
-		JsonNode data = Json.parse(jsonString);
-		//fkRequest.with
+		fkRequest.withHeader("authToken", user.createToken());
+		JsonNode data = Json.parse(JsonHelper.getOkBooking());
 		
+		//Result resOk = callAction(controllers.routes.BookingController.submitBooking(), fkRequest);
+		//assertTrue(resOk instanceOf ok)
 		
-
-		//fkRequest
-		//TODO make one of these for each fakeRequest
-		//Result result = callAction(controllers.routes.BookingController.submitBooking(), fkRequest);
+		//Bad booking
+		fkRequest = new FakeRequest(POST, "api/bookings/");
+		fkRequest.withHeader("authToken", user.createToken());
+		data = Json.parse(JsonHelper.getOnlyMemberBabiesBookingJSON());
+		//Result resBad = callAction(controllers.routes.BookingController.submitBooking(), fkRequest);
+		//assertTrue(resBad instanceOf badRequest);
+		
 		//TODO find out how controllers...submitBooking() returns a handler reference
-
-		//TODO make one of these for different results
-		//assertEquals(badRequest(), result);
 	}
 
 	@Test
@@ -88,7 +83,7 @@ public class BookingControllerTest extends WithApplication {
 	 */
 	public void testCancelBooking()  {
 		//TODO make one of these for each test
-		FakeRequest fkRequest = new FakeRequest(DELETE, "api/bookings/1");
+		FakeRequest fkRequest = new FakeRequest(DELETE, "api/bookings/1"); //Add id here?
 		
 		fkRequest.withHeader("authToken", user.createToken());
 		//TODO how do we add query parameter to the fake request?
@@ -103,14 +98,6 @@ public class BookingControllerTest extends WithApplication {
 
 		//TODO make one of these for different results
 		//assertEquals(badRequest(), result);
-	}
-	
-	@Test
-	/**
-	 * 
-	 */
-	public void getOrderSummary() {
-		
 	}
 
 	@Test

@@ -55,7 +55,7 @@ public class JsonHelperTest extends WithApplication {
 	
 	@Test
 	public void testOutput() {
-		System.out.println("########### OK BOOKING HERE!!!!!!!!!\n"+JsonHelper.getOkBooking().asText());
+		System.out.println("########### OK BOOKING HERE!!!!!!!!!\n"+JsonHelper.getOkBooking());
 		assertTrue(false);
 	}
 	
