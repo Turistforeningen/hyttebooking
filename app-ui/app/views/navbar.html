@@ -1,5 +1,5 @@
 <nav class="navbar navbar-default" role="navigation">
-	<div class="container">
+	<div class="container" ng-controller="headerController">
 		<!-- Brand and toggle get grouped for better mobile display -->
 		<div class="navbar-header">
 			<button type="button" class="navbar-toggle" data-toggle="collapse"
@@ -14,18 +14,19 @@
 
 		<!-- Collect the nav links, forms, and other content for toggling -->
 		<div class="collapse navbar-collapse"
-			id="bs-example-navbar-collapse-1" ng-controller="headerController">
+			id="bs-example-navbar-collapse-1" >
 			<ul class="nav navbar-nav"></ul>
-			<ul class="nav navbar-nav navbar-right">
-				<li ng-show="!loggedIn"><a href="#/login"><i class="fa fa-sign-in"></i>&nbsp;Logg inn</a></li>
-				<li ng-show="loggedIn" class="dropdown"><a href="#"
+			<ul class="nav navbar-nav navbar-right" ng-controller="authController">
+				<li ng-show=" !loggedIn "><a ng-click=" newLogin() "><i class="fa fa-sign-in"></i>&nbsp;Logg inn</a></li>
+				<li ng-show=" loggedIn " class="dropdown"><a href="#"
 					class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-circle"></i>&nbsp;{{name}} <b class="caret"></b></a>
 					<ul class="dropdown-menu">
 						<li><a href="#/orderHistory"><span
 						class="glyphicon glyphicon-user"></span>&nbsp;Brukerprofil</a></li>
 						<li class="divider"></li>
-						<li><a ng-click="logoutAction()"><i class="fa fa-sign-out"></i>&nbsp;Logg ut</a></li>
-					</ul></li>
+						<li><a ng-click="logout()"><i class="fa fa-sign-out"></i>&nbsp;Logg ut</a></li>
+					</ul>
+				</li>
 			</ul>
 		</div>
 		<!-- /.navbar-collapse -->

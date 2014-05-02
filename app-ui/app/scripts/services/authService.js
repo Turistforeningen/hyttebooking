@@ -13,6 +13,7 @@ angular.module('dntApp').factory('authorization', ['$http', function ($http) {
 			return $http.get('api/login/setup');
 		},
 		checkLogin: function(data, hmac) {
+			console.log("kalles i auth")
 			var credentials = {'data' : data, 'hmac' : hmac}
 			return $http.post('/api/login/checkLogin', credentials);
 		},

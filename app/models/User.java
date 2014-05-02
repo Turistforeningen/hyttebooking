@@ -19,10 +19,10 @@ public class User extends Model {
 	/** assosier med sherpa id i DNT **/
     @Id
     public Long id;
-
-    private String authToken;
     
-    @Column(length = 256, unique = true, nullable = false)
+    public String authToken;
+    
+    @Column(length = 256, nullable = false)
     @Constraints.MaxLength(256)
     @Constraints.Required
     @Constraints.Email
@@ -36,8 +36,8 @@ public class User extends Model {
         this.emailAddress = emailAddress.toLowerCase();
     }
 
-    @Column(length = 64, nullable = false)
-    private byte[] shaPassword;
+    //@Column(length = 64, nullable = false)
+    //private byte[] shaPassword;
 
     @Transient
     @Constraints.Required
@@ -53,7 +53,7 @@ public class User extends Model {
 
     public void setPassword(String password) {
         this.password = password;
-        shaPassword = getSha512(password);
+        //shaPassword = getSha512(password);
     }
 
     @Column(length = 256, nullable = false)
@@ -62,18 +62,16 @@ public class User extends Model {
     @Constraints.MaxLength(256)
     public String fullName;
 
-    @Constraints.Required
+
     public DateTime dob;
     
-    @Constraints.Required
     public String address;
     
-    @Constraints.Required
     public String city;
     
     public Boolean admin= false;
     
-    @Constraints.Required
+   
     @Constraints.MaxLength(4)
     public String zipCode;
     
@@ -81,17 +79,25 @@ public class User extends Model {
     public DateTime creationDate;
 
     public String createToken() {
+    	System.out.println("WRITING A TOKEN");
         authToken = UUID.randomUUID().toString();
-        save();
+        try {
+        	save();
+		} catch (OptimisticLockException e) {
+			e.printStackTrace();
+			
+			save();
+		}
+        
         return authToken;
     }
 
     public void deleteAuthToken() {
         authToken = null;
-        save();
+       	save();
     }
     
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+	@OneToMany
 	@JsonIgnore
 	public List<Booking> bookings = new ArrayList<Booking>();
     

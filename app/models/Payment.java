@@ -61,7 +61,7 @@ public class Payment extends Model {
 		if(user == null || b == null || amount < 0.0) {
 			return null;
 		}
-		if(b.user.id != user.id) {
+		if(!b.user.id.equals(user.id)) {
 			return null;
 		}
 		Payment p = new Payment();

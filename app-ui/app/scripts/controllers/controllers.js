@@ -89,19 +89,10 @@ angular.module('dntApp').controller('orderController', ['$scope','$modal','$rout
 /*
  * Controller for testView.
  */
-angular.module('dntApp').controller('testController', ['$scope','$log','api', 'authorization', '$routeParams', function ($scope,$log, api, authorization,  $routeParams) {
+angular.module('dntApp').controller('testController', ['$scope', function ($scope) {
 	
 	function init() {
-		var data = $routeParams.data;
-		var hmac = $routeParams.hmac;
-		$log.info("lol");
-		if(data && hmac) {
-			authorization.checkLogin(data, hmac).success(function(data) {
-				$log.info("det virket" + "data.name");
-			}).error(function(error) {
-				$log.info("det virket ikke");
-			})
-		}
+	
 	}
 	init();
 }]);
@@ -326,14 +317,9 @@ angular.module('dntApp').controller('bookingController', ['$modal','$rootScope',
  * sending user credentials to server and take care of a authentication token return by the server.
  * 
  */
-angular.module('dntApp').controller('authController', ['$log','$rootScope','$scope','$location','$cookieStore','authorization','api','$window',
-                                                       function ($log, $rootScope, $scope, $location, $cookieStore, authorization, api, $window) {
+angular.module('dntApp').controller('authController', ['$log', '$scope','$location','$cookieStore','authorization','api','$window', '$routeParams',
+                                                       function ($log, $scope, $location, $cookieStore, authorization, api, $window, $routeParams) {
 
-	$rootScope.$on('event:loggingOut', function(event, data) {
-		$scope.logout();
-
-	});
-	
 	/**
 	 * @ngdoc method
 	 * @name dntApp.object#login
@@ -356,29 +342,12 @@ angular.module('dntApp').controller('authController', ['$log','$rootScope','$sco
 	}
 	
 
-	$scope.login = function (credentials) {
-		var success = function (data) {
-
-			$scope.$emit('event:loggingIn', credentials.emailAdress);
-			var token = data.authToken;
-			api.init(token);
-			$cookieStore.put('token', data.token);
-			$cookieStore.put('name', data.name);
-			$location.path('/');
-		};
-
-		var error = function () {
-
-		};
-		authorization.login(credentials).success(success).error(error);
-	};
-
 	$scope.logout = function () {
-
+		$log.info('log ut');
+		$cookieStore.remove('token');
+		$cookieStore.remove('name');
+		$scope.$emit('event:signedOut');
 		var success = function (data) {
-
-			$cookieStore.remove('token');
-			$cookieStore.remove('name');
 			$location.path('/');
 		};
 
@@ -387,6 +356,37 @@ angular.module('dntApp').controller('authController', ['$log','$rootScope','$sco
 		};
 		authorization.logout().success(success).error(error);
 	};
+	
+
+	var init = function() {
+		var data = $routeParams.data;
+		var hmac = $routeParams.hmac;
+		$log.info("kalles");
+		if(data && hmac) {
+			$log.info("ops da");
+			authorization.checkLogin(data, hmac).success(function(data) {
+				
+				var token = data.authToken;
+				var name = data.name || 'n/a';
+				if(!angular.isUndefined(token)) {
+					$scope.$emit('event:signedIn', data.name);
+					$log.info("hei der");
+					api.init(token);
+					$cookieStore.put('token', token);
+					$cookieStore.put('name', name);
+					//$location.$$search = {};
+					$location.path('/');
+				}
+				else {
+					$log.info(token + " token");
+					$log.info(data.name + " data.name")
+				}
+			}).error(function(error) {
+				$log.info("det virket ikke");
+			});
+		}
+	};
+	init();
 }]);
 
 
@@ -398,24 +398,21 @@ angular.module('dntApp').controller('authController', ['$log','$rootScope','$sco
  * active tab, and to decide whether to show log in button or a drop down with options if user is logged in.
  * 
  */
-angular.module('dntApp').controller('headerController', ['$scope','$rootScope', '$location', '$cookieStore' ,
+angular.module('dntApp').controller('headerController', ['$scope','$rootScope', '$location', '$cookieStore',
                                                          function ($scope,$rootScope, $location, $cookieStore) {
 	$scope.loggedIn = false;
 	$scope.name ='';
 
-	$rootScope.$on('event:loggingIn', function(event, data) {
+	$rootScope.$on('event:signedIn', function(event, data) {
 		$scope.loggedIn = true;
 		$scope.name = data;
 	});
-
-
-	$scope.logoutAction = function() {
+	
+	$rootScope.$on('event:signedOut', function(event, data) {
 		$scope.name ='';
 		$scope.loggedIn = false;
-		$rootScope.$broadcast('event:loggingOut', null);
-	};
-
-
+	});
+	
 	$scope.isActive = function (viewLocation) {
 		return viewLocation === $location.path();
 	};
