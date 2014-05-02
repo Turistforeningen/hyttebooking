@@ -11,7 +11,6 @@ POST	/api/bookings/					        controllers.BookingController.submitBooking()
 DELETE	/api/bookings/:id				        controllers.BookingController.cancelBooking(id: String)
 GET		/api/bookings				            controllers.BookingController.getOrderHistory()
 
-POST    /login                                  controllers.SecurityController.login()
 POST    /logout                                 controllers.SecurityController.logout()
 
 GET     /api/admin/cabins                       controllers.AdminController.getCabins()

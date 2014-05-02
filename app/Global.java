@@ -23,10 +23,9 @@ public class Global extends GlobalSettings {
 	@Override
 	public void onStart(Application app) {
 		
-		
 		// Populate database with dummy data
 		if (User.find.findRowCount() == 0 && !app.isTest() && CREATE_DUMMY_CONTENT) {
-			this.runDummyDataGenerator();
+			runDummyDataGenerator();
 		}
 	}
 

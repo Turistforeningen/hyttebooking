@@ -59,7 +59,6 @@ create table user (
   id                        bigint not null,
   auth_token                varchar(255),
   email_address             varchar(256) not null,
-  sha_password              varbinary(64) not null,
   full_name                 varchar(256) not null,
   dob                       timestamp,
   address                   varchar(255),
@@ -67,7 +66,6 @@ create table user (
   admin                     boolean,
   zip_code                  varchar(255),
   creation_date             timestamp not null,
-  constraint uq_user_email_address unique (email_address),
   constraint pk_user primary key (id))
 ;
 

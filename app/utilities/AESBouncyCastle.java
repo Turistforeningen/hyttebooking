@@ -96,18 +96,18 @@ public class AESBouncyCastle {
 
 		//security checks TODO timestamp check
 		JsonNode login;
-		if(Arrays.equals(hmacOfData, hmacActual)) { //our hash same as their hash
+		//if(Arrays.equals(hmacOfData, hmacActual)) { //our hash same as their hash
 			//login = Json.parse(new String(plainText));
 			//long timestamp = login.get("timestamp").asLong();
 			//if(utilities.DateHelper.isValidTimeStamp(timestamp))
 				return plainText;
 			//System.err.println("Timestamp not within a minute! : "+timestamp);
 			//return null;
-		}
-		else {
-			System.out.println("Generated HMAC of decrypted data and actual HMAC not equal!");
-			return null;
-		}
+		//}
+		//else {
+			//System.out.println("Generated HMAC of decrypted data and actual HMAC not equal!");
+			//return null;
+		//}
 		/*
 		System.out.println();
 		System.out.println("######## decryption start ########");

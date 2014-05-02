@@ -5,6 +5,7 @@ import java.util.Arrays;
 import models.User;
 
 import org.joda.time.Instant;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -19,10 +20,11 @@ import utilities.AESBouncyCastle;
  * Controller class for DNT Connect for logging users in.
  */
 public class ConnectController extends Controller {
-	private static final String REDIRECT_URL = "http://localhost:9000/dev#/";
+	private static final String REDIRECT_URL = "http://localhost:9000/dev#/login";
 	private static final String CLIENT = "?client=hyttebooking";
 	private static final String SIGNON = "https://www.turistforeningen.no/connect/signon/" +CLIENT + "&data=";
 	private static final byte[] SECRETKEY = DatatypeConverter.parseBase64Binary(play.Play.application().configuration().getString("application.secretKey"));
+	private static final long ADMIN_ID = getAdminId();
 	
 	public static String EncodeURL(String url) throws java.io.UnsupportedEncodingException {
 	    return java.net.URLEncoder.encode(url, "UTF-8");
@@ -66,14 +68,13 @@ public class ConnectController extends Controller {
 	 * @throws Exception 
 	 */
 	public static Result checkLogin() throws Exception {
+		System.out.println();
 		System.out.println("---------------------------");
-		System.out.println(request().body().asJson().get("data").asText());
 		System.out.println("---------------------------");
+		
 		String dataB64 = request().body().asJson().get("data").asText();
 		String hmacB64 = request().body().asJson().get("hmac").asText();
-		System.out.println("---------------------------");
-		System.out.println(dataB64);
-		System.out.println("---------------------------");
+		
 		byte[] data = DatatypeConverter.parseBase64Binary(dataB64);
 		byte[] hmac = DatatypeConverter.parseBase64Binary(hmacB64);
 		
@@ -92,10 +93,13 @@ public class ConnectController extends Controller {
 		String email 	= login.get("epost").asText();
 		String fName 	= login.get("fornavn").asText();
 		String lName	= login.get("etternavn").asText();
-		
+		System.out.println(id + "email" + email+  "fName" + "lName");
 		User user = User.findBySherpaId(id);
 		if(user == null) { //first time using booking solution, we need to register user internally
 			user = new User(id, email, fName+" "+lName); //TODO don't split fName and lName
+			if(id == ADMIN_ID) {
+				user.admin = true;
+			}
 			user.save();
 		}
 		return SecurityController.DNTLogin(user);
@@ -113,5 +117,14 @@ public class ConnectController extends Controller {
 	/** Returns timestamp for now UTC using JodaTime.Instant **/
 	public static long getTimeStamp() {
 		return new Instant().getMillis() / 1000;
+	}
+	
+	private static long getAdminId() {
+		long sherpaId = 0;
+		try {
+			sherpaId = play.Play.application().configuration().getLong("application.adminSherpaId");
+		} catch (Exception e) {
+		}
+		return sherpaId;
 	}
 }

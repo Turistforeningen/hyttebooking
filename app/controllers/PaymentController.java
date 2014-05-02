@@ -12,6 +12,7 @@ import models.Payment;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.SimpleResult;
+import play.mvc.With;
 import static play.libs.F.Function;
 import static play.libs.F.Promise;
 import play.i18n.Messages;
@@ -45,18 +46,19 @@ public class PaymentController extends Controller {
 	 * @param bookingId - id of booking 
 	 * @return Response - contains redirect url for user payment.
 	 */
+	@With(SecurityController.class)
 	public static Promise<Result> registerPayment(Long bookingId) {
 		
 		final Booking b = Booking.getBookingById(bookingId+ "");
-		if(b == null || b.status == Booking.BOOKED) {
+		if(b == null && b.status != Booking.BOOKED) {
 			return Promise.pure((Result) notFound(JsonMessage.error(Messages.get("payment.bookingNotFound"))));
 		}
 		//if deliverydate is 3 month in the future nets wont collect it automatically,
 		//Set deliveryDate to 3 month in the future if booking happends i.e 2 years from now.
-		/*if(b.user != SecurityController.getUser()) {
-		return Promise.pure((Result) notFound("This is not your booking"));
-		}*/
-		
+		if(!b.user.id.equals(SecurityController.getUser().id)) {
+		return Promise.pure((Result) notFound(JsonMessage.error(Messages.get("payment.bookingNotFound"))));
+		}
+
 		final Promise<Result> resultPromise = WS.url(NETS_REGISTER)
 				.setQueryParameter("merchantId", MERCHANT_ID)
 				.setQueryParameter("token", SECRET_MERCHANT)
@@ -104,6 +106,7 @@ public class PaymentController extends Controller {
 	 * @param paymentId id of payment returned by nets.
 	 * @return Result with information about success/failure of payment
 	 */
+	@With(SecurityController.class)
 	public static Promise<Result> authenticatePayment() {
 		JsonNode json = request().body().asJson();
 		

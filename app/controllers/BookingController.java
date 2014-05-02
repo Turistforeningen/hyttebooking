@@ -144,7 +144,7 @@ public class BookingController extends Controller {
 							System.out.println("Booking with id:"+b.id+" timing out!");
 							//cancel booking and unlock beds or cabin for other customers
 							//What happens if customer leaves for half an hour and comes
-							//back and finishes payment? QUETION
+							//back and finishes payment? 
 							//remember that timeout should be also considered in isAvail methods
 							b.status = Booking.TIMEDOUT;
 							b.update();
@@ -183,7 +183,7 @@ public class BookingController extends Controller {
 			return notFound(JsonMessage.error(Messages.get("booking.notFound")+ ": " + bookingId));
 		}
 
-		if(booking.user.id != SecurityController.getUser().id) {
+		if(!booking.user.id.equals(SecurityController.getUser().id)) {
 			return badRequest(JsonMessage.error(Messages.get("booking.noAccess")));
 		}
 
