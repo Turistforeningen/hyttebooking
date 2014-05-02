@@ -5,6 +5,7 @@ import java.util.Arrays;
 import models.User;
 
 import org.joda.time.Instant;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -23,7 +24,7 @@ public class ConnectController extends Controller {
 	private static final String CLIENT = "?client=hyttebooking";
 	private static final String SIGNON = "https://www.turistforeningen.no/connect/signon/" +CLIENT + "&data=";
 	private static final byte[] SECRETKEY = DatatypeConverter.parseBase64Binary(play.Play.application().configuration().getString("application.secretKey"));
-	private static final long ADMIN_ID = play.Play.application().configuration().getLong("application.adminSherpaId").longValue();
+	private static final long ADMIN_ID = getAdminId();
 	
 	public static String EncodeURL(String url) throws java.io.UnsupportedEncodingException {
 	    return java.net.URLEncoder.encode(url, "UTF-8");
@@ -116,5 +117,14 @@ public class ConnectController extends Controller {
 	/** Returns timestamp for now UTC using JodaTime.Instant **/
 	public static long getTimeStamp() {
 		return new Instant().getMillis() / 1000;
+	}
+	
+	private static long getAdminId() {
+		long sherpaId = 0;
+		try {
+			sherpaId = play.Play.application().configuration().getLong("application.adminSherpaId");
+		} catch (Exception e) {
+		}
+		return sherpaId;
 	}
 }
