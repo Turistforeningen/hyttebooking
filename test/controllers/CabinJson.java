@@ -13,11 +13,11 @@ public class CabinJson {
    "guests":[
 	 */
 	
-	long cabinId;
-	DateTime dateTo;
-	DateTime dateFrom;
-	List<GuestJson> guests = new ArrayList<GuestJson>();
-	boolean termsAndConditions;
+	public long cabinId;
+	public DateTime dateTo;
+	public DateTime dateFrom;
+	public List<GuestJson> guests = new ArrayList<GuestJson>();
+	public boolean termsAndConditions;
 	
 	public CabinJson(long cabinId, DateTime dateTo, DateTime dateFrom, List<GuestJson> gJson, boolean termsAndConditions) {
 		this.cabinId = cabinId;

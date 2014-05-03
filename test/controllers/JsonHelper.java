@@ -28,31 +28,28 @@ public class JsonHelper {
 	 * Creates a valid cabin with id 1, reservation lasting 7 days and guests
 	 */
 	private static String getValidCabinJSON(ArrayList<GuestJson> guests) {
-		JSONSerializer ser = new JSONSerializer();
-		//ser.include("CabinJson", "CabinJson.guests") //, "dateTo", "dateFrom", "guests", "termsAndConditions", "guests.id", "guests.ageRange", "guests.guestType", "guests.nr", "guests.price", "guests.isMember")
-		//.exclude("*.class")
-		//.transform(new DateTimeTransfomer2(), DateTime.class);
+		JSONSerializer ser = new JSONSerializer()
+		.include("guests", "guests.id", "guests.guestType").
+		exclude("*.class")
+		.transform(new DateTimeTransfomer2(), DateTime.class);
 		
 		CabinJson cj = new CabinJson((long)1, RDate.fDt.plusWeeks(1), RDate.fDt.plusWeeks(2), guests, false);
-		System.out.println("CABINJSON TO STRING SAYS! "+cj);
 		return ser.serialize(cj);
 	}
 	
 	/**
 	 * Same as above but with terms and conditions false
-	 *
+	 */
 	private static String getInvalidCabinJson(ArrayList<GuestJson> guests) {
-		JSONSerializer ser = new JSONSerializer();
-		//ser.include("CabinJson", "CabinJson.guests") //, "dateTo", "dateFrom", "guests", "termsAndConditions", "guests.id", "guests.ageRange", "guests.guestType", "guests.nr", "guests.price", "guests.isMember")
-		//.exclude("*.class")
-		//.transform(new DateTimeTransfomer2(), DateTime.class);
+		JSONSerializer ser = new JSONSerializer()
+		.include("guests", "guests.id", "guests.guestType").
+		exclude("*.class")
+		.transform(new DateTimeTransfomer2(), DateTime.class);
 		
 		CabinJson cj = new CabinJson((long)1, RDate.fDt.plusWeeks(1), RDate.fDt.plusWeeks(2), guests, false);
-		System.out.println("CABINJSON TO STRING SAYS! "+cj);
-		ObjectNode node = Json.newObject();
 		return ser.serialize(cj);
 	}
-*/
+
 	//example of a faulty json to be tested, similar methods to be created
 	public static String getOnlyMemberBabiesBookingJSON() {
 		int[] nrOfGuests = {0, 0, 0, 3, 0, 0, 0, 0}; //specify here how many of each type of guest you want
@@ -64,23 +61,26 @@ public class JsonHelper {
 		return onlyBabiesJson;
 	}
 	
+	/** Ok booking, assert OK **/
 	public static String getOkBooking() {
 		int[] nrOfGuests = {2, 0, 0, 0, 0, 0, 0, 0}; //2 member adults, OK
 		ArrayList<GuestJson> guests = GuestJson.addGuests(nrOfGuests);
 		String okBooking = getValidCabinJSON(guests);
 		
-		System.out.println("RETURNING OK BOOKING with SIZE: "+okBooking.length());
-		
 		return okBooking; 
 	}
 	
-	/*public static JsonNode getInvalidCabinBooking() {
+	/**
+	 * Terms and conditions false, assert bad
+	 */
+	public static String getBadBooking1() {
 		int[] nrOfGuests = {2, 0, 0, 0, 0, 0, 0, 0}; //2 member adults, OK
 		ArrayList<GuestJson> guests = GuestJson.addGuests(nrOfGuests);
-		JsonNode invalidBooking = getInvalidCabinJson(guests);
+		String badBooking = getInvalidCabinJson(guests); //false termsAndCond, BAD
 		
-		return invalidBooking; 
-	}*/
+		return badBooking; 
+	}
+	
 	//INSERT MORE METHODS PRODUCING DIFFERENT JSONS HERE
 	
 	//TODO method getOnlyNonMemberBabies

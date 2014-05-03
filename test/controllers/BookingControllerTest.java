@@ -28,7 +28,9 @@ public class BookingControllerTest extends WithApplication {
 
 	SmallCabin sCabin;
 	LargeCabin lCabin;
-	User user;
+	User userOk;
+	User userBad;
+	final static String authToken = "X-AUTH-TOKEN";
 
 	@Before
 	public void setUp() {
@@ -36,13 +38,14 @@ public class BookingControllerTest extends WithApplication {
 		sCabin = new SmallCabin("AvailabilityTestSmallCabin");
 
 		lCabin = new LargeCabin("AvailabilityTestLargeCabin", 8);
-		user = new User("q@t","w", "t");
+		userOk = new User("q@t","w", "t");
+		userBad = new User("bad@guy.com", "w", "t");
 
 		sCabin.save();
 		lCabin.save();
-		user.save();
+		userOk.save();
 		
-		Booking b1 = Booking.createBooking(user.id, RDate.fDt, RDate.fDt.plusDays(3), lCabin.id, lCabin.beds);
+		Booking b1 = Booking.createBooking(userOk.id, RDate.fDt, RDate.fDt.plusDays(3), lCabin.id, lCabin.beds);
 	}
 
 	@Test
@@ -58,18 +61,22 @@ public class BookingControllerTest extends WithApplication {
 		//configurations or globals (maybe even @WithSecurityControllor
 		
 		//Ok booking for control
-		FakeRequest fkRequest = new FakeRequest(POST, "api/bookings/");
-		fkRequest.withHeader("authToken", user.createToken());
+		FakeRequest fkRequest = new FakeRequest(POST, "/api/bookings/");
+		fkRequest.withHeader(authToken, userOk.createToken());
 		JsonNode data = Json.parse(JsonHelper.getOkBooking());
+		fkRequest.withJsonBody(data);
 		
-		//Result resOk = callAction(controllers.routes.BookingController.submitBooking(), fkRequest);
-		//assertTrue(resOk instanceOf ok)
+		Result resOk = route(fkRequest);
+		System.out.println("############ RESULT FAKEREQUEST SUBMIT BOOKING IS ======"+contentAsString(resOk));
 		
-		//Bad booking
-		fkRequest = new FakeRequest(POST, "api/bookings/");
-		fkRequest.withHeader("authToken", user.createToken());
+		//Only babies booking
+		fkRequest = new FakeRequest(POST, "/api/bookings/");
+		fkRequest.withHeader(authToken, userOk.createToken());
 		data = Json.parse(JsonHelper.getOnlyMemberBabiesBookingJSON());
-		//Result resBad = callAction(controllers.routes.BookingController.submitBooking(), fkRequest);
+		fkRequest.withJsonBody(data);
+		
+		Result resBad = route(fkRequest);
+		System.out.println("############ RESULT FAKEREQUEST SUBMIT BOOKING IS ======"+contentAsString(resBad));
 		//assertTrue(resBad instanceOf badRequest);
 		
 		//TODO find out how controllers...submitBooking() returns a handler reference
@@ -82,20 +89,15 @@ public class BookingControllerTest extends WithApplication {
 	 * 
 	 */
 	public void testCancelBooking()  {
-		//TODO make one of these for each test
-		FakeRequest fkRequest = new FakeRequest(DELETE, "api/bookings/1"); //Add id here?
-		
-		fkRequest.withHeader("authToken", user.createToken());
-		//TODO how do we add query parameter to the fake request?
-	
-		//don't need to use deprecated routeAndCall, 
-		//the appropriate call is automatically chosen with new route method 
-		Result res1 = route(fkRequest);
-		System.out.println("########### RESULT FAKEREQUEST DELETE IS ======="+res1);
-		//TODO make one of these for each fakeRequest
-		//Result result = callAction(controllers.routes.BookingController.cancelBooking(), fkRequest);
-		//TODO find out how controllers...cancelBooking() returns a handler reference
 
+		FakeRequest fkRequest = new FakeRequest(DELETE, "/api/bookings/1"); //Add id here?
+		
+		fkRequest.withHeader(authToken, userOk.createToken());
+
+		Result res1 = route(fkRequest);
+		String resString = contentAsString(res1);
+		System.out.println("########### RESULT FAKEREQUEST DELETE IS ======="+resString);
+		
 		//TODO make one of these for different results
 		//assertEquals(badRequest(), result);
 	}
@@ -109,14 +111,14 @@ public class BookingControllerTest extends WithApplication {
 		DateTime s1 = new DateTime("2015-03-01");
 		DateTime e1 = new DateTime("2015-03-03");
 
-		Booking b1 = Booking.createBooking(user.id, s1, e1, sCabin.id, null);
+		Booking b1 = Booking.createBooking(userOk.id, s1, e1, sCabin.id, null);
 		b1.save();
 		b1.status = Booking.CANCELLED;
 		b1.update();
 
 		DateTime s2 = new DateTime("2015-04-25");
 		DateTime e2 = new DateTime("2015-04-30");
-		Booking b2 = Booking.createBooking(user.id, s2, e2, sCabin.id, null);
+		Booking b2 = Booking.createBooking(userOk.id, s2, e2, sCabin.id, null);
 		b2.save();
 
 		//DateTime s3 = new DateTime("2015-04-15");
@@ -126,7 +128,7 @@ public class BookingControllerTest extends WithApplication {
 
 		DateTime s4 = new DateTime("2015-03-29");
 		DateTime e4 = new DateTime("2015-04-05");
-		Booking b4 = Booking.createBooking(user.id, s4, e4, sCabin.id, null);
+		Booking b4 = Booking.createBooking(userOk.id, s4, e4, sCabin.id, null);
 		b4.save();
 
 		int[] expectedResultArray = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1};
@@ -189,19 +191,19 @@ public class BookingControllerTest extends WithApplication {
 		DateTime s1 = new DateTime("2015-03-01");
 		DateTime e1 = new DateTime("2015-03-03");
 		List<Bed> arrBeds1 = ((LargeCabin) lCabin).book(1, new DateTime(s1), new DateTime(e1));
-		Booking b1 = Booking.createBooking(user.id, s1, e1, lCabin.id, arrBeds1);
+		Booking b1 = Booking.createBooking(userOk.id, s1, e1, lCabin.id, arrBeds1);
 		b1.save();
 
 		DateTime s2 = new DateTime("2015-03-09");
 		DateTime e2 = new DateTime("2015-03-13");
 		List<Bed> arrBeds2 = ((LargeCabin) lCabin).book(2, new DateTime(s2), new DateTime(e2));
-		Booking b2 = Booking.createBooking(user.id, s2, e2, lCabin.id, arrBeds2);
+		Booking b2 = Booking.createBooking(userOk.id, s2, e2, lCabin.id, arrBeds2);
 		b2.save();
 
 		DateTime s3 = new DateTime("2015-03-23");
 		DateTime e3 = new DateTime("2015-03-28");
 		List<Bed> arrBeds3 = ((LargeCabin) lCabin).book(3, new DateTime(s3), new DateTime(e3));
-		Booking b3 = Booking.createBooking(user.id, s3, e3, lCabin.id, arrBeds3);
+		Booking b3 = Booking.createBooking(userOk.id, s3, e3, lCabin.id, arrBeds3);
 		b3.save();
 
 		int[] expectedResultArray = {1,1,1,0,0,0,0,0,2,2,2,2,2,0,0,0,0,0,0,0,0,0,3,3,3,3,3,3};

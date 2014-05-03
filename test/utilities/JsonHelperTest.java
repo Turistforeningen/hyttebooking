@@ -10,7 +10,10 @@ import models.User;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 import controllers.JsonHelper;
+import play.libs.Json;
 import play.test.WithApplication;
 
 public class JsonHelperTest extends WithApplication {
@@ -55,8 +58,8 @@ public class JsonHelperTest extends WithApplication {
 	
 	@Test
 	public void testOutput() {
-		System.out.println("########### OK BOOKING HERE!!!!!!!!!\n"+JsonHelper.getOkBooking());
-		assertTrue(false);
+		JsonNode json = Json.parse(JsonHelper.getOkBooking());
+		assertTrue(json.has("price")); //just a random key, if it has likely jsonHelper works perfectly because it is two deep
 	}
 	
 }

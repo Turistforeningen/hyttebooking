@@ -14,12 +14,12 @@ public class GuestJson {
          "isMember":true
       },
 	 */
-	long id;
-	String ageRange;
-	String guestType;
-	long nr;
-	double price;
-	boolean isMember;
+	public long id;
+	public String ageRange;
+	public String guestType;
+	public long nr;
+	public double price;
+	public boolean isMember;
 	
 	public GuestJson(long id, String ageRange, String guestType, long nr, double price, boolean isMember) {
 		this.id = id;
