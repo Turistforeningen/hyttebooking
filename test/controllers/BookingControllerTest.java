@@ -1,28 +1,21 @@
 package controllers;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import models.Bed;
 import models.Booking;
 import models.Cabin;
 import models.LargeCabin;
+import models.RDate;
 import models.SmallCabin;
 import models.User;
+
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.junit.*;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import flexjson.JSONSerializer;
 import static org.junit.Assert.*;
-import play.libs.Json;
-import play.mvc.Http.Status;
 import play.mvc.Result;
 import play.test.FakeRequest;
 import play.test.WithApplication;
@@ -32,33 +25,26 @@ public class BookingControllerTest extends WithApplication {
 
 	SmallCabin sCabin;
 	LargeCabin lCabin;
-	User user;
+	User userOk;
+	User userBad;
+	final static String authToken = "X-AUTH-TOKEN";
 
-	String jsonString = "{\"cabinId\":\"1\",\"dateTo\":\"2014-05-22\",\"dateFrom\":\"2014-05-15\","
-			+ "\"guests\":[{\"id\":1,\"ageRange\":\"26 og opp\",\"guestType\":\"Voksen, medlem\","
-			+ "\"nr\":3,\"price\":300,\"isMember\":true},{\"id\":2,\"ageRange\":\"13-25\","
-			+ "\"guestType\":\"Ungdom, medlem\",\"nr\":0,\"price\":200,\"isMember\":true},"
-			+ "{\"id\":3,\"ageRange\":\"4-12\",\"guestType\":\"Barn, medlem\",\"nr\":0,\"price\":100,"
-			+ "\"isMember\":true},{\"id\":4,\"ageRange\":\"0-4\",\"guestType\":\"Spedbarn, medlem\","
-			+ "\"nr\":0,\"price\":0,\"isMember\":true},{\"id\":1,\"ageRange\":\"26 og opp\","
-			+ "\"guestType\":\"Voksen,\",\"nr\":0,\"price\":400,\"isMember\":false},{\"id\":2,"
-			+ "\"ageRange\":\"13-25\",\"guestType\":\"Ungdom,\",\"nr\":0,\"price\":300,\"isMember\":false},"
-			+ "{\"id\":3,\"ageRange\":\"4-12\",\"guestType\":\"Barn,\",\"nr\":0,\"price\":200,"
-			+ "\"isMember\":false},{\"id\":4,\"ageRange\":\"0-4\",\"guestType\":\"Spedbarn,\","
-			+ "\"nr\":0,\"price\":0,\"isMember\":false}],\"termsAndConditions\":true}"; //working with static data for now
-	//surely a more dynamic and easy on the eyes way TODO find out
-
+	@SuppressWarnings("deprecation")
 	@Before
 	public void setUp() {
 		start(fakeApplication(inMemoryDatabase()));
 		sCabin = new SmallCabin("AvailabilityTestSmallCabin");
 
 		lCabin = new LargeCabin("AvailabilityTestLargeCabin", 8);
-		user = new User("q@t","w", "t");
+		userOk = new User("q@t","w", "t");
+		userBad = new User("bad@guy.com", "w", "t");
 
 		sCabin.save();
 		lCabin.save();
-		user.save();
+		userOk.save();
+		
+		Booking b1 = Booking.createBooking(userOk.id, RDate.fDt, RDate.fDt.plusDays(3), lCabin.id, lCabin.beds);
+		b1.save();
 	}
 
 	@Test
@@ -69,50 +55,49 @@ public class BookingControllerTest extends WithApplication {
 	 * http://www.playframework.com/documentation/2.1.x/api/java/play/test/FakeRequest.html
 	 */
 	public void testSubmitBooking() {
-		//TODO make one of these for each test
-		//FakeRequest can be configured to have any additional plugins, 
-		//configurations or globals (maybe even @WithSecurityControllor
-		FakeRequest fkRequest = new FakeRequest("/POST", "api/bookings/");
-		JsonNode data = Json.parse(jsonString);
-		fkRequest.withJsonBody(data);
 
-		//fkRequest
-		//TODO make one of these for each fakeRequest
-		//Result result = callAction(controllers.routes.BookingController.submitBooking(), fkRequest);
-		//TODO find out how controllers...submitBooking() returns a handler reference
-
-		//TODO make one of these for different results
-		//assertEquals(badRequest(), result);
+		//Normal booking, OK
+		FakeRequest fkRequest = new FakeRequest(POST, "/api/bookings/");
+		fkRequest.withHeader(authToken, userOk.createToken());
+		fkRequest.withJsonBody(JsonHelper.getOkBooking());
+		System.out.println("DEBUGGIN: \n");
+		System.out.println(JsonHelper.getOkBooking());
+		System.out.println("#############");
+		
+		Result resOk = route(fkRequest);
+		System.out.println("########### RESULT SUBMITBOOKING OK IS\n"+contentAsString(resOk));
+		assertEquals("SHOULD BE OK", OK, status(resOk));
+		//TODO this says guestList invalid, where does that error come from?
+		//Can't be because JSON isn't read right, because I had to fix dates being wrong, so it can read
+		//the first part, it just doesn't like the guests part?
+		
+		//Only babies booking
+		fkRequest = new FakeRequest(POST, "/api/bookings/");
+		fkRequest.withHeader(authToken, userOk.createToken());
+		fkRequest.withJsonBody(JsonHelper.getOnlyMemberBabiesBookingJSON());
+		
+		Result resBad = route(fkRequest);
+		System.out.println("########### RESULT SUBMITBOOKING BAD IS\n"+contentAsString(resBad));
+		assertEquals("SHOULD BE BAD", BAD_REQUEST, status(resBad));
 	}
 
 	@Test
-	/**
-	 * Test that empty request returns badRequest
-	 * Test that attempt to cancel non-existant booking returns badRequest
-	 * 
-	 */
 	public void testCancelBooking()  {
-		//TODO make one of these for each test
-		FakeRequest fkRequest = new FakeRequest("/DELETE", "api/bookings/");
-		//TODO how do we add query parameter to the fake request?
-	
-		//don't need to use deprecated routeAndCall, 
-		//the appropriate call is automatically chosen with new route method 
-		Result res1 = route(fkRequest);
-		System.out.println(res1);
-		//TODO make one of these for each fakeRequest
-		//Result result = callAction(controllers.routes.BookingController.cancelBooking(), fkRequest);
-		//TODO find out how controllers...cancelBooking() returns a handler reference
+		//cancel booking as other user
+		FakeRequest fkRequest = new FakeRequest(DELETE, "/api/bookings/1");
+		fkRequest.withHeader(authToken, userBad.createToken());
+		
+		Result resBad = route(fkRequest);
+		assertEquals(BAD_REQUEST, status(resBad));
+		System.out.println("########### RESULT FAKEREQUEST BAD DELETE IS\n"+status(resBad));
 
-		//TODO make one of these for different results
-		//assertEquals(badRequest(), result);
-	}
-	
-	@Test
-	/**
-	 * 
-	 */
-	public void getOrderSummary() {
+		//cancel booking as actual owner of booking
+		fkRequest = new FakeRequest(DELETE, "/api/bookings/1"); //Add id here?
+		fkRequest.withHeader(authToken, userOk.createToken());
+		
+		Result resOk = route(fkRequest);
+		assertEquals(OK, status(resOk));
+		System.out.println("########### RESULT FAKEREQUEST OK DELETE IS\n"+status(resOk));
 		
 	}
 
@@ -125,14 +110,14 @@ public class BookingControllerTest extends WithApplication {
 		DateTime s1 = new DateTime("2015-03-01");
 		DateTime e1 = new DateTime("2015-03-03");
 
-		Booking b1 = Booking.createBooking(user.id, s1, e1, sCabin.id, null);
+		Booking b1 = Booking.createBooking(userOk.id, s1, e1, sCabin.id, null);
 		b1.save();
 		b1.status = Booking.CANCELLED;
 		b1.update();
 
 		DateTime s2 = new DateTime("2015-04-25");
 		DateTime e2 = new DateTime("2015-04-30");
-		Booking b2 = Booking.createBooking(user.id, s2, e2, sCabin.id, null);
+		Booking b2 = Booking.createBooking(userOk.id, s2, e2, sCabin.id, null);
 		b2.save();
 
 		//DateTime s3 = new DateTime("2015-04-15");
@@ -142,7 +127,7 @@ public class BookingControllerTest extends WithApplication {
 
 		DateTime s4 = new DateTime("2015-03-29");
 		DateTime e4 = new DateTime("2015-04-05");
-		Booking b4 = Booking.createBooking(user.id, s4, e4, sCabin.id, null);
+		Booking b4 = Booking.createBooking(userOk.id, s4, e4, sCabin.id, null);
 		b4.save();
 
 		int[] expectedResultArray = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1};
@@ -198,26 +183,25 @@ public class BookingControllerTest extends WithApplication {
 		long cabinId = lCabin.id;
 
 		int[] largeCabinBookedDays = new int[Math.abs(Days.daysBetween(startDate, endDate).getDays())+1];
-		JSONSerializer serializer = new JSONSerializer();
 		String actualResult;
 
 		/** add different bookings and test **/
 		DateTime s1 = new DateTime("2015-03-01");
 		DateTime e1 = new DateTime("2015-03-03");
 		List<Bed> arrBeds1 = ((LargeCabin) lCabin).book(1, new DateTime(s1), new DateTime(e1));
-		Booking b1 = Booking.createBooking(user.id, s1, e1, lCabin.id, arrBeds1);
+		Booking b1 = Booking.createBooking(userOk.id, s1, e1, lCabin.id, arrBeds1);
 		b1.save();
 
 		DateTime s2 = new DateTime("2015-03-09");
 		DateTime e2 = new DateTime("2015-03-13");
 		List<Bed> arrBeds2 = ((LargeCabin) lCabin).book(2, new DateTime(s2), new DateTime(e2));
-		Booking b2 = Booking.createBooking(user.id, s2, e2, lCabin.id, arrBeds2);
+		Booking b2 = Booking.createBooking(userOk.id, s2, e2, lCabin.id, arrBeds2);
 		b2.save();
 
 		DateTime s3 = new DateTime("2015-03-23");
 		DateTime e3 = new DateTime("2015-03-28");
 		List<Bed> arrBeds3 = ((LargeCabin) lCabin).book(3, new DateTime(s3), new DateTime(e3));
-		Booking b3 = Booking.createBooking(user.id, s3, e3, lCabin.id, arrBeds3);
+		Booking b3 = Booking.createBooking(userOk.id, s3, e3, lCabin.id, arrBeds3);
 		b3.save();
 
 		int[] expectedResultArray = {1,1,1,0,0,0,0,0,2,2,2,2,2,0,0,0,0,0,0,0,0,0,3,3,3,3,3,3};

@@ -85,6 +85,8 @@ public class DateHelper {
 		DateTimeFormatter dtf = DateTimeFormat.forPattern("yyyyMMdd");
 		return dtf.print(time);
 	}
+	
+
 
 	/**
 	 * @param fromDate must be before toDate AND must be after todays date withTimeStartOfDay
