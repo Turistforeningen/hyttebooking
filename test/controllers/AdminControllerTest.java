@@ -1,27 +1,16 @@
 package controllers;
 
-import java.util.List;
-
-import models.Bed;
-import models.Booking;
-import models.Cabin;
 import models.LargeCabin;
-import models.RDate;
 import models.SmallCabin;
 import models.User;
 
-import org.joda.time.DateTime;
-import org.joda.time.Days;
 import org.junit.*;
 
-import flexjson.JSONSerializer;
 import static org.junit.Assert.*;
 import play.mvc.Result;
 import play.test.FakeRequest;
 import play.test.WithApplication;
 import static play.test.Helpers.*;
-import play.test.WithApplication;
-import utilities.Page;
 
 public class AdminControllerTest extends WithApplication  {
 
