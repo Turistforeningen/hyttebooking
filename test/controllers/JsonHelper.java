@@ -19,7 +19,7 @@ import play.libs.Json;
  */
 public class JsonHelper {
 
-	public final static String[] GUEST_TYPE_NAMES = {"Voksen, medlem","Ungdom, medlem","Barn, medlem","Spedbarn, medlem", "Voksen,", "Ungdom,", "Barn,", "Spedbarn,"};
+	public final static String[] GUEST_TYPE_NAMES = {"Voksen, medlem", "Ungdom, medlem", "Barn, medlem", "Spedbarn, medlem", "Voksen", "Ungdom", "Barn", "Spedbarn"};
 	public final static String[] AGE_RANGE_NAMES = {"26 og opp", "13-25", "4-12", "0-4", "26 og opp", "13-25", "4-12", "0-4"};
 	public final static double[] GUEST_PRICES = {300.0, 200.0, 100.0, 0.0, 400.0, 300.0, 200.0, 0.0};
 	public final static boolean[] MEMBERSHIP = {true, true, true, true, false, false, false, false};
@@ -33,7 +33,7 @@ public class JsonHelper {
 		exclude("*.class")
 		.transform(new DateTimeTransfomer2(), DateTime.class);
 		
-		CabinJson cj = new CabinJson((long)1, RDate.fDt.plusWeeks(1), RDate.fDt.plusWeeks(2), guests, false);
+		CabinJson cj = new CabinJson((long)1, RDate.fDt.plusWeeks(2), RDate.fDt.plusWeeks(1), guests, true);
 		return ser.serialize(cj);
 	}
 	
@@ -46,37 +46,38 @@ public class JsonHelper {
 		exclude("*.class")
 		.transform(new DateTimeTransfomer2(), DateTime.class);
 		
-		CabinJson cj = new CabinJson((long)1, RDate.fDt.plusWeeks(1), RDate.fDt.plusWeeks(2), guests, false);
+		CabinJson cj = new CabinJson((long)1, RDate.fDt.plusWeeks(2), RDate.fDt.plusWeeks(1), guests, false);
 		return ser.serialize(cj);
 	}
 
-	//example of a faulty json to be tested, similar methods to be created
-	public static String getOnlyMemberBabiesBookingJSON() {
-		int[] nrOfGuests = {0, 0, 0, 3, 0, 0, 0, 0}; //specify here how many of each type of guest you want
-		//since this is a only baby booking, we set the nr of baby guests to 3 (arbitrary number)
-		
-		ArrayList<GuestJson> guests = GuestJson.addGuests(nrOfGuests);
-		String onlyBabiesJson = getValidCabinJSON(guests);
-		
-		return onlyBabiesJson;
-	}
 	
+	
+	/*************  START TESTCASE METHODS ************/
 	/** Ok booking, assert OK **/
-	public static String getOkBooking() {
+	public static JsonNode getOkBooking() {
 		int[] nrOfGuests = {2, 0, 0, 0, 0, 0, 0, 0}; //2 member adults, OK
 		ArrayList<GuestJson> guests = GuestJson.addGuests(nrOfGuests);
-		String okBooking = getValidCabinJSON(guests);
+		JsonNode okBooking = Json.parse(getValidCabinJSON(guests));
 		
 		return okBooking; 
 	}
 	
-	/**
-	 * Terms and conditions false, assert bad
-	 */
-	public static String getBadBooking1() {
+	/** Only babies in booking, assert bad **/
+	public static JsonNode getOnlyMemberBabiesBookingJSON() {
+		int[] nrOfGuests = {0, 0, 0, 3, 0, 0, 0, 0}; //specify here how many of each type of guest you want
+		//since this is a only baby booking, we set the nr of baby guests to 3 (arbitrary number)
+		
+		ArrayList<GuestJson> guests = GuestJson.addGuests(nrOfGuests);
+		JsonNode onlyBabiesJson = Json.parse(getValidCabinJSON(guests));
+		
+		return onlyBabiesJson;
+	}
+	
+	/** Terms and conditions false, assert bad **/
+	public static JsonNode getBadBooking1() {
 		int[] nrOfGuests = {2, 0, 0, 0, 0, 0, 0, 0}; //2 member adults, OK
 		ArrayList<GuestJson> guests = GuestJson.addGuests(nrOfGuests);
-		String badBooking = getInvalidCabinJson(guests); //false termsAndCond, BAD
+		JsonNode badBooking = Json.parse(getInvalidCabinJson(guests)); //false termsAndCond, BAD
 		
 		return badBooking; 
 	}

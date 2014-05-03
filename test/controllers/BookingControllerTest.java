@@ -14,11 +14,8 @@ import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.junit.*;
 
-import com.fasterxml.jackson.databind.JsonNode;
-
 import flexjson.JSONSerializer;
 import static org.junit.Assert.*;
-import play.libs.Json;
 import play.mvc.Result;
 import play.test.FakeRequest;
 import play.test.WithApplication;
@@ -32,6 +29,7 @@ public class BookingControllerTest extends WithApplication {
 	User userBad;
 	final static String authToken = "X-AUTH-TOKEN";
 
+	@SuppressWarnings("deprecation")
 	@Before
 	public void setUp() {
 		start(fakeApplication(inMemoryDatabase()));
@@ -46,6 +44,7 @@ public class BookingControllerTest extends WithApplication {
 		userOk.save();
 		
 		Booking b1 = Booking.createBooking(userOk.id, RDate.fDt, RDate.fDt.plusDays(3), lCabin.id, lCabin.beds);
+		b1.save();
 	}
 
 	@Test
@@ -56,50 +55,50 @@ public class BookingControllerTest extends WithApplication {
 	 * http://www.playframework.com/documentation/2.1.x/api/java/play/test/FakeRequest.html
 	 */
 	public void testSubmitBooking() {
-		//TODO make one of these for each test
-		//FakeRequest can be configured to have any additional plugins, 
-		//configurations or globals (maybe even @WithSecurityControllor
-		
-		//Ok booking for control
+
+		//Normal booking, OK
 		FakeRequest fkRequest = new FakeRequest(POST, "/api/bookings/");
 		fkRequest.withHeader(authToken, userOk.createToken());
-		JsonNode data = Json.parse(JsonHelper.getOkBooking());
-		fkRequest.withJsonBody(data);
+		fkRequest.withJsonBody(JsonHelper.getOkBooking());
+		System.out.println("DEBUGGIN: \n");
+		System.out.println(JsonHelper.getOkBooking());
+		System.out.println("#############");
 		
 		Result resOk = route(fkRequest);
-		System.out.println("############ RESULT FAKEREQUEST SUBMIT BOOKING IS ======"+contentAsString(resOk));
+		System.out.println("########### RESULT SUBMITBOOKING OK IS\n"+contentAsString(resOk));
+		assertEquals("SHOULD BE OK", OK, status(resOk));
+		//TODO this says guestList invalid, where does that error come from?
+		//Can't be because JSON isn't read right, because I had to fix dates being wrong, so it can read
+		//the first part, it just doesn't like the guests part?
 		
 		//Only babies booking
 		fkRequest = new FakeRequest(POST, "/api/bookings/");
 		fkRequest.withHeader(authToken, userOk.createToken());
-		data = Json.parse(JsonHelper.getOnlyMemberBabiesBookingJSON());
-		fkRequest.withJsonBody(data);
+		fkRequest.withJsonBody(JsonHelper.getOnlyMemberBabiesBookingJSON());
 		
 		Result resBad = route(fkRequest);
-		System.out.println("############ RESULT FAKEREQUEST SUBMIT BOOKING IS ======"+contentAsString(resBad));
-		//assertTrue(resBad instanceOf badRequest);
-		
-		//TODO find out how controllers...submitBooking() returns a handler reference
+		System.out.println("########### RESULT SUBMITBOOKING BAD IS\n"+contentAsString(resBad));
+		assertEquals("SHOULD BE BAD", BAD_REQUEST, status(resBad));
 	}
 
 	@Test
-	/**
-	 * Test that empty request returns badRequest
-	 * Test that attempt to cancel non-existant booking returns badRequest
-	 * 
-	 */
 	public void testCancelBooking()  {
-
-		FakeRequest fkRequest = new FakeRequest(DELETE, "/api/bookings/1"); //Add id here?
+		//cancel booking as other user
+		FakeRequest fkRequest = new FakeRequest(DELETE, "/api/bookings/1");
+		fkRequest.withHeader(authToken, userBad.createToken());
 		
+		Result resBad = route(fkRequest);
+		assertEquals(BAD_REQUEST, status(resBad));
+		System.out.println("########### RESULT FAKEREQUEST BAD DELETE IS\n"+status(resBad));
+
+		//cancel booking as actual owner of booking
+		fkRequest = new FakeRequest(DELETE, "/api/bookings/1"); //Add id here?
 		fkRequest.withHeader(authToken, userOk.createToken());
-
-		Result res1 = route(fkRequest);
-		String resString = contentAsString(res1);
-		System.out.println("########### RESULT FAKEREQUEST DELETE IS ======="+resString);
 		
-		//TODO make one of these for different results
-		//assertEquals(badRequest(), result);
+		Result resOk = route(fkRequest);
+		assertEquals(OK, status(resOk));
+		System.out.println("########### RESULT FAKEREQUEST OK DELETE IS\n"+status(resOk));
+		
 	}
 
 	@Test
@@ -184,7 +183,6 @@ public class BookingControllerTest extends WithApplication {
 		long cabinId = lCabin.id;
 
 		int[] largeCabinBookedDays = new int[Math.abs(Days.daysBetween(startDate, endDate).getDays())+1];
-		JSONSerializer serializer = new JSONSerializer();
 		String actualResult;
 
 		/** add different bookings and test **/

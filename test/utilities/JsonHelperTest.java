@@ -58,8 +58,7 @@ public class JsonHelperTest extends WithApplication {
 	
 	@Test
 	public void testOutput() {
-		JsonNode json = Json.parse(JsonHelper.getOkBooking());
-		assertTrue(json.has("price")); //just a random key, if it has likely jsonHelper works perfectly because it is two deep
+		assertTrue(JsonHelper.getOkBooking().has("price")); //just a random key, if it has likely jsonHelper works perfectly because it is two deep
 	}
 	
 }

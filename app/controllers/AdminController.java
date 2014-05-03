@@ -82,7 +82,7 @@ public class AdminController extends Controller {
 	 * A cabin can be added to the booking system by running submitCabin.
 	 * This is naturally a restricted operation only for admins.
 	 * 
-	 * The json request are validated and binded to a model using the CabinForm.
+	 * The json request are validated and bound to a model using the CabinForm.
 	 * A subclass of AbstractForm. The data are deserialized and validated, and 
 	 * if errors are found a error message is created by the form which this
 	 * method returns.

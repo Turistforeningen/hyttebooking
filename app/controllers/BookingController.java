@@ -109,7 +109,7 @@ public class BookingController extends Controller {
 	 */
 	@With(SecurityController.class)
 	public static Result submitBooking() {
-		
+	
 		BookingForm form = BookingForm
 				.deserializeJson(request().body().asJson().toString());
 		if(form.isValid()) {
