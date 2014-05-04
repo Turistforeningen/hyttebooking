@@ -305,9 +305,9 @@ angular.module('dntApp').controller('bookingController', ['$modal','$rootScope',
 				if($routeParams.responseCode === 'OK') {
 					$scope.authenticatePayment($routeParams.transactionId, $routeParams.responseCode);
 				}
-				else {
+				else if($routeParams.responseCode === 'Cancel'){
 
-					$scope.authenticatePayment($routeParams.transactionId, $routeParams.responseCode);
+					$scope.openDialog('/views/statusModalCancellation.html', null);
 				}
 			}
 		}
