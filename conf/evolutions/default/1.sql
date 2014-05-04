@@ -52,6 +52,7 @@ create table price (
   age_range                 varchar(255),
   non_member_price          double,
   member_price              double,
+  is_minor                  boolean,
   constraint pk_price primary key (id))
 ;
 

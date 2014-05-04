@@ -125,8 +125,9 @@ angular.module('dntApp').controller('bookingController', ['$modal','$rootScope',
      */
 	$scope.postBooking = function(booking) {
 		if(validateBooking(booking)) {
-			booking.guests = removeUnpickedpriceCategories(booking.guests);
-			bookingService.postOrder(booking)
+			var processedBooking = angular.copy(booking);
+			processedBooking.guests = removeUnpickedpriceCategories(processedBooking.guests);
+			bookingService.postOrder(processedBooking)
 			.then(function(data){
 				$scope.pay(data.id);
 			},

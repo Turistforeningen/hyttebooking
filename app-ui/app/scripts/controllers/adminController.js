@@ -129,12 +129,16 @@ angular.module('dntApp').controller('cabinDetailsController', ['$scope','$modal'
 	};
 	
 	$scope.addPrice = function(cabinId, priceData) {
-		$log.info("blir kalt");
 		cabinService.addPriceFromCabin(cabinId, priceData)
 		.then(function(data){
 				//id of new price returned from backend
 				priceData.id = data.id;
-				$scope.priceCategories.push(priceData);
+				if($scope.cabinDetails.cabinType == 'large') {
+					$scope.priceCategories.push(priceData);
+				}
+				else {
+					$scope.priceCategories[0] = priceData;
+				}
 				$scope.priceForm = {};
 		}, function(errorMessage){
 			$scope.error=errorMessage;

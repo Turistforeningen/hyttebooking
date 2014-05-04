@@ -46,6 +46,8 @@ public class Price extends Model {
 	@Constraints.Required
 	public double memberPrice;
 	
+	//if priceCategory can go alone or should be accompanied
+	public boolean isMinor = false;
 	public Price(String guestType, String ageRange, double nonMemberPrice, double memberPrice) {
 		this.guestType = guestType;
 		this.ageRange = ageRange;
@@ -53,6 +55,11 @@ public class Price extends Model {
 		this.memberPrice = memberPrice;
 	}
 	
+	public Price(String guestType, String ageRange, double nonMemberPrice, double memberPrice, boolean minor) {
+		this(guestType,ageRange, nonMemberPrice, memberPrice);
+		this.isMinor = minor;
+		
+	}
 	public double getPrice(boolean isMember) {
 		if(isMember) {
 			return this.memberPrice;

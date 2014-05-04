@@ -18,6 +18,7 @@ booking.notFound            = No such booking found
 booking.noAccess            = Not your booking
 booking.termsAndConditions  = You have not accepted the terms and conditions for booking at DNT
 booking.guestArrayInvalid   = Guest list is inconsistent with the system
+booking.guestOnlyMinor      = Trip cant consist of only minors
 
 cabin.couldNotRemovePrice   = Could not remove price from cabin
 cabin.noSuchCabin           = Cabin does not exist. Wrong id
