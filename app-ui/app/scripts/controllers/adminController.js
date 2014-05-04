@@ -22,12 +22,14 @@ angular.module('dntApp').controller('adminViewController',['$scope', '$location'
  * @ngdoc object
  * 
  * @name dntApp.controller:cabinTableController
+ * @requires dntApp.cabinService
  * @description Table controller for overview of cabins. Responsible
  * for populating table with cabins.
  * 
+ * 
  */
-angular.module('dntApp').controller('cabinTableController', ['$scope', '$location', '$routeParams', 'cabinService', 'api', '$log',
-                                                             function ($scope, $location, $routeParams, cabinService, api, $log) {
+angular.module('dntApp').controller('cabinTableController', ['$scope', '$location', '$routeParams', 'cabinService', '$log',
+                                                             function ($scope, $location, $routeParams, cabinService, $log) {
 	$scope.currentPage = 1;
 	$scope.totalItems = 10;
 	$scope.itemsPerPage = 10;
@@ -36,9 +38,15 @@ angular.module('dntApp').controller('cabinTableController', ['$scope', '$locatio
 		$scope.getCabins(page-1);
 	};
 
-
+	/**
+     * @ngdoc method
+     * @name dntApp.object#getCabins
+	 * @methodOf dntApp.controller:cabinTableController
+     * @param {Number} page What page of cabins to request. Each page contain 10 cabins
+     * @description Method utilize cabinService to request a page of cabins from the back end, and
+     * handles the resolved or rejected promise
+     */
 	$scope.getCabins = function(page) {
-
 		cabinService.getCabins(page, $scope.itemsPerPage)
 		.then(function(data){
 			$scope.cabins 		= data.data;
@@ -79,7 +87,12 @@ angular.module('dntApp').controller('cabinTableController', ['$scope', '$locatio
  * @ngdoc object
  * 
  * @name dntApp.controller:cabinDetailsController
- * @description  Table controller for overview of bookings for a given cabin .
+ * @requires dntApp.cabinService
+ * @requires dntApp.bookingService
+ * @requires ui.bootstrap.$modal
+ * @description Controller for overview of bookings for a given cabin, general cabin information,
+ * viewing prices for the cabin. The controller supports different actions a admin might make, like
+ * adding a price, removing a price, sending email to customer, viewing a reciept and cancelling a booking
  * 
  */
 angular.module('dntApp').controller('cabinDetailsController', ['$scope','$modal', '$location', '$routeParams','bookingService' ,'cabinService', '$log',
@@ -92,7 +105,16 @@ angular.module('dntApp').controller('cabinDetailsController', ['$scope','$modal'
 	
 	$scope.priceCategories = {};
 
-	
+	/**
+     * @ngdoc method
+     * @name dntApp.object#getDetails
+	 * @methodOf dntApp.controller:cabinDetailsController
+     * @param {Number} page 	What page of bookings for cabin to request. Each page contain 10 bookings.
+     * @param {Number} cabinId 	Id of cabin to request bookings from.
+     * @description Method utilize cabinService to request a page of bookings for the cabin from the back end, and
+     * handles the resolved or rejected promise. A resolved promise's data are put in the scope and will
+     * be displayed in the view.
+     */
 	$scope.getDetails = function(page, cabinId) {
 		cabinService.getCabinDetails(page, $scope.itemsPerPage, cabinId)
 		.then(function(data){
@@ -108,6 +130,15 @@ angular.module('dntApp').controller('cabinDetailsController', ['$scope','$modal'
 		});
 	};
 	
+	/**
+     * @ngdoc method
+     * @name dntApp.object#getPrices
+	 * @methodOf dntApp.controller:cabinDetailsController
+     * @param {Number} cabinId 	Id of cabin to request the price categories from.
+     * @description Method utilize cabinService to request a all prices currently active for cabin, and
+     * handles the resolved or rejected promise. A resolved promise's data are put in the scope and will
+     * be displayed can be displayed in a view (I.E table on the admin page).
+     */
 	$scope.getPrices = function(cabinId) {
 		cabinService.getPrices(cabinId)
 		.then(function(data){
@@ -117,6 +148,15 @@ angular.module('dntApp').controller('cabinDetailsController', ['$scope','$modal'
 		});
 	};
 	
+	/**
+     * @ngdoc method
+     * @name dntApp.object#removePrice
+	 * @methodOf dntApp.controller:cabinDetailsController
+     * @param {Number} cabinId 		Id of cabin to request removal of price to back end.
+     * @param {JSON object} price 	An object containing the a price category. I.e "id", "memberPrice", "nonMemberPrice" etc.
+     * @description Method utilize cabinService to request a price to be removed as a price category for the cabin
+     * owning the cabinId. When the promise is resolved, the price is removed from the array of price categories.
+     */
 	$scope.removePrice = function(cabinId, price) {
 		cabinService.removePriceFromCabin(cabinId, price.id)
 		.then(function(data){
@@ -128,6 +168,18 @@ angular.module('dntApp').controller('cabinDetailsController', ['$scope','$modal'
 		});
 	};
 	
+	/**
+     * @ngdoc method
+     * @name dntApp.object#addPrice
+	 * @methodOf dntApp.controller:cabinDetailsController
+     * @param {Number} cabinId 	Id of cabin to request a price to be added.
+     * @param {JSON object} priceData 	An object containing the new price category.
+     * @description Method utilize cabinService to request a price to be added as a price category to a cabin.
+     *  When the promise is resolved, the price is either pushed into the array of priceCategories or overwrite
+     *  the existing price categories, depending on whether the cabin is a large or small one. (Small cabins should
+     *  only have one price category. The priceForm is then wiped. (A table displaying this data will
+     *  now reflect the state of the backend).
+     */
 	$scope.addPrice = function(cabinId, priceData) {
 		cabinService.addPriceFromCabin(cabinId, priceData)
 		.then(function(data){
@@ -148,13 +200,18 @@ angular.module('dntApp').controller('cabinDetailsController', ['$scope','$modal'
 	$scope.setPage = function(page) {
 		$scope.getDetails(page-1, $scope.id);
 	};
-	$scope.open = function (orderId) {
-		bookingService.getOrderSummary(orderId)
-		.then(function(order){
-			$scope.openDialog('/views/receiptModal.html', order);
-		});
-	};
 	
+	/**
+     * @ngdoc method
+     * @name dntApp.object#cancelOrder
+	 * @methodOf dntApp.controller:cabinDetailsController
+     * @param {JSON object} order 	An object containing the order data to be cancelled.
+     * @description Method will try to delete a order in the back end. It first
+     * opens a modal to let the admin confirm the cancellation of a customers order.
+     * Then if cancellation was confirmed, bookingService's adminCancelOrder is used to delete an order. 
+     * If the promise is not rejected but resolved the status
+     * of the booking will be set to cancelled, to reflect the back end. 
+     */
 	$scope.cancelOrder = function (order) {
 		$scope.openDialog('/views/cancelConfirmModal.html', null).result.then(function () {
 			bookingService.adminCancelOrder(order.id)
@@ -181,6 +238,12 @@ angular.module('dntApp').controller('cabinDetailsController', ['$scope','$modal'
 		return modalInstance
 	};
 	
+	/**
+     * @ngdoc method
+     * @name dntApp.object#init
+	 * @methodOf dntApp.controller:cabinDetailsController
+     * @description init method for controller. Run at initialization of controller 
+     */
 	function init() {
 		var id = $routeParams.id;
 		var page = $routeParams.page;
@@ -199,7 +262,15 @@ angular.module('dntApp').controller('cabinDetailsController', ['$scope','$modal'
 	init();
 }]);
 
-
+/**
+ * @ngdoc object
+ * 
+ * @name dntApp.controller:cabinFormController
+ * @requires dntApp.cabinService
+ * @description Controller for form adding a cabin to the system. It has a method submitting a 
+ * cabin to the server, and handles errors linked to posting a cabin.
+ * 
+ */
 angular.module('dntApp').controller('cabinFormController', ['$scope', '$location', '$routeParams', 'cabinService', '$log',
                                                             function ($scope, $location, $routeParams, cabinService, $log) {
 	$scope.show = false;

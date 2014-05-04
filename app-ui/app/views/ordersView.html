@@ -150,7 +150,8 @@
 				</div>
 			</div>
 			<div class="row well" style="min-height: 200px" ng-show="orders.length <=0">
-                    <p class="text-center grey-text" style="">Du har ingen reservasjoner</p>
+                    <p class="text-center grey-text" ng-show="errorMessage.length==0">Du har ingen reservasjoner</p>
+                    <p class="text-center grey-text" ng-show="errorMessage.length>0">{{errorMessage}}</p>
                 </div>
 		</div>
 

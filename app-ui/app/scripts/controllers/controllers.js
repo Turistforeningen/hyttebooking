@@ -5,8 +5,9 @@
  * 
  * @name dntApp.controller:orderController
  * @requires dntApp.bookingService
- * @description Controller for the ordersView. Sends a get request for orderHistory to the server.
- * Contains methods for getting and canceling bookings.
+ * @requires ui.bootstrap.$modal
+ * @description Controller for the ordersView. Responsible for retrieving the order history of a customer,
+ * and contains methods for getting and canceling bookings.
  * 
  */
 angular.module('dntApp').controller('orderController', ['$scope','$modal','$routeParams','bookingService', '$log',
@@ -15,13 +16,23 @@ angular.module('dntApp').controller('orderController', ['$scope','$modal','$rout
 	$scope.totalItems = 10;
 	$scope.itemsPerPage = 10;
 	$scope.orders;
+	$scope.errorMessage = '';
 	
 	$scope.setPage = function(pageNo) {
 		if(pageNo>0) {
 			$scope.getOrders(pageNo-1);
 		}
 	};
-
+	
+	/**
+     * @ngdoc method
+     * @name dntApp.object#getOrders
+	 * @methodOf dntApp.controller:orderController
+     * @param {Number} page 	What page of bookings in order history to request.
+     * @description Method gets the order history of a user from the back end by 
+     * utilizing the bookingservice's getOrders method. When promise is resolved
+     * 
+     */
 	$scope.getOrders = function(page) {
 		bookingService.getOrders(page, $scope.itemsPerPage)
 		.then(function(userBookings){
@@ -30,7 +41,7 @@ angular.module('dntApp').controller('orderController', ['$scope','$modal','$rout
 			$scope.totalItems = userBookings.totalItems;
 		},
 		function(error){
-			$scope.status='unable to load customer data' + error.message;
+			$scope.errorMessage='unable to load your orders' + error.message;
 		});
 	};
 
@@ -41,10 +52,7 @@ angular.module('dntApp').controller('orderController', ['$scope','$modal','$rout
 			.then(function(data){
 				var index = $scope.orders.indexOf(order);
 				$scope.orders.splice(index, 1);
-			},
-			function(error){
-				$scope.status = 'not found' + error.message;
-			});
+			})
 		});
 	};
 	
