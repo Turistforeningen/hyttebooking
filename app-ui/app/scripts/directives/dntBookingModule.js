@@ -23,12 +23,12 @@ angular.module('dntBookingModule', []);
  * @param  {number} dividerIndex  If there are many categories, a number can be used to hide the rest of the categories
  * @param  {number} numberOfBeds  The max bed capacity of the cabin. Prohibits user from selecting more beds than there can actually booked.
  * @description
- * Displays a number of selects decided by the number of categories in categoryModel.
+ * Displays a number of selects decided by the number of categories in `categoryModel`.
  * It will prevent the user from selecting guests from each category such that
  * the total number of guests are over the cabin capacity.
  * 
  *
- * **Note:** categoryModel should be of the form [{"type": "x", "price": x, "nr":0, "ageRange": "x"}, ... , {"type": "x", "price": x, "nr":0, "ageRange" : "x"}]
+ * **Note:** `categoryModel` should be of the form [{"type": "x", "price": x, "nr":0, "ageRange": "x"}, ... , {"type": "x", "price": x, "nr":0, "ageRange" : "x"}]
  *
  * @example
    	<example module="dntApp">
@@ -188,7 +188,7 @@ angular.module('dntBookingModule', [])
  * the price whenever dates change or user change any of the select boxes of dntSelector.
  * 
  *
- * **Note:** PersonType should be of the form [{"type": "x", "price": "x", "amount":"x"}, ... , {"type": "x", "price": "x", "amount":"x"}],
+ * **Note:** `categoryModel` should be of the form [{"type": "x", "price": "x", "amount":"x"}, ... , {"type": "x", "price": "x", "amount":"x"}],
  *	AND be the reference the same model as dntSelector to work properly.
  *
  * @example
