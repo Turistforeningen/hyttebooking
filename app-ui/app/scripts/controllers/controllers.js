@@ -227,8 +227,18 @@ angular.module('dntApp').controller('bookingController', ['$modal','$rootScope',
 			guestType.price = value.nonMemberPrice;
 			guestType.isMember = false;
 			
-			allGuests.push(guestTypeMember)
-			nonMemberGuests.push(guestType)
+			if(guestType.price == guestTypeMember.price) {
+				//same price most likely not an memberCategory. Should be fixed backend. Comparing prices
+				//in front end wrong
+				guestTypeMember = guestType;
+				guestType = null;
+				allGuests.push(guestTypeMember)
+			}
+			else {
+				allGuests.push(guestTypeMember)
+				nonMemberGuests.push(guestType)
+			}
+			
 		 });
 		$scope.hideIndex = allGuests.length;
 		allGuests.push.apply(allGuests, nonMemberGuests)
