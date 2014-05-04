@@ -36,35 +36,6 @@ public class SecurityController extends Action.Simple {
 	public static User getUser() {
 		return (User)Http.Context.current().args.get("user");
 	}
-
-	// returns an authToken
-	public static Result login() {
-		JsonNode json = request().body().asJson();
-		
-		//veldig dårlig måte å gjøre det på
-		String emailAddress = json.get("emailAdress").asText();
-		String password = json.get("password").asText();
-		//burde kanskje gjøre det med forms?
-		if(emailAddress == null || password == null) {
-			return badRequest("No hope");
-		}
-
-		Login login = new Login();
-		login.emailAddress = emailAddress;
-		login.password = password;
-		User user = User.findByEmailAddressAndPassword(login.emailAddress, login.password);
-
-		if (user == null) {
-			return unauthorized();
-		}
-		else {
-			String authToken = user.createToken();
-			ObjectNode authTokenJson = Json.newObject();
-			authTokenJson.put(AUTH_TOKEN, authToken);
-			response().setCookie(AUTH_TOKEN, authToken);
-			return ok(authTokenJson);
-		}
-	}
 	
 	public static Status DNTLogin(User user) {
 		if(user != null) {

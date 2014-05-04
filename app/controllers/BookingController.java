@@ -240,7 +240,7 @@ public class BookingController extends Controller {
 		System.out.println(b.payment.guests.size());
 		JSONSerializer orderDetailsSerializer = new JSONSerializer()
 		.include("payment", "payment.guests" )
-		.exclude("*.class", "user", "smallCabin", "payment.user", "payment.netsAmount", "payment.guests.priceCategory")
+		.exclude("*.class", "user.admin", "smallCabin", "payment.user", "payment.netsAmount", "payment.guests.priceCategory")
 				 .transform(new DateTimeTransformer(), DateTime.class);
 		return Results.ok(orderDetailsSerializer.serialize(b));
 	}

@@ -51,6 +51,7 @@ angular.module('dntApp').controller('orderController', ['$scope','$modal','$rout
 	$scope.open = function (order) {
 		bookingService.getOrderSummary(order.id)
 		.then(function(ord){
+			$log.info(ord);
 			var modalInstance = $scope.openDialog('/views/receiptModal.html', ord);
 			//alert(JSON.stringify(ord));
 		});

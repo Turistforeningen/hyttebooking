@@ -60,11 +60,7 @@ create table user (
   auth_token                varchar(255),
   email_address             varchar(256) not null,
   full_name                 varchar(256) not null,
-  dob                       timestamp,
-  address                   varchar(255),
-  city                      varchar(255),
   admin                     boolean,
-  zip_code                  varchar(255),
   creation_date             timestamp not null,
   constraint pk_user primary key (id))
 ;
