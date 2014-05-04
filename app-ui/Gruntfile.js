@@ -377,7 +377,9 @@ module.exports = function (grunt) {
             
         },
         api: {
-            src: ['app/scripts/**/*.js'],
+            src: ['app/scripts/controllers/**/*.js',
+                  'app/scripts/directives/**/*.js',
+                  'app/scripts/services/**/*.js'],
             title: 'API Reference'
         }
     }

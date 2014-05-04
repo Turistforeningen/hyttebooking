@@ -135,8 +135,8 @@ angular.module('dntApp').controller('testController', ['$scope', function ($scop
  *  Important for the {@link dntBookingModule.directive:dntBookingModule dntBookingModule} directive,
  *  since it retrieves all the data needed by this directive.
  */
-angular.module('dntApp').controller('bookingController', ['$modal','$rootScope','$scope','bookingService','$log','$routeParams','$window',
-                                                          function ($modal, $rootScope, $scope, bookingService, $log, $routeParams, $window) {
+angular.module('dntApp').controller('bookingController', ['$modal','$scope','bookingService','$log','$routeParams','$window',
+                                                          function ($modal, $scope, bookingService, $log, $routeParams, $window) {
 	$scope.validState = true;
 	$scope.errorMessage;
 	$scope.booking ={};

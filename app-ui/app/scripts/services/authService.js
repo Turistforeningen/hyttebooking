@@ -6,7 +6,7 @@
  * @description The authorization handles posting login and logout request to server.
  * @requires $http 
 **/
-angular.module('dntApp').factory('authorization', ['$http','$location', function ($http, $location) {
+angular.module('dntApp').factory('authorization', ['$http', function ($http) {
 
 	return {
 		newLogin: function() {
@@ -29,7 +29,16 @@ angular.module('dntApp').factory('authorization', ['$http','$location', function
 	
 }]);
 
-angular.module('dntApp').factory('appStateService', ['$log','$cookieStore', '$location', function ($log,$cookieStore, $location) {
+/**
+ * @ngdoc service 
+ * @name dntApp.appStateService
+ * @requires $cookieStore 
+ * @requires $location
+ * @description The àppStateService` is a service used to persist user credentials and 
+ * location of app when redirecting to an external site. The data is persisted using cookieStore.
+ *
+**/
+angular.module('dntApp').factory('appStateService', ['$cookieStore', '$location', function ($cookieStore, $location) {
 
 	return {
 		saveAttemptUrl: function() {
@@ -79,18 +88,16 @@ angular.module('dntApp').factory('appStateService', ['$log','$cookieStore', '$lo
 	
 }]);
 
-/*
- * httpInterceptor will intercept a unauthorized access and redirect
- * user to /login view.
- */
 /**
  * @ngdoc service 
  * @name dntApp.httpInterceptor
- * @description httpInterceptor will intercept a unauthorized access and redirect
- * user to /login view.
- * @requires $http 
+ * @requires $q 
+ * @requires appStateService 
+ * @description httpInterceptor will intercept a unauthorized access, save location of
+ * app and redirect user to /login view using àppStateService`
+ * 
 **/
-angular.module('dntApp').factory('httpInterceptor', ['appStateService', '$q', '$window',  function httpInterceptor (appStateService, $q, $window) {
+angular.module('dntApp').factory('httpInterceptor', ['appStateService', '$q',  function httpInterceptor (appStateService, $q) {
 	return function (promise) {
 		var success = function (response) {
 			return response;
@@ -113,11 +120,13 @@ angular.module('dntApp').factory('httpInterceptor', ['appStateService', '$q', '$
 /**
  * @ngdoc service 
  * @name dntApp.api
+ * @requires $http 
+ * @requires appStateService 
  * @description Puts the authentication token into the header of http request done
  * by client. 
  * Token is retrieved either from cookieStore (logged in from a previous session)
  * or sent as a method parameter.
- * @requires $http 
+ * 
 **/
 angular.module('dntApp').factory('api', ['$http', 'appStateService', function ($http, appStateService) {
 	return {
