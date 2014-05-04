@@ -38,7 +38,11 @@ public abstract class Cabin extends Model {
 	public abstract String getNrOfBeds();
 
 	public abstract String getCabinUrl();
-
+	
+	public abstract boolean removePriceFromCabin(Long priceId);
+	
+	public abstract void addPriceFromCabin(Price price);
+	
 	public static Finder<Long, Cabin> find = new Finder<Long, Cabin>(Long.class, Cabin.class);
 
 
@@ -90,4 +94,6 @@ public abstract class Cabin extends Model {
 		cabins.totalItems = Cabin.find.findRowCount();
 		return cabins;
 	}
+	
+	
 }

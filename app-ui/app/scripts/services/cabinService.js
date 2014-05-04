@@ -81,6 +81,30 @@ angular.module('dntApp').factory('cabinService', ['$http', '$q','$log', function
 				deferred.reject(error);
 			});
 			return deferred.promise;
+		},
+		
+		removePriceFromCabin: function(cabinId, priceId) {
+			var deferred = $q.defer();
+			var url = '/api/cabins/' + cabinId + '/prices/' + priceId;
+			$http.delete(url).success(function(data){
+				deferred.resolve(data);
+			}).error(function(error){
+	
+				deferred.reject(error);
+			});
+			return deferred.promise;
+		},
+		
+		addPriceFromCabin: function(cabinId, priceData) {
+			var deferred = $q.defer();
+			var url = '/api/cabins/' + cabinId + '/prices';
+			$http.post(url, priceData).success(function(data){
+				deferred.resolve(data);
+			}).error(function(error){
+	
+				deferred.reject(error);
+			});
+			return deferred.promise;
 		}
 	}
 	

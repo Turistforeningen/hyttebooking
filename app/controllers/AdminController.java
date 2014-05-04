@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import models.Booking;
 import models.Cabin;
 import models.LargeCabin;
+import models.Price;
 import models.SmallCabin;
 import flexjson.JSONSerializer;
 import play.i18n.Messages;
@@ -23,6 +24,7 @@ import utilities.CabinForm;
 import utilities.DateTimeTransformer;
 import utilities.JsonMessage;
 import utilities.Page;
+import utilities.PriceRowForm;
 
 @With(SecurityController.class)
 public class AdminController extends Controller {
@@ -105,6 +107,7 @@ public class AdminController extends Controller {
 				return badRequest(form.getError());
 			}
 			else {
+				c.save();
 				return ok();
 			}
 		}
@@ -137,5 +140,37 @@ public class AdminController extends Controller {
 		booking.status = Booking.CANCELLED;
 		booking.update();	
 		return ok(JsonMessage.success(""));
+	}
+	
+	public static Result removePriceFromCabin(Long cabinId, Long priceId) {
+		Cabin cabin = Cabin.find.byId(cabinId); 
+		if(cabin == null) {
+			return badRequest(JsonMessage.error(Messages.get("cabin.noSuchCabin")));
+		}
+		
+		boolean isRemoved = cabin.removePriceFromCabin(priceId);
+		if (!isRemoved) {
+			return badRequest(JsonMessage.error(Messages.get("cabin.couldNotRemovePrice")));
+		}
+		return ok();
+	}
+	
+	public static Result addPriceToCabin(Long cabinId) {
+		Cabin cabin = Cabin.find.byId(cabinId);
+		if(cabin == null) {
+			return badRequest(JsonMessage.error(Messages.get("cabin.noSuchCabin")));
+		}
+		
+		PriceRowForm form = utilities.PriceRowForm.deserializeJson(request().body().asJson().toString());
+		if(form.isValid()) {
+			
+			Price price =form.createModel();
+			price.save();
+			cabin.addPriceFromCabin(price);
+			return ok(JsonMessage.successWithId("Pris lagt til hytte", price.id));
+		}
+		else {
+			return badRequest(form.getError());
+		}
 	}
 }

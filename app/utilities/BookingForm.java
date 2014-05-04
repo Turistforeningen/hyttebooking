@@ -109,6 +109,7 @@ public class BookingForm extends AbstractForm<Booking> {
 	 */
 	@Override
 	public boolean validate() {
+		
 		if(termsAndConditions == false) {
 			addError(Messages.get("booking.termsAndConditions"));
 			return false;

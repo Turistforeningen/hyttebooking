@@ -33,4 +33,10 @@ public class JsonMessage {
 		result.put("message",message);
 		return result;
 	}
+	
+	public static ObjectNode successWithId(String message, Long id) {
+		ObjectNode result = success(message);
+		result.put("id", id);
+		return result;
+	}
 }

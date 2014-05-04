@@ -17,9 +17,11 @@ booking.bedsNotAvailable    = Ikke nok senger ledig i valgt periode
 booking.notFound            = Reservasjon ikke funnet
 booking.noAccess            = Ikke din booking
 booking.cannotCancel        = For sent å avbestille reservasjon
-booking.termsAndConditions  = Du har ikke godtatt reservasjons betingelsene
+booking.termsAndConditions  = Du har ikke godtatt reservasjonsbetingelsene
 booking.guestArrayInvalid   = GjestListen er ugyldig
 
+cabin.couldNotRemovePrice   = Klarte ikke å fjerne pris fra hytta
+cabin.noSuchCabin           = hytte finnes ikke. Feil id
 cabin.missingType           = Mangler type-parameter i json
 cabin.invalidType           = Type parameter ugyldig
 cabin.missingName           = Mangler name-parameter i json

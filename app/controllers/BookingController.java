@@ -140,9 +140,7 @@ public class BookingController extends Controller {
 					}
 				}, Akka.system().dispatcher());
 
-				ObjectNode response = form.getSuccess();
-				response.put("id", booking.id +"");
-				return ok(form.getSuccess());
+				return ok(JsonMessage.successWithId("ok", booking.id));
 			}
 		}
 		else {

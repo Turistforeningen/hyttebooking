@@ -10,17 +10,18 @@
 		    <div class="row">
 		     <div class="col-md-6"><h2 class="vertAlign">Price categories</h2></div>
             <div class="col-md-6">
-			<button type="button" class="btn btn-primary pull-right" ng-click=""> change
+			<button type="button" class="btn btn-primary pull-right" ng-click="togglePriceForm = !togglePriceForm"> Add
             <span class="glyphicon glyphicon-plus"></span></button></div>
             </div>
 			<table class="table table-hover">
             <thead>
                 <tr>
-                    <th>id</th>
-                    <th>type</th>
-                    <th>member price</th>
-                    <th>non-member price</th>
-                    <th>age range</th>                 
+                    <th>Id</th>
+                    <th>Type</th>
+                    <th>Member price</th>
+                    <th>Non-member price</th>
+                    <th>Age range</th>
+                    <th>Options</th>                  
                 </tr>
             </thead>
             <tbody>
@@ -29,9 +30,26 @@
                     <td>{{p.guestType}}</td>
                     <td>{{p.memberPrice}}</td>
                     <td>{{p.nonMemberPrice}}</td>
+                    <td>{{p.ageRange}}</td>                    
                     <td>
-                        {{p.ageRange}}
+		                <div class="btn-group text-left">
+	                            <button type="button" class="btn btn-default dropdown-toggle"
+	                                data-toggle="dropdown">
+	                                Options <span class="caret"></span>
+	                            </button>
+	                            <ul class="dropdown-menu" role="menu">
+	                                <li><a ng-click="removePrice(cabinDetails.id, p.id)">remove price</a></li>
+	                            </ul>
+	                        </div>
                     </td> 
+                </tr>
+                <tr ng-show="togglePriceForm">
+                    <td>-</td>
+                    <td><input type="text" class="form-control" ng-model="priceForm.guestType" placeholder="guest type"></td>
+                    <td><input type="number" class="form-control" ng-model="priceForm.memberPrice" placeholder="price"></td>
+                    <td><input type="number" class="form-control" ng-model="priceForm.nonMemberPrice" placeholder="member price"></td>
+                    <td><input type="text" class="form-control" ng-model="priceForm.ageRange" placeholder="age range"></td>
+                    <td><button class="btn btn-primary" ng-click="addPrice(cabinDetails.id, priceForm)">submit</button></td>      
                 </tr>
             </tbody>
         </table>
@@ -40,13 +58,13 @@
 		<table class="table table-hover">
 			<thead>
 				<tr>
-					<th>id</th>
-					<th>creation</th>
-					<th>name</th>
-					<th>from</th>
-					<th>to</th>
+					<th>Id</th>
+					<th>Creation</th>
+					<th>Name</th>
+					<th>From</th>
+					<th>To</th>
 					<th># of beds</th>
-					<th>status</th>
+					<th>Status</th>
 					<th class="text-right">Options</th>
 				</tr>
 			</thead>

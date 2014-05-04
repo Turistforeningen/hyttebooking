@@ -125,4 +125,22 @@ public class LargeCabin extends Cabin {
 	public String getCabinUrl() {
 		return this.id + "?type=large&beds=" + this.getNrOfBeds();
 	}
+	
+	
+	@Override
+	public boolean removePriceFromCabin(Long priceId) {
+		Price p = Price.find.byId(priceId);
+		System.out.println("before: " + this.priceMatrix.size());
+		boolean isRemoved = this.priceMatrix.remove(p);
+		System.out.println("before: " + this.priceMatrix.size());
+		this.update();
+		return isRemoved;
+		
+	}
+
+	@Override
+	public void addPriceFromCabin(Price price) {
+		this.priceMatrix.add(price);
+		this.update();
+	}
 }

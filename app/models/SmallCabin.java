@@ -110,4 +110,22 @@ public class SmallCabin extends Cabin {
 		}
 		return rBookings;
 	}
+
+	@Override
+	public boolean removePriceFromCabin(Long priceId) {
+		if (this.priceForCabin != null) {
+			if (this.priceForCabin.id == priceId) {
+				this.priceForCabin = null;
+				this.update();
+				return true;
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public void addPriceFromCabin(Price price) {
+		this.priceForCabin = price;
+		this.update();	
+	}
 }
