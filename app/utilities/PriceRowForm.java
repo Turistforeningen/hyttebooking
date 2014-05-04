@@ -9,12 +9,13 @@ public class PriceRowForm extends AbstractForm<Price> {
 	public double memberPrice;
 	public String guestType;
 	public String ageRange;
+	public boolean isMinor;
 	
 	private boolean isValid = false;
 	@Override
 	public Price createModel() {
 		if(isValid || validate()) {
-			Price p = new Price(this.guestType, this.ageRange, this.nonMemberPrice, this.memberPrice);
+			Price p = new Price(this.guestType, this.ageRange, this.nonMemberPrice, this.memberPrice, this.isMinor);
 			return p;
 		}
 		return null;

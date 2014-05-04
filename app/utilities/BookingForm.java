@@ -153,7 +153,7 @@ public class BookingForm extends AbstractForm<Booking> {
 		
 		boolean proccessPrices = processGuestList(this.guests, this.cabinId, Days.daysBetween(startDt, endDt).getDays());
 		if(proccessPrices == false) {
-			addError(Messages.get("booking.guestArrayInvalid"));
+			
 			return false;
 		}
 		
@@ -168,21 +168,30 @@ public class BookingForm extends AbstractForm<Booking> {
 	private boolean processGuestList(List<PriceForm> guestList, Long cabinId, int days) {
 		double amount = 0;
 		int beds = 0;
-		
+		boolean onlyMinors = true;
 		for(PriceForm guestType : guestList) {
 			if(guestType.nr >0) {
 				Price price= Price.findPriceBelongingToCabin(cabinId, guestType.id);
-
+				
 				if(price == null) {
+					addError(Messages.get("booking.guestArrayInvalid"));
 					return false;
+				}
+				if(price.isMinor == false) {
+					onlyMinors = false;
 				}
 				beds += guestType.nr;
 				amount += days*guestType.nr*price.getPrice(guestType.isMember);
 				Guest g = new Guest(price, guestType.isMember, guestType.nr);
 				this.guestList.add(g);
-			}
-			
+			}			
 		}
+		
+		if(onlyMinors) {
+			addError(Messages.get("booking.guestOnlyMinor"));
+			return false;
+		}
+		
 		for(Guest guest : this.guestList) {
 			guest.save();
 		}

@@ -44,17 +44,17 @@ public class Global extends GlobalSettings {
 		int userSize = us.length;
 
 		LargeCabin lc1 = new LargeCabin("Fjordheim", 10);
-		lc1.addPrice("Voksen", "26 og opp", 400, 300);
-		lc1.addPrice("Ungdom", "13-25", 300, 200);
-		lc1.addPrice("Barn", "4-12", 200, 100);
-		lc1.addPrice("Spedbarn", "0-4", 0, 0);
+		lc1.addPrice("Voksen", "26 og opp", 400, 300, false);
+		lc1.addPrice("Ungdom", "13-25", 300, 200, false);
+		lc1.addPrice("Barn", "4-12", 200, 100, true);
+		lc1.addPrice("Spedbarn", "0-4", 0, 0, true);
 		lc1.save();
 
 		LargeCabin lc2 = new LargeCabin("Peterstun", 20);
-		lc2.addPrice("Voksen", "26 og opp", 450, 350);
-		lc2.addPrice("Ungdom", "13-25", 350, 250);
-		lc2.addPrice("Barn", "4-12", 250, 150);
-		lc2.addPrice("Spedbarn", "0-4", 0, 0);
+		lc2.addPrice("Voksen", "26 og opp", 450, 350, false);
+		lc2.addPrice("Ungdom", "13-25", 350, 250, true);
+		lc2.addPrice("Barn", "4-12", 250, 150, false);
+		lc2.addPrice("Spedbarn", "0-4", 0, 0, false);
 		System.out.println(lc2.priceMatrix.size() + "size på den greia");
 		lc2.save();
 

@@ -29,7 +29,7 @@ public abstract class AbstractForm<Model> {
 			error = Json.newObject();
 			error.put("status", "KO");
 		}
-		error.put("message", message);
+		error.put("message",  message);
 		this.validationError = true;
 	}
 	

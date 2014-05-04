@@ -21,8 +21,9 @@
                     <th>Type</th>
                     <th>Member price</th>
                     <th>Non-member price</th>
+                    <th ng-if="cabinDetails.cabinType == 'large'">Minor</th>
                     <th>Age range</th>
-                    <th>Options</th>                  
+                    <th>Options</th>                    
                 </tr>
             </thead>
             <tbody>
@@ -31,6 +32,7 @@
                     <td>{{p.guestType}}</td>
                     <td>{{p.memberPrice}}</td>
                     <td>{{p.nonMemberPrice}}</td>
+                    <td ng-if="cabinDetails.cabinType == 'large'"><p>{{p.isMinor}}<p></td>  
                     <td>{{p.ageRange}}</td>                    
                     <td>
 		                <div class="btn-group text-left">
@@ -74,6 +76,17 @@
 									required>
 						</div>
 						</td>
+						<td>
+                            <div class="form-group" ng-class="{
+                                'has-error': pForm.minor.$invalid && pForm.$submitted,
+                                'has-success': pForm.$submitted && pForm.minor.$valid}">
+                                <input type="checkbox" name="minor" name="minor"
+                                    ng-model="priceForm.isMinor" placeholder="minor">
+                                     <label class="control-label" for="checkbox1">
+									<p>Minor</p>
+								</label>
+							</div>
+                        </td>
 						<td>
 							<input type="text" class="form-control" name="age"
 								ng-model="priceForm.ageRange" placeholder="age range">

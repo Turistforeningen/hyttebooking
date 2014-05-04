@@ -107,14 +107,14 @@ public class LargeCabin extends Cabin {
 	 * @param nonMemberPrice Cannot be negative
 	 * @param memberPrice Cannot be negative
 	 */
-	public void addPrice(String guestType, String ageRange, double nonMemberPrice, double memberPrice) {
+	public void addPrice(String guestType, String ageRange, double nonMemberPrice, double memberPrice, boolean isMinor) {
 		if(nonMemberPrice < 0 || memberPrice < 0 || guestType == null || guestType.length() == 0)
 			return;
 		if(ageRange != null)
 			if(ageRange.length() == 0)
 				return;
 		
-		Price price = new Price(guestType, ageRange, nonMemberPrice, memberPrice);
+		Price price = new Price(guestType, ageRange, nonMemberPrice, memberPrice, isMinor);
 		price.save();
 		
 		this.priceMatrix.add(price);

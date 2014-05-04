@@ -35,25 +35,10 @@ public class User extends Model {
     public void setEmailAddress(String emailAddress) {
         this.emailAddress = emailAddress.toLowerCase();
     }
-
-    //@Column(length = 64, nullable = false)
-    //private byte[] shaPassword;
-
-    @Transient
-    @Constraints.Required
-    @Constraints.MinLength(6)
-    @Constraints.MaxLength(256)
-    @JsonIgnore
-    private String password;
-
+    
     @JSON(include = false)
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-        //shaPassword = getSha512(password);
+    public String getAuthToken() {
+    	return this.authToken;
     }
 
     @Column(length = 256, nullable = false)
@@ -62,18 +47,7 @@ public class User extends Model {
     @Constraints.MaxLength(256)
     public String fullName;
 
-
-    public DateTime dob;
-    
-    public String address;
-    
-    public String city;
-    
     public Boolean admin= false;
-    
-   
-    @Constraints.MaxLength(4)
-    public String zipCode;
     
     @Column(nullable = false)
     public DateTime creationDate;
@@ -112,7 +86,7 @@ public class User extends Model {
      */
     public User(String emailAddress, String password, String fullName) {
         setEmailAddress(emailAddress);
-        setPassword(password);
+        //setPassword(password);
         this.fullName = fullName;
         this.creationDate = new DateTime();
     }
@@ -153,11 +127,6 @@ public class User extends Model {
         catch (Exception e) {
             return null;
         }
-    }
-
-    public static User findByEmailAddressAndPassword(String emailAddress, String password) {
-        // todo: verify this query is correct.  Does it need an "and" statement?
-        return find.where().eq("emailAddress", emailAddress.toLowerCase()).eq("shaPassword", getSha512(password)).findUnique();
     }
 
 	public static User findBySherpaId(long id) {

@@ -19,6 +19,7 @@ booking.noAccess            = Ikke din booking
 booking.cannotCancel        = For sent å avbestille reservasjon
 booking.termsAndConditions  = Du har ikke godtatt reservasjonsbetingelsene
 booking.guestArrayInvalid   = GjestListen er ugyldig
+booking.guestOnlyMinor      = Du kan ikke reservere tur med bare mindreåringe
 
 cabin.couldNotRemovePrice   = Klarte ikke å fjerne pris fra hytta
 cabin.noSuchCabin           = hytte finnes ikke. Feil id

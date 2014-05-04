@@ -5,7 +5,7 @@
  */
 /**
  * @ngdoc service 
- * @name dntApp.ordersService
+ * @name dntApp.bookingService
  * @description Service with functions used to interface client with server. Mainly used
  * to post a bookings, get a users booking list, get the current prices for a booking and 
  * for payment (SHOULD PROBABLY MAKE ANOTHER SERVICE FOR THE FORMER)
