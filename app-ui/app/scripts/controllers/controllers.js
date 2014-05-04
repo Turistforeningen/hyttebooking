@@ -123,6 +123,7 @@ angular.module('dntApp').controller('bookingController', ['$modal','$rootScope',
      */
 	$scope.postBooking = function(booking) {
 		if(validateBooking(booking)) {
+			booking.guests = removeUnpickedpriceCategories(booking.guests);
 			bookingService.postOrder(booking)
 			.then(function(data){
 				$scope.pay(data.id);
@@ -189,6 +190,17 @@ angular.module('dntApp').controller('bookingController', ['$modal','$rootScope',
 			$scope.errorMessage = error.message;
 		});
 	};
+	
+	//removes all unused price categories. Can be used before posting a booking
+	var removeUnpickedpriceCategories = function(priceMatrix) {
+		var processedPrices = [];
+		angular.forEach(priceMatrix, function(value) {
+			if(value.nr > 0) {
+				processedPrices.push(value);
+			}
+		});
+		return processedPrices;
+	}
 	
 	//split categories into json suitable for view
 	var processPriceMatrix = function(matrix) {
