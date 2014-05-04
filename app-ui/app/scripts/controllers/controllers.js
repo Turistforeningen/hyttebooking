@@ -114,6 +114,7 @@ angular.module('dntApp').controller('bookingController', ['$modal','$rootScope',
 	$scope.errorMessage;
 	$scope.booking ={};
 	$scope.beds = 0;
+	$scope.hideIndex = 0;
 	
 	/**
      * @ngdoc method
@@ -227,6 +228,7 @@ angular.module('dntApp').controller('bookingController', ['$modal','$rootScope',
 			allGuests.push(guestTypeMember)
 			nonMemberGuests.push(guestType)
 		 });
+		$scope.hideIndex = allGuests.length;
 		allGuests.push.apply(allGuests, nonMemberGuests)
 		
 		return allGuests;

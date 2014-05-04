@@ -117,10 +117,12 @@ angular.module('dntApp').controller('cabinDetailsController', ['$scope','$modal'
 		});
 	};
 	
-	$scope.removePrice = function(cabinId, priceId) {
-		cabinService.removePriceFromCabin(cabinId, priceId)
+	$scope.removePrice = function(cabinId, price) {
+		cabinService.removePriceFromCabin(cabinId, price.id)
 		.then(function(data){
-				$log.info("do something");
+			var index = $scope.priceCategories.indexOf(price);
+			$scope.priceCategories.splice(index, 1);
+				
 		}, function(errorMessage){
 			$scope.error=errorMessage;
 		});

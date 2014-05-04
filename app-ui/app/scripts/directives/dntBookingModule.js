@@ -56,15 +56,15 @@ angular.module('dntBookingModule', [])
 	return {
 		restrict: 'AE',
 
-		scope: {'data': '=personTypes',
-			'hider': '=hideTypeIndex',
+		scope: {'categories': '=categoryModel',
+			'dividerIndex': '=',
 			'beds' : '=numberOfBeds'
 		},
 
 		template:
 			'<div class="row modBoldText bottom-border"><div class="col-lg-6">Kategori</div><div class="col-lg-2 modCenterText">Pris</div><div class="col-lg-4 modRightText">Antall</div></div>'+
 			'<div class="row spaceLineEkstraSmall"></div>'+
-			'<div class="row" ng-repeat="per in person.slice(0, hider)">'+
+			'<div class="row" ng-repeat="per in categories.slice(0, dividerIndex)">'+
 			
 			'<div class="col-lg-6 col-md-6">'+
 			'<p ng-controller="TooltipDemoCtrl" tooltip-placement="top" tooltip-html-unsafe="{{tooltipAge + per.ageRange}}" tooltip-popup-delay="500">{{per.guestType}}</p>'+
@@ -78,13 +78,13 @@ angular.module('dntBookingModule', [])
 			'</div>'+
 			'</div>'+
 			
-			'<div class="row">'+
+			'<div class="row" ng-show="showDivider">'+
 			'<div class="col-lg-12 col-md-12">'+
 			'<br>'+
 			'<a id="toggle" ng-click="toggleCollapsed()" href="" ng-controller="TooltipDemoCtrl" tooltip-placement="top" tooltip-html-unsafe="{{tooltipNoneMember}}" tooltip-popup-delay="1200">Ikke medlem?</a>'+
 			'<br><br>'+
 			'<div collapse="isCollapsed">'+
-			'<div class="row" ng-repeat="per in person.slice(hider)">'+
+			'<div class="row" ng-repeat="per in categories.slice(dividerIndex)">'+
 			'<div class="col-lg-6 col-md-6">'+
 			'<p ng-controller="TooltipDemoCtrl" tooltip-placement="top" tooltip-html-unsafe="{{tooltipAge + per.ageRange}}" tooltip-popup-delay="500">{{per.guestType}}</p>'+
 			'</div>'+
@@ -102,21 +102,17 @@ angular.module('dntBookingModule', [])
 			'</div>',
 
 		controller: ['$scope','$log', function($scope,$log) {
-				$scope.person = {};
 				$scope.isCollapsed = true;
-
+				$scope.showDivider = true;
+				
 				$scope.toggleCollapsed = function() {
 					$scope.isCollapsed = !$scope.isCollapsed;
 					//When a user shuts down this collapse all entries inside collapse should be erased here
 				};
-				$scope.setPerson = function(person) {;
-					$scope.person = person;
-					$scope.constructRange();
-				};
 				
 				$scope.bedsLeft = function() {
 					var left = $scope.beds;
-					angular.forEach($scope.person, function(value, key) {
+					angular.forEach($scope.categories, function(value, key) {
 						left = left -value.nr;
 					});
 					if(left>0) {
@@ -139,7 +135,7 @@ angular.module('dntBookingModule', [])
 					var nrOfBedsChosen = $scope.beds - bedsLeft;
 					$scope.$emit('nrOfBedsChosenEvent', nrOfBedsChosen);
 					
-					angular.forEach($scope.person, function(value, key){
+					angular.forEach($scope.categories, function(value, key){
 						var end = bedsLeft;
 						if(value.nr !== null || value.nr>0) {
 							end = value.nr + bedsLeft;
@@ -153,22 +149,22 @@ angular.module('dntBookingModule', [])
 					 });
 				}
 				
-				//Every time there has been a change in the person model (i.e a new number of persons attending), 
+				//Every time there has been a change in the category model (i.e a new number of persons attending), 
 				//drop down options has to be updated
-				$scope.$watch('person', function() {
+				$scope.$watch('categories', function() {
 					$scope.constructRange();
 					
 				}, true);
 				
 			}],
 
-		link: function(scope, elem, attrs) {
-				
-				scope.setPerson(scope.data);
-				
-				scope.$watch('data', function(newValue, oldValue) {
-					if (newValue) {
-						scope.setPerson(newValue);
+		link: function(scope, elem, attrs) {				
+				scope.$watch('categories', function(newCategories) {
+					if (newCategories) {
+						if(angular.isUndefined(scope.dividerIndex)) {
+							scope.dividerIndex = newCategories.length;
+							scope.showDivider = false;
+						}
 					}
 
 
@@ -385,7 +381,8 @@ angular.module('dntBookingModule')
 			'beds'			: '@numberOfBeds',
 			'booking'		: '=bookingModel',
 			'onBook'		: '&',
-			'errorMessage'	: '=errorModel'
+			'errorMessage'	: '=errorModel',
+			'dividerIndex'	: '='
 		},
 
 		templateUrl:  'views/bookingComponent.html',
