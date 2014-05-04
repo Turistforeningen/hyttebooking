@@ -129,6 +129,7 @@ angular.module('dntApp').controller('cabinDetailsController', ['$scope','$modal'
 	};
 	
 	$scope.addPrice = function(cabinId, priceData) {
+		$log.info("blir kalt");
 		cabinService.addPriceFromCabin(cabinId, priceData)
 		.then(function(data){
 				//id of new price returned from backend
