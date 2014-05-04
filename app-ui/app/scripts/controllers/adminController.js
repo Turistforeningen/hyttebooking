@@ -117,6 +117,29 @@ angular.module('dntApp').controller('cabinDetailsController', ['$scope','$modal'
 		});
 	};
 	
+	$scope.removePrice = function(cabinId, price) {
+		cabinService.removePriceFromCabin(cabinId, price.id)
+		.then(function(data){
+			var index = $scope.priceCategories.indexOf(price);
+			$scope.priceCategories.splice(index, 1);
+				
+		}, function(errorMessage){
+			$scope.error=errorMessage;
+		});
+	};
+	
+	$scope.addPrice = function(cabinId, priceData) {
+		cabinService.addPriceFromCabin(cabinId, priceData)
+		.then(function(data){
+				//id of new price returned from backend
+				priceData.id = data.id;
+				$scope.priceCategories.push(priceData);
+				$scope.priceForm = {};
+		}, function(errorMessage){
+			$scope.error=errorMessage;
+		});
+	};
+	
 	$scope.setPage = function(page) {
 		$scope.getDetails(page-1, $scope.id);
 	};

@@ -114,6 +114,7 @@ angular.module('dntApp').controller('bookingController', ['$modal','$rootScope',
 	$scope.errorMessage;
 	$scope.booking ={};
 	$scope.beds = 0;
+	$scope.hideIndex = 0;
 	
 	/**
      * @ngdoc method
@@ -123,6 +124,7 @@ angular.module('dntApp').controller('bookingController', ['$modal','$rootScope',
      */
 	$scope.postBooking = function(booking) {
 		if(validateBooking(booking)) {
+			booking.guests = removeUnpickedpriceCategories(booking.guests);
 			bookingService.postOrder(booking)
 			.then(function(data){
 				$scope.pay(data.id);
@@ -190,6 +192,17 @@ angular.module('dntApp').controller('bookingController', ['$modal','$rootScope',
 		});
 	};
 	
+	//removes all unused price categories. Can be used before posting a booking
+	var removeUnpickedpriceCategories = function(priceMatrix) {
+		var processedPrices = [];
+		angular.forEach(priceMatrix, function(value) {
+			if(value.nr > 0) {
+				processedPrices.push(value);
+			}
+		});
+		return processedPrices;
+	}
+	
 	//split categories into json suitable for view
 	var processPriceMatrix = function(matrix) {
 		var nonMemberGuests = [];
@@ -215,6 +228,7 @@ angular.module('dntApp').controller('bookingController', ['$modal','$rootScope',
 			allGuests.push(guestTypeMember)
 			nonMemberGuests.push(guestType)
 		 });
+		$scope.hideIndex = allGuests.length;
 		allGuests.push.apply(allGuests, nonMemberGuests)
 		
 		return allGuests;
@@ -293,9 +307,9 @@ angular.module('dntApp').controller('bookingController', ['$modal','$rootScope',
 				if($routeParams.responseCode === 'OK') {
 					$scope.authenticatePayment($routeParams.transactionId, $routeParams.responseCode);
 				}
-				else {
+				else if($routeParams.responseCode === 'Cancel'){
 
-					$scope.authenticatePayment($routeParams.transactionId, $routeParams.responseCode);
+					$scope.openDialog('/views/statusModalCancellation.html', null);
 				}
 			}
 		}

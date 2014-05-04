@@ -19,6 +19,8 @@ booking.noAccess            = Not your booking
 booking.termsAndConditions  = You have not accepted the terms and conditions for booking at DNT
 booking.guestArrayInvalid   = Guest list is inconsistent with the system
 
+cabin.couldNotRemovePrice   = Could not remove price from cabin
+cabin.noSuchCabin           = Cabin does not exist. Wrong id
 cabin.missingType           = Missing type parameter in json
 cabin.invalidType           = Type parameter invalid
 cabin.missingName           = Missing name parameter in json

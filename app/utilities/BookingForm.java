@@ -91,7 +91,6 @@ public class BookingForm extends AbstractForm<Booking> {
 					beds);
 			
 			double amount = this.amount;
-			System.out.println("guest size: " +this.guestList);
 			Payment.createPaymentForBooking(SecurityController.getUser(), booking, amount, this.guestList);
 			addSuccess("message", Messages.get("booking.successful"));
 			
@@ -109,6 +108,7 @@ public class BookingForm extends AbstractForm<Booking> {
 	 */
 	@Override
 	public boolean validate() {
+		
 		if(termsAndConditions == false) {
 			addError(Messages.get("booking.termsAndConditions"));
 			return false;
@@ -170,15 +170,18 @@ public class BookingForm extends AbstractForm<Booking> {
 		int beds = 0;
 		
 		for(PriceForm guestType : guestList) {
-			Price price= Price.findPriceBelongingToCabin(cabinId, guestType.id);
+			if(guestType.nr >0) {
+				Price price= Price.findPriceBelongingToCabin(cabinId, guestType.id);
 
-			if(price == null) {
-				return false;
+				if(price == null) {
+					return false;
+				}
+				beds += guestType.nr;
+				amount += days*guestType.nr*price.getPrice(guestType.isMember);
+				Guest g = new Guest(price, guestType.isMember, guestType.nr);
+				this.guestList.add(g);
 			}
-			beds += guestType.nr;
-			amount += days*guestType.nr*price.getPrice(guestType.isMember);
-			Guest g = new Guest(price, guestType.isMember, guestType.nr);
-			this.guestList.add(g);
+			
 		}
 		for(Guest guest : this.guestList) {
 			guest.save();

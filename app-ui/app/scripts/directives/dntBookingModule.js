@@ -19,16 +19,16 @@ angular.module('dntBookingModule', []);
  * @element div
  * @function
  * @restrict AE
- * @param  {json array} personTypes  json array with supported guest types for cabin
- * @param  {number} hideTypeIndex  If there are many categories, a number can be used to hide the rest of the categories
- * @param  {number} numberOfBeds  The max bed capacity of the cabin. Prohibits user from selecting more beds than can be actually booked.
+ * @param  {json array} categoryModel  json array with supported price categories for cabin
+ * @param  {number} dividerIndex  If there are many categories, a number can be used to hide the rest of the categories
+ * @param  {number} numberOfBeds  The max bed capacity of the cabin. Prohibits user from selecting more beds than there can actually booked.
  * @description
- * Displays a number of selects decided by the number of guestTypes.
+ * Displays a number of selects decided by the number of categories in categoryModel.
  * It will prevent the user from selecting guests from each category such that
  * the total number of guests are over the cabin capacity.
  * 
  *
- * **Note:** PersonType should be of the form [{"type": "x", "price": "x", "nr":"x"}, ... , {"type": "x", "price": "x", "nr":"x"}]
+ * **Note:** categoryModel should be of the form [{"type": "x", "price": x, "nr":0, "ageRange": "x"}, ... , {"type": "x", "price": x, "nr":0, "ageRange" : "x"}]
  *
  * @example
    	<example module="dntApp">
@@ -43,7 +43,7 @@ angular.module('dntBookingModule', []);
          <file name="index.html">
    			<div ng-controller="selectCtrl">
  
-   				<div dnt-selector person-types="guests" hide-type-index="hide" number-of-beds="beds">
+   				<div dnt-selector category-model="guests" divider-index="hide" number-of-beds="beds">
    				</div>
    				</div>
   				
@@ -56,15 +56,15 @@ angular.module('dntBookingModule', [])
 	return {
 		restrict: 'AE',
 
-		scope: {'data': '=personTypes',
-			'hider': '=hideTypeIndex',
+		scope: {'categories': '=categoryModel',
+			'dividerIndex': '=',
 			'beds' : '=numberOfBeds'
 		},
 
 		template:
 			'<div class="row modBoldText bottom-border"><div class="col-lg-6">Kategori</div><div class="col-lg-2 modCenterText">Pris</div><div class="col-lg-4 modRightText">Antall</div></div>'+
 			'<div class="row spaceLineEkstraSmall"></div>'+
-			'<div class="row" ng-repeat="per in person.slice(0, hider)">'+
+			'<div class="row" ng-repeat="per in categories.slice(0, dividerIndex)">'+
 			
 			'<div class="col-lg-6 col-md-6">'+
 			'<p ng-controller="TooltipDemoCtrl" tooltip-placement="top" tooltip-html-unsafe="{{tooltipAge + per.ageRange}}" tooltip-popup-delay="500">{{per.guestType}}</p>'+
@@ -78,13 +78,13 @@ angular.module('dntBookingModule', [])
 			'</div>'+
 			'</div>'+
 			
-			'<div class="row">'+
+			'<div class="row" ng-show="showDivider">'+
 			'<div class="col-lg-12 col-md-12">'+
 			'<br>'+
 			'<a id="toggle" ng-click="toggleCollapsed()" href="" ng-controller="TooltipDemoCtrl" tooltip-placement="top" tooltip-html-unsafe="{{tooltipNoneMember}}" tooltip-popup-delay="1200">Ikke medlem?</a>'+
 			'<br><br>'+
 			'<div collapse="isCollapsed">'+
-			'<div class="row" ng-repeat="per in person.slice(hider)">'+
+			'<div class="row" ng-repeat="per in categories.slice(dividerIndex)">'+
 			'<div class="col-lg-6 col-md-6">'+
 			'<p ng-controller="TooltipDemoCtrl" tooltip-placement="top" tooltip-html-unsafe="{{tooltipAge + per.ageRange}}" tooltip-popup-delay="500">{{per.guestType}}</p>'+
 			'</div>'+
@@ -102,21 +102,17 @@ angular.module('dntBookingModule', [])
 			'</div>',
 
 		controller: ['$scope','$log', function($scope,$log) {
-				$scope.person = {};
 				$scope.isCollapsed = true;
-
+				$scope.showDivider = true;
+				
 				$scope.toggleCollapsed = function() {
 					$scope.isCollapsed = !$scope.isCollapsed;
 					//When a user shuts down this collapse all entries inside collapse should be erased here
 				};
-				$scope.setPerson = function(person) {;
-					$scope.person = person;
-					$scope.constructRange();
-				};
 				
 				$scope.bedsLeft = function() {
 					var left = $scope.beds;
-					angular.forEach($scope.person, function(value, key) {
+					angular.forEach($scope.categories, function(value, key) {
 						left = left -value.nr;
 					});
 					if(left>0) {
@@ -139,7 +135,7 @@ angular.module('dntBookingModule', [])
 					var nrOfBedsChosen = $scope.beds - bedsLeft;
 					$scope.$emit('nrOfBedsChosenEvent', nrOfBedsChosen);
 					
-					angular.forEach($scope.person, function(value, key){
+					angular.forEach($scope.categories, function(value, key){
 						var end = bedsLeft;
 						if(value.nr !== null || value.nr>0) {
 							end = value.nr + bedsLeft;
@@ -153,22 +149,22 @@ angular.module('dntBookingModule', [])
 					 });
 				}
 				
-				//Every time there has been a change in the person model (i.e a new number of persons attending), 
+				//Every time there has been a change in the category model (i.e a new number of persons attending), 
 				//drop down options has to be updated
-				$scope.$watch('person', function() {
+				$scope.$watch('categories', function() {
 					$scope.constructRange();
 					
 				}, true);
 				
 			}],
 
-		link: function(scope, elem, attrs) {
-				
-				scope.setPerson(scope.data);
-				
-				scope.$watch('data', function(newValue, oldValue) {
-					if (newValue) {
-						scope.setPerson(newValue);
+		link: function(scope, elem, attrs) {				
+				scope.$watch('categories', function(newCategories) {
+					if (newCategories) {
+						if(angular.isUndefined(scope.dividerIndex)) {
+							scope.dividerIndex = newCategories.length;
+							scope.showDivider = false;
+						}
 					}
 
 
@@ -184,7 +180,7 @@ angular.module('dntBookingModule', [])
  * @element div
  * @function
  * @restrict AE
- * @param  {json array} personTypes  json array with supported guest types for cabin
+ * @param  {json array} categoryModel  json array with supported guest types for cabin
  * @param {Date} fromDate Date the of arrival to cabin
  * @param {Date} toDate Date of departure from cabin
  * @description Displays the total price, and the prices for each guesttype calculated based on booking dates and number of persons in 
@@ -214,7 +210,7 @@ angular.module('dntBookingModule', [])
          <file name="index.html">
    			<div ng-controller="viewerCtrl">
  				
-   				<div dnt-price-viewer person-types="guests" from-date="from" to-date="to">
+   				<div dnt-price-viewer category-model="guests" from-date="from" to-date="to">
    				</div>
    				
    				<p>===========CONTROLS==============</p>
@@ -230,7 +226,7 @@ angular.module('dntBookingModule')
 	return {
 		restrict: 'AE',
 
-		scope: {'data': '=personTypes',
+		scope: {'categories': '=categoryModel',
 			'fromDate': '=',
 			'toDate' : '='
 
@@ -241,7 +237,7 @@ angular.module('dntBookingModule')
 			'<div class="row" style="min-height: 250px;">' +
 			'<table class="table table-condensed">' +
 			'<tbody>'+
-			'<tr ng-repeat="person in personType" ng-show="person.nr>0">'+
+			'<tr ng-repeat="person in categories" ng-show="person.nr>0">'+
 			'<td>{{person.guestType}}</td>'+
 			'<td>x{{person.nr}}</td>' +
 			'<td style="text-align:right">{{person.nr * person.price * days}} NOK</td>'+
@@ -260,19 +256,11 @@ angular.module('dntBookingModule')
 			'</div></div>',
 
 		controller: ['$scope', '$log', '$filter', function($scope, $log, $filter) {
-				$scope.personType = {};
-				$scope.days =1;
+				$scope.days =0;
 				
-
-				$scope.setPersonType = function(person) {
-					$scope.personType = person;
-				};
-				$scope.getPerson = function(person) {
-					return $scope.person;
-				};
 				$scope.calculatePrice = function() {
 					var totalPrice = 0;
-					angular.forEach($scope.personType, function(value, key) {
+					angular.forEach($scope.categories, function(value, key) {
 						totalPrice +=(value.nr * value.price*$scope.days);
 
 					});
@@ -290,7 +278,7 @@ angular.module('dntBookingModule')
 						var hours = minutes/60;
 						var days = hours/24;
 						if(days <0 || isNaN(d1.getTime()) || isNaN(d2.getTime()) ) {
-							$scope.days = 1;
+							$scope.days = 0;
 						}
 						else {
 							//ceiling will fail if a booking span serveral years.
@@ -304,25 +292,21 @@ angular.module('dntBookingModule')
 			}],
 
 		link: function(scope, elem, attrs) {
-				scope.setPersonType(scope.data);
-				scope.$watch('data', function(newValue, oldValue) {
-					if (newValue) {
-						scope.setPersonType(newValue);
-					}
+				scope.$watch('categories', function() {
 					scope.calculatePrice();
 				}, true);
 
 
 
-				scope.$watch('fromDate', function(newValue, oldValue) {
-					if (newValue) {
+				scope.$watch('fromDate', function(newDate) {
+					if (newDate) {
 						scope.newDateRange();
 					}
 
 				});
 
-				scope.$watch('toDate', function(newValue, oldValue) {
-					if (newValue) {
+				scope.$watch('toDate', function(newDate) {
+					if (newDate) {
 						scope.newDateRange();
 					}
 
@@ -385,7 +369,8 @@ angular.module('dntBookingModule')
 			'beds'			: '@numberOfBeds',
 			'booking'		: '=bookingModel',
 			'onBook'		: '&',
-			'errorMessage'	: '=errorModel'
+			'errorMessage'	: '=errorModel',
+			'dividerIndex'	: '='
 		},
 
 		templateUrl:  'views/bookingComponent.html',

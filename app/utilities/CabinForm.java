@@ -32,6 +32,10 @@ public class CabinForm extends AbstractForm<Cabin>{
 	 */
 	@Override
 	public boolean validate() {
+		if(this.validationError) {
+			return false;
+		}
+		
 		if(type == null) {
 			this.addError(Messages.get("cabin.missingType"));
 			return false;
@@ -60,12 +64,10 @@ public class CabinForm extends AbstractForm<Cabin>{
 		if(isValid()) {
 			if(this.type.equals("SmallCabin")) {
 				SmallCabin cabin = new SmallCabin(this.name);
-				cabin.save();
 				return cabin;
 			}
 			else if(this.type.equals("LargeCabin")) {
 				LargeCabin cabin = new LargeCabin(this.name, this.beds);
-				cabin.save();
 				return cabin;
 			}
 			
