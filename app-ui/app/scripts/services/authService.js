@@ -69,10 +69,12 @@ angular.module('dntApp').factory('appStateService', ['$cookieStore', '$location'
 			$cookieStore.remove('isAdmin');
 		},
 		
-		insertUserCredentials: function (token, name, isAdmin) {
+		insertUserCredentials: function (token, id, name, isAdmin, email) {
 			$cookieStore.put('token', token);
+			$cookieStore.put('id', id);
 			$cookieStore.put('name', name);
 			$cookieStore.put('isAdmin', isAdmin);
+			$cookieStore.put('email', email);
 		},
 		
 		getUserCredentials: function () {
@@ -80,6 +82,8 @@ angular.module('dntApp').factory('appStateService', ['$cookieStore', '$location'
 			cred.token = 	$cookieStore.get('token');
 			cred.name = 	$cookieStore.get('name');
 			cred.isAdmin = 	$cookieStore.get('isAdmin');
+			cred.email = 	$cookieStore.get('email');
+			cred.id = 		$cookieStore.get('id');
 			return cred;
 		}
 		

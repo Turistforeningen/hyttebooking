@@ -128,6 +128,7 @@ angular.module('dntApp').controller('testController', ['$scope', function ($scop
  * 
  * @name dntApp.controller:bookingController
  * @requires dntApp.bookingService
+ * @requires dntApp.appStateService
  * @requires ui.bootstrap.$modal
  * @description `bookingController` works as the glue between the back end and the front end.
  *  It is responsible for retrieving and posting bookings, and 
@@ -135,8 +136,8 @@ angular.module('dntApp').controller('testController', ['$scope', function ($scop
  *  Important for the {@link dntBookingModule.directive:dntBookingModule dntBookingModule} directive,
  *  since it retrieves all the data needed by this directive.
  */
-angular.module('dntApp').controller('bookingController', ['$modal','$scope','bookingService','$log','$routeParams','$window',
-                                                          function ($modal, $scope, bookingService, $log, $routeParams, $window) {
+angular.module('dntApp').controller('bookingController', ['$modal','$scope','bookingService','$log','$routeParams','$window', 'appStateService',
+                                                          function ($modal, $scope, bookingService, $log, $routeParams, $window, appStateService) {
 	$scope.validState = true;
 	$scope.errorMessage;
 	$scope.booking ={};
@@ -346,7 +347,10 @@ angular.module('dntApp').controller('bookingController', ['$modal','$scope','boo
 	$scope.openBookingConfirmDialog = function() {
 		if(validateBooking($scope.booking)) {
 		$scope.booking.termsAndConditions = false;
-		var modalInstance = $scope.openDialog('/views/bookingModal.html', $scope.booking);
+		var data = {};
+		data.booking = $scope.booking;
+		data.user = appStateService.getUserCredentials();
+		var modalInstance = $scope.openDialog('/views/bookingModal.html', data);
 
 		modalInstance.result.then(function () {
 			$scope.postBooking($scope.booking);
@@ -503,13 +507,12 @@ angular.module('dntApp').controller('authController', ['$log', '$scope','$locati
 	 */
 	$scope.checkLogin = function(encryptedData, hmac) {
 		authorization.checkLogin(encryptedData, hmac).success(function(authData) {
-
 			var token = authData.authToken;
 			var name = authData.name || 'n/a';
 			if(!angular.isUndefined(token)) {
 				$scope.$emit('event:signedIn', authData);
 				api.init(token);
-				appStateService.insertUserCredentials(token, name, authData.isAdmin);
+				appStateService.insertUserCredentials(token, authData.id, name, authData.isAdmin, authData.email);
 				appStateService.redirectToAttemptedUrl();
 			}
 			else {
