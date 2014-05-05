@@ -15,11 +15,11 @@ booking.successful          = Reservasjon lagret
 booking.cabinNotAvailable   = Hytta er opptatt i den valgte perioden
 booking.bedsNotAvailable    = Ikke nok senger ledig i valgt periode
 booking.notFound            = Reservasjon ikke funnet
-booking.noAccess            = Ikke din booking
+booking.noAccess            = Dette er ikke din booking
 booking.cannotCancel        = For sent å avbestille reservasjon
 booking.termsAndConditions  = Du har ikke godtatt reservasjonsbetingelsene
-booking.guestArrayInvalid   = GjestListen er ugyldig
-booking.guestOnlyMinor      = Du kan ikke reservere tur med bare mindreåringe
+booking.guestArrayInvalid   = Gjestlisten er ugyldig
+booking.guestOnlyMinor      = Du kan ikke reservere tur med bare mindreårige
 
 cabin.couldNotRemovePrice   = Klarte ikke å fjerne pris fra hytta
 cabin.noSuchCabin           = hytte finnes ikke. Feil id
