@@ -1,96 +1,4 @@
-'use strict';
-
-beforeEach(module('dntApp'));
-describe('headerController', function(){
-	var $scope, $location, $rootScope, createController;
-
-    beforeEach(inject(function($injector) {
-        $location = $injector.get('$location');
-        $rootScope = $injector.get('$rootScope');
-        $scope = $rootScope.$new();
-
-        var $controller = $injector.get('$controller');
-
-        createController = function() {
-            return $controller('headerController', {
-                '$scope': $scope
-            });
-        };
-    }));
-
-    it('should have loggedIn to false since user is not in cookiestore', function() {
-        var controller = createController();
-        expect($scope.loggedIn).toBe(false);
-        expect($scope.name).toBe('');
-    });
-});
-
-describe('orderController', function () {
-
-
-    var scope, fakeFactory, controller, q, deferred, routeParams, mockService;
-
-    //Prepare the fake factory
-    beforeEach(function () {
-        mockService = {
-        	getOrders: function (page, pageSize) {
-                deferred = q.defer();
-                // Place the fake return object here
-                var returnData = {"data": [{"ableToCancel":true,"cabin":{"cabinType":"large","id":1,"name":"Fjordheim","nrActiveBookings":1},"dateFrom":1399586400000,"dateTo":1399759200000,"id":2,"nrOfBeds":"3","status":0,"timeOfBooking":1398328377255}],"totalItems":1};
-                deferred.resolve(returnData);
-                return deferred.promise;
-            }
-        };
-        spyOn(mockService, 'getOrders').andCallThrough();
-    });
-
-    //Inject fake factory into controller
-    beforeEach(inject(function ($rootScope, $controller, $q, $routeParams) {
-        scope = $rootScope.$new();
-        q = $q;
-        routeParams = $routeParams
-        controller = $controller('orderController', { $scope: scope, $routeParams: routeParams, bookingService: mockService });
-    }));
-
-    it('The order list object is not defined yet', function () {
-        // Before $apply is called the promise hasn't resolved
-    	expect(scope.itemsPerPage).toBe(10);
-        expect(scope.orders).not.toBeDefined();
-    });
-
-    it('Applying the scope causes it to be defined', function () {
-        // This propagates the changes to the models
-        // This happens itself when you're on a web page, but not in a unit test framework
-        scope.$apply();
-        expect(scope.orders).toBeDefined();
-    });
-
-    it('Ensure that the method was invoked', function () {
-        scope.$apply();
-        expect(mockService.getOrders).toHaveBeenCalled();
-    });
-
-    it('Check the value returned', function () {
-        scope.$apply();
-        var compareData = [{"ableToCancel":true,"cabin":{"cabinType":"large","id":1,"name":"Fjordheim","nrActiveBookings":1},"dateFrom":1399586400000,"dateTo":1399759200000,"id":2,"nrOfBeds":"3","status":0,"timeOfBooking":1398328377255}];
-        expect(scope.orders).toEqual(compareData);
-        expect(scope.totalItems).toBe(1);
-        expect(scope.orders[0].ableToCancel).toBe(true);
-    });
-    
-    it('setPage should set page variable to x-1 of all input parameters (since bootstrap ui pagination)', function() {
-    	
-    	scope.setPage(4);
-    	scope.$apply();
-    	//server pages zero indexed 4-1 = 3
-    	expect(mockService.getOrders).toHaveBeenCalledWith(3, 10);
-    	scope.setPage(-5);
-    	scope.$apply();
-    	expect(mockService.getOrders).not.toHaveBeenCalledWith(-6, 10);
-    	//currentPage contain the paginations current page.
-    	expect(scope.currentPage).toBe(4);
-    })
-});
+//CONTROLLER
 
 describe('bookingController', function () {
 	//unit test for bookingController
@@ -270,7 +178,7 @@ describe('bookingController', function () {
     	expect(scope.postBooking).not.toHaveBeenCalled();
     	expect(scope.errorMessage).not.toBeUndefined;
     	scope.$apply();
-    	expect(scope.errorMessage).toEqual("du må velge minst en person for å kunne reservere");
+    	expect(scope.errorMessage).toEqual("Du må velge minst en person for å kunne reservere.");
     });
     
     it('should let user post booking if dateFrom, dateTo and date', function($controller) {
@@ -297,3 +205,115 @@ describe('bookingController', function () {
     
 });
 
+//DNT SELECTOR
+
+'use strict';
+
+describe('dntSelector', function () {
+
+
+    var scope, elm, $body = $('body');
+
+    //Inject rootscope and comile and use them to set up directive for testing
+    beforeEach(inject(function ($rootScope, $compile) {
+        scope = $rootScope.$new();
+        scope.beds = 10;
+        scope.guests = [{type: "ungdom", nr: 0, price:300}, {type: "barn", nr: 0, price:500}];
+        scope.hider = 1;
+       
+    }));
+    
+    function compileDirective(tpl) {
+        if (!tpl) tpl = '<dnt-selector category-model="guests" divider-index="hider" number-of-beds="beds"></dnt-selector>';
+    
+        // inject allows you to use AngularJS dependency injection
+        // to retrieve and use other services
+        var element = angular.element(tpl);
+        inject(function($compile) {
+            elm = $compile(element)(scope);
+
+        });
+        $body.append(elm);
+        // $digest is necessary to finalize the directive generation
+        scope.$digest();
+    }
+    
+    describe('initialisation', function() {
+        // before each test in this block, generates a fresh directive
+        beforeEach(function() {
+            compileDirective();
+        });
+        // a single test example, check the produced DOM
+        it('should produce 2 drop down and be collapsed', function() {
+        	var dirScope = elm.isolateScope()
+        	expect(elm.hasClass("selectNumber")).toBeTruthy;
+        	expect(elm.find('select').length).toEqual(2);
+        	//each drop down contains 11 options. Check html for this
+        	expect(elm.find('option').length).toEqual(11*2);
+        	expect(dirScope.isCollapsed).toBe(true);
+        	expect(dirScope.categories).toBe(scope.guests);
+        	
+        });
+        
+        it('should produce correct inital beds left and options ranges used', function() {
+        	var dirScope = elm.isolateScope();
+        	expect(dirScope.bedsLeft()).toBe(10);
+        	expect(dirScope.range(0).length).toBe(11);
+        });
+    });
+    
+    describe('range construction', function() {
+        // before each test in this block, generates a fresh directive
+        beforeEach(function() {
+            compileDirective();
+        });
+       //all tests below only checks correct behavior for controller.
+        //view and controller together will be tested using E2E tests
+        it('watch should detect changes nr of the person types json', function() {
+        	var dirScope = elm.isolateScope()
+        	spyOn(dirScope, 'constructRange').andCallThrough();
+        	expect(dirScope.constructRange).not.toHaveBeenCalled();
+        	dirScope.categories[0].nr = 1;
+        	console.log(dirScope.person);
+        	scope.$digest();
+        	
+        	expect(dirScope.constructRange).toHaveBeenCalled();
+        	expect(dirScope.range(1)).not.toBeUndefined();
+        	expect(dirScope.range(1).length).toBe(11);
+        	expect(dirScope.range(0).length).toBe(10);
+        	expect(dirScope.range(2)).toBeUndefined();
+        });
+        
+        it('should return no other option than zero or already selected value if cabin maxed out', function() {
+        	var dirScope = elm.isolateScope()
+        	spyOn(dirScope, 'constructRange').andCallThrough();
+        	//maxed out first category
+        	dirScope.categories[0].nr = 10;
+        	scope.$digest();
+        	expect(dirScope.constructRange).toHaveBeenCalled();
+        	//for all categories with nr set to 0 should only display
+        	//0 beds in drop down
+        	expect(dirScope.range(0).length).toBe(1);
+        	expect(dirScope.range(10).length).toBe(11);
+        });
+        
+        it('should return an array from 0 - x value', function() {
+        	var dirScope = elm.isolateScope()
+        	var randNrSelected = Math.floor((Math.random()*10)+1);
+        	console.log(randNrSelected + " ,random number selected for test")
+        	dirScope.categories[0].nr = randNrSelected;
+        	scope.$digest();
+        	var range = dirScope.range(0);
+        	for (var i= 0; i<=randNrSelected; i++) {
+        		expect(range[i]).toBe(i);
+        	}
+        	var range2 = dirScope.range(randNrSelected);
+        	for (var i = 0; i<=10; i++) {
+        		expect(range2[i]).toBe(i);
+        	}
+        });
+        
+        
+        
+    });
+});
