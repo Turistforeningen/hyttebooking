@@ -8,9 +8,9 @@
  * @name dntApp.bookingService
  * @description Service with functions used to interface client with server. Mainly used
  * to post a bookings, get a users booking list, get the current prices for a booking and 
- * for payment (SHOULD PROBABLY MAKE ANOTHER SERVICE FOR THE FORMER)
- * All data returned from the server should be json strings.
+ * for payment.
  * @requires $http 
+ * @requires $q
 **/
 angular.module('dntApp').factory('bookingService', ['$http', '$q','$log', function ($http,$q, $log) {
 
@@ -21,6 +21,8 @@ angular.module('dntApp').factory('bookingService', ['$http', '$q','$log', functi
      * @ngdoc method
      * @name dntApp.service#getOrders
      * @methodOf dntApp.bookingService
+     * @param {Number} page What page of orders.
+     * @param {Number} pageSize How big the resultset should be.
      * @returns {json} A list containing a subset of a logged in users bookings.
      */
 	getOrders: function(page, pageSize) {
@@ -55,6 +57,7 @@ angular.module('dntApp').factory('bookingService', ['$http', '$q','$log', functi
      * @ngdoc method
      * @name dntApp.service#cancelOrder
      * @methodOf dntApp.bookingService
+     * @param {Number} id bookingId of the booking to request cancelled.
      * @returns {json} An answer containing status and message from the server.
      */
 	cancelOrder: function(id) {
@@ -73,7 +76,8 @@ angular.module('dntApp').factory('bookingService', ['$http', '$q','$log', functi
      * @ngdoc method
      * @name dntApp.service#adminCancelOrder
      * @methodOf dntApp.bookingService
-     * @returns {json} An answer containing status and message from the server.
+     * @param {Number} id bookingId of the booking to request cancelled.
+     * @returns {JSON object} An answer containing status and message from the server.
      */
 	adminCancelOrder: function(id) {
 		var deferred = $q.defer();
@@ -91,7 +95,8 @@ angular.module('dntApp').factory('bookingService', ['$http', '$q','$log', functi
      * @ngdoc method
      * @name dntApp.service#postOrder
      * @methodOf dntApp.bookingService
-     * @returns {json} An answer containing status and message from the server.
+     * @param {JSON object} data JSON object containing booking data.
+     * @returns {JSON object} An answer containing status and message from the server.
      */
 	postOrder: function(data) {
 		var deferred = $q.defer();
@@ -107,9 +112,10 @@ angular.module('dntApp').factory('bookingService', ['$http', '$q','$log', functi
 	//should be in cabinService --delete later (refactor dntBookingModule)
 	/**
      * @ngdoc method
-     * @name dntApp.service#postOrder
+     * @name dntApp.service#getPrices
      * @methodOf dntApp.bookingService
-     * @returns {json} A array containing different guesttypes and price accepted at cabin specified by cabinId
+     * @param {Number} cabinId id of cabin to request prices for.
+     * @returns {JSON object} A array containing different guesttypes and price accepted at cabin specified by cabinId
      */
 	getPrices: function(cabinId) {
 		var deferred = $q.defer();
@@ -127,6 +133,7 @@ angular.module('dntApp').factory('bookingService', ['$http', '$q','$log', functi
      * @ngdoc method
      * @name dntApp.service#startPayment
      * @methodOf dntApp.bookingService
+     * @param {Number} id id of booking to setup payment for.
      * @returns {json} Containing properties for redirectUrl and transactionId
      */
 	startPayment: function(id) {
@@ -144,7 +151,9 @@ angular.module('dntApp').factory('bookingService', ['$http', '$q','$log', functi
      * @ngdoc method
      * @name dntApp.service#authenticatePayment
      * @methodOf dntApp.bookingService
-     * @returns {json} containing status and message
+     * @param {Number} paymentId transaction id
+     * @param {String} response code from nets
+     * @returns {JSON object} containing status and message
      */
 	authenticatePayment: function(paymentId, response) {
 		var deferred = $q.defer();
