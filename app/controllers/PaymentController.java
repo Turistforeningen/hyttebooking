@@ -248,7 +248,6 @@ public static Promise<Boolean> authOrCreditPayment(String transactionId, String 
 						return false;
 
 					}
-					
 				}
 			}
 			);

@@ -115,25 +115,25 @@ public class LargeCabinTest extends WithApplication {
 		int invalidPrice = -1000;
 		int expectedPriceMatrixSize;
 		
-		c1.addPrice("guestType1", "minAge-maxAge", validPrice, validPrice);
+		c1.addPrice("guestType1", "minAge-maxAge", validPrice, validPrice, false);
 		assertNotNull(c1.priceMatrix);
 		expectedPriceMatrixSize = c1.priceMatrix.size();
 		
-		c1.addPrice("guestType2", "minAge-maxAge", invalidPrice, validPrice);
+		c1.addPrice("guestType2", "minAge-maxAge", invalidPrice, validPrice, false);
 		assertEquals(expectedPriceMatrixSize, c1.priceMatrix.size()); //no change since previous price invalid
-		c1.addPrice("guestType2", "minAge-maxAge", validPrice, invalidPrice);
+		c1.addPrice("guestType2", "minAge-maxAge", validPrice, invalidPrice, false);
 		assertEquals(expectedPriceMatrixSize, c1.priceMatrix.size()); //no change since previous price invalid
 
-		c1.addPrice("", "minAge-maxAge", validPrice, validPrice);
+		c1.addPrice("", "minAge-maxAge", validPrice, validPrice, false);
 		assertEquals(expectedPriceMatrixSize, c1.priceMatrix.size()); //no change since previous price invalid
 		
-		c1.addPrice(null, "minAge-maxAge", validPrice, validPrice);
+		c1.addPrice(null, "minAge-maxAge", validPrice, validPrice, false);
 		assertEquals(expectedPriceMatrixSize, c1.priceMatrix.size()); //no change since previous price invalid
 		
-		c1.addPrice("guestType2", "", validPrice, validPrice);
+		c1.addPrice("guestType2", "", validPrice, validPrice, false);
 		assertEquals(expectedPriceMatrixSize, c1.priceMatrix.size()); //no change since previous price invalid
 		
-		c1.addPrice("guestType2", null, validPrice, validPrice);
+		c1.addPrice("guestType2", null, validPrice, validPrice, false);
 		assertEquals(expectedPriceMatrixSize+1, c1.priceMatrix.size());
 	}
 }
