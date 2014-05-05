@@ -1,6 +1,10 @@
 'use strict';
 
-angular.module('dntApp',['ngRoute', 'ui.bootstrap', 'ngCookies', 'ngResource', 'ngSanitize', 'dntBookingModule']);
+angular.module('dntApp',['ngRoute', 'ui.bootstrap', 'dntBookingModule', 'dntCommon', 'dntAdminApp']);
+
+angular.module('dntAdminApp',['ngRoute', 'ui.bootstrap', 'dntCommon']);
+
+angular.module('dntCommon',['ngCookies']);
 
 /*
  * Routes, routeinterceptor done below. Httpinterceptor, redirect to /login

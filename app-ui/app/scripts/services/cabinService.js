@@ -1,18 +1,18 @@
 'use strict';
 /**
  * @ngdoc service 
- * @name dntApp.cabinService
+ * @name dntCommon.cabinService
  * @description CabinService handles getting information about the cabins in the system from the backend. 
  * All data returned from the server should be json strings.
  * @requires $http 
 **/
-angular.module('dntApp').factory('cabinService', ['$http', '$q','$log', function ($http, $q, $log) {
+angular.module('dntCommon').factory('cabinService', ['$http', '$q','$log', function ($http, $q, $log) {
 	
 	return {
 		/**
 	     * @ngdoc method
-	     * @name dntApp.service#getCabins
-	     * @methodOf dntApp.cabinService
+	     * @name dntCommon.service#getCabins
+	     * @methodOf dntCommon.cabinService
 	     * @param {Number} page What page of cabins to retrieve.
 	     * @param {Number} pageSize size of page to be returned.
 	     * @returns {Array} A list containing some properties for a subset of the cabins in the system.
@@ -33,8 +33,8 @@ angular.module('dntApp').factory('cabinService', ['$http', '$q','$log', function
 		
 		/**
 	     * @ngdoc method
-	     * @name dntApp.service#getCabinDetails
-	     * @methodOf dntApp.cabinService
+	     * @name dntCommon.service#getCabinDetails
+	     * @methodOf dntCommon.cabinService
 	     * @param {Number} page What page of booking to retrieve.
 	     * @param {Number} pageSize size of the page to be returned.
 	     * @param {Number} cabinId id of cabin to request bookings from.
@@ -54,8 +54,8 @@ angular.module('dntApp').factory('cabinService', ['$http', '$q','$log', function
 		
 		/**
 	     * @ngdoc method
-	     * @name dntApp.service#getPrices
-	     * @methodOf dntApp.cabinService
+	     * @name dntCommon.service#getPrices
+	     * @methodOf dntCommon.cabinService
 	     * @param {Number} cabinId id of cabin to request the price matrix from.
 	     * @returns {Array} A array containing the price matrix at cabin specified by cabinId
 	     */
@@ -73,8 +73,8 @@ angular.module('dntApp').factory('cabinService', ['$http', '$q','$log', function
 		
 		/**
 	     * @ngdoc method
-	     * @name dntApp.service#postCabin
-	     * @methodOf dntApp.cabinService
+	     * @name dntCommon.service#postCabin
+	     * @methodOf dntCommon.cabinService
 	     * @param {JSON object} an object containing data needed to create a cabin at the back end.
 	     * @returns {JSON object} Containing message and status when resolved or rejected. 
 	     */
@@ -92,8 +92,8 @@ angular.module('dntApp').factory('cabinService', ['$http', '$q','$log', function
 		
 		/**
 	     * @ngdoc method
-	     * @name dntApp.service#removePriceFromCabin
-	     * @methodOf dntApp.cabinService
+	     * @name dntCommon.service#removePriceFromCabin
+	     * @methodOf dntCommon.cabinService
 	     * @param {Number} id of cabin to remove a price category from.
 	     * @param {Number} id of price category to remove from cabin
 	     * @returns {JSON object} Containing message and status when resolved or rejected 
@@ -112,8 +112,8 @@ angular.module('dntApp').factory('cabinService', ['$http', '$q','$log', function
 		
 		/**
 	     * @ngdoc method
-	     * @name dntApp.service#removePriceFromCabin
-	     * @methodOf dntApp.cabinService
+	     * @name dntCommon.service#removePriceFromCabin
+	     * @methodOf dntCommon.cabinService
 	     * @param {Number} id of cabin to add a price category to.
 	     * @param {JSON object} the data needed to create a new price category for a cabin
 	     * @returns {JSON object} Containing message and status when resolved or rejected 
