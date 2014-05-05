@@ -4,12 +4,12 @@
 /**
  * @ngdoc object
  * 
- * @name dntApp.controller:adminViewController
+ * @name dntAdminApp.controller:adminViewController
  * @description Controller for admin view. Responsible for showing global
  * statistics, adding cabins and overview of cabins.
  * 
  */
-angular.module('dntApp').controller('adminViewController',['$scope', '$location','$routeParams',  'api', '$log',
+angular.module('dntAdminApp').controller('adminViewController',['$scope', '$location','$routeParams',  'api', '$log',
                                                            function ($scope, $location,$routeParams,  api, $log) {
 
 	function init() {
@@ -21,14 +21,14 @@ angular.module('dntApp').controller('adminViewController',['$scope', '$location'
 /**
  * @ngdoc object
  * 
- * @name dntApp.controller:cabinTableController
- * @requires dntApp.cabinService
+ * @name dntAdminApp.controller:cabinTableController
+ * @requires dntCommon.cabinService
  * @description Table controller for overview of cabins. Responsible
  * for populating table with cabins.
  * 
  * 
  */
-angular.module('dntApp').controller('cabinTableController', ['$scope', '$location', '$routeParams', 'cabinService', '$log',
+angular.module('dntAdminApp').controller('cabinTableController', ['$scope', '$location', '$routeParams', 'cabinService', '$log',
                                                              function ($scope, $location, $routeParams, cabinService, $log) {
 	$scope.currentPage = 1;
 	$scope.totalItems = 10;
@@ -40,8 +40,8 @@ angular.module('dntApp').controller('cabinTableController', ['$scope', '$locatio
 
 	/**
      * @ngdoc method
-     * @name dntApp.object#getCabins
-	 * @methodOf dntApp.controller:cabinTableController
+     * @name dntAdminApp.object#getCabins
+	 * @methodOf dntAdminApp.controller:cabinTableController
      * @param {Number} page What page of cabins to request. Each page contain 10 cabins
      * @description Method utilize cabinService to request a page of cabins from the back end, and
      * handles the resolved or rejected promise
@@ -86,16 +86,16 @@ angular.module('dntApp').controller('cabinTableController', ['$scope', '$locatio
 /**
  * @ngdoc object
  * 
- * @name dntApp.controller:cabinDetailsController
- * @requires dntApp.cabinService
- * @requires dntApp.bookingService
+ * @name dntAdminApp.controller:cabinDetailsController
+ * @requires dntCommon.cabinService
+ * @requires dntCommon.bookingService
  * @requires ui.bootstrap.$modal
  * @description Controller for overview of bookings for a given cabin, general cabin information,
  * viewing prices for the cabin. The `cabinDetailsController` supports different actions a admin might make, like
  * adding a price, removing a price, sending email to customer, viewing a reciept and cancelling a booking
  * 
  */
-angular.module('dntApp').controller('cabinDetailsController', ['$scope','$modal', '$location', '$routeParams','bookingService' ,'cabinService', '$log',
+angular.module('dntAdminApp').controller('cabinDetailsController', ['$scope','$modal', '$location', '$routeParams','bookingService' ,'cabinService', '$log',
                                                                function ($scope, $modal, $location, $routeParams,bookingService, cabinService, $log) {
 	$scope.currentPage = 1;
 	$scope.totalItems = 10;
@@ -107,8 +107,8 @@ angular.module('dntApp').controller('cabinDetailsController', ['$scope','$modal'
 
 	/**
      * @ngdoc method
-     * @name dntApp.object#getDetails
-	 * @methodOf dntApp.controller:cabinDetailsController
+     * @name dntAdminApp.object#getDetails
+	 * @methodOf dntAdminApp.controller:cabinDetailsController
      * @param {Number} page 	What page of bookings for cabin to request. Each page contain 10 bookings.
      * @param {Number} cabinId 	Id of cabin to request bookings from.
      * @description Method utilize cabinService to request a page of bookings for the cabin from the back end, and
@@ -132,8 +132,8 @@ angular.module('dntApp').controller('cabinDetailsController', ['$scope','$modal'
 	
 	/**
      * @ngdoc method
-     * @name dntApp.object#getPrices
-	 * @methodOf dntApp.controller:cabinDetailsController
+     * @name dntAdminApp.object#getPrices
+	 * @methodOf dntAdminApp.controller:cabinDetailsController
      * @param {Number} cabinId 	Id of cabin to request the price categories from.
      * @description Method utilize cabinService to request a all prices currently active for cabin, and
      * handles the resolved or rejected promise. A resolved promise's data are put in the scope and will
@@ -150,8 +150,8 @@ angular.module('dntApp').controller('cabinDetailsController', ['$scope','$modal'
 	
 	/**
      * @ngdoc method
-     * @name dntApp.object#removePrice
-	 * @methodOf dntApp.controller:cabinDetailsController
+     * @name dntAdminApp.object#removePrice
+	 * @methodOf dntAdminApp.controller:cabinDetailsController
      * @param {Number} cabinId 		Id of cabin to request removal of price to back end.
      * @param {JSON object} price 	An object containing the a price category. I.e "id", "memberPrice", "nonMemberPrice" etc.
      * @description Method utilize cabinService to request a price to be removed as a price category for the cabin
@@ -170,8 +170,8 @@ angular.module('dntApp').controller('cabinDetailsController', ['$scope','$modal'
 	
 	/**
      * @ngdoc method
-     * @name dntApp.object#addPrice
-	 * @methodOf dntApp.controller:cabinDetailsController
+     * @name dntAdminApp.object#addPrice
+	 * @methodOf dntAdminApp.controller:cabinDetailsController
      * @param {Number} cabinId 	Id of cabin to request a price to be added.
      * @param {JSON object} priceData 	An object containing the new price category.
      * @description Method utilize cabinService to request a price to be added as a price category to a cabin.
@@ -203,8 +203,8 @@ angular.module('dntApp').controller('cabinDetailsController', ['$scope','$modal'
 	
 	/**
      * @ngdoc method
-     * @name dntApp.object#cancelOrder
-	 * @methodOf dntApp.controller:cabinDetailsController
+     * @name dntAdminApp.object#cancelOrder
+	 * @methodOf dntAdminApp.controller:cabinDetailsController
      * @param {JSON object} order 	An object containing the order data to be cancelled.
      * @description Method will try to delete a order in the back end. It first
      * opens a modal to let the admin confirm the cancellation of a customers order.
@@ -240,8 +240,8 @@ angular.module('dntApp').controller('cabinDetailsController', ['$scope','$modal'
 	
 	/**
      * @ngdoc method
-     * @name dntApp.object#init
-	 * @methodOf dntApp.controller:cabinDetailsController
+     * @name dntAdminApp.object#init
+	 * @methodOf dntAdminApp.controller:cabinDetailsController
      * @description init method for controller. Run at initialization of controller 
      */
 	function init() {
@@ -265,13 +265,13 @@ angular.module('dntApp').controller('cabinDetailsController', ['$scope','$modal'
 /**
  * @ngdoc object
  * 
- * @name dntApp.controller:cabinFormController
- * @requires dntApp.cabinService
+ * @name dntAdminApp.controller:cabinFormController
+ * @requires dntCommon.cabinService
  * @description Controller for form adding a cabin to the system. It has a method submitting a 
  * cabin to the server, and handles errors linked to posting a cabin.
  * 
  */
-angular.module('dntApp').controller('cabinFormController', ['$scope', '$location', '$routeParams', 'cabinService', '$log',
+angular.module('dntAdminApp').controller('cabinFormController', ['$scope', '$location', '$routeParams', 'cabinService', '$log',
                                                             function ($scope, $location, $routeParams, cabinService, $log) {
 	$scope.show = false;
 

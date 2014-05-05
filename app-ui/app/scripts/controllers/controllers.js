@@ -424,10 +424,10 @@ angular.module('dntApp').controller('bookingController', ['$modal','$scope','boo
 /**
  * @ngdoc object
  * 
- * @name dntApp.controller:authController
- * @requires dntApp.api 
- * @requires dntApp.authorization
- * @requires dntApp.appStateService
+ * @name dntCommon.controller:authController
+ * @requires dntCommon.api 
+ * @requires dntCommon.authorization
+ * @requires dntCommon.appStateService
  * @description The `authController`  is responsible for 
  * DNT connect flow, and user authentication. Used in authView and in navbar.
  * 
@@ -444,14 +444,14 @@ angular.module('dntApp').controller('bookingController', ['$modal','$scope','boo
  * 9. authControllers' checkLogin will send data and hmac to back end and a auth token sent back
  * 10.checkLogin will restore location (p. 3) and emits a "sign in" event
  */
-angular.module('dntApp').controller('authController', ['$log', '$scope','$location','appStateService','authorization','api','$window', '$routeParams',
+angular.module('dntCommon').controller('authController', ['$log', '$scope','$location','appStateService','authorization','api','$window', '$routeParams',
                                                        function ($log, $scope, $location, appStateService, authorization, api, $window, $routeParams) {
 	$scope.showLogin = false;
 	
 	/**
 	 * @ngdoc method
-	 * @name dntApp.object#newLogin
-	 * @methodOf dntApp.controller:authController
+	 * @name dntCommon.object#newLogin
+	 * @methodOf dntCommon.controller:authController
 	 * @description When user press a log in button this method should be used. It will
 	 * first save the url/state in a cookie using appStateservice, and then request a redirect url 
 	 * from the back end. When the promise is resolved an redirectUrl containing an url tot the DNT login site, and
@@ -474,8 +474,8 @@ angular.module('dntApp').controller('authController', ['$log', '$scope','$locati
 	
 	/**
 	 * @ngdoc method
-	 * @name dntApp.object#logout
-	 * @methodOf dntApp.controller:authController
+	 * @name dntCommon.object#logout
+	 * @methodOf dntCommon.controller:authController
 	 * @description When a user click a logout button this function should be called. 
 	 * All user credentials are removed from the brower, like the token and the name of logged in customer.
 	 * A "signed out" event is emitted to notify the navbar.
@@ -495,8 +495,8 @@ angular.module('dntApp').controller('authController', ['$log', '$scope','$locati
 	
 	/**
 	 * @ngdoc method
-	 * @name dntApp.object#checkLogin
-	 * @methodOf dntApp.controller:authController
+	 * @name dntCommon.object#checkLogin
+	 * @methodOf dntCommon.controller:authController
 	 * @param {String} encryptedData encrypted data string
 	 * @param {String} hmac	message authentication code
 	 * @description  When DNT Connect redirect back to the front it redirect to /login and authController with
@@ -526,8 +526,8 @@ angular.module('dntApp').controller('authController', ['$log', '$scope','$locati
 	
 	/**
 	 * @ngdoc method
-	 * @name dntApp.object#init
-	 * @methodOf dntApp.controller:authController
+	 * @name dntCommon.object#init
+	 * @methodOf dntCommon.controller:authController
 	 * @description  When `authController` is initialized url is checked for parameters like
 	 * data and hmac, which indicate that the user has been redirected from DNT Connect.
 	 * When these parameters are present, `checkLogin` is called.
@@ -552,12 +552,12 @@ angular.module('dntApp').controller('authController', ['$log', '$scope','$locati
 /**
  * @ngdoc object
  * 
- * @name dntApp.controller:headerController
+ * @name dntCommon.controller:headerController
  * @description Controller used by navbar  to set 
  * active tab, and to decide whether to show log in button, or a drop down with options if user is logged in.
  * 
  */
-angular.module('dntApp').controller('headerController', ['$scope','$rootScope', '$location', 'appStateService',
+angular.module('dntCommon').controller('headerController', ['$scope','$rootScope', '$location', 'appStateService',
                                                          function ($scope,$rootScope, $location, appStateService) {
 	$scope.loggedIn = false;
 	$scope.isAdmin = false;
@@ -582,8 +582,8 @@ angular.module('dntApp').controller('headerController', ['$scope','$rootScope', 
 
 	/**
 	 * @ngdoc method
-	 * @name dntApp.object#init
-	 * @methodOf dntApp.controller:authController
+	 * @name dntCommon.object#init
+	 * @methodOf dntCommon.controller:authController
 	 * @description  When `headerController` is initialized `appStateService` is used to retrieve user
 	 * credentials. If they exist name is made available in the scope, and the drop down list is displayed
 	 * in the view.

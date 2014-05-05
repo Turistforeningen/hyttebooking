@@ -2,12 +2,12 @@
 
 /**
  * @ngdoc service 
- * @name dntApp.authorization
+ * @name dntCommon.authorization
  * @description The authorization handles setup of DNT connect login, acquiring authentication token
  * and logout request.
  * @requires $http 
 **/
-angular.module('dntApp').factory('authorization', ['$http', function ($http) {
+angular.module('dntCommon').factory('authorization', ['$http', function ($http) {
 
 	return {
 		newLogin: function() {
@@ -28,20 +28,20 @@ angular.module('dntApp').factory('authorization', ['$http', function ($http) {
 
 /**
  * @ngdoc service 
- * @name dntApp.appStateService
+ * @name dntCommon.appStateService
  * @requires $cookieStore 
  * @requires $location
  * @description The àppStateService` is a service used to persist user credentials and 
  * location of the app when redirecting to an external site. The data is persisted using cookieStore.
  *
 **/
-angular.module('dntApp').factory('appStateService', ['$cookieStore', '$location', function ($cookieStore, $location) {
+angular.module('dntCommon').factory('appStateService', ['$cookieStore', '$location', function ($cookieStore, $location) {
 
 	return {
 		/**
 	     * @ngdoc method
-	     * @name dntApp.service#saveAttemptUrl
-	     * @methodOf dntApp.appStateService
+	     * @name dntCommon.service#saveAttemptUrl
+	     * @methodOf dntCommon.appStateService
 	     * @description Puts the apps location (url) into a browser cookie. Should be used
 	     * before redirecting to an external site to keep the state of the app.
 	     */
@@ -57,8 +57,8 @@ angular.module('dntApp').factory('appStateService', ['$cookieStore', '$location'
 		
 		/**
 	     * @ngdoc method
-	     * @name dntApp.service#redirectToAttemptedUrl
-	     * @methodOf dntApp.appStateService
+	     * @name dntCommon.service#redirectToAttemptedUrl
+	     * @methodOf dntCommon.appStateService
 	     * @description `redirectToAttemptedUrl` tries to redirect to a location
 	     * retrieved from cookieStore. If no such location is found in cookieStore
 	     * app is redirected to front page.
@@ -77,8 +77,8 @@ angular.module('dntApp').factory('appStateService', ['$cookieStore', '$location'
 		
 		/**
 	     * @ngdoc method
-	     * @name dntApp.service#removeUserCredentials
-	     * @methodOf dntApp.appStateService
+	     * @name dntCommon.service#removeUserCredentials
+	     * @methodOf dntCommon.appStateService
 	     * @description `removeUserCredentials` removes all user credentials stored in
 	     * browser cookies.
 	     */
@@ -86,14 +86,14 @@ angular.module('dntApp').factory('appStateService', ['$cookieStore', '$location'
 			$cookieStore.remove('token');
 			$cookieStore.remove('name');
 			$cookieStore.remove('isAdmin');
-			$cookieStore.put('email', email);
-			$cookieStore.put('id', id);
+			$cookieStore.remove('email');
+			$cookieStore.remove('id');
 		},
 		
 		/**
 	     * @ngdoc method
-	     * @name dntApp.service#insertUserCredentials
-	     * @methodOf dntApp.appStateService
+	     * @name dntCommon.service#insertUserCredentials
+	     * @methodOf dntCommon.appStateService
 	     * @param {String} token authentication token sent with request to back end.
 	     * @param {Number} id sherpa id of user
 	     * @param {String} name full name of user
@@ -112,8 +112,8 @@ angular.module('dntApp').factory('appStateService', ['$cookieStore', '$location'
 		
 		/**
 	     * @ngdoc method
-	     * @name dntApp.service#insertUserCredentials
-	     * @methodOf dntApp.appStateService
+	     * @name dntCommon.service#insertUserCredentials
+	     * @methodOf dntCommon.appStateService
 	     * @description `getUserCredentials` returns all user credentials in cookies.
 	     * @returns {JSON object} user credentials like token, name, email and id.
 	     */
@@ -134,14 +134,14 @@ angular.module('dntApp').factory('appStateService', ['$cookieStore', '$location'
 
 /**
  * @ngdoc service 
- * @name dntApp.httpInterceptor
+ * @name dntCommon.httpInterceptor
  * @requires $q 
- * @requires appStateService 
+ * @requires dntCommon.appStateService 
  * @description httpInterceptor will intercept a unauthorized access, save location of
  * app and redirect user to /login view using àppStateService`
  * 
 **/
-angular.module('dntApp').factory('httpInterceptor', ['appStateService', '$q',  function httpInterceptor (appStateService, $q) {
+angular.module('dntCommon').factory('httpInterceptor', ['appStateService', '$q',  function httpInterceptor (appStateService, $q) {
 	return function (promise) {
 		var success = function (response) {
 			return response;
@@ -163,16 +163,16 @@ angular.module('dntApp').factory('httpInterceptor', ['appStateService', '$q',  f
 
 /**
  * @ngdoc service 
- * @name dntApp.api
+ * @name dntCommon.api
  * @requires $http 
- * @requires appStateService 
+ * @requires dntCommon.appStateService 
  * @description Puts the authentication token into the header of http request done
  * by client. 
  * Token is retrieved either from cookieStore (logged in from a previous session)
  * or sent as a method parameter.
  * 
 **/
-angular.module('dntApp').factory('api', ['$http', 'appStateService', function ($http, appStateService) {
+angular.module('dntCommon').factory('api', ['$http', 'appStateService', function ($http, appStateService) {
 	return {
 		init: function (token) {
 			$http.defaults.headers.common['X-AUTH-TOKEN'] = token || appStateService.getUserCredentials().token;
