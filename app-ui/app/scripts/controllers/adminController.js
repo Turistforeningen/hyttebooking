@@ -91,7 +91,7 @@ angular.module('dntApp').controller('cabinTableController', ['$scope', '$locatio
  * @requires dntApp.bookingService
  * @requires ui.bootstrap.$modal
  * @description Controller for overview of bookings for a given cabin, general cabin information,
- * viewing prices for the cabin. The controller supports different actions a admin might make, like
+ * viewing prices for the cabin. The `cabinDetailsController` supports different actions a admin might make, like
  * adding a price, removing a price, sending email to customer, viewing a reciept and cancelling a booking
  * 
  */
