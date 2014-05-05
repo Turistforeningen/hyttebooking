@@ -3,7 +3,8 @@
 /**
  * @ngdoc service 
  * @name dntApp.authorization
- * @description The authorization handles posting login and logout request to server.
+ * @description The authorization handles setup of DNT connect login, acquiring authentication token
+ * and logout request.
  * @requires $http 
 **/
 angular.module('dntApp').factory('authorization', ['$http', function ($http) {
@@ -17,10 +18,6 @@ angular.module('dntApp').factory('authorization', ['$http', function ($http) {
 			return $http.post('/api/login/checkLogin', credentials);
 		},
 		
-		login: function (credentials) {
-			return $http.post('/login', credentials);
-		},
-
 		logout: function () {
 			return $http.post('/logout');
 		},
@@ -35,12 +32,19 @@ angular.module('dntApp').factory('authorization', ['$http', function ($http) {
  * @requires $cookieStore 
  * @requires $location
  * @description The àppStateService` is a service used to persist user credentials and 
- * location of app when redirecting to an external site. The data is persisted using cookieStore.
+ * location of the app when redirecting to an external site. The data is persisted using cookieStore.
  *
 **/
 angular.module('dntApp').factory('appStateService', ['$cookieStore', '$location', function ($cookieStore, $location) {
 
 	return {
+		/**
+	     * @ngdoc method
+	     * @name dntApp.service#saveAttemptUrl
+	     * @methodOf dntApp.appStateService
+	     * @description Puts the apps location (url) into a browser cookie. Should be used
+	     * before redirecting to an external site to keep the state of the app.
+	     */
 		saveAttemptUrl: function() {
 			if($location.path().toLowerCase() != '/login') {
 				$cookieStore.put('redirectUrl', $location.url());
@@ -51,6 +55,14 @@ angular.module('dntApp').factory('appStateService', ['$cookieStore', '$location'
 				$location.path('/login');
 		},
 		
+		/**
+	     * @ngdoc method
+	     * @name dntApp.service#redirectToAttemptedUrl
+	     * @methodOf dntApp.appStateService
+	     * @description `redirectToAttemptedUrl` tries to redirect to a location
+	     * retrieved from cookieStore. If no such location is found in cookieStore
+	     * app is redirected to front page.
+	     */
 		redirectToAttemptedUrl: function() {
 			$location.$$search = {};
 			var url = $cookieStore.get('redirectUrl');
@@ -63,12 +75,33 @@ angular.module('dntApp').factory('appStateService', ['$cookieStore', '$location'
 			}
 		},
 		
+		/**
+	     * @ngdoc method
+	     * @name dntApp.service#removeUserCredentials
+	     * @methodOf dntApp.appStateService
+	     * @description `removeUserCredentials` removes all user credentials stored in
+	     * browser cookies.
+	     */
 		removeUserCredentials: function () {
 			$cookieStore.remove('token');
 			$cookieStore.remove('name');
 			$cookieStore.remove('isAdmin');
+			$cookieStore.put('email', email);
+			$cookieStore.put('id', id);
 		},
 		
+		/**
+	     * @ngdoc method
+	     * @name dntApp.service#insertUserCredentials
+	     * @methodOf dntApp.appStateService
+	     * @param {String} token authentication token sent with request to back end.
+	     * @param {Number} id sherpa id of user
+	     * @param {String} name full name of user
+	     * @param {Boolean} isAdmin (only used in navbar to decide what drop down options to display) 
+	     * @param {String} email email of user
+	     * @description `insertUserCredentials` puts user credentials in a cookie, 
+	     * mainly to keep a user from logging in all the time.
+	     */
 		insertUserCredentials: function (token, id, name, isAdmin, email) {
 			$cookieStore.put('token', token);
 			$cookieStore.put('id', id);
@@ -77,6 +110,13 @@ angular.module('dntApp').factory('appStateService', ['$cookieStore', '$location'
 			$cookieStore.put('email', email);
 		},
 		
+		/**
+	     * @ngdoc method
+	     * @name dntApp.service#insertUserCredentials
+	     * @methodOf dntApp.appStateService
+	     * @description `getUserCredentials` returns all user credentials in cookies.
+	     * @returns {JSON object} user credentials like token, name, email and id.
+	     */
 		getUserCredentials: function () {
 			var cred = {};
 			cred.token = 	$cookieStore.get('token');

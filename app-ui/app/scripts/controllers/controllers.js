@@ -5,18 +5,20 @@
  * 
  * @name dntApp.controller:orderController
  * @requires dntApp.bookingService
+ * @requires dntApp.appStateService
  * @requires ui.bootstrap.$modal
  * @description Controller for the `ordersView`. Responsible for retrieving the order history of a customer,
  * and contains methods for getting and canceling bookings.
  * 
  */
-angular.module('dntApp').controller('orderController', ['$scope','$modal','$routeParams','bookingService', '$log',
-                                                        function ($scope, $modal, $routeParams, bookingService, $log) {
+angular.module('dntApp').controller('orderController', ['$scope','$modal','$routeParams','bookingService', '$log', 'appStateService',
+                                                        function ($scope, $modal, $routeParams, bookingService, $log, appStateService ) {
 	$scope.currentPage =1;
 	$scope.totalItems = 10;
 	$scope.itemsPerPage = 10;
 	$scope.orders;
 	$scope.errorMessage = '';
+	$scope.user = {};
 	
 	$scope.setPage = function(pageNo) {
 		if(pageNo>0) {
@@ -39,6 +41,7 @@ angular.module('dntApp').controller('orderController', ['$scope','$modal','$rout
 			$scope.currentPage = page +1;
 			$scope.orders = userBookings.data;
 			$scope.totalItems = userBookings.totalItems;
+			$scope.user = appStateService.getUserCredentials();
 		},
 		function(error){
 			$scope.errorMessage='unable to load your orders' + error.message;
@@ -69,9 +72,7 @@ angular.module('dntApp').controller('orderController', ['$scope','$modal','$rout
 		.then(function(ord){
 			$log.info(ord);
 			var modalInstance = $scope.openDialog('/views/receiptModal.html', ord);
-			//alert(JSON.stringify(ord));
 		});
-		//var modalInstance = $scope.openDialog('/views/receiptModal.html', order);//, $scope.booking);
 	}
 	
 	/*
