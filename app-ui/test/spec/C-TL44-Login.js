@@ -1,6 +1,6 @@
 'use strict';
 
-beforeEach(module('dntApp'));
+beforeEach(module('dntCommon'));
 describe('headerController', function(){
     var scope, $location, $rootScope, createController, appStateService;
 
@@ -80,5 +80,171 @@ describe('headerController', function(){
         expect(scope.loggedIn).toBe(false);
         expect(scope.name).toBe("");
         expect(scope.isAdmin).toBe(false);
+    });
+});
+
+
+
+
+
+
+
+//AUTHCONTROLLER -responsible for DNT flow, and /login and authview
+describe('authController', function(){
+    var scope,mockService, $location, $rootScope, createController, appStateService, routeParams, $http, $httpBackend;
+    
+   
+    
+  //Prepare the fake factory
+    beforeEach(function () {
+        mockService = {
+        	newLogin: function () {
+        		
+                return $http.get('/newLogin');
+            },
+            checkLogin: function (encData, hmac) {
+            
+            	return $http.get('/checkLogin');
+            },
+	       logout: function () {
+	    	 
+           	return $http.get('/logout');
+	       }
+        };
+        spyOn(mockService, 'newLogin').andCallThrough();
+        spyOn(mockService, 'checkLogin').andCallThrough();
+        spyOn(mockService, 'logout').andCallThrough();
+        
+    });
+    
+    beforeEach(inject(function($injector) {
+    	$http = $injector.get('$http');
+    	$httpBackend = $injector.get('$httpBackend');
+        $location = $injector.get('$location');
+        $rootScope = $injector.get('$rootScope');
+        routeParams = {};
+        appStateService = $injector.get('appStateService');
+        scope = $rootScope.$new();
+        
+        var $controller = $injector.get('$controller');
+
+        createController = function() {
+            return $controller('authController', {
+                '$scope': scope,
+                'appStateService' : appStateService,
+                'authorization' : mockService,
+                '$routeParams': routeParams,
+                '$location' : $location
+            });
+        };
+    }));
+    
+    afterEach(function() {
+        $httpBackend.verifyNoOutstandingExpectation();
+        $httpBackend.verifyNoOutstandingRequest();
+      });
+    
+    it('should init controller without calling checkLogin if no routeParams is present', function() {
+    	
+    	var controller = createController();
+    	expect(mockService.checkLogin).not.toHaveBeenCalled();
+    	expect(scope.showLogin).toBe(false);
+ 
+    });
+    
+    it('should call checkLogin from init if hmac and encryptedData is present', function() {
+    	
+    	routeParams.data = '12345';
+    	routeParams.hmac = '54231';
+    	$httpBackend.when('GET', '/checkLogin').respond({'id': 12345,'authToken': '123ABC', 'name': 'ola', 'email': 'o@g.com', 'isAdmin' : false});
+    	$httpBackend.expectGET('/checkLogin');
+    	
+    	expect(mockService.checkLogin).not.toHaveBeenCalled();
+    	var controller = createController();
+    	spyOn(scope, 'checkLogin').andCallThrough();
+    	scope.$apply();
+    	
+    	$httpBackend.flush();
+    	expect(mockService.checkLogin).toHaveBeenCalled();
+    	expect(mockService.checkLogin).toHaveBeenCalledWith(routeParams.data, routeParams.hmac);
+    	expect(scope.showLogin).toBe(false);
+ 
+    });
+    
+    it('should not call checkLogin from init if one of routeParams missing', function() {
+    	
+    	routeParams.data = '12345';
+    	//routeParams.hmac = '54231';
+    	
+    	expect(mockService.checkLogin).not.toHaveBeenCalled();
+    	var controller = createController();
+    	spyOn(scope, 'checkLogin').andCallThrough();
+    	scope.$apply();
+    	expect(mockService.checkLogin).not.toHaveBeenCalled();
+    	
+    	routeParams.data = null;
+    	routeParams.hmac = '54231';
+    	
+    	var controller = createController();
+    	spyOn(scope, 'checkLogin').andCallThrough();
+    	scope.$apply();
+    	expect(mockService.checkLogin).not.toHaveBeenCalled();
+ 
+    });
+    
+    it('should set showLogin to true if location path is /login' , function() {
+    	console.log("Check if location showLogin is set");
+    	$location.path('/login');
+    	var controller = createController();
+    	
+    	expect(scope.showLogin).toBe(true);
+    	
+    });
+    
+    it('should set an error message if checkLogin fails' , function() {
+    	console.log("Check if error message if checkLogin fails");
+    	$httpBackend.when('GET', '/checkLogin').respond(401, '');
+    	$httpBackend.expectGET('/checkLogin');
+    	var controller = createController();
+    	scope.checkLogin('NA', 'NA');
+    	$httpBackend.flush();
+    	expect(mockService.checkLogin).toHaveBeenCalled();
+    	expect(scope.loginErrorMessage).toBeDefined();
+    	expect(scope.loginErrorMessage.length>0).toBe(true);
+    	
+    });
+    
+    it('should put user creds in cookies, emit a event and put token in header' , function() {
+    	console.log("check if checkLogin behavior is correct");
+    	var data = {'id': 12345,'authToken': '123ABC', 'name': 'ola', 'email': 'o@g.com', 'isAdmin' : false};
+    	$httpBackend.when('GET', '/checkLogin').respond(data);
+    	$httpBackend.expectGET('/checkLogin');
+    	var controller = createController();
+    	spyOn(appStateService, 'insertUserCredentials').andCallThrough();
+    	spyOn(appStateService, 'redirectToAttemptedUrl').andCallThrough();
+    	spyOn(scope, "$emit");
+    	
+    	scope.checkLogin('NA', 'NA');
+    	$httpBackend.flush();
+    	expect(mockService.checkLogin).toHaveBeenCalled();
+    	expect(scope.loginErrorMessage.length).toBe(0);
+    	
+    	//User data put in cookieStore
+    	console.log("Check if user data is in cookieStore");
+    	expect(appStateService.insertUserCredentials).toHaveBeenCalled();
+    	expect(appStateService.redirectToAttemptedUrl).toHaveBeenCalled();
+    	var cred = appStateService.getUserCredentials();
+    	expect(cred.name).toBe(data.name);
+    	expect(cred.token).toBe(data.authToken);
+    	expect(cred.email).toBe(data.email);
+    	expect(cred.isAdmin).toBe(data.isAdmin);
+    	
+    	//check if checkLogin emits a event
+    	console.log("Check if successful call emit an event");
+    	expect(scope.$emit).toHaveBeenCalledWith("event:signedIn", data);
+    	
+    	//check if token put in header (api.init(token))
+    	console.log("Check if token has been put in header");
+    	expect($http.defaults.headers.common['X-AUTH-TOKEN']).toBe(data.authToken);
     });
 });

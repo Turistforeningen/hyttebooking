@@ -1,3 +1,5 @@
+'use strict';
+
 //CONTROLLER
 
 describe('bookingController', function () {
@@ -205,9 +207,12 @@ describe('bookingController', function () {
     
 });
 
-//DNT SELECTOR
 
-'use strict';
+
+
+
+
+//DNT SELECTOR
 
 describe('dntSelector', function () {
 

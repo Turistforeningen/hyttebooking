@@ -1,5 +1,6 @@
 'use strict';
 
+beforeEach(module('dntApp'));
 describe('orderController', function () {
 
 
@@ -23,7 +24,7 @@ describe('orderController', function () {
     beforeEach(inject(function ($rootScope, $controller, $q, $routeParams) {
         scope = $rootScope.$new();
         q = $q;
-        routeParams = $routeParams
+        routeParams = $routeParams;
         controller = $controller('orderController', { $scope: scope, $routeParams: routeParams, bookingService: mockService });
     }));
 
