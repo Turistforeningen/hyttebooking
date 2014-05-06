@@ -96,7 +96,7 @@ public class AdminController extends Controller {
 			return unauthorized();
 		}
 		
-		System.out.println("##### INCOMING JSON FOR ADDCABIN ######");
+		System.out.println("##### INCOMING JSON FOR ADMIN ADDCABIN ######");
 		System.out.println(request().body().asJson());
 		System.out.println("########################################");
 		

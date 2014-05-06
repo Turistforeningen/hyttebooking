@@ -8,6 +8,7 @@ import models.User;
 
 import org.junit.*;
 
+import JSONFormatters.JsonHelper;
 import static org.junit.Assert.*;
 import play.mvc.Result;
 import play.test.FakeRequest;
@@ -121,7 +122,7 @@ public class AdminControllerTest extends WithApplication  {
 	}
 	
 	@Test
-	/**
+	/** TODO DEBUG AFTER SUBMIT CABIN AS ADMIN IS FULLY IMPLEMENTED
 	 * Test that unauthorized user cannot submit cabin
 	 * Test that authorized admin can submit cabin
 	 * Test that submitted cabin enters pool of cabins
@@ -138,7 +139,7 @@ public class AdminControllerTest extends WithApplication  {
 		//SUBMIT CABIN AS ADMIN
 		fkRequest = new FakeRequest(POST, "/api/admin/cabins");
 		fkRequest.withHeader(authToken, admin.createToken());
-		fkRequest.withJsonBody(JsonHelper.getOkBooking());
+		fkRequest.withJsonBody(JsonHelper.getAddCabinAdminJSON());
 		
 		Result resOk = route(fkRequest);
 		assertEquals(OK, status(resOk));

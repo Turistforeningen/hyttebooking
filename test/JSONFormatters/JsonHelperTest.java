@@ -1,4 +1,4 @@
-package utilities;
+package JSONFormatters;
 
 import static org.junit.Assert.*;
 import static play.test.Helpers.fakeApplication;
@@ -12,7 +12,6 @@ import org.junit.Test;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import controllers.JsonHelper;
 import play.libs.Json;
 import play.test.WithApplication;
 
@@ -41,7 +40,8 @@ public class JsonHelperTest extends WithApplication {
 	
 	@Test
 	public void testOutput() {
-		assertTrue(JsonHelper.getOkBooking().has("price")); //just a random key, if it has likely jsonHelper works perfectly because it is two deep
+		JsonNode node = JsonHelper.getOkBooking();
+		assertTrue("Error: node doesn't have guests"+node, node.has("guests"));
 	}
 	
 }

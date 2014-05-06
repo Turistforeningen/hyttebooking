@@ -1,4 +1,4 @@
-package controllers;
+package JSONFormatters;
 
 public class PriceJson {
 

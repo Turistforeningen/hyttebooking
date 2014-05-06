@@ -14,6 +14,9 @@ import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.junit.*;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
+import JSONFormatters.JsonHelper;
 import flexjson.JSONSerializer;
 import static org.junit.Assert.*;
 import play.mvc.Result;
@@ -59,9 +62,10 @@ public class BookingControllerTest extends WithApplication {
 		//Normal booking, OK
 		FakeRequest fkRequest = new FakeRequest(POST, "/api/bookings/");
 		fkRequest.withHeader(authToken, userOk.createToken());
-		fkRequest.withJsonBody(JsonHelper.getOkBooking());
+		JsonNode node = JsonHelper.getOkBooking();
+		fkRequest.withJsonBody(node);
 		System.out.println("DEBUGGIN: \n");
-		System.out.println(JsonHelper.getOkBooking());
+		System.out.println(node);
 		System.out.println("#############");
 		
 		Result resOk = route(fkRequest);
