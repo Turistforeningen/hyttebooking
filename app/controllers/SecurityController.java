@@ -45,7 +45,7 @@ public class SecurityController extends Action.Simple {
 			authTokenAndInfo.put("name", user.fullName);
 			authTokenAndInfo.put("email", user.getEmailAddress());
 			authTokenAndInfo.put("id", user.id);
-			authTokenAndInfo.put("isAdmin", user.admin);
+			authTokenAndInfo.put("isAdmin", user.isAdmin);
 			response().setCookie(AUTH_TOKEN, authToken);
 			System.out.println("authToken ");
 			return ok(authTokenAndInfo);
