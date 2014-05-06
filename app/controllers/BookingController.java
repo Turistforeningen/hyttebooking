@@ -110,6 +110,10 @@ public class BookingController extends Controller {
 	@With(SecurityController.class)
 	public static Result submitBooking() {
 	
+		System.out.println("###### INCOMING JSON FROM FRONTEND ######");
+		System.out.println(request().body().asJson());
+		System.out.println("########## END ###########################");
+		
 		BookingForm form = BookingForm
 				.deserializeJson(request().body().asJson().toString());
 		if(form.isValid()) {

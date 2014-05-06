@@ -28,7 +28,7 @@ public class JsonHelperTest extends WithApplication {
 		User user2 = new User("w", "p", "Jane Doe");
 		user2.save();
 		User admin = new User("admin", "p", "admin");
-		admin.admin = true;
+		admin.isAdmin = true;
 		admin.save();
 
 		lc1 = new LargeCabin("Fjordheim", 10);

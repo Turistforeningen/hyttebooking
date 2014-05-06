@@ -20,8 +20,6 @@ public abstract class Cabin extends Model {
 
 	public String name;
 	
-	
-	
 	public Cabin(String name) {
 		this.name = name;	
 	}

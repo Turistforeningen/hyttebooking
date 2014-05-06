@@ -82,7 +82,7 @@ public class ConnectController extends Controller {
 		byte[] plainText = aes.decrypt(data, hmac);
 		JsonNode login = Json.parse(new String(plainText, "UTF-8"));
 		System.out.println("LOGIN RECIEVED: #########");
-		System.out.println(login.asText());
+		System.out.println(login);
 		System.out.println("END LOGIN ##########");
 		
 		if(!login.get("er_autentisert").asBoolean())
@@ -96,7 +96,7 @@ public class ConnectController extends Controller {
 		if(user == null) { //first time using booking solution, we need to register user internally
 			user = new User(id, email, fName+" "+lName); //TODO don't split fName and lName
 			if(id == ADMIN_ID) {
-				user.admin = true;
+				user.isAdmin = true;
 			}
 			user.save();
 		}
