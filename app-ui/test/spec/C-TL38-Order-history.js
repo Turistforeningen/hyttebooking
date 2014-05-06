@@ -1,30 +1,5 @@
 'use strict';
 
-beforeEach(module('dntApp'));
-describe('headerController', function(){
-    var $scope, $location, $rootScope, createController;
-
-    beforeEach(inject(function($injector) {
-        $location = $injector.get('$location');
-        $rootScope = $injector.get('$rootScope');
-        $scope = $rootScope.$new();
-
-        var $controller = $injector.get('$controller');
-
-        createController = function() {
-            return $controller('headerController', {
-                '$scope': $scope
-            });
-        };
-    }));
-
-    it('should have loggedIn to false since user is not in cookiestore', function() {
-        var controller = createController();
-        expect($scope.loggedIn).toBe(false);
-        expect($scope.name).toBe('');
-    });
-});
-
 describe('orderController', function () {
 
 

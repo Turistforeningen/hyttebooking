@@ -588,13 +588,13 @@ angular.module('dntCommon').controller('headerController', ['$scope','$rootScope
 	 * credentials. If they exist name is made available in the scope, and the drop down list is displayed
 	 * in the view.
 	 */
-	function init() {
+	 $scope.init = function() {
 		var userData = appStateService.getUserCredentials();
-		if(!angular.isUndefined(userData.name)) {
+		if(!angular.isUndefined(userData.token)) {
 			$scope.name = userData.name;
 			$scope.loggedIn = true;
 			$scope.isAdmin = userData.isAdmin;
 		}
-	}
-	init();
+	};
+	$scope.init();
 }]);

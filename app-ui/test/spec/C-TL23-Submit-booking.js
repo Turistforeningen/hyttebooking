@@ -303,8 +303,9 @@ describe('dntSelector', function () {
         	console.log(randNrSelected + " ,random number selected for test")
         	dirScope.categories[0].nr = randNrSelected;
         	scope.$digest();
+        	var bedsLeft = 10-randNrSelected;
         	var range = dirScope.range(0);
-        	for (var i= 0; i<=randNrSelected; i++) {
+        	for (var i= 0; i<=bedsLeft; i++) {
         		expect(range[i]).toBe(i);
         	}
         	var range2 = dirScope.range(randNrSelected);
