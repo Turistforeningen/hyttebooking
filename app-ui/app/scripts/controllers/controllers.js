@@ -14,7 +14,7 @@
 angular.module('dntApp').controller('orderController', ['$scope','$modal','$routeParams','bookingService', '$log', 'appStateService',
                                                         function ($scope, $modal, $routeParams, bookingService, $log, appStateService ) {
 	$scope.currentPage =1;
-	$scope.totalItems = 10;
+	$scope.totalItems = 0;
 	$scope.itemsPerPage = 10;
 	$scope.orders;
 	$scope.errorMessage = '';
@@ -40,7 +40,9 @@ angular.module('dntApp').controller('orderController', ['$scope','$modal','$rout
 		.then(function(userBookings){
 			$scope.currentPage = page +1;
 			$scope.orders = userBookings.data;
-			$scope.totalItems = userBookings.totalItems;
+			if(userBookings.totalItems) {
+				$scope.totalItems = userBookings.totalItems;
+			}
 			$scope.user = appStateService.getUserCredentials();
 		},
 		function(error){
@@ -58,13 +60,16 @@ angular.module('dntApp').controller('orderController', ['$scope','$modal','$rout
      * If promise is resolved (accepted), the order is removed from the orders array.
      */
 	$scope.cancelOrder = function (order) {
-		$scope.openDialog('/views/cancelConfirmModal.html', null).result.then(function () {
-			bookingService.cancelOrder(order.id)
-			.then(function(data){
-				var index = $scope.orders.indexOf(order);
-				$scope.orders.splice(index, 1);
-			})
-		});
+		if(order.ableToCancel) {
+			$scope.openDialog('/views/cancelConfirmModal.html', null).result.then(function () {
+				bookingService.cancelOrder(order.id)
+				.then(function(data){
+					var index = $scope.orders.indexOf(order);
+					$scope.orders.splice(index, 1);
+				})
+			});
+		}
+		
 	};
 	
 	$scope.open = function (order) {
@@ -100,7 +105,7 @@ angular.module('dntApp').controller('orderController', ['$scope','$modal','$rout
      * the method will try to retrieve that page of booking. I.e restoring the view, if browser is reloaded.
      * NOT WORKING YET, LOCATION must be used to set url parameters when selecting a page.
      */
-	function init() {
+	$scope.init = function() {
 		var pageNo = parseInt($routeParams.page);
 		if(pageNo) {
 			$scope.getOrders(pageNo-1);
@@ -109,7 +114,7 @@ angular.module('dntApp').controller('orderController', ['$scope','$modal','$rout
 			$scope.getOrders(0);
 		}
 	}
-	init();
+	$scope.init();
 }]);
 
 /*
