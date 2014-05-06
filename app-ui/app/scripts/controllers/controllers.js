@@ -140,7 +140,7 @@ angular.module('dntApp').controller('testController', ['$scope', function ($scop
 angular.module('dntApp').controller('bookingController', ['$modal','$scope','bookingService','$log','$routeParams','$window', 'appStateService',
                                                           function ($modal, $scope, bookingService, $log, $routeParams, $window, appStateService) {
 	$scope.validState = true;
-	$scope.errorMessage;
+	$scope.errorMessage ='';
 	$scope.booking ={};
 	$scope.beds = 0;
 	$scope.hideIndex = 0;
@@ -462,7 +462,12 @@ angular.module('dntCommon').controller('authController', ['$log', '$scope','$loc
 	$scope.newLogin = function () {
 		appStateService.saveAttemptUrl();
 		var success = function(data) {
-			$window.location.href = data.redirectUrl;
+			if(data.redirectUrl) {
+				$window.location.href = data.redirectUrl;
+			}
+			else {
+				$scope.loginErrorMessage = 'Problem with back end';
+			}
 		};
 		var error = function(error) {
 			$scope.loginErrorMessage = 'Unable to contact server';
@@ -483,10 +488,11 @@ angular.module('dntCommon').controller('authController', ['$log', '$scope','$loc
 		appStateService.removeUserCredentials();
 		$scope.$emit('event:signedOut');
 		var success = function (data) {
-			
+			api.destroy();
 		};
 
 		var error = function (error) {
+			api.destroy();
 			$scope.loginErrorMessage = 'Unable to contact server';
 		};
 		authorization.logout().success(success).error(error);

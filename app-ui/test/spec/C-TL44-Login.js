@@ -91,37 +91,22 @@ describe('headerController', function(){
 
 //AUTHCONTROLLER -responsible for DNT flow, and /login and authview
 describe('authController', function(){
-    var scope,mockService, $location, $rootScope, createController, appStateService, routeParams, $http, $httpBackend;
+    var scope,mockService, $location, $rootScope, createController, appStateService, routeParams, $http, $httpBackend, api, $window;
     
-   
     
-  //Prepare the fake factory
-    beforeEach(function () {
-        mockService = {
-        	newLogin: function () {
-        		
-                return $http.get('/newLogin');
-            },
-            checkLogin: function (encData, hmac) {
-            
-            	return $http.get('/checkLogin');
-            },
-	       logout: function () {
-	    	 
-           	return $http.get('/logout');
-	       }
-        };
+    beforeEach(inject(function($injector) {
+    	$http = $injector.get('$http');
+    	$window = {'location' : {'href' : 'http://www.fake.com'}}
+    	$httpBackend = $injector.get('$httpBackend');
+        $location = $injector.get('$location');
+        $rootScope = $injector.get('$rootScope');
+        api = $injector.get('api');
+        	
+        mockService = $injector.get('authorization');
         spyOn(mockService, 'newLogin').andCallThrough();
         spyOn(mockService, 'checkLogin').andCallThrough();
         spyOn(mockService, 'logout').andCallThrough();
         
-    });
-    
-    beforeEach(inject(function($injector) {
-    	$http = $injector.get('$http');
-    	$httpBackend = $injector.get('$httpBackend');
-        $location = $injector.get('$location');
-        $rootScope = $injector.get('$rootScope');
         routeParams = {};
         appStateService = $injector.get('appStateService');
         scope = $rootScope.$new();
@@ -134,7 +119,9 @@ describe('authController', function(){
                 'appStateService' : appStateService,
                 'authorization' : mockService,
                 '$routeParams': routeParams,
-                '$location' : $location
+                '$location' : $location,
+                'api' : api,
+                '$window' : $window
             });
         };
     }));
@@ -156,8 +143,8 @@ describe('authController', function(){
     	
     	routeParams.data = '12345';
     	routeParams.hmac = '54231';
-    	$httpBackend.when('GET', '/checkLogin').respond({'id': 12345,'authToken': '123ABC', 'name': 'ola', 'email': 'o@g.com', 'isAdmin' : false});
-    	$httpBackend.expectGET('/checkLogin');
+    	$httpBackend.when('POST', '/api/login/checkLogin').respond({'id': 12345,'authToken': '123ABC', 'name': 'ola', 'email': 'o@g.com', 'isAdmin' : false});
+    	$httpBackend.expectPOST('/api/login/checkLogin');
     	
     	expect(mockService.checkLogin).not.toHaveBeenCalled();
     	var controller = createController();
@@ -203,8 +190,8 @@ describe('authController', function(){
     
     it('should set an error message if checkLogin fails' , function() {
     	console.log("Check if error message if checkLogin fails");
-    	$httpBackend.when('GET', '/checkLogin').respond(401, '');
-    	$httpBackend.expectGET('/checkLogin');
+    	$httpBackend.when('POST', '/api/login/checkLogin').respond(401, '');
+    	$httpBackend.expectPOST('/api/login/checkLogin');
     	var controller = createController();
     	scope.checkLogin('NA', 'NA');
     	$httpBackend.flush();
@@ -217,8 +204,8 @@ describe('authController', function(){
     it('should put user creds in cookies, emit a event and put token in header' , function() {
     	console.log("check if checkLogin behavior is correct");
     	var data = {'id': 12345,'authToken': '123ABC', 'name': 'ola', 'email': 'o@g.com', 'isAdmin' : false};
-    	$httpBackend.when('GET', '/checkLogin').respond(data);
-    	$httpBackend.expectGET('/checkLogin');
+    	$httpBackend.when('POST', '/api/login/checkLogin').respond(data);
+    	$httpBackend.expectPOST('/api/login/checkLogin');
     	var controller = createController();
     	spyOn(appStateService, 'insertUserCredentials').andCallThrough();
     	spyOn(appStateService, 'redirectToAttemptedUrl').andCallThrough();
@@ -247,4 +234,88 @@ describe('authController', function(){
     	console.log("Check if token has been put in header");
     	expect($http.defaults.headers.common['X-AUTH-TOKEN']).toBe(data.authToken);
     });
+    
+    it('should emit event and remove cookie at logout at logout and http header removed' , function() {
+    	spyOn(appStateService, 'removeUserCredentials').andCallThrough();
+    	spyOn(scope, "$emit");
+    	$httpBackend.when('POST', '/logout').respond({'status': 'ok'});
+    	$httpBackend.expectPOST('/logout');
+    	var token = '12345'
+    	var data = {'id': 12345,'authToken': '123ABC', 'name': 'ola', 'email': 'o@g.com', 'isAdmin' : false};
+    	api.init(token);
+    	appStateService.insertUserCredentials(data.authToken, data.id, data.name, data.isAdmin, data.email);
+    	
+    	var controller = createController();
+    	scope.logout();
+    	$httpBackend.flush();
+    	scope.$apply();
+    	expect(mockService.logout).toHaveBeenCalled();
+    	expect(scope.loginErrorMessage).toBe('');
+    	expect(scope.$emit).toHaveBeenCalledWith('event:signedOut');
+    	expect(appStateService.removeUserCredentials).toHaveBeenCalled();
+    	
+    	var cred = appStateService.getUserCredentials();
+    	expect(cred.id).toBeUndefined();
+    	expect(cred.name).toBeUndefined();
+    	expect(cred.token).toBeUndefined();
+    	expect(cred.email).toBeUndefined();
+    	expect(cred.isAdmin).toBeUndefined();
+    	//removed at actual backend but should probably be removed at front end.
+    	expect($http.defaults.headers.common['X-AUTH-TOKEN']).toBeUndefined();
+    	
+    });
+    
+    it('should still log out front end even if there back end can be contacted' , function() {
+    	spyOn(appStateService, 'removeUserCredentials').andCallThrough();
+    	spyOn(scope, "$emit");
+    	$httpBackend.when('POST', '/logout').respond(500, '');
+    	$httpBackend.expectPOST('/logout');
+    	var token = '12345'
+    	var data = {'id': 12345,'authToken': '123ABC', 'name': 'ola', 'email': 'o@g.com', 'isAdmin' : false};
+    	api.init(token);
+    	appStateService.insertUserCredentials(data.authToken, data.id, data.name, data.isAdmin, data.email);
+    	
+    	var controller = createController();
+    	scope.logout();
+    	scope.$apply();
+    	$httpBackend.flush();
+    	expect(mockService.logout).toHaveBeenCalled();
+    	expect(scope.loginErrorMessage.length>0).toBe(true);
+    	expect(scope.$emit).toHaveBeenCalledWith('event:signedOut');
+    	expect(appStateService.removeUserCredentials).toHaveBeenCalled();
+    	
+    	var cred = appStateService.getUserCredentials();
+    	expect(cred.id).toBeUndefined();
+    	expect(cred.name).toBeUndefined();
+    	expect(cred.token).toBeUndefined();
+    	expect(cred.email).toBeUndefined();
+    	expect(cred.isAdmin).toBeUndefined();
+    	//removed at actual backend but should probably be removed at front end.
+    	expect($http.defaults.headers.common['X-AUTH-TOKEN']).toBeUndefined();
+    	
+    });
+    
+    it('should redirect if successful call to server with newLogin' , function() {
+    	var data = {"redirectUrl" : "http://www.vg.no"};
+    	$httpBackend.when('GET', 'api/login/setup').respond(data);
+    	$httpBackend.expectGET('api/login/setup');
+    	var token = '12345'
+    	
+    	//$window is a fake object in this test
+    	expect($window.location.href).toBe('http://www.fake.com');
+    	var controller = createController();
+    	scope.newLogin();
+    	scope.$apply();
+    	$httpBackend.flush();
+    	scope.$apply();
+    	expect(mockService.newLogin).toHaveBeenCalled();
+    	expect(scope.loginErrorMessage.length>0).toBe(false);
+    	expect($window.location.href).toBe(data.redirectUrl);
+    	expect($http.defaults.headers.common['X-AUTH-TOKEN']).toBeUndefined();
+    	
+    });
 });
+
+
+//check html?
+//Check services.

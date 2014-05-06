@@ -4,155 +4,106 @@
 
 describe('bookingController', function () {
 	//unit test for bookingController
-	var scope, fakeFactory, controller, q, deferred, routeParams, mockService;
-
-	//Prepare the fake factory
-    beforeEach(function () {
-        mockService = {
-        	getAvailability: function (cabinId, startDate, endDate) {
-                deferred = q.defer();
-                // Place the fake return object here
-                var returnData = [0,4,4,0,0,0,0,10,20,20,20,20,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
-                deferred.resolve(returnData);
-                return deferred.promise;
-            },
-	        authenticatePayment: function (paymentId, response) {
-	            deferred = q.defer();
-	            // Place the fake return object here
-	            var returnData = {};
-	            deferred.resolve(returnData);
-	            return deferred.promise;
-	        },
-	        startPayment: function (bookingId) {
-	            deferred = q.defer();
-	            // Place the fake return object here
-	            var returnData = {};
-	            deferred.resolve(returnData);
-	            return deferred.promise;
-	        },
-	        getPrices: function (id) {
-	            deferred = q.defer();
-	            // Place the fake return object here
-	            var returnData = {"guests": [
-	                                        {
-	                                            "nr": 0,
-	                                            "price": 300,
-	                                            "type": "Voksen, medlem"
-	                                          },
-	                                          {
-	                                            "nr": 0,
-	                                            "price": 150,
-	                                            "type": "Ungdom, medlem"
-	                                          },
-	                                          {
-	                                            "nr": 0,
-	                                            "price": 100,
-	                                            "type": "Barn, medlem"
-	                                          },
-	                                          {
-	                                            "nr": 0,
-	                                            "price": 0,
-	                                            "type": "Spedbarn"
-	                                          },
-	                                          {
-	                                            "nr": 0,
-	                                            "price": 400,
-	                                            "type": "Voksen"
-	                                          },
-	                                          {
-	                                            "nr": 0,
-	                                            "price": 200,
-	                                            "type": "ungdom"
-	                                          },
-	                                          {
-	                                            "nr": 0,
-	                                            "price": 150,
-	                                            "type": "barn"
-	                                          }]};
-	            if(id>0) {
-	            	deferred.resolve(returnData);
-	            }
-	            else {
-	            	deferred.reject({message: "not working"});
-	            }
-	            return deferred.promise;
-	        },
-	        postOrder: function (booking) {
-	            deferred = q.defer();
-	            // Place the fake return object here
-	            var returnData = {'id' :20};
-	            deferred.resolve(returnData);
-	            return deferred.promise;
-	        }
-        };
+	 var scope,q, mockService, $location, $rootScope, createController, routeParams, $http, $httpBackend;
+    
+    beforeEach(inject(function($injector) {
+    	q = $injector.get('$q');
+    	$http = $injector.get('$http');
+    	$httpBackend = $injector.get('$httpBackend');
+        $location = $injector.get('$location');
+        $rootScope = $injector.get('$rootScope');
+        
+        mockService = $injector.get('bookingService');
         spyOn(mockService, 'getAvailability').andCallThrough();
         spyOn(mockService, 'authenticatePayment').andCallThrough();
         spyOn(mockService, 'startPayment').andCallThrough();
         spyOn(mockService, 'getPrices').andCallThrough();
         spyOn(mockService, 'postOrder').andCallThrough();
         
-    });
-
-    //Inject fake factory into controller
-    beforeEach(inject(function ($rootScope, $controller, $q, $routeParams) {
-        scope = $rootScope.$new();
-        q = $q;
         routeParams = {};
-        controller = $controller('bookingController', { $scope: scope,$routeParams : routeParams, bookingService: mockService });
+        scope = $rootScope.$new();
         
+        var $controller = $injector.get('$controller');
+
+        createController = function() {
+            return $controller('bookingController', {
+                '$scope': scope,
+                'bookingService' : mockService,
+                '$routeParams': routeParams,
+                '$location' : $location
+            });
+        };
     }));
+  
+    afterEach(function() {
+        $httpBackend.verifyNoOutstandingExpectation();
+        $httpBackend.verifyNoOutstandingRequest();
+      });
 
     it('Check initial state of variables', function () {
         // Before $apply is called the promise hasn't resolved
+    	var controller = createController();
     	scope.$apply();
     	expect(scope.beds).toBe(0);
         //init does not contain any routeparams
         expect(scope.booking).toEqual({});
-        expect(scope.errorMessage).toBeUndefined();
+        expect(scope.errorMessage).toBe('');
     });
     
-    it('should init controller with variables for beds and cabinid if routeParams is set', inject(function($controller) {
+    it('should init controller with variables for beds and cabinid if routeParams is set',  function () {
         // Before $apply is called the promise hasn't resolved
     	routeParams.id = 1;
     	routeParams.type = 'large';
     	routeParams.beds = 20;
+    	var url = '/api/cabins/' + routeParams.id + '/prices';
+    	$httpBackend.when('GET', url).respond(returnData);
+    	$httpBackend.expectGET(url);
     	
-    	controller = $controller('bookingController', { $scope: scope, $routeParams : routeParams, bookingService: mockService });
+    	var controller = createController();
     	scope.$apply();
+    	$httpBackend.flush();
     	expect(scope.booking).not.toBe({});
     	expect(mockService.getPrices).toHaveBeenCalled();
     	expect(mockService.getPrices).toHaveBeenCalledWith(1);
     	expect(scope.beds).toBe(20);
     	expect(mockService.authenticatePayment).not.toHaveBeenCalled();
-    }));
+    	
+    });
     
-    it('should not allow booking if routeParams is wrong or missing', inject(function($controller) {
+    it('should not allow booking if routeParams is wrong or missing', function() {
         // Before $apply is called the promise hasn't resolved
     	routeParams.type = 'large';
     	routeParams.beds = 20;
     	
-    	controller = $controller('bookingController', { $scope: scope, $routeParams : routeParams, bookingService: mockService });
+    	var controller = createController();
     	scope.$apply();
     	expect(scope.validState).toBe(false); //fail
-    }));
+    });
     
-    it('error message should be put into scope.errorMessage', inject(function($controller) {
+    it('error message should be put into scope.errorMessage', function() {
         // Before $apply is called the promise hasn't resolved
     	routeParams.id = -1;
     	routeParams.type = 'large';
     	routeParams.beds = 20;
     	
+    	var url = '/api/cabins/' + routeParams.id + '/prices';
+    	$httpBackend.when('GET', url).respond(404, {'message': 'Not found'});
+    	$httpBackend.expectGET(url);
+    	
     	expect(scope.errorMessage).toBeUndefined();
-    	controller = $controller('bookingController', { $scope: scope, $routeParams : routeParams, bookingService: mockService });
+    	var controller = createController();
     	scope.$apply();
+    	$httpBackend.flush();
     	//if server cant process price request because of invalid parameters etc, errorMessage should be set
-    	expect(scope.errorMessage).toBe("not working");
+    	expect(scope.errorMessage.length > 0).toBe(true);
     	expect(mockService.getPrices).toHaveBeenCalled();
     	//tests to see if bookingModule is available or not
-    }));
+    });
     
     it('should not post booking via postBooking unless booking contains datefrom and dateTo', function($controller) {
-    	expect(scope.errorMessage).toBeUndefined();
+    	;
+    	var controller = createController();
+    	expect(scope.errorMessage).toBe('')
     	scope.$apply();
     	var booking = {};
     	scope.postBooking(booking);
@@ -162,12 +113,14 @@ describe('bookingController', function () {
     });
     
     it('should not open booking confirm dialog unless booking contains at least one person, datefrom, dateTo', function($controller) {
-    	spyOn(scope, 'openBookingConfirmDialog').andCallThrough();
+ 
+    	var controller = createController();
+       	spyOn(scope, 'openBookingConfirmDialog').andCallThrough();
     	spyOn(scope, 'postBooking').andCallThrough();
     	spyOn(scope, 'openDialog').andCallThrough();
     	//assume the bookingController is in a valid state
     	scope.validState = true;
-    	expect(scope.errorMessage).toBeUndefined();
+    	expect(scope.errorMessage).toBe('');
     	scope.$apply();
     	scope.booking = {"cabinId":1, "dateFrom" : 2030404, "dateTo" : 2030404};
     	scope.$apply();
@@ -186,25 +139,71 @@ describe('bookingController', function () {
     it('should let user post booking if dateFrom, dateTo and date', function($controller) {
     	var resultId = -1;
     	//Mock scope.pay function, and test if method parameter is correct
-    	spyOn(scope, "pay").andCallFake(function(bookingId) {
-    	     resultId = bookingId; 
+    	var returnData = {'id' :20};
+    	var url = '/api/bookings/';
+    	$httpBackend.when('POST', url).respond(returnData);
+    	$httpBackend.expectPOST(url);
+    	var controller = createController();
+    	spyOn(scope, "pay").andCallFake(function(id) {
+    	     resultId = id; 
     	});
-    	expect(scope.errorMessage).toBeUndefined();
+    	expect(scope.errorMessage).toBe('');
     	//assume bookingController is in a valid state
     	scope.validState = true;
     	scope.$apply();
+    	
     	scope.booking = {"cabinId":1, "dateFrom" : 2030404, "dateTo" : 2030404, "guests" : [{"nr": 1}, {"nr" : 2}]};
     	scope.$apply();
     	expect(scope.booking.guests).not.toBeUndefined();
     	scope.postBooking(scope.booking);
     	scope.$apply();
+    	$httpBackend.flush();
     	expect(mockService.postOrder).toHaveBeenCalled();
     	expect(mockService.postOrder).toHaveBeenCalledWith(scope.booking);
-    	expect(scope.errorMessage).toBeUndefined;
+    	expect(scope.errorMessage).toBe('');
     	expect(resultId).toBe(20);
     	
     });
     
+    
+    var returnData = {"guests": [
+                                 {
+                                     "nr": 0,
+                                     "price": 300,
+                                     "type": "Voksen, medlem"
+                                   },
+                                   {
+                                     "nr": 0,
+                                     "price": 150,
+                                     "type": "Ungdom, medlem"
+                                   },
+                                   {
+                                     "nr": 0,
+                                     "price": 100,
+                                     "type": "Barn, medlem"
+                                   },
+                                   {
+                                     "nr": 0,
+                                     "price": 0,
+                                     "type": "Spedbarn"
+                                   },
+                                   {
+                                     "nr": 0,
+                                     "price": 400,
+                                     "type": "Voksen"
+                                   },
+                                   {
+                                     "nr": 0,
+                                     "price": 200,
+                                     "type": "ungdom"
+                                   },
+                                   {
+                                     "nr": 0,
+                                     "price": 150,
+                                     "type": "barn"
+                                   }]};
+    
+    var availData = [0,4,4,0,0,0,0,10,20,20,20,20,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
 });
 
 
@@ -318,8 +317,6 @@ describe('dntSelector', function () {
         		expect(range2[i]).toBe(i);
         	}
         });
-        
-        
         
     });
 });
