@@ -20,7 +20,7 @@ public class CabinForm extends AbstractForm<Cabin>{
 	public int id;
 	
 	/**
-	 * FlexJson needs an constructor even if its empty
+	 * FlexJson needs a constructor even if it's empty
 	 */
 	public CabinForm() {
 		
