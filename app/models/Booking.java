@@ -17,10 +17,10 @@ import utilities.Page;
 public class Booking extends Model {
 	//TODO maybe should be using enumerator in utilities package instead?
 	public static final int CANCELLATION_LIMIT = 7; /** If booking takes place in less than or equal to seven days; cannot cancel **/
-	public static Integer TIMEDOUT = new Integer(3);
-	public static Integer CANCELLED = new Integer(2);
-	public static Integer PAID = new Integer(1);
-	public static Integer BOOKED = new Integer(0);
+	public static final Integer TIMEDOUT = (int)3;
+	public static final Integer CANCELLED = (int)2;
+	public static final Integer PAID = (int)1;
+	public static final Integer BOOKED = (int)0;
 
 	@Id
 	public Long id;

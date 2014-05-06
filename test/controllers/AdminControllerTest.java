@@ -1,6 +1,8 @@
 package controllers;
 
+import models.Booking;
 import models.LargeCabin;
+import models.RDate;
 import models.SmallCabin;
 import models.User;
 
@@ -12,6 +14,11 @@ import play.test.FakeRequest;
 import play.test.WithApplication;
 import static play.test.Helpers.*;
 
+/**
+ * Component testing of the admin controller, testing routes and expected status code
+ * given input.
+ * Some of the tests are moved to integration test and marked as such
+ */
 public class AdminControllerTest extends WithApplication  {
 
 	User user;
@@ -25,21 +32,21 @@ public class AdminControllerTest extends WithApplication  {
 		this.user = new User("q", "w", "John Doe");
 		this.user.save();
 		this.admin = new User("admin", "p", "admin");
-		this.admin.admin = true;
+		this.admin.isAdmin = true;
 		this.admin.save();
 		
 		LargeCabin lc1 = new LargeCabin("Fjordheim", 10);
-		lc1.addPrice("Voksen", "26 og opp", 400, 300);
-		lc1.addPrice("Ungdom", "13-25", 300, 200);
-		lc1.addPrice("Barn", "4-12", 200, 100);
-		lc1.addPrice("Spedbarn", "0-4", 0, 0);
+		lc1.addPrice("Voksen", "26 og opp", 400, 300, false);
+		lc1.addPrice("Ungdom", "13-25", 300, 200, false);
+		lc1.addPrice("Barn", "4-12", 200, 100, true);
+		lc1.addPrice("Spedbarn", "0-4", 0, 0, true);
 		lc1.save();
 
 		LargeCabin lc2 = new LargeCabin("Peterstun", 20);
-		lc2.addPrice("Voksen", "26 og opp", 450, 350);
-		lc2.addPrice("Ungdom", "13-25", 350, 250);
-		lc2.addPrice("Barn", "4-12", 250, 150);
-		lc2.addPrice("Spedbarn", "0-4", 0, 0);
+		lc2.addPrice("Voksen", "26 og opp", 450, 350, false);
+		lc2.addPrice("Ungdom", "13-25", 350, 250, false);
+		lc2.addPrice("Barn", "4-12", 250, 150, true);
+		lc2.addPrice("Spedbarn", "0-4", 0, 0, true);
 		System.out.println(lc2.priceMatrix.size() + "size på den greia");
 		lc2.save();
 
@@ -50,6 +57,9 @@ public class AdminControllerTest extends WithApplication  {
 		SmallCabin sc2 = new SmallCabin("Fjordlistølen");
 		sc2.setPrice("Hele", " ", 1000, 800);
 		sc2.save();
+		
+		Booking b1 = Booking.createBooking(user.id, RDate.fDt, RDate.fDt.plusDays(3), lc1.id, lc1.beds);
+		b1.save();
 	}
 	
 	@Test
@@ -120,7 +130,7 @@ public class AdminControllerTest extends WithApplication  {
 		//POST    /api/admin/cabins 
 		FakeRequest fkRequest = new FakeRequest(POST, "/api/admin/cabins");
 		fkRequest.withHeader(authToken, user.createToken());
-		fkRequest.withJsonBody(JsonHelper.getOkBooking());
+		fkRequest.withJsonBody(JsonHelper.getAddCabinAdminJSON());
 		
 		Result resBad = route(fkRequest);
 		assertEquals(UNAUTHORIZED, status(resBad));

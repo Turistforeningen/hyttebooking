@@ -209,7 +209,7 @@ public class BookingForm extends AbstractForm<Booking> {
 	 */
 	public static BookingForm deserializeJson(String jsonBooking) {
 		BookingForm bookingData = null;
-		System.out.println(jsonBooking);
+		//System.out.println(jsonBooking);
 		try {
 			JSONDeserializer<BookingForm> deserializer = new JSONDeserializer<BookingForm>()
 					.use("guests.values", PriceForm.class);

@@ -30,6 +30,14 @@ public class GuestJson {
 		this.isMember = isMember;
 	}
 	
+	public GuestJson(String ageRange, String guestType, long nr, double price, boolean isMember) {
+		this.ageRange = ageRange;
+		this.guestType = guestType;
+		this.nr = nr;
+		this.price = price;
+		this.isMember = isMember;
+	}
+	
 	public static ArrayList<GuestJson> addGuests(int[] nrOfGuests) {
 		if(nrOfGuests.length < JsonHelper.GUEST_TYPE_NAMES.length) {
 			System.err.println("ERROR: nrOfGuests array too short!");
@@ -38,7 +46,8 @@ public class GuestJson {
 		ArrayList<GuestJson> guests = new ArrayList<GuestJson>(); 
 		for(int i = 0; i<JsonHelper.GUEST_TYPE_NAMES.length; i++) {
 			//System.out.println("ADDING: "+1+((long)i%4)+" - "+AGE_RANGE_NAMES[i]+" - "+GUEST_TYPE_NAMES[i]+" - "+nrOfGuests[i]+" - "+GUEST_PRICES[i]+" - "+MEMBERSHIP[i]);
-			guests.add(new GuestJson(1+((long)i%4) , JsonHelper.AGE_RANGE_NAMES[i], JsonHelper.GUEST_TYPE_NAMES[i], nrOfGuests[i], JsonHelper.GUEST_PRICES[i], JsonHelper.MEMBERSHIP[i]));
+			if(nrOfGuests[i] > 0)
+				guests.add(new GuestJson(1+((long)i%4) , JsonHelper.AGE_RANGE_NAMES[i], JsonHelper.GUEST_TYPE_NAMES[i], nrOfGuests[i], JsonHelper.GUEST_PRICES[i], JsonHelper.MEMBERSHIP[i]));
 		}
 		return guests;
 	}
