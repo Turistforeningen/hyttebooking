@@ -1,9 +1,11 @@
-package controllers;
+package JSONFormatters;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.joda.time.DateTime;
+
+import controllers.DateTimeTransfomer2;
 
 public class BookingJson {
 	/* EXAMPLE
@@ -13,13 +15,13 @@ public class BookingJson {
    "guests":[
 	 */
 	
-	public long cabinId;
+	public String cabinId;
 	public DateTime dateTo;
 	public DateTime dateFrom;
 	public List<GuestJson> guests = new ArrayList<GuestJson>();
 	public boolean termsAndConditions;
 	
-	public BookingJson(long cabinId, DateTime dateTo, DateTime dateFrom, List<GuestJson> gJson, boolean termsAndConditions) {
+	public BookingJson(String cabinId, DateTime dateTo, DateTime dateFrom, List<GuestJson> gJson, boolean termsAndConditions) {
 		this.cabinId = cabinId;
 		this.dateTo = dateTo;
 		this.dateFrom = dateFrom;

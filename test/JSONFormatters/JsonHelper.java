@@ -1,4 +1,4 @@
-package controllers;
+package JSONFormatters;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +10,7 @@ import org.joda.time.DateTime;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import controllers.DateTimeTransfomer2;
 import flexjson.JSONSerializer;
 import play.libs.Json;
 
@@ -32,7 +33,7 @@ public class JsonHelper {
 		exclude("*.class")
 		.transform(new DateTimeTransfomer2(), DateTime.class);
 		
-		BookingJson cj = new BookingJson((long)1, RDate.fDt.plusWeeks(2), RDate.fDt.plusWeeks(1), guests, true);
+		BookingJson cj = new BookingJson("1", RDate.fDt.plusWeeks(2), RDate.fDt.plusWeeks(1), guests, true);
 		return ser.serialize(cj);
 	}
 	
@@ -45,7 +46,7 @@ public class JsonHelper {
 		exclude("*.class")
 		.transform(new DateTimeTransfomer2(), DateTime.class);
 		
-		BookingJson cj = new BookingJson((long)1, RDate.fDt.plusWeeks(2), RDate.fDt.plusWeeks(1), guests, false);
+		BookingJson cj = new BookingJson("1", RDate.fDt.plusWeeks(2), RDate.fDt.plusWeeks(1), guests, false);
 		return ser.serialize(cj);
 	}
 

@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import org.junit.Before;
 import org.junit.Test;
 
+import JSONFormatters.JsonHelper;
+
 import com.fasterxml.jackson.databind.JsonNode;
 
 import models.Booking;
@@ -88,10 +90,27 @@ public class IntegrationTest extends WithApplication {
 	@Test
 	/** TE1.4
 	 * A system should reserve (still) unpaid reservation for 30 minutes
+	 * Timedout tests take 31 minutes to complete, this is due to the Akka system having to be run
+	 * for so long before timing out a single booking
 	 */
-	public void testReservationLock() {
-		//TODO as last test run
-		assertTrue(true);
+	public void testReservationLock() throws InterruptedException {
+		int bookingsTotal = Booking.find.all().size();
+		//make two bookings
+		FakeRequest fkRequest = new FakeRequest(POST, "/api/bookings/");
+		fkRequest.withHeader(authToken, user.createToken());
+		JsonNode node = JsonHelper.getOkBooking();
+		fkRequest.withJsonBody(node);
+		Result resOk = route(fkRequest);
+		assertEquals("Couldn't book: "+contentAsString(resOk), OK, status(resOk));
+		assertTrue(bookingsTotal < Booking.find.all().size()); //should be size +1 now
+		
+		//wait 25 mins and check status on booking 1
+		Thread.sleep(1500000); //sleep for 25 mins
+		assertEquals(Booking.BOOKED, Booking.find.byId((long) bookingsTotal+1).status);
+		
+		//wait 35 mins and check status on booking 1
+		Thread.sleep(360000); //sleep for 6 more minutes
+		assertEquals(Booking.TIMEDOUT, Booking.find.byId((long) bookingsTotal+1).status);
 	}
 	
 	@Test
