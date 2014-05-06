@@ -87,7 +87,7 @@ angular.module('dntCommon').factory('appStateService', ['$cookieStore', '$locati
 			$cookieStore.remove('name');
 			$cookieStore.remove('isAdmin');
 			$cookieStore.remove('email');
-			$cookieStore.remove('id');
+			$cookieStore.remove('userId');
 		},
 		
 		/**
@@ -104,7 +104,7 @@ angular.module('dntCommon').factory('appStateService', ['$cookieStore', '$locati
 	     */
 		insertUserCredentials: function (token, id, name, isAdmin, email) {
 			$cookieStore.put('token', token);
-			$cookieStore.put('id', id);
+			$cookieStore.put('userId', id);
 			$cookieStore.put('name', name);
 			$cookieStore.put('isAdmin', isAdmin);
 			$cookieStore.put('email', email);
@@ -123,7 +123,7 @@ angular.module('dntCommon').factory('appStateService', ['$cookieStore', '$locati
 			cred.name = 	$cookieStore.get('name');
 			cred.isAdmin = 	$cookieStore.get('isAdmin');
 			cred.email = 	$cookieStore.get('email');
-			cred.id = 		$cookieStore.get('id');
+			cred.id = 		$cookieStore.get('userId');
 			return cred;
 		}
 		
@@ -176,6 +176,10 @@ angular.module('dntCommon').factory('api', ['$http', 'appStateService', function
 	return {
 		init: function (token) {
 			$http.defaults.headers.common['X-AUTH-TOKEN'] = token || appStateService.getUserCredentials().token;
+		},
+	
+		destroy: function () {
+			$http.defaults.headers.common['X-AUTH-TOKEN'] = undefined;
 		}
 	};
 }]);

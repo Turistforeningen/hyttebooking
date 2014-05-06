@@ -14,7 +14,7 @@
 angular.module('dntApp').controller('orderController', ['$scope','$modal','$routeParams','bookingService', '$log', 'appStateService',
                                                         function ($scope, $modal, $routeParams, bookingService, $log, appStateService ) {
 	$scope.currentPage =1;
-	$scope.totalItems = 10;
+	$scope.totalItems = 0;
 	$scope.itemsPerPage = 10;
 	$scope.orders;
 	$scope.errorMessage = '';
@@ -40,7 +40,9 @@ angular.module('dntApp').controller('orderController', ['$scope','$modal','$rout
 		.then(function(userBookings){
 			$scope.currentPage = page +1;
 			$scope.orders = userBookings.data;
-			$scope.totalItems = userBookings.totalItems;
+			if(userBookings.totalItems) {
+				$scope.totalItems = userBookings.totalItems;
+			}
 			$scope.user = appStateService.getUserCredentials();
 		},
 		function(error){
@@ -58,13 +60,16 @@ angular.module('dntApp').controller('orderController', ['$scope','$modal','$rout
      * If promise is resolved (accepted), the order is removed from the orders array.
      */
 	$scope.cancelOrder = function (order) {
-		$scope.openDialog('/views/cancelConfirmModal.html', null).result.then(function () {
-			bookingService.cancelOrder(order.id)
-			.then(function(data){
-				var index = $scope.orders.indexOf(order);
-				$scope.orders.splice(index, 1);
-			})
-		});
+		if(order.ableToCancel) {
+			$scope.openDialog('/views/cancelConfirmModal.html', null).result.then(function () {
+				bookingService.cancelOrder(order.id)
+				.then(function(data){
+					var index = $scope.orders.indexOf(order);
+					$scope.orders.splice(index, 1);
+				})
+			});
+		}
+		
 	};
 	
 	$scope.open = function (order) {
@@ -100,7 +105,7 @@ angular.module('dntApp').controller('orderController', ['$scope','$modal','$rout
      * the method will try to retrieve that page of booking. I.e restoring the view, if browser is reloaded.
      * NOT WORKING YET, LOCATION must be used to set url parameters when selecting a page.
      */
-	function init() {
+	$scope.init = function() {
 		var pageNo = parseInt($routeParams.page);
 		if(pageNo) {
 			$scope.getOrders(pageNo-1);
@@ -109,7 +114,7 @@ angular.module('dntApp').controller('orderController', ['$scope','$modal','$rout
 			$scope.getOrders(0);
 		}
 	}
-	init();
+	$scope.init();
 }]);
 
 /*
@@ -140,7 +145,7 @@ angular.module('dntApp').controller('testController', ['$scope', function ($scop
 angular.module('dntApp').controller('bookingController', ['$modal','$scope','bookingService','$log','$routeParams','$window', 'appStateService',
                                                           function ($modal, $scope, bookingService, $log, $routeParams, $window, appStateService) {
 	$scope.validState = true;
-	$scope.errorMessage;
+	$scope.errorMessage ='';
 	$scope.booking ={};
 	$scope.beds = 0;
 	$scope.hideIndex = 0;
@@ -447,6 +452,7 @@ angular.module('dntApp').controller('bookingController', ['$modal','$scope','boo
 angular.module('dntCommon').controller('authController', ['$log', '$scope','$location','appStateService','authorization','api','$window', '$routeParams',
                                                        function ($log, $scope, $location, appStateService, authorization, api, $window, $routeParams) {
 	$scope.showLogin = false;
+	$scope.loginErrorMessage ='';
 	
 	/**
 	 * @ngdoc method
@@ -457,16 +463,19 @@ angular.module('dntCommon').controller('authController', ['$log', '$scope','$loc
 	 * from the back end. When the promise is resolved an redirectUrl containing an url tot the DNT login site, and
 	 * url parameters, clientId, hmac (message authentication code), and data (encrypted) is retrieved.
 	 *  The front end will then redirect to this url (log in at Den Norske Turistforeningen).
-	 */
+	 */ 
 	$scope.newLogin = function () {
 		appStateService.saveAttemptUrl();
 		var success = function(data) {
-			$window.location.href = data.redirectUrl;
+			if(data.redirectUrl) {
+				$window.location.href = data.redirectUrl;
+			}
+			else {
+				$scope.loginErrorMessage = 'Problem with back end';
+			}
 		};
 		var error = function(error) {
-			$scope.errorMessage = error.message;
-			$log.info("Could not connect to DNTConnect");
-			$log.info(error);
+			$scope.loginErrorMessage = 'Unable to contact server';
 		};
 		
 		authorization.newLogin().success(success).error(error);
@@ -484,11 +493,12 @@ angular.module('dntCommon').controller('authController', ['$log', '$scope','$loc
 		appStateService.removeUserCredentials();
 		$scope.$emit('event:signedOut');
 		var success = function (data) {
-			
+			api.destroy();
 		};
 
 		var error = function (error) {
-			$log.info(error);
+			api.destroy();
+			$scope.loginErrorMessage = 'Unable to contact server';
 		};
 		authorization.logout().success(success).error(error);
 	};
@@ -517,10 +527,10 @@ angular.module('dntCommon').controller('authController', ['$log', '$scope','$loc
 				appStateService.redirectToAttemptedUrl();
 			}
 			else {
-				$log.info(token + " token undefined");
+				$scope.loginErrorMessage = 'Token could not be retrieved from server';
 			}
 		}).error(function(error) {
-			$log.info("det virket ikke");
+			$scope.loginErrorMessage = 'Unable to sign in using DNT Connect. Try again';
 		});
 	};
 	
@@ -532,7 +542,7 @@ angular.module('dntCommon').controller('authController', ['$log', '$scope','$loc
 	 * data and hmac, which indicate that the user has been redirected from DNT Connect.
 	 * When these parameters are present, `checkLogin` is called.
 	 */
-	var init = function() {
+	$scope.init = function() {
 		var encryptedData = $routeParams.data;
 		var hmac = $routeParams.hmac;
 		if(encryptedData && hmac) {
@@ -545,7 +555,7 @@ angular.module('dntCommon').controller('authController', ['$log', '$scope','$loc
 			
 		}
 	};
-	init();
+	$scope.init();
 }]);
 
 
@@ -588,13 +598,13 @@ angular.module('dntCommon').controller('headerController', ['$scope','$rootScope
 	 * credentials. If they exist name is made available in the scope, and the drop down list is displayed
 	 * in the view.
 	 */
-	function init() {
+	 $scope.init = function() {
 		var userData = appStateService.getUserCredentials();
-		if(!angular.isUndefined(userData.name)) {
+		if(!angular.isUndefined(userData.token)) {
 			$scope.name = userData.name;
 			$scope.loggedIn = true;
 			$scope.isAdmin = userData.isAdmin;
 		}
-	}
-	init();
+	};
+	$scope.init();
 }]);
