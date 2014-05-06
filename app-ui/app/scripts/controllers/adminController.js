@@ -225,6 +225,15 @@ angular.module('dntAdminApp').controller('cabinDetailsController', ['$scope','$m
 		});
 	};
 	
+	//receipt
+	$scope.open = function (orderId) {
+		bookingService.getOrderSummary(orderId)
+		.then(function(ord){
+			$log.info(ord);
+			var modalInstance = $scope.openDialog('/views/receiptModal.html', ord);
+		});
+	}
+	
 	$scope.openDialog = function (url, data) {
 		var modalInstance = $modal.open({
 			templateUrl: url,
