@@ -356,7 +356,7 @@ angular.module('dntApp').controller('bookingController', ['$modal','$scope','boo
      * When terms and conditions is accepted the postBooking method is called.
      */
 	$scope.openBookingConfirmDialog = function() {
-		if(validateBooking($scope.booking)) {
+		
 		$scope.booking.termsAndConditions = false;
 		var data = {};
 		data.booking = $scope.booking;
@@ -369,7 +369,7 @@ angular.module('dntApp').controller('bookingController', ['$modal','$scope','boo
 			$log.info('Modal dismissed at: ' + new Date());
 
 		});
-		}
+		
 	};
 	
 	
