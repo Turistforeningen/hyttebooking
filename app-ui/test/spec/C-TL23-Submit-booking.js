@@ -122,7 +122,7 @@ describe('bookingController', function () {
     	scope.validState = true;
     	expect(scope.errorMessage).toBe('');
     	scope.$apply();
-    	scope.booking = {"cabinId":1, "dateFrom" : 2030404, "dateTo" : 2030404};
+    	scope.booking = {"cabinId":1, "dateFrom" : 2030404, "dateTo" : 2030404, "termsAndConditions": true};
     	scope.$apply();
     	expect(scope.booking.guests).toBeUndefined();
     	scope.openBookingConfirmDialog();
@@ -166,38 +166,31 @@ describe('bookingController', function () {
     });
     
     
-    var returnData = {"guests": [
-                                 {
+    var returnData = {"guests": [{
                                      "nr": 0,
                                      "price": 300,
                                      "type": "Voksen, medlem"
-                                   },
-                                   {
+                                   },{
                                      "nr": 0,
                                      "price": 150,
                                      "type": "Ungdom, medlem"
-                                   },
-                                   {
+                                   },{
                                      "nr": 0,
                                      "price": 100,
                                      "type": "Barn, medlem"
-                                   },
-                                   {
+                                   },{
                                      "nr": 0,
                                      "price": 0,
                                      "type": "Spedbarn"
-                                   },
-                                   {
+                                   },{
                                      "nr": 0,
                                      "price": 400,
                                      "type": "Voksen"
-                                   },
-                                   {
+                                   },{
                                      "nr": 0,
                                      "price": 200,
                                      "type": "ungdom"
-                                   },
-                                   {
+                                   },{
                                      "nr": 0,
                                      "price": 150,
                                      "type": "barn"

@@ -199,6 +199,11 @@ angular.module('dntApp').controller('bookingController', ['$modal','$scope','boo
 			$scope.errorMessage = "Du må velge avreisedato for å kunne reservere.";
 			return false;
 		}
+		else if(angular.isUndefined(booking.termsAndConditions)) {
+			$scope.errorMessage = "Du kan ikke reservere uten å ha godkjent avtalevilkår.";
+			return false;
+		}
+		
 		var personCount = 0;
 		angular.forEach(booking.guests, function(value, key) {
 			personCount += value.nr;
@@ -407,6 +412,9 @@ angular.module('dntApp').controller('bookingController', ['$modal','$scope','boo
 				else {
 					$scope.validState = false;
 				}
+			}
+			else {
+				$scope.validState = true;
 			}
 			if($routeParams.responseCode) {
 				if($routeParams.responseCode === 'OK') {
