@@ -235,7 +235,7 @@ angular.module('dntBookingModule')
 
 		template:
 			'<div class="row" style="min-height: 250px;">' +
-			'<table class="table table-condensed">' +
+			'<table id="prices" class="table table-condensed">' +
 			'<tbody>'+
 			'<tr ng-repeat="person in categories" ng-show="person.nr>0">'+
 			'<td>{{person.guestType}}</td>'+
@@ -303,14 +303,14 @@ angular.module('dntBookingModule')
 						scope.newDateRange();
 					}
 
-				});
+				}, true);
 
 				scope.$watch('toDate', function(newDate) {
 					if (newDate) {
 						scope.newDateRange();
 					}
 
-				});
+				}, true);
 			}
 	};
 });

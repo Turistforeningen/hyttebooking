@@ -1,7 +1,7 @@
 'use strict';
 //ORDERCONTROLLER - TESTING CANCELLING BOOKING REQ. REST OF TESTS FOR ORDERCONTROLLER IS IN C-TL38-Order-History
 beforeEach(module('dntApp'));
-describe('bookingController', function(){
+describe('bookingController for CTL27-TAC', function(){
     var scope,mockService, $rootScope, createController, appStateService, routeParams, $http, $httpBackend, $q;
     
     
@@ -41,9 +41,11 @@ describe('bookingController', function(){
     	var data = {};
     	routeParams.id = 1;
     	routeParams.type = 'small';
+    	$httpBackend.when('GET', '/api/cabins/1/prices').respond(data);
+    	$httpBackend.expectGET('/api/cabins/1/prices');
     	var controller = createController();
     	scope.$apply();
-    	
+    	$httpBackend.flush();
     	expect(scope.validState).toBeDefined();
     	expect(scope.errorMessage).toBeDefined();
     	expect(scope.booking).toBeDefined();
@@ -64,8 +66,8 @@ describe('bookingController', function(){
     	var data = {status: "ok"};
     	routeParams.id = 1;
     	routeParams.type = 'small';
-    	$httpBackend.when('POST', '/api/cabins/1/prices').respond(data);
-    	$httpBackend.expectPOST('/api/cabins/1/prices');
+    	$httpBackend.when('GET', '/api/cabins/1/prices').respond(data);
+    	$httpBackend.expectGET('/api/cabins/1/prices');
     	var controller = createController();
     	
     	scope.$apply();

@@ -162,9 +162,9 @@ angular.module('dntApp').controller('bookingController', ['$modal','$scope','boo
      *  pay function is called.
      */
 	$scope.postBooking = function(booking) {
-		if(validateBooking(booking)) {
+		if(validateBooking(booking, true)) {
 			var processedBooking = angular.copy(booking);
-			processedBooking.guests = removeUnpickedpriceCategories(processedBooking.guests);
+			processedBooking.guests = $scope.removeUnpickedPriceCategories(processedBooking.guests);
 			bookingService.postOrder(processedBooking)
 			.then(function(data){
 				$scope.pay(data.id);
@@ -186,7 +186,7 @@ angular.module('dntApp').controller('bookingController', ['$modal','$scope','boo
      * If the validation fails, a descriptive error message is put into the scope.
      * @returns {Boolean} Whether a error has been found or not
      */
-	var validateBooking = function(booking) {
+	var validateBooking = function(booking, checkTerms) {
 		if(!$scope.validState) {
 			$scope.errorMessage = "Ingen hytteId spesifisert.";
 			return false;
@@ -199,7 +199,7 @@ angular.module('dntApp').controller('bookingController', ['$modal','$scope','boo
 			$scope.errorMessage = "Du må velge avreisedato for å kunne reservere.";
 			return false;
 		}
-		else if(angular.isUndefined(booking.termsAndConditions)) {
+		else if(checkTerms && angular.isUndefined(booking.termsAndConditions)) {
 			$scope.errorMessage = "Du kan ikke reservere uten å ha godkjent avtalevilkår.";
 			return false;
 		}
@@ -211,6 +211,10 @@ angular.module('dntApp').controller('bookingController', ['$modal','$scope','boo
 		if(personCount <= 0) {
 			$scope.errorMessage = "Du må velge minst en person for å kunne reservere.";
 			return false
+		}
+		if(personCount > $scope.beds) {
+			$scope.errorMessage = "Det finnes ikke nok senger på hytta for å oppfylle denne bestillingen";
+			return false;
 		}
 		return true;
 	}
@@ -247,7 +251,7 @@ angular.module('dntApp').controller('bookingController', ['$modal','$scope','boo
 	$scope.getPrices = function(cabinId) {
 		bookingService.getPrices(cabinId)
 		.then(function(data){
-			$scope.booking.guests = processPriceMatrix(data);
+			$scope.booking.guests = $scope.processPriceMatrix(data);
 		},
 		function(error){
 			$scope.errorMessage = error.message;
@@ -265,7 +269,7 @@ angular.module('dntApp').controller('bookingController', ['$modal','$scope','boo
      * @returns {JSON object} A subset of the the price categories
      */
 	//removes all unused price categories. Can be used before posting a booking
-	var removeUnpickedpriceCategories = function(priceCategories) {
+	$scope.removeUnpickedPriceCategories = function(priceCategories) {
 		var processedPrices = [];
 		angular.forEach(priceCategories, function(value) {
 			if(value.nr > 0) {
@@ -287,7 +291,7 @@ angular.module('dntApp').controller('bookingController', ['$modal','$scope','boo
      * category and represents the number of person selected  by customer for that category.
      * @returns {JSON object} A list of all price categories.
      */
-	var processPriceMatrix = function(priceMatrix) {
+	$scope.processPriceMatrix = function(priceMatrix) {
 		var nonMemberGuests = [];
 		var allGuests = [];
 		angular.forEach(priceMatrix, function(value){
@@ -356,20 +360,20 @@ angular.module('dntApp').controller('bookingController', ['$modal','$scope','boo
      * When terms and conditions is accepted the postBooking method is called.
      */
 	$scope.openBookingConfirmDialog = function() {
-		
-		$scope.booking.termsAndConditions = false;
-		var data = {};
-		data.booking = $scope.booking;
-		data.user = appStateService.getUserCredentials();
-		var modalInstance = $scope.openDialog('/views/bookingModal.html', data);
-
-		modalInstance.result.then(function () {
-			$scope.postBooking($scope.booking);
-		}, function () {
-			$log.info('Modal dismissed at: ' + new Date());
-
-		});
-		
+		if(validateBooking($scope.booking, false)) {
+			$scope.booking.termsAndConditions = false;
+			var data = {};
+			data.booking = $scope.booking;
+			data.user = appStateService.getUserCredentials();
+			var modalInstance = $scope.openDialog('/views/bookingModal.html', data);
+	
+			modalInstance.result.then(function () {
+				$scope.postBooking($scope.booking);
+			}, function () {
+				$log.info('Modal dismissed at: ' + new Date());
+	
+			});
+		}
 	};
 	
 	
