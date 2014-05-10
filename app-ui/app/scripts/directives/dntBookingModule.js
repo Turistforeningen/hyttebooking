@@ -382,6 +382,12 @@ angular.module('dntBookingModule')
             	$scope.minimumBookableDate.setDate($scope.minimumBookableDate.getDate() +1);
             	var availability = {};
             	
+            	$scope.getAvailability = function() {
+            		return availability;
+            	}
+            	$scope.setAvailability = function(avail) {
+            		return avail;
+            	}
             	$scope.getAvailability = function(from, to, key) {
             		bookingService.getAvailability($scope.booking.cabinId, from, to)
             		.then(function(data){

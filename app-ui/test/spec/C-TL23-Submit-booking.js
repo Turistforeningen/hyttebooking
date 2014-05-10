@@ -576,24 +576,42 @@ describe('dntPriceViewer', function () {
 //and react to changes from dntSelector. Its also a neat packaged booking module containing all html
 //needed for booking
 describe('dntBookingModule', function () {
-
-	
+	var $rootScope, mockService;
     var scope, elm, $body = $('body');
     
-    beforeEach(module('templates'));
-
+   
+    beforeEach(function () {
+        module('templates', 'dntBookingModule', function($provide) {
+          
+            $provide.factory('bookingService', function($q) {
+                // Service/Factory Mock
+                return {
+                	getAvailability: function(cabinId, startDate, endDate) {
+                		var deferred = $q.defer();
+                	
+                		
+                		deferred.resolve({"bookedDays": "[0,4,4,0,0,0,0,10,20,20,20,20,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]"});
+                		 return deferred.promise;
+                	}
+                }
+            });
+        });
+    });
     
     //Inject rootscope and comile and use them to set up directive for testing
-    beforeEach(inject(function ($rootScope, $compile) {
+    beforeEach(inject(function ($rootScope, $compile, $filter) {
         scope = $rootScope.$new();
-      //var availData = [0,4,4,0,0,0,0,10,20,20,20,20,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
-        scope.guests = [{guestType: "ungdom", nr: 0, price:300}, {guestType: "barn", nr: 0, price:500}];
+        scope.booking = {'cabinId': 1};
+        scope.booking.guests = [{guestType: "ungdom", nr: 0, price:300}, {guestType: "barn", nr: 0, price:500}];
         scope.cabinType = 'large';
         scope.beds = 10;
-        scope.booking = {'cabinId': 1};
+       
         scope.errorMessage = '';
         scope.hideIndex = 1;
+       
     }));
+   
+    
     
     function compileDirective(tpl) {
         if (!tpl) tpl = '<dnt-booking-module cabin-type="{{cabinType}}" number-of-beds="{{beds}}"  on-book="openBookingConfirmDialog()" booking-model="booking" error-model="errorMessage" divider-index="hideIndex"></dnt-price-viewer>';
@@ -602,29 +620,56 @@ describe('dntBookingModule', function () {
         var element = angular.element(tpl);
         inject(function($compile) {
             elm = $compile(element)(scope);
-
+            
         });
         $body.append(elm);
+        
         // $digest is necessary to finalize the directive generation
         scope.$digest();
+     
     }
     
     describe('initialisation', function() {
         // before each test in this block, generates a fresh directive
-        beforeEach(function() {
+    	
+    	beforeEach(function() {
             compileDirective();
+
+            
         });
-        // a single test example, check the produced DOM
-        it('should produce a dntSelector, two datepickers, booking button and a dntselector', function() {
+    	
+    	 // a single test example, check the produced DOM
+        it('should init controller propertly', function() { 
+
         	var dirScope = elm.isolateScope();
-        	expect(elm.hasClass("prices")).toBeTruthy;
-        	expect(elm.find('tr').length>0).toEqual(true);
+        	dirScope.$apply();
+        	expect(dirScope.cabinType).toEqual('large');
+        	expect(dirScope.beds).toEqual('10');
+        	expect(dirScope.errorMessage).toEqual(null);
+        	expect(dirScope.dividerIndex).toEqual(1);
+        	expect(dirScope.getAvailability()).toBe({});
+        	console.log(dirScope.getAvailability() + "avail");
+        	
+        });
+        
+        // a single test example, check the produced DOM
+        it('should produce a dntSelector, two datepickers, booking button and a dntselector', function() { 
+
+        	var dirScope = elm.isolateScope();
+        	expect(elm.hasClass("bookingBannner")).toBeTruthy;
+        	expect(elm.find('dnt-selector').length).toEqual(1);
+        	expect(elm.find('dnt-price-viewer').length).toEqual(1);
+        	expect(elm.find('table').length).toEqual(4);
+        	
         });
         
         it('Should show layout for a large cabin because of cabin-type parameter', function() {
+
         	var dirScope = elm.isolateScope();
-        	expect(elm.hasClass("prices")).toBeTruthy;
-        	expect(elm.find('tr').length>0).toEqual(true);
+        	dirScope.$apply();
+        	//ng-if
+        	expect(elm.find('select').length==2).toBe(true);
+        	expect(dirScope.cabinType).toEqual('large');
         });
 
     });
@@ -637,16 +682,19 @@ describe('dntBookingModule', function () {
       
         it('should trigger getAvailability function when from or to date changes', function() {
         	var dirScope = elm.isolateScope();
+     
         	
         });
         
         it('should get availability from back end and broadcast a message', function() {
         	var dirScope = elm.isolateScope();
+     
         	
         });
         
         it('A fully booked day should display a red disabled button', function() {
         	var dirScope = elm.isolateScope();
+
         	
         });
         
@@ -661,8 +709,8 @@ describe('dntBookingModule', function () {
         });
         
         it('should update availability when more or less guests has been selected', function() {
+        
         	var dirScope = elm.isolateScope();
-        	
         });
     });
     
