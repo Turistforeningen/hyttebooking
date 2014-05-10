@@ -8,7 +8,7 @@ module.exports = function(config) {
 
     // testing framework to use (jasmine/mocha/qunit/...)
     frameworks: ['jasmine'],
-
+    
     // list of files / patterns to load in the browser
     files: [
       'app/bower_components/angular/angular.js',
@@ -23,7 +23,8 @@ module.exports = function(config) {
       'app/scripts/*.js',
       'app/scripts/**/*.js',
       'test/mock/**/*.js',
-      'test/spec/**/*.js'
+      'test/spec/**/*.js',
+      'app/views/**/*.html'
     ],
 
     // list of files / patterns to exclude
@@ -39,8 +40,22 @@ module.exports = function(config) {
 
     // enable / disable watching file and executing tests whenever any file changes
     autoWatch: false,
+    
+    preprocessors: {
+    	'app/scripts/**/*.js': ['coverage'],
+        'app/views/**/*.html': ['ng-html2js']
+      },
+      
+    
+      ngHtml2JsPreprocessor: {
+          // strip this from the file path
+          stripPrefix: 'app/',
+          // prepend this to the
+          prependPrefix: '',
 
-
+          moduleName: 'templates'
+          },
+    
     // Start these browsers, currently available:
     // - Chrome
     // - ChromeCanary
@@ -49,11 +64,24 @@ module.exports = function(config) {
     // - Safari (only Mac)
     // - PhantomJS
     // - IE (only Windows)
-    //browsers: ['Chrome','Firefox', 'IE'],
-    browsers: ['Chrome'],
+    browsers: ['Chrome','Firefox', 'IE'],
+    //browsers: ['Chrome'],
 
     // Continuous Integration mode
     // if true, it capture browsers, run tests and exit
-    singleRun: false
+    singleRun: false,
+	 // here we specify which of the files we want to appear in the coverage report
+	   
+	    // add the coverage plugin
+	    plugins: [ 'karma-jasmine', 'karma-ng-html2js-preprocessor', 'karma-firefox-launcher', 'karma-chrome-launcher', 'karma-ie-launcher', 'karma-coverage' ],
+	    // add coverage to reporters
+	    reporters: ['dots', 'coverage'],
+	    // tell karma how you want the coverage results
+	    coverageReporter: {
+	      type : 'html',
+	      // where to store the report
+	      dir : 'coverage/'
+    }
   });
+  
 };

@@ -235,7 +235,7 @@ angular.module('dntBookingModule')
 
 		template:
 			'<div class="row" style="min-height: 250px;">' +
-			'<table class="table table-condensed">' +
+			'<table id="prices" class="table table-condensed">' +
 			'<tbody>'+
 			'<tr ng-repeat="person in categories" ng-show="person.nr>0">'+
 			'<td>{{person.guestType}}</td>'+
@@ -303,14 +303,14 @@ angular.module('dntBookingModule')
 						scope.newDateRange();
 					}
 
-				});
+				}, true);
 
 				scope.$watch('toDate', function(newDate) {
 					if (newDate) {
 						scope.newDateRange();
 					}
 
-				});
+				}, true);
 			}
 	};
 });
@@ -380,12 +380,13 @@ angular.module('dntBookingModule')
             	$scope.minimumBookableDate = new Date();
             	//Dates in calendar disabled up to and including today
             	$scope.minimumBookableDate.setDate($scope.minimumBookableDate.getDate() +1);
-            	var availability = {};
+            	$scope.availability = [];
+            	
             	
             	$scope.getAvailability = function(from, to, key) {
             		bookingService.getAvailability($scope.booking.cabinId, from, to)
             		.then(function(data){
-            			availability[key] = JSON.parse(data.bookedDays);
+            			$scope.availability[key] = JSON.parse(data.bookedDays);
             			$scope.$broadcast('date:updateAvailability');
             		});
             	};
@@ -416,20 +417,20 @@ angular.module('dntBookingModule')
             			}
             		}
             	};
-            	// Disable weekend selection
+            	// Disables unavailable days in calendars
             	$scope.disabled = function(date, mode) {
             		var dayOfMonth = date.getDate()-1;
             		var key = date.getFullYear() + ' ' + date.getMonth();
-            		if(dayOfMonth >= 0 && availability[key]) {
+            		if(dayOfMonth >= 0 && $scope.availability[key]) {
             			if($scope.beds >0) {
             				//largeCabin
-            				if(($scope.beds - availability[key][dayOfMonth] < nrOfBedsChosen) && mode === 'day') {
+            				if(($scope.beds - $scope.availability[key][dayOfMonth] < nrOfBedsChosen) && mode === 'day') {
                 				return true;
                 			}
             			}
             			else {
             				//smallcabin
-            				if((availability[key][dayOfMonth]) && mode === 'day') {
+            				if(($scope.availability[key][dayOfMonth]) && mode === 'day') {
                 				return true;
                 			}
             			}	
