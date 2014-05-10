@@ -31,7 +31,7 @@ angular.module('dntAdminApp').controller('adminViewController',['$scope', '$loca
 angular.module('dntAdminApp').controller('cabinTableController', ['$scope', '$location', '$routeParams', 'cabinService', '$log',
                                                              function ($scope, $location, $routeParams, cabinService, $log) {
 	$scope.currentPage = 1;
-	$scope.totalItems = 10;
+	$scope.totalItems = 0;
 	$scope.itemsPerPage = 10;
 	$scope.error = '';
 	$scope.setPage = function(page) {
@@ -50,6 +50,7 @@ angular.module('dntAdminApp').controller('cabinTableController', ['$scope', '$lo
 		cabinService.getCabins(page, $scope.itemsPerPage)
 		.then(function(data){
 			$scope.cabins 		= data.data;
+			$log.info($scope.cabins);
 			$scope.totalItems 	= data.totalItems;
 		},
 		function(errorMessage){
@@ -98,12 +99,12 @@ angular.module('dntAdminApp').controller('cabinTableController', ['$scope', '$lo
 angular.module('dntAdminApp').controller('cabinDetailsController', ['$scope','$modal', '$location', '$routeParams','bookingService' ,'cabinService', '$log',
                                                                function ($scope, $modal, $location, $routeParams,bookingService, cabinService, $log) {
 	$scope.currentPage = 1;
-	$scope.totalItems = 10;
+	$scope.totalItems = 0;
 	$scope.itemsPerPage = 10;
 	$scope.error = '';
 	$scope.id =-1;
 	
-	$scope.priceCategories = {};
+	$scope.priceCategories = [];
 
 	/**
      * @ngdoc method
@@ -118,6 +119,7 @@ angular.module('dntAdminApp').controller('cabinDetailsController', ['$scope','$m
 	$scope.getDetails = function(page, cabinId) {
 		cabinService.getCabinDetails(page, $scope.itemsPerPage, cabinId)
 		.then(function(data){
+			$log.info(data);
 			$scope.cabinBookings = data.bookingList.data;
 			$scope.totalItems = data.bookingList.totalItems;
 			$scope.cabinDetails = data.cabin;
@@ -163,8 +165,8 @@ angular.module('dntAdminApp').controller('cabinDetailsController', ['$scope','$m
 			var index = $scope.priceCategories.indexOf(price);
 			$scope.priceCategories.splice(index, 1);
 				
-		}, function(errorMessage){
-			$scope.error=errorMessage;
+		}, function(error){
+			$scope.error=error.message;
 		});
 	};
 	

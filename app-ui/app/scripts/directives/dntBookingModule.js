@@ -380,18 +380,13 @@ angular.module('dntBookingModule')
             	$scope.minimumBookableDate = new Date();
             	//Dates in calendar disabled up to and including today
             	$scope.minimumBookableDate.setDate($scope.minimumBookableDate.getDate() +1);
-            	var availability = {};
+            	$scope.availability = [];
             	
-            	$scope.getAvailability = function() {
-            		return availability;
-            	}
-            	$scope.setAvailability = function(avail) {
-            		return avail;
-            	}
+            	
             	$scope.getAvailability = function(from, to, key) {
             		bookingService.getAvailability($scope.booking.cabinId, from, to)
             		.then(function(data){
-            			availability[key] = JSON.parse(data.bookedDays);
+            			$scope.availability[key] = JSON.parse(data.bookedDays);
             			$scope.$broadcast('date:updateAvailability');
             		});
             	};
@@ -422,20 +417,20 @@ angular.module('dntBookingModule')
             			}
             		}
             	};
-            	// Disable weekend selection
+            	// Disables unavailable days in calendars
             	$scope.disabled = function(date, mode) {
             		var dayOfMonth = date.getDate()-1;
             		var key = date.getFullYear() + ' ' + date.getMonth();
-            		if(dayOfMonth >= 0 && availability[key]) {
+            		if(dayOfMonth >= 0 && $scope.availability[key]) {
             			if($scope.beds >0) {
             				//largeCabin
-            				if(($scope.beds - availability[key][dayOfMonth] < nrOfBedsChosen) && mode === 'day') {
+            				if(($scope.beds - $scope.availability[key][dayOfMonth] < nrOfBedsChosen) && mode === 'day') {
                 				return true;
                 			}
             			}
             			else {
             				//smallcabin
-            				if((availability[key][dayOfMonth]) && mode === 'day') {
+            				if(($scope.availability[key][dayOfMonth]) && mode === 'day') {
                 				return true;
                 			}
             			}	

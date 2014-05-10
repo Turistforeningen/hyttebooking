@@ -576,7 +576,7 @@ describe('dntPriceViewer', function () {
 //and react to changes from dntSelector. Its also a neat packaged booking module containing all html
 //needed for booking
 describe('dntBookingModule', function () {
-	var $rootScope, mockService;
+	var $rootScope, mockService, deferred;;
     var scope, elm, $body = $('body');
     
    
@@ -587,10 +587,9 @@ describe('dntBookingModule', function () {
                 // Service/Factory Mock
                 return {
                 	getAvailability: function(cabinId, startDate, endDate) {
-                		var deferred = $q.defer();
+                		deferred = $q.defer();
                 	
                 		
-                		deferred.resolve({"bookedDays": "[0,4,4,0,0,0,0,10,20,20,20,20,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]"});
                 		 return deferred.promise;
                 	}
                 }
@@ -642,14 +641,24 @@ describe('dntBookingModule', function () {
         it('should init controller propertly', function() { 
 
         	var dirScope = elm.isolateScope();
+        	var data = {};
+        	data.bookedDays = "[0,4,4,0,0,0,0,10,20,20,20,20,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]";
+        	deferred.resolve(data);
         	dirScope.$apply();
         	expect(dirScope.cabinType).toEqual('large');
         	expect(dirScope.beds).toEqual('10');
         	expect(dirScope.errorMessage).toEqual(null);
         	expect(dirScope.dividerIndex).toEqual(1);
-        	expect(dirScope.getAvailability()).toBe({});
-        	console.log(dirScope.getAvailability() + "avail");
+        	//something wrong with the test. The provide method does not work
+        	expect(dirScope.availability).not.toBeUndefined();
+        	console.log(dirScope.availability);
         	
+        	var d = new Date();
+        	var year = d.getFullYear(), month = d.getMonth();
+    		var key = year + ' ' + month;
+        	
+    		var arr  = [0,4,4,0,0,0,0,10,20,20,20,20,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+    		expect(dirScope.availability[key]).toEqual(arr);
         });
         
         // a single test example, check the produced DOM
@@ -682,45 +691,38 @@ describe('dntBookingModule', function () {
       
         it('should trigger getAvailability function when from or to date changes', function() {
         	var dirScope = elm.isolateScope();
-     
+        	
+        	
+        	var date = new Date("2014-06-10");
+        	var year = date.getFullYear(), month = date.getMonth();
+        	var key = year + ' ' + month;
+        	dirScope.$broadcast('date:change', date);
+        	dirScope.$apply();
+        	var data = {};
+        	data.bookedDays = "[1,2,3,4]";
+        	deferred.resolve(data);
+        	dirScope.$apply();
+        	expect(dirScope.availability[key]).not.toBeUndefined();
+        	expect(dirScope.availability[key][0]).toEqual(1);
+        	expect(dirScope.availability[key][1]).toEqual(2);
+        	expect(dirScope.availability[key][2]).toEqual(3);
+        	expect(dirScope.availability[key][3]).toEqual(4);
         	
         });
         
         it('should get availability from back end and broadcast a message', function() {
         	var dirScope = elm.isolateScope();
-     
-        	
+        	spyOn(dirScope, '$broadcast');
+        	var data = {};
+        	data.bookedDays = "[1,2,3,4]";
+        	deferred.resolve(data);
+        	dirScope.$apply();
+        	expect(dirScope.$broadcast).toHaveBeenCalledWith('date:updateAvailability');
         });
         
-        it('A fully booked day should display a red disabled button', function() {
-        	var dirScope = elm.isolateScope();
-
-        	
-        });
-        
-        it('should display a not fully booked day as a clickable green', function() {
-        	var dirScope = elm.isolateScope();
-        	
-        });
-        
-        it('should make sure disable method used by datepickers functions well', function() {
-        	var dirScope = elm.isolateScope();
-        	
-        });
-        
-        it('should update availability when more or less guests has been selected', function() {
-        
-        	var dirScope = elm.isolateScope();
-        });
+      
     });
     
-    describe('internal controller', function() {
-
-        beforeEach(function() {
-            compileDirective();
-        });
-        
-       
      
-    });
+
 });
