@@ -214,7 +214,7 @@ describe('cabinDetailsController for C-TL29-Custom customer price', function () 
     											"nrOfBeds":"10",
     											"status":1,
     											"timeOfBooking":1399729481912,
-    											"user":{"admin":true,"creationDate":"1399685097434","emailAddress":"olavvatne@gmail.com","fullName":"Olav Vatne","id":34845,"nrOfBookings":1}}],
+    											"user":{"admin":true,"creationDate":"1399685097434","emailAddress":"ola@gmail.com","fullName":"ola nordmann","id":4059,"nrOfBookings":1}}],
     					"totalItems":1}};
     
     var returnData = {"guests": [{

@@ -64,8 +64,8 @@ module.exports = function(config) {
     // - Safari (only Mac)
     // - PhantomJS
     // - IE (only Windows)
-    //browsers: ['Chrome','Firefox', 'IE'],
-    browsers: ['Chrome'],
+    browsers: ['Chrome','Firefox', 'IE'],
+    //browsers: ['Chrome'],
 
     // Continuous Integration mode
     // if true, it capture browsers, run tests and exit
@@ -73,7 +73,7 @@ module.exports = function(config) {
 	 // here we specify which of the files we want to appear in the coverage report
 	   
 	    // add the coverage plugin
-	    plugins: [ 'karma-jasmine', 'karma-ng-html2js-preprocessor', 'karma-firefox-launcher', 'karma-chrome-launcher', 'karma-coverage' ],
+	    plugins: [ 'karma-jasmine', 'karma-ng-html2js-preprocessor', 'karma-firefox-launcher', 'karma-chrome-launcher', 'karma-ie-launcher', 'karma-coverage' ],
 	    // add coverage to reporters
 	    reporters: ['dots', 'coverage'],
 	    // tell karma how you want the coverage results

@@ -193,7 +193,7 @@ describe('bookingController for C-TL23-Submit', function () {
     	scope.$apply();
     	
     	
-    	console.log(scope.beds);
+ 
     	scope.booking = bookingData;
     	scope.$apply();
     	scope.postBooking(bookingData);
@@ -361,7 +361,7 @@ describe('dntSelector', function () {
         	spyOn(dirScope, 'constructRange').andCallThrough();
         	expect(dirScope.constructRange).not.toHaveBeenCalled();
         	dirScope.categories[0].nr = 1;
-        	console.log(dirScope.person);
+     
         	scope.$digest();
         	
         	expect(dirScope.constructRange).toHaveBeenCalled();
@@ -387,7 +387,7 @@ describe('dntSelector', function () {
         it('should return an array from 0 - x value', function() {
         	var dirScope = elm.isolateScope()
         	var randNrSelected = Math.floor((Math.random()*10)+1);
-        	console.log(randNrSelected + " ,random number selected for test")
+
         	dirScope.categories[0].nr = randNrSelected;
         	scope.$digest();
         	var bedsLeft = 10-randNrSelected;
@@ -651,7 +651,7 @@ describe('dntBookingModule', function () {
         	expect(dirScope.dividerIndex).toEqual(1);
         	//something wrong with the test. The provide method does not work
         	expect(dirScope.availability).not.toBeUndefined();
-        	console.log(dirScope.availability);
+      
         	
         	var d = new Date();
         	var year = d.getFullYear(), month = d.getMonth();

@@ -180,7 +180,7 @@ describe('authController', function(){
     });
     
     it('should set showLogin to true if location path is /login' , function() {
-    	console.log("Check if location showLogin is set");
+
     	$location.path('/login');
     	var controller = createController();
     	
@@ -189,7 +189,7 @@ describe('authController', function(){
     });
     
     it('should set an error message if checkLogin fails' , function() {
-    	console.log("Check if error message if checkLogin fails");
+  
     	$httpBackend.when('POST', '/api/login/checkLogin').respond(401, '');
     	$httpBackend.expectPOST('/api/login/checkLogin');
     	var controller = createController();
@@ -202,7 +202,7 @@ describe('authController', function(){
     });
     
     it('should put user creds in cookies, emit a event and put token in header' , function() {
-    	console.log("check if checkLogin behavior is correct");
+    	
     	var data = {'id': 12345,'authToken': '123ABC', 'name': 'ola', 'email': 'o@g.com', 'isAdmin' : false};
     	$httpBackend.when('POST', '/api/login/checkLogin').respond(data);
     	$httpBackend.expectPOST('/api/login/checkLogin');
@@ -217,7 +217,7 @@ describe('authController', function(){
     	expect(scope.loginErrorMessage.length).toBe(0);
     	
     	//User data put in cookieStore
-    	console.log("Check if user data is in cookieStore");
+
     	expect(appStateService.insertUserCredentials).toHaveBeenCalled();
     	expect(appStateService.redirectToAttemptedUrl).toHaveBeenCalled();
     	var cred = appStateService.getUserCredentials();
@@ -227,14 +227,16 @@ describe('authController', function(){
     	expect(cred.isAdmin).toBe(data.isAdmin);
     	
     	//check if checkLogin emits a event
-    	console.log("Check if successful call emit an event");
+
     	expect(scope.$emit).toHaveBeenCalledWith("event:signedIn", data);
     	
     	//check if token put in header (api.init(token))
-    	console.log("Check if token has been put in header");
+    
     	expect($http.defaults.headers.common['X-AUTH-TOKEN']).toBe(data.authToken);
     });
     
+    //Tested in C-TL37-User-information
+    /*
     it('should emit event and remove cookie at logout at logout and http header removed' , function() {
     	spyOn(appStateService, 'removeUserCredentials').andCallThrough();
     	spyOn(scope, "$emit");
@@ -294,7 +296,7 @@ describe('authController', function(){
     	expect($http.defaults.headers.common['X-AUTH-TOKEN']).toBeUndefined();
     	
     });
-    
+    */
     it('should redirect if successful call to server with newLogin' , function() {
     	var data = {"redirectUrl" : "http://www.vg.no"};
     	$httpBackend.when('GET', 'api/login/setup').respond(data);

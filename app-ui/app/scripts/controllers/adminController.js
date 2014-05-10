@@ -215,16 +215,19 @@ angular.module('dntAdminApp').controller('cabinDetailsController', ['$scope','$m
      * of the booking will be set to cancelled, to reflect the back end. 
      */
 	$scope.cancelOrder = function (order) {
-		$scope.openDialog('/views/cancelConfirmModal.html', null).result.then(function () {
-			bookingService.adminCancelOrder(order.id)
-			.then(function(data){
-				order.status = 2;
-			},
-			function(error){
-				$log.info(error);
-				$scope.status = 'not found' + error.message;
+		if(order.ableToCancel) {
+			$scope.openDialog('/views/cancelConfirmModal.html', null).result.then(function () {
+				bookingService.adminCancelOrder(order.id)
+				.then(function(data){
+					order.status = 2;
+				},
+				function(error){
+					$log.info(error);
+					$scope.error = 'not found' + error.message;
+				});
 			});
-		});
+		}
+		
 	};
 	
 	//receipt

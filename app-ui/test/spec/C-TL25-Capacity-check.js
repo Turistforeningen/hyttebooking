@@ -78,7 +78,7 @@ describe('dntBookingModule', function () {
         	dirScope.$apply();
     		//availability data set
         	expect(dirScope.availability[key]).toBeDefined();
-        	console.log(dirScope.availability[key]);
+   
         	expect(elm.find('button').hasClass('btn-user-disabled')).toBe(false);
         	//beds capacity
         	dirScope.booking.guests[0].nr = 10;
