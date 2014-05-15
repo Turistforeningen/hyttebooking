@@ -166,12 +166,12 @@ public class Booking extends Model {
 			Page<Booking> bookingPage = new Page<Booking>();
 
 			 bookingPage.data = find.where()
-			         .and(Expr.eq("user", user), Expr.le("status", PAID))
+			         .and(Expr.eq("user", user), Expr.eq("status", PAID))
 			         .orderBy("dateFrom asc")
 			         .findPagingList(pageSize)
 			         .getPage(page).getList();
 			 bookingPage.totalItems = find.where()
-			         .and(Expr.eq("user", user), Expr.le("status", PAID))
+			         .and(Expr.eq("user", user), Expr.eq("status", PAID))
 			         .findRowCount();
 			 return bookingPage;
 		}
