@@ -104,6 +104,14 @@ public class BookingControllerTest extends WithApplication {
 		System.out.println("########### RESULT FAKEREQUEST OK DELETE IS\n"+status(resOk));
 		
 	}
+	
+	@Test
+	/**
+	 * 
+	 */
+	public void testGetOrderSummary() {
+		
+	}
 
 	@Test
 	/** Note: Doesn't test the actual controller, just copied the entire code and testing within here TODO **/
