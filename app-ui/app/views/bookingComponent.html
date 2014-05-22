@@ -93,7 +93,7 @@
                             <div ng-controller="TooltipDemoCtrl" tooltip-placement="left"
                                 tooltip-html-unsafe="{{tooltipArrival}}"
                                 tooltip-popup-delay="1200">
-                                <datepicker ng-model="booking.dateFrom" min="minimumBookableDate"
+                                <datepicker ng-model="booking.dateFrom" min="minimumBookableDate" starting-day="1"
                                     show-weeks="showWeeks" date-disabled="disabled(date, mode)" date-in-range="booking.dateTo"></datepicker>
                             </div>
                             <!-- /well -->
@@ -103,7 +103,7 @@
                             <div ng-controller="TooltipDemoCtrl" tooltip-placement="right"
                                 tooltip-html-unsafe="{{tooltipDeparture}}"
                                 tooltip-popup-delay="1200">
-                                <datepicker ng-model="booking.dateTo" min="booking.dateFrom"
+                                <datepicker ng-model="booking.dateTo" min="booking.dateFrom" starting-day="1"
                                     show-weeks="showWeeks" date-disabled="disabled(date, mode)" date-in-range="booking.dateFrom"></datepicker>
                             </div>
                             <!-- /well -->
