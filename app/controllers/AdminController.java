@@ -72,8 +72,8 @@ public class AdminController extends Controller {
 		map.put("cabin", cabin);
 		map.put("bookingList", bookingsAtCabin);
 		JSONSerializer bookingSerializer = new JSONSerializer()
-		.include("data" )
-		.exclude("*.class", "bookingList.data.smallCabin", "bookingList.data.cabin")
+		.include("data", "bookingList.data.isAdminAbleToCancel" )
+		.exclude("*.class", "bookingList.data.smallCabin", "bookingList.data.cabin", "bookingList.data.ableToCancel")
 		.transform(new DateTimeTransformer(), DateTime.class);
 		
 		return ok(bookingSerializer.serialize(map));

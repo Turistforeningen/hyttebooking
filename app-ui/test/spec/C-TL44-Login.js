@@ -235,68 +235,8 @@ describe('authController', function(){
     	expect($http.defaults.headers.common['X-AUTH-TOKEN']).toBe(data.authToken);
     });
     
-    //Tested in C-TL37-User-information
-    /*
-    it('should emit event and remove cookie at logout at logout and http header removed' , function() {
-    	spyOn(appStateService, 'removeUserCredentials').andCallThrough();
-    	spyOn(scope, "$emit");
-    	$httpBackend.when('POST', '/logout').respond({'status': 'ok'});
-    	$httpBackend.expectPOST('/logout');
-    	var token = '12345'
-    	var data = {'id': 12345,'authToken': '123ABC', 'name': 'ola', 'email': 'o@g.com', 'isAdmin' : false};
-    	api.init(token);
-    	appStateService.insertUserCredentials(data.authToken, data.id, data.name, data.isAdmin, data.email);
-    	
-    	var controller = createController();
-    	scope.logout();
-    	$httpBackend.flush();
-    	scope.$apply();
-    	expect(mockService.logout).toHaveBeenCalled();
-    	expect(scope.loginErrorMessage).toBe('');
-    	expect(scope.$emit).toHaveBeenCalledWith('event:signedOut');
-    	expect(appStateService.removeUserCredentials).toHaveBeenCalled();
-    	
-    	var cred = appStateService.getUserCredentials();
-    	expect(cred.id).toBeUndefined();
-    	expect(cred.name).toBeUndefined();
-    	expect(cred.token).toBeUndefined();
-    	expect(cred.email).toBeUndefined();
-    	expect(cred.isAdmin).toBeUndefined();
-    	//removed at actual backend but should probably be removed at front end.
-    	expect($http.defaults.headers.common['X-AUTH-TOKEN']).toBeUndefined();
-    	
-    });
-    
-    it('should still log out front end even if there back end can be contacted' , function() {
-    	spyOn(appStateService, 'removeUserCredentials').andCallThrough();
-    	spyOn(scope, "$emit");
-    	$httpBackend.when('POST', '/logout').respond(500, '');
-    	$httpBackend.expectPOST('/logout');
-    	var token = '12345'
-    	var data = {'id': 12345,'authToken': '123ABC', 'name': 'ola', 'email': 'o@g.com', 'isAdmin' : false};
-    	api.init(token);
-    	appStateService.insertUserCredentials(data.authToken, data.id, data.name, data.isAdmin, data.email);
-    	
-    	var controller = createController();
-    	scope.logout();
-    	scope.$apply();
-    	$httpBackend.flush();
-    	expect(mockService.logout).toHaveBeenCalled();
-    	expect(scope.loginErrorMessage.length>0).toBe(true);
-    	expect(scope.$emit).toHaveBeenCalledWith('event:signedOut');
-    	expect(appStateService.removeUserCredentials).toHaveBeenCalled();
-    	
-    	var cred = appStateService.getUserCredentials();
-    	expect(cred.id).toBeUndefined();
-    	expect(cred.name).toBeUndefined();
-    	expect(cred.token).toBeUndefined();
-    	expect(cred.email).toBeUndefined();
-    	expect(cred.isAdmin).toBeUndefined();
-    	//removed at actual backend but should probably be removed at front end.
-    	expect($http.defaults.headers.common['X-AUTH-TOKEN']).toBeUndefined();
-    	
-    });
-    */
+    //Cookie storing and retrieving tested in C-TL37-User-information
+   
     it('should redirect if successful call to server with newLogin' , function() {
     	var data = {"redirectUrl" : "http://www.vg.no"};
     	$httpBackend.when('GET', 'api/login/setup').respond(data);

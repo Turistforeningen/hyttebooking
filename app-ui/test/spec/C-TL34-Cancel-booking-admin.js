@@ -57,7 +57,7 @@ describe('cabinDetailsController for C-TL34-Cancel booking admin', function () {
     	var controller = createController();
     	$httpBackend.flush();
     	scope.$apply();
-    	scope.cabinBookings[0].ableToCancel = false;
+    	scope.cabinBookings[0].adminAbleToCancel = false;
     	expect(mockCabinService.getCabinDetails).toHaveBeenCalled();
     	
     	//booking not true for id:2
@@ -133,7 +133,7 @@ describe('cabinDetailsController for C-TL34-Cancel booking admin', function () {
     
   
     var returnDetails = {"cabin":{"cabinType":"large","id":1,"name":"Fjordheim","nrOfBeds":"10"},
-    					"bookingList":{"data":[{"ableToCancel":true,
+    					"bookingList":{"data":[{"adminAbleToCancel":true,
     											"dateFrom":"1400536800000",
     											"dateTo":"1401400800000",
     											"id":1,

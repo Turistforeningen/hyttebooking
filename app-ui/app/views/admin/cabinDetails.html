@@ -76,7 +76,7 @@
 									required>
 						</div>
 						</td>
-						<td>
+						<td ng-if="cabinDetails.cabinType == 'large'>
                             <div class="form-group" ng-class="{
                                 'has-error': pForm.minor.$invalid && pForm.$submitted,
                                 'has-success': pForm.$submitted && pForm.minor.$valid}">
@@ -98,7 +98,7 @@
             </tbody>
         </table>
 	    </form>
-		<h2>Active bookings</h2>
+		<h2>Bookings</h2>
 		<table class="table table-hover">
 			<thead>
 				<tr>
@@ -146,6 +146,7 @@
 			</tbody>
 		</table>
 	</div>
+	<p style="color:red">{{errorMessage}}</p>
 	<div class="row" ng-if="totalItems > itemsPerPage">
 		<pagination on-select-page="setPage(page)" total-items="totalItems"
 			page="currentPage" items-per-page="itemsPerPage"></pagination>

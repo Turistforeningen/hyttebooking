@@ -212,10 +212,14 @@ angular.module('dntApp').controller('bookingController', ['$modal','$scope','boo
 			$scope.errorMessage = "Du må velge minst en person for å kunne reservere.";
 			return false
 		}
-		if(personCount > $scope.beds) {
-			$scope.errorMessage = "Det finnes ikke nok senger på hytta for å oppfylle denne bestillingen";
-			return false;
+		if($scope.cabinType == 'large') {
+			if(personCount > $scope.beds) {
+				$scope.errorMessage = "Det finnes ikke nok senger på hytta for å oppfylle denne bestillingen";
+				return false;
+			}
 		}
+		
+		
 		return true;
 	}
 

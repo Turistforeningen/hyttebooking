@@ -101,7 +101,7 @@ public class Booking extends Model {
 		}
 	}
 	
-	@JSON(include = false)
+	
 	public boolean isAdminAbleToCancel() {
 		return isAbleToCancel(0);
 	}
