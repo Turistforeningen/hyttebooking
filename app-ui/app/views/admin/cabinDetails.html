@@ -76,7 +76,7 @@
 									required>
 						</div>
 						</td>
-						<td ng-if="cabinDetails.cabinType == 'large'>
+						<td ng-show="cabinDetails.cabinType == 'large'">
                             <div class="form-group" ng-class="{
                                 'has-error': pForm.minor.$invalid && pForm.$submitted,
                                 'has-success': pForm.$submitted && pForm.minor.$valid}">
