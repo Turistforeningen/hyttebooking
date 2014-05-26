@@ -50,10 +50,13 @@ public class ConnectController extends Controller {
 		
 		String testP	= new String(Arrays.copyOfRange(aes.getIvAndPlainText(), 16, encr.length));//TODO remove
 		String tesIv	= DatatypeConverter.printBase64Binary(Arrays.copyOfRange(aes.getIvAndPlainText(), 0, 16));
+	
+		/*
 		System.out.println("################ iv\t\t "+tesIv);
 		System.out.println("################ plaintext\t"+testP);
 		System.out.println("FINAL data: "+encrJson64);
 		System.out.println("FINAL hash: "+hmac);
+		*/
 		ObjectNode retNode = Json.newObject();
 		retNode.put("redirectUrl", ""+SIGNON+EncodeURL(encrJson64)+"&hmac="+EncodeURL(hmac));
 		return ok(retNode);
