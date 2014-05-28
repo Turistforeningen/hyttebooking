@@ -11,30 +11,20 @@
 				<div class="col-lg-12 well">
 					<div class="col-lg-6">
 						<div class="col-lg-4 modBoldText">
-							<p style="height: 40px">Fornavn</p>
-							<p style="height: 40px">Etternavn</p>
-							<p style="height: 40px">Fødseldato</p>
-							<p>Epost</p>
+						<p style="height: 40px">Kundenummer</p>	
 						</div>
 						<div class="col-lg-8">
-							<p style="height: 40px">Ola</p>
-							<p style="height: 40px">Nordmann</p>
-							<p style="height: 40px">30.05.1989</p>
-							<p>ola.nordmann@mail.no</p>
+							<p style="height: 40px">{{user.id}}</p>
 						</div>
 					</div>
 					<div class="col-lg-6">
 						<div class="col-lg-4 modBoldText">
-							<p style="height: 40px">Medlemsnr</p>
-							<p style="height: 40px">Adresse</p>
-							<p style="height: 40px">Poststed</p>
-							<p>Postnummer</p>
+							<p style="height: 40px">Navn</p>
+							<p style="height: 40px">Email</p>
 						</div>
 						<div class="col-lg-8">
-							<p style="height: 40px">1234567</p>
-							<p style="height: 40px">Gateveien 3</p>
-							<p style="height: 40px">Plassen</p>
-							<p>1234</p>
+							<p style="height: 40px">{{user.name}}</p>
+							<p style="height: 40px">{{user.email}}</p>
 						</div>
 					</div>
 				</div>
@@ -154,7 +144,5 @@
                     <p class="text-center grey-text" ng-show="errorMessage.length>0">{{errorMessage}}</p>
                 </div>
 		</div>
-
 	</div>
-	<pre>{{orders}}</pre>
 </div>

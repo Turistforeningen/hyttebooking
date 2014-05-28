@@ -47,7 +47,7 @@ public class User extends Model {
     @Constraints.MaxLength(256)
     public String fullName;
 
-    public Boolean admin= false;
+    public Boolean isAdmin= false;
     
     @Column(nullable = false)
     public DateTime creationDate;

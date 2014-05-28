@@ -50,10 +50,13 @@ public class ConnectController extends Controller {
 		
 		String testP	= new String(Arrays.copyOfRange(aes.getIvAndPlainText(), 16, encr.length));//TODO remove
 		String tesIv	= DatatypeConverter.printBase64Binary(Arrays.copyOfRange(aes.getIvAndPlainText(), 0, 16));
+	
+		/*
 		System.out.println("################ iv\t\t "+tesIv);
 		System.out.println("################ plaintext\t"+testP);
 		System.out.println("FINAL data: "+encrJson64);
 		System.out.println("FINAL hash: "+hmac);
+		*/
 		ObjectNode retNode = Json.newObject();
 		retNode.put("redirectUrl", ""+SIGNON+EncodeURL(encrJson64)+"&hmac="+EncodeURL(hmac));
 		return ok(retNode);
@@ -82,7 +85,7 @@ public class ConnectController extends Controller {
 		byte[] plainText = aes.decrypt(data, hmac);
 		JsonNode login = Json.parse(new String(plainText, "UTF-8"));
 		System.out.println("LOGIN RECIEVED: #########");
-		System.out.println(login.asText());
+		System.out.println(login);
 		System.out.println("END LOGIN ##########");
 		
 		if(!login.get("er_autentisert").asBoolean())
@@ -96,7 +99,7 @@ public class ConnectController extends Controller {
 		if(user == null) { //first time using booking solution, we need to register user internally
 			user = new User(id, email, fName+" "+lName); //TODO don't split fName and lName
 			if(id == ADMIN_ID) {
-				user.admin = true;
+				user.isAdmin = true;
 			}
 			user.save();
 		}

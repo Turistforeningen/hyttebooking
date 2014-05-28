@@ -1,29 +1,27 @@
 'use strict';
 
-/*
- * Service with functions used to interface client with server.
- */
 /**
  * @ngdoc service 
- * @name dntApp.bookingService
- * @description Service with functions used to interface client with server. Mainly used
+ * @name dntCommon.bookingService
+ * @description Service with functions used as an interface between the client and the server. Mainly used
  * to post a bookings, get a users booking list, get the current prices for a booking and 
  * for payment.
  * @requires $http 
  * @requires $q
 **/
-angular.module('dntApp').factory('bookingService', ['$http', '$q','$log', function ($http,$q, $log) {
+angular.module('dntCommon').factory('bookingService', ['$http', '$q','$log', function ($http,$q, $log) {
 
 	
 	return {
 	
 	/**
      * @ngdoc method
-     * @name dntApp.service#getOrders
-     * @methodOf dntApp.bookingService
+     * @name dntCommon.service#getOrders
+     * @methodOf dntCommon.bookingService
      * @param {Number} page What page of orders.
      * @param {Number} pageSize How big the resultset should be.
-     * @returns {json} A list containing a subset of a logged in users bookings.
+     * @description Gets an JSON array containing a list of the users bookings.
+     * @returns {Array} A list containing a subset of a logged in users bookings. (If promise has been resolved)
      */
 	getOrders: function(page, pageSize) {
 		var deferred = $q.defer();
@@ -39,6 +37,15 @@ angular.module('dntApp').factory('bookingService', ['$http', '$q','$log', functi
 		return deferred.promise;
 	},
 	
+	
+	/**
+     * @ngdoc method
+     * @name dntCommon.service#getOrderSummary
+     * @methodOf dntCommon.bookingService
+     * @param {Number} bookingId What booking to get the orderSummary for.
+     * @description Gets all available information about a booking from the back end.
+     * @returns {JSON objecet} A object with details about a booking. (If promise is resolved)
+     */
 	getOrderSummary: function(bookingId) {
 		var deferred = $q.defer();
 		var url = '/api/bookings/' + bookingId;
@@ -55,10 +62,12 @@ angular.module('dntApp').factory('bookingService', ['$http', '$q','$log', functi
 	
 	/**
      * @ngdoc method
-     * @name dntApp.service#cancelOrder
-     * @methodOf dntApp.bookingService
+     * @name dntCommon.service#cancelOrder
+     * @methodOf dntCommon.bookingService
      * @param {Number} id bookingId of the booking to request cancelled.
-     * @returns {json} An answer containing status and message from the server.
+     * @description `cancelOrder` will request a the server to cancel a booking. If successful promise
+     * is resolved, to late to cancel, not users booking etc the promise is rejected.
+     * @returns {json} An answer containing status and message from the server. (If promise has been resolved)
      */
 	cancelOrder: function(id) {
 		var deferred = $q.defer();
@@ -74,10 +83,13 @@ angular.module('dntApp').factory('bookingService', ['$http', '$q','$log', functi
 	
 	/**
      * @ngdoc method
-     * @name dntApp.service#adminCancelOrder
-     * @methodOf dntApp.bookingService
+     * @name dntCommon.service#adminCancelOrder
+     * @methodOf dntCommon.bookingService
      * @param {Number} id bookingId of the booking to request cancelled.
-     * @returns {JSON object} An answer containing status and message from the server.
+     * @description `adminCancelOrder` request server to cancel a booking. Similar to cancelOrder 
+     * but different rules at the backend. Promise is resolved if successful, and rejected if something went
+     * wrong.
+     * @returns {JSON object} An answer containing status and message from the server.(If promise has been resolved)
      */
 	adminCancelOrder: function(id) {
 		var deferred = $q.defer();
@@ -93,10 +105,12 @@ angular.module('dntApp').factory('bookingService', ['$http', '$q','$log', functi
 	
 	/**
      * @ngdoc method
-     * @name dntApp.service#postOrder
-     * @methodOf dntApp.bookingService
+     * @name dntCommon.service#postOrder
+     * @methodOf dntCommon.bookingService
      * @param {JSON object} data JSON object containing booking data.
-     * @returns {JSON object} An answer containing status and message from the server.
+     * @description A booking is posted to the back end using this method. If a booking is successful 
+     * the promise is resolved, else its rejected. A resolved promise contain the bookingId.
+     * @returns {JSON object} An answer containing status and message from the server. (If promise has been resolved)
      */
 	postOrder: function(data) {
 		var deferred = $q.defer();
@@ -109,13 +123,14 @@ angular.module('dntApp').factory('bookingService', ['$http', '$q','$log', functi
 		});
 		return deferred.promise;
 	},
-	//should be in cabinService --delete later (refactor dntBookingModule)
 	/**
      * @ngdoc method
-     * @name dntApp.service#getPrices
-     * @methodOf dntApp.bookingService
+     * @name dntCommon.service#getPrices
+     * @methodOf dntCommon.bookingService
      * @param {Number} cabinId id of cabin to request prices for.
-     * @returns {JSON object} A array containing different guesttypes and price accepted at cabin specified by cabinId
+     * @description `getPrices` request back end for the price matrix belonging to the cabin with `cabinId`.
+     * @returns {JSON object} A array containing different guesttypes and price accepted at cabin specified by cabinId.
+     * (If promise has been resolved)
      */
 	getPrices: function(cabinId) {
 		var deferred = $q.defer();
@@ -131,10 +146,12 @@ angular.module('dntApp').factory('bookingService', ['$http', '$q','$log', functi
 	
 	/**
      * @ngdoc method
-     * @name dntApp.service#startPayment
-     * @methodOf dntApp.bookingService
+     * @name dntCommon.service#startPayment
+     * @methodOf dntCommon.bookingService
      * @param {Number} id id of booking to setup payment for.
-     * @returns {json} Containing properties for redirectUrl and transactionId
+     * @description `startPayment` request a setup of payment at the backend and will return a redirectUrl the front
+     * end can redirect to for payment.
+     * @returns {JSON object} Containing properties like redirectUrl and transactionId (If promise has been resolved)
      */
 	startPayment: function(id) {
 		var deferred = $q.defer();
@@ -149,11 +166,13 @@ angular.module('dntApp').factory('bookingService', ['$http', '$q','$log', functi
 	},
 	/**
      * @ngdoc method
-     * @name dntApp.service#authenticatePayment
-     * @methodOf dntApp.bookingService
+     * @name dntCommon.service#authenticatePayment
+     * @methodOf dntCommon.bookingService
      * @param {Number} paymentId transaction id
      * @param {String} response code from nets
-     * @returns {JSON object} containing status and message
+     * @description `authenticatePayment` should use this method after redirecting back from Netaxept. The
+     * back end will check with Netaxept to see if booking has been paid for.
+     * @returns {JSON object} An object containing status and message (If promise has been resolved)
      */
 	authenticatePayment: function(paymentId, response) {
 		var deferred = $q.defer();
@@ -168,6 +187,18 @@ angular.module('dntApp').factory('bookingService', ['$http', '$q','$log', functi
 		return deferred.promise;
 	},
 	
+	/**
+     * @ngdoc method
+     * @name dntCommon.service#getAvailability
+     * @methodOf dntCommon.bookingService
+     * @param {Number} cabinId of cabin to request availability for.
+     * @param {Date} startDate of requested availability array.
+     * @param {Date} endDate  of requested availability array.
+     * @description `getAvailability` returns a promise which is resolved or rejected depending response
+     * from the back end. Contains an availability array showing beds/cabin taken for days between
+     * `startDate` and `endDate`.
+     * @returns {Array} A integer array showing beds taken from startDate to endDate (If promise has been resolved).
+     */
 	getAvailability: function(cabinId, startDate, endDate) {
 		var deferred = $q.defer();
 		var url = '/api/cabins/'+cabinId+'/availability?startDate='+startDate+'&endDate='+endDate;

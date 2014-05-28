@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 
 import org.joda.time.DateTime;
 import org.joda.time.Days;
+import org.joda.time.Instant;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
@@ -81,6 +82,11 @@ public class DateHelper {
 		return dt;
 	}
 	
+	/**
+	 * Converts a DateTime object into a string of format yyyyMMdd
+	 * @param time A DateTime object
+	 * @return String yyyyMMdd
+	 */
 	public static String dtToYYYYMMDDString(DateTime time) {
 		DateTimeFormatter dtf = DateTimeFormat.forPattern("yyyyMMdd");
 		return dtf.print(time);
@@ -99,11 +105,16 @@ public class DateHelper {
 		return true;
 	}
 	
+	/**
+	 * Timestamp check. Checks whether timestamp took place in the last minute.
+	 * @return false if timestamp invalid
+	 */
 	public static boolean isValidTimeStamp(long timeStamp) {
-		long min = DateTime.now().getMillis() / 1000 - 30;
-		long max = DateTime.now().getMillis() / 1000 + 30;
-		if(timeStamp > min && timeStamp < max)
+		long min = new Instant().getMillis() / 1000 - 61;
+		long max = (new Instant().getMillis() / 1000);
+		if(timeStamp >= min && timeStamp <= max)
 			return true;
+		System.out.println("TIMESTAMP ERROR:\nmin: "+min+"\nmax: "+max+"\n");
 		return false;
 	}
 }

@@ -37,7 +37,7 @@ public class AdminController extends Controller {
 	 * @return Result containing cabins
 	 */
 	public static Result getCabins() {
-		if (!SecurityController.getUser().admin) {
+		if (!SecurityController.getUser().isAdmin) {
 			return unauthorized();
 		}
 		
@@ -59,7 +59,7 @@ public class AdminController extends Controller {
 	 * @return Result containing bookings for a given cabin
 	 */
 	public static Result getCabinDetails(Long id) {
-		if (!SecurityController.getUser().admin) {
+		if (!SecurityController.getUser().isAdmin) {
 			return unauthorized();
 		}
 		
@@ -72,8 +72,8 @@ public class AdminController extends Controller {
 		map.put("cabin", cabin);
 		map.put("bookingList", bookingsAtCabin);
 		JSONSerializer bookingSerializer = new JSONSerializer()
-		.include("data" )
-		.exclude("*.class", "bookingList.data.smallCabin", "bookingList.data.cabin")
+		.include("data", "bookingList.data.isAdminAbleToCancel" )
+		.exclude("*.class", "bookingList.data.smallCabin", "bookingList.data.cabin", "bookingList.data.ableToCancel")
 		.transform(new DateTimeTransformer(), DateTime.class);
 		
 		return ok(bookingSerializer.serialize(map));
@@ -92,9 +92,13 @@ public class AdminController extends Controller {
 	 */
 	public static Result submitCabin() {
 		
-		if (!SecurityController.getUser().admin) {
+		if (!SecurityController.getUser().isAdmin) {
 			return unauthorized();
 		}
+		
+		System.out.println("##### INCOMING JSON FOR ADMIN ADDCABIN ######");
+		System.out.println(request().body().asJson());
+		System.out.println("########################################");
 		
 		CabinForm form = utilities.CabinForm
 				.deserializeJson(request().body().asJson().toString());
@@ -119,27 +123,29 @@ public class AdminController extends Controller {
 	@With(SecurityController.class)
 	public static Result adminCancelBooking(String bookingId) {
 		Booking booking = Booking.getBookingById(bookingId);
+		
+		if(!SecurityController.getUser().isAdmin) {
+			return unauthorized(JsonMessage.error(Messages.get("admin.noAccess")));
+		}
 
 		if(booking == null) {
 			return notFound(JsonMessage.error(Messages.get("booking.notFound")+ ": " + bookingId));
 		}
 
-		if(!SecurityController.getUser().admin) {
-			return badRequest(JsonMessage.error(Messages.get("admin.noAccess")));
-		}
-
 		if(!booking.isAdminAbleToCancel()) {
-			return notFound(JsonMessage.error(Messages.get("booking.notFound")));
+			return badRequest(JsonMessage.error(Messages.get("booking.notFound")));
 		}
 		//send mail
 		//cancellogic to late to cancel?
 		
+		String msg = "";
 		if(booking.status == Booking.PAID) {
 			PaymentController.cancelPayment(booking.payment.getTransactionId());
+			msg = "refund";
 		}
 		booking.status = Booking.CANCELLED;
 		booking.update();	
-		return ok(JsonMessage.success(""));
+		return ok(JsonMessage.success(msg));
 	}
 	
 	public static Result removePriceFromCabin(Long cabinId, Long priceId) {

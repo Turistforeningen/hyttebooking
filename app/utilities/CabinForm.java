@@ -20,7 +20,7 @@ public class CabinForm extends AbstractForm<Cabin>{
 	public int id;
 	
 	/**
-	 * FlexJson needs an constructor even if its empty
+	 * FlexJson needs a constructor even if it's empty
 	 */
 	public CabinForm() {
 		
@@ -32,9 +32,6 @@ public class CabinForm extends AbstractForm<Cabin>{
 	 */
 	@Override
 	public boolean validate() {
-		if(this.validationError) {
-			return false;
-		}
 		
 		if(type == null) {
 			this.addError(Messages.get("cabin.missingType"));
@@ -89,12 +86,13 @@ public class CabinForm extends AbstractForm<Cabin>{
 	 */
 	public static CabinForm deserializeJson(String jsonCabin) {
 		CabinForm cabinData = null;
-		
 		try {
+		
 			JSONDeserializer<CabinForm> deserializer = new JSONDeserializer<CabinForm>();
 			cabinData = deserializer.deserialize(jsonCabin , CabinForm.class);
 		} catch (Exception e) {
 			//add more detailed data. Possibly what variable it cant find.
+			
 			cabinData = new CabinForm();
 			cabinData.addError(Messages.get("json.couldNotParseData"));
 			

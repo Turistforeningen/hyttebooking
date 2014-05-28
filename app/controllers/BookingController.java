@@ -74,7 +74,7 @@ public class BookingController extends Controller {
 		else if(cabin instanceof SmallCabin) {
 			List<Booking> bookings = SmallCabin.findAllBookingsForCabinGivenDate(cabinId, startDate, endDate);
 
-			if(!bookings.isEmpty()) {
+			if(bookings != null && !bookings.isEmpty()) {
 				for(Booking b: bookings) {
 					//for each booking set bookedDays[i] = +1 for range startDate-endDate
 					int[] indices = utilities.DateHelper.getIndex(startDate, new DateTime(b.dateFrom), new DateTime(b.dateTo)); /** indices[0] startIndex in bookedDays, [1] is endIndex **/
@@ -110,6 +110,10 @@ public class BookingController extends Controller {
 	@With(SecurityController.class)
 	public static Result submitBooking() {
 	
+		System.out.println("###### INCOMING JSON FROM FRONTEND ######");
+		System.out.println(request().body().asJson());
+		System.out.println("########## END ###########################");
+		
 		BookingForm form = BookingForm
 				.deserializeJson(request().body().asJson().toString());
 		if(form.isValid()) {
@@ -226,7 +230,7 @@ public class BookingController extends Controller {
 		JSONSerializer orderDetailsSerializer = new JSONSerializer()
 		.include("data", "data.cabin" )
 		.exclude("*.class", "data.beds", "data.user", "data.smallCabin", "data.cabin.type", "data.cabin.nrOfBeds", "data.cabin.nrBookings"
-				, "data.cabin.cabinUrl", "data.cabin.nrOfBookings", "data.deliveryDate")
+				, "data.cabin.cabinUrl", "data.cabin.nrOfBookings", "data.deliveryDate", "data.adminAbleToCancel")
 				 .transform(new DateTimeTransformer(), DateTime.class);
 		return Results.ok(orderDetailsSerializer.serialize(bookings));
 	}

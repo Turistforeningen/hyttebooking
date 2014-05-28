@@ -6,10 +6,13 @@ import static play.test.Helpers.inMemoryDatabase;
 
 import javax.xml.bind.DatatypeConverter;
 
+import org.joda.time.Instant;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import play.libs.Json;
 import play.test.WithApplication;
 import sun.misc.BASE64Decoder;
@@ -59,8 +62,12 @@ public class AESBouncyCastleTest extends WithApplication {
 			//generate another iv
 			AESBouncyCastle aes2 = new AESBouncyCastle(secretKey);
 			
-			String hello = "Hello world!";
-			byte[] msg = hello.getBytes("UTF-8");
+			//String hello = "Hello world!";
+			String timestamp = ""+(new Instant().getMillis() / 1000);
+			ObjectNode js = Json.newObject();
+			js.put("timestamp", timestamp);
+			String testJson = js.asText();
+			byte[] msg = testJson.getBytes("UTF-8");
 			
 			byte[] encr = aes.encrypt(msg);
 			aes2.encrypt(msg); //just to generate a bad iv, we initiate aes2.getIv() by encrypting something
@@ -68,7 +75,7 @@ public class AESBouncyCastleTest extends WithApplication {
 			byte[] badHmac = DatatypeConverter.parseBase64Binary(aes.sha512AndBase64(aes2.getIvAndPlainText()));
 			String decr = new String(aes.decrypt(encr, hmac), "UTF-8");
 			
-			assertTrue(hello + " doesn't equal "+ decr, hello.equals(decr));
+			assertTrue(testJson + " doesn't equal "+ decr, testJson.equals(decr));
 			//assertNull(aes.decrypt(encr, badHmac)); HMAC check DISABLED TEMPORARILY TODO 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -82,7 +89,7 @@ public class AESBouncyCastleTest extends WithApplication {
 	 */
 	public void testBase64Differ() {
 		String code = play.Play.application().configuration().getString("application.secretKey");
-		String string = "{\"timestamp\":1398764642}";
+		String string = "{\"timestamp\":"+(new Instant().getMillis() / 1000)+"}";
 
 		BASE64Decoder decoder = new BASE64Decoder();
 		try {

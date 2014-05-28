@@ -41,6 +41,6 @@ dist
 .sass-cache
 
 app-ui/app/bower_components
-
+app-ui/coverage
 app-ui/docs
 RUNNNING_PID

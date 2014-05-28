@@ -1,30 +1,30 @@
-json.couldNotParseData      = Could not parse json data
-json.expected               = Expected Json
+JSON.couldNotParseData      = Could not parse JSON data
+JSON.expected               = Expected JSON
 
 date.invalid                = Date invalid
 
 booking.atLeastOnePerson    = You have to book for at least one person
-booking.missingGuestArray   = Guests array missing in json
-booking.misssingCabinId     = Missing cabin id in json
+booking.missingGuestArray   = Guests array missing in JSON
+booking.misssingCabinId     = Missing cabin id in JSON
 booking.missingCabin        = Cannot book at this cabin
-booking.missingDates        = DateTo or dateFrom are missing
-booking.invalidFromDate     = FromDate parameter is invalid
-booking.invalidToDate       = ToDate parameter is invalid
+booking.missingDates        = Arrival or Departure date are missing
+booking.invalidFromDate     = Arrival date is invalid
+booking.invalidToDate       = Departure date parameter is invalid
 booking.invalidDateRange    = The range selected is not valid
 booking.successful          = Booking is saved
 booking.cabinNotAvailable   = Cabin is booked for the time period selected
-booking.bedsNotAvailable    = Not enough beds available for time period
+booking.bedsNotAvailable    = Not enough beds available for the time period selected
 booking.notFound            = No such booking found
 booking.noAccess            = Not your booking
 booking.termsAndConditions  = You have not accepted the terms and conditions for booking at DNT
-booking.guestArrayInvalid   = Guest list is inconsistent with the system
+booking.guestArrayInvalid   = Guest list is invalid
 booking.guestOnlyMinor      = Trip can't consist of only minors
 
 cabin.couldNotRemovePrice   = Could not remove price from cabin
 cabin.noSuchCabin           = Cabin does not exist. Wrong id
-cabin.missingType           = Missing type parameter in json
+cabin.missingType           = Missing type parameter in JSON
 cabin.invalidType           = Type parameter invalid
-cabin.missingName           = Missing name parameter in json
+cabin.missingName           = Missing name parameter in JSON
 
 payment.bookingNotFound     = Booking your trying to pay for, not found
 payment.registerException   = Could not register payment with Nets
