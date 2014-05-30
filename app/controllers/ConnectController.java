@@ -20,7 +20,8 @@ import utilities.AESBouncyCastle;
  * Controller class for DNT Connect for logging users in.
  */
 public class ConnectController extends Controller {
-	private static final String REDIRECT_URL = "http://localhost:9000/dev#/login";
+	private static final String SERVER_URL = play.Play.application().configuration().getString("application.address");
+	private static final String REDIRECT_URL = SERVER_URL + "#/login";
 	private static final String CLIENT = "?client=hyttebooking";
 	private static final String SIGNON = "https://www.turistforeningen.no/connect/signon/" +CLIENT + "&data=";
 	private static final byte[] SECRETKEY = DatatypeConverter.parseBase64Binary(play.Play.application().configuration().getString("application.secretKey"));
